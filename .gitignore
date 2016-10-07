@@ -47,3 +47,4 @@ Temporary Items
 .apdisk
 .vscode/launch.json
 .vscode/settings.json
+*.pyc
