@@ -99,13 +99,11 @@ class VoxelGrid(object):
 
         imgs = self.vector.reshape([n_x, n_y, n_z])
 
-        i = 0
-        for ax in axes.flat:
+        for i,ax in enumerate(axes.flat):
             if i >= len(imgs):
-                continue
+                break
             im = ax.imshow(imgs[i], cmap="YlOrRd", interpolation="none")
             ax.set_title("Level " + str(i))
-            i += 1
 
         fig.subplots_adjust(right=0.8)
         cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
