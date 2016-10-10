@@ -24,7 +24,6 @@ setup(
         "numpy",
          "scipy",
          "pandas",
-         "numba"
     ],
     classifiers=[
             "Development Status :: 1 - Planning",

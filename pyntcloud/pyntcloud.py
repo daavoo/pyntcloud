@@ -354,12 +354,12 @@ class PyntCloud(object):
         return octree
 
 
-    def get_KDTree(self, *args, element='vertex', and_set=True):
+    def get_KDTree(self, scalar_fields, element='vertex', and_set=True):
         """ Computes the KDTree of the given PyntCloud.element's scalar fields.
 
         Parameters
         ----------
-        *args: str
+        scalar_fields: list[str]
             The names of the scalar fields.
 
          element(Optional): str
@@ -377,7 +377,7 @@ class PyntCloud(object):
 
         """
 
-        stacked = self.extract_sf(*args, element=element)
+        stacked = self.extract_sf(*scalar_fields, element=element)
 
         kdtree = spatial.cKDTree(stacked)
 

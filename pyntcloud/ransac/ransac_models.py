@@ -63,30 +63,31 @@ class PlaneModel(object):
         #: get the scalar projection of the vectors onto the plane's normal
         scalars = np.dot(vectors, self.normal)
         
+        """
+        TODO AVOID USE NUMBA
+        #: just in case
+        plane_normal = normalize(plane_normal)
+
+        #: get vectors from the plane's point to all the given test points
+        vectors = array_minus_vector(points, plane_point)
+
+        #: get the scalar projection of the vectors onto the plane's normal
+        scalars = np.dot(vectors, plane_normal)
+
+        #: get the orthogonal-projection vectors
+        orthogonal_projection = scalars_dot_vector(scalars, plane_normal)
+
+        #: substract the projections to each point
+        proj_points = points - orthogonal_projection
+
+        if return_distances:
+            return proj_points, norm_all(orthogonal_projection)
+        else:
+            return proj_points
+        """        
+        return
 
         
-        return errors
-
-
-#: just in case
-plane_normal = normalize(plane_normal)
-
-#: get vectors from the plane's point to all the given test points
-vectors = array_minus_vector(points, plane_point)
-
-#: get the scalar projection of the vectors onto the plane's normal
-scalars = np.dot(vectors, plane_normal)
-
-#: get the orthogonal-projection vectors
-orthogonal_projection = scalars_dot_vector(scalars, plane_normal)
-
-#: substract the projections to each point
-proj_points = points - orthogonal_projection
-
-if return_distances:
-    return proj_points, norm_all(orthogonal_projection)
-else:
-    return proj_points
 
 
 @jitclass(sphere_spec)

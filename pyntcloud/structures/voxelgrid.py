@@ -101,6 +101,8 @@ class VoxelGrid(object):
 
         i = 0
         for ax in axes.flat:
+            if i >= len(imgs):
+                continue
             im = ax.imshow(imgs[i], cmap="YlOrRd", interpolation="none")
             ax.set_title("Level " + str(i))
             i += 1
@@ -108,5 +110,4 @@ class VoxelGrid(object):
         fig.subplots_adjust(right=0.8)
         cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
         cbar = fig.colorbar(im, cax=cbar_ax)
-        cbar.set_ticks([0,270])
         cbar.set_label('NUMBER OF POINTS IN VOXEL')
