@@ -45,7 +45,7 @@ def write_npz(filename,  **kwargs):
     """
     for k in kwargs:
         if isinstance(kwargs[k], pd.DataFrame):
-            kwargs[k] = kwargs[k].to_records()
+            kwargs[k] = kwargs[k].to_records(index=False)
     
     np.savez_compressed(filename, **kwargs)
     
