@@ -232,7 +232,7 @@ class PyntCloud(object):
         #: store the point formatted to use the scipy's cdist
         origin = np.array([point])
 
-        coords = self.extract_sf('x','y','z', element=element)
+        coords = cloud[['x','y','z',]]
 
         #:get the coordiantes of the point as str in order to name the SF
         name = ','.join(str(e) for e in point)
@@ -282,15 +282,7 @@ class PyntCloud(object):
 
         cloud = getattr(self, element)
 
-        #: get the rgb from vertex in the right format (creating a fake image)
-        rgb = np.array([self.extract_sf('red','blue','green', element=element)])
-
-        #: get the values undoing the fake image
-        hsv = color.rgb2hsv(rgb)[0]
-
-        cloud['Hue'] = hsv[:,0] * 360
-        cloud['Saturation'] = hsv[:,1] * 100
-        cloud['Value'] = hsv[:,2] * 100
+        raise NotImplementedError
 
 
     def add_relative_luminance(self, element='vertex'):
@@ -318,7 +310,7 @@ class PyntCloud(object):
         #: luminosity function coefficients
         coef = np.array([0.2125, 0.7154, 0.0721])
 
-        rgb = self.extract_sf('red','green','blue', element=element)
+        rgb = cloud[['red','green','blue']]
 
         gray = np.einsum('ij, j', rgb, coef)
 
@@ -346,12 +338,7 @@ class PyntCloud(object):
             The Octree's structure of xyz coordinates of the given element.
 
         """
-
-        xyz = self.extract_sf('x','y','z', element=element)
-
-        octree = VoxelGrid(xyz, n=n)
-
-        return octree
+        raise NotImplementedError
 
 
     def get_KDTree(self, scalar_fields, element='vertex', and_set=True):
@@ -377,7 +364,9 @@ class PyntCloud(object):
 
         """
 
-        stacked = self.extract_sf(*scalar_fields, element=element)
+        cloud = getattr(self, element)
+
+        stacked = cloud[scalar_fields]
 
         kdtree = spatial.cKDTree(stacked)
 
@@ -467,9 +456,11 @@ class PyntCloud(object):
 
         """
 
-        xyz = self.extract_sf('x','y','z', element=element)
+        cloud = getattr(self, element)
 
-        centroid = np.median(xyz, axis=0)
+        xyz = cloud[['x','y','z']]
+
+        centroid = np.mean(xyz, axis=0)
 
         if and_set:
 
@@ -478,136 +469,6 @@ class PyntCloud(object):
         else:
 
             return centroid
-
-
-    def get_covariance_btwn(self, sf1, sf2, element='vertex'):
-        """ Computes the covariance between the given scalar fields.
-
-        Parameters
-        ----------
-        sf1, sf2: str
-            The names of the scalar fields.
-
-        element(Optional): str
-            The sPyntCloud's element where the function will look for the scalar
-            fields in order to compute the covariance.
-
-        Returns
-        -------
-        covariance : float
-            The value of the covariance between the given scalar fields.
-
-        Notes
-        -----
-        If the values of the scalar fields have a significant difference between
-        magnitudes or scales, is better to use the correlation function.
-
-        """
-
-        cloud = getattr(self, element)
-
-        sf1 = cloud[sf1].values
-        sf2 = cloud[sf2].values
-
-        #: get the covariance value from the covariance matrix
-        covariance = np.cov(sf1,sf2)[0][1]
-
-        return covariance
-
-
-    def get_covariance_matrix(self, *args, element='vertex'):
-        """ Computes the covarianze matrix of the given scalar fields.
-
-        Parameters
-        ----------
-        *args: str
-            The names of the scalar fields.
-
-        element(Optional): str
-            The PyntCloud's element where the function will look for the scalar
-            fields in order to compute the covariance matrix. Default: PyntCloud.vertex
-
-        Returns
-        -------
-        covariance_matrix : array
-            The covariance matrix of the given scalar fields.
-
-        Notes
-        -----
-        The covariance matrix will have a shape: N*N. Where N is the number of
-        given scalar fields.
-
-        """
-
-        cloud = getattr(self, element)
-
-        sf_stack = np.vstack([cloud[x].values for x in args] )
-
-        covariance_matrix = np.cov(sf_stack)
-
-        return covariance_matrix
-
-
-    def get_correlation_btwn(self, sf1, sf2, element='vertex'):
-        """ Computes the correlation between the given scalar fields.
-
-        Parameters
-        ----------
-        sf1, sf2: str
-            The names of the scalar fields.
-
-        element: str
-            The sPyntCloud's element where the function will look for the scalar
-            fields in order to compute the correlation.
-
-        Returns
-        -------
-        correlation : float
-            The value of the correlation between the given scalar fields.
-
-        """
-
-        cloud = getattr(self, element)
-
-        sf1 = cloud[sf1].values
-        sf2 = cloud[sf2].values
-
-        correlation = np.corrcoef(sf1,sf2)[0][1]
-
-        return correlation
-
-
-    def get_correlation_matrix(self, *args, element='vertex'):
-        """ Computes the correlation matrix of the given scalar fields.
-
-        Parameters
-        ----------
-        *args: str
-            The names of the scalar fields.
-
-         element(Optional): str
-            The PyntCloud's element where the function will look for the scalar
-            fields in order to compute the correlation matrix. Default: PyntCloud.vertex
-
-        Returns
-        -------
-        correlation_matrix : array
-            The correlation matrix of the given scalar fields.
-
-        Notes
-        -----
-        The correlation matrix will have a shape: N*N. Where N is the number of
-        given scalar fields.
-
-        """
-
-        cloud = getattr(self, element)
-
-        sf_stack = np.vstack([cloud[x].values for x in args] )
-
-        correlation_matrix = np.corrcoef(sf_stack)
-
-        return correlation_matrix
 
 
     def get_transf(self, element='vertex', and_set=True):
@@ -628,9 +489,11 @@ class PyntCloud(object):
         transf : (N,4) array
             The transformer matrix of the element.
 
-        """
 
-        transf = self.extract_sf('x','y','z', element=element)
+        """
+        cloud = getattr(self, element)
+
+        transf = cloud[['x','y','z']]
 
         transf = np.c_[ transf, np.ones(transf.shape[0]) ]
 
@@ -641,28 +504,6 @@ class PyntCloud(object):
         else:
 
             return transf
-
-
-    def apply_affine_transf(self, transformer, element='vertex'):
-        """ Applies an affine transformer matrix to the given element.
-
-        Parameters
-        ----------
-        transformer: (N,4) array
-            The transformer matrix that will be used to replace the x,y,z
-            scalar fields of the given element.
-
-        and_set(Optional): bool
-            If True(Default): set a new attribute with the computed element
-            If False: return the computed element.
-
-        """
-
-        cloud = getattr(self, element)
-
-        cloud[['x','y','z']] = transformer[:, :-1]
-
-        setattr(self, element, cloud)
 
 
     def clean_SOR(self, kdtree, element='vertex', k=8, z_max=2 ):
@@ -748,7 +589,7 @@ class PyntCloud(object):
 
         cloud = getattr(self, element)
 
-        points  = self.extract_sf('x','y','z', element=element)
+        points  = cloud[['x','y','z']]
 
         filtered = pass_through(points, min_x, max_x, min_y, max_y, min_z, max_z)
 
@@ -799,6 +640,7 @@ class PyntCloud(object):
         cloud = getattr(self, element)
 
         setattr(self, element, cloud.sample(n_points))
+        
 
 def vCov(data, sort=True):
 
