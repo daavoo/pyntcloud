@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 
 class VoxelGrid(object):
     
-    def __init__(self, points, x_y_z=[1, 1, 1], bb_cuboid=True):
+    def __init__(self, points, x_y_z=[1, 1, 1], bb_cuboid=True, build=True):
         """
         Parameters
         ----------         
@@ -64,7 +64,8 @@ class VoxelGrid(object):
         self.segments = segments
         
         self.n_voxels = (len(segments[0]) -1) * (len(segments[1]) -1) * (len(segments[2]) -1)
-        self.build()
+        if build:
+            self.build()
 
     def build(self):
 
