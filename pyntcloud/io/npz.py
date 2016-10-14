@@ -19,9 +19,9 @@ def read_npz(filename):
     with np.load(filename) as npz:
         data = {}
         for element in npz.files:
-            if isinstance(npz[element], np.recarray):
+            try:
                 data[element] =  pd.DataFrame(npz[element])
-            else:
+            except:
                 data[element] = npz[element]
     return data
 
