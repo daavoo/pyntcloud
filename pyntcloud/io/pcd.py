@@ -22,8 +22,8 @@ def read_pcd(filename):
 
     skip = 0
     with open(filename, 'rb') as pcd:
+        
         for line in pcd:
-            print(line)
             if b"#" in line:
                 comments.append(line.decode())
             if b"VERSION" in line:
@@ -41,8 +41,7 @@ def read_pcd(filename):
                 skip+=1
                 break
             skip +=1
-        print (skip)
-        
+
         end_header = pcd.tell()
     
     data["comments"] = comments
@@ -64,10 +63,34 @@ def read_pcd(filename):
     
     return data
 
-def write_pcd(filename, vertex):
+def write_pcd(filename, vertex, comments=None):
 
     if not filename.endswith('pcd'):
-    filename += '.pcd'
+        filename += '.pcd'
 
-    with open(filename, "w") as obj:
-        pass
+    if set(['red', 'green', 'blue']).issubset(vertex.columns):
+        rgb = vertex[["red", "green", "blue"]].values.astype(np.uint32)
+        vertex.drop(["red", "green", "blue"], 1, inplace=True)
+        vertex["rgb"] = np.array((rgb[:, 0] << 16) | (rgb[:, 1] << 8) | (rgb[:, 2] << 0),
+                                    dtype=np.uint32)
+        vertex = vertex[["x", "y", "z", "rgb"]]     
+    else:
+        vertex = vertex[["x", "y", "z"]]
+
+    with open(filename, "w") as pcd:
+        
+        for line in comments:
+            pcd.write("#%s\n" % line.strip())
+        
+        pcd.write("VERSION .7\n")
+        pcd.write("FIELDS {}\n".format(" ".join(vertex.columns)))
+        pcd.write("TYPE {}\n".format(" ".join([str(x)[0].upper() for x in vertex.dtypes])))
+        pcd.write("COUNT {}\n".format(" ".join(["1"]*len(vertex.columns))))
+        pcd.write("WIDTH {}\n".format(str(len(vertex))))
+        pcd.write("HEIGHT 1\n")
+        pcd.write("VIEWPOINT 0 0 0 1 0 0 0\n")
+        pcd.write("POINTS {}\n".format(str(len(vertex))))
+        pcd.write("DATA ascii\n")  
+
+    vertex.to_csv(filename, sep=" ", index=False, header=False, mode='a',
+                                                                encoding='ascii')     
