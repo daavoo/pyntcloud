@@ -26,10 +26,7 @@ def read_obj(filename):
         for line in obj:
             
             if line.startswith('#'):
-                if line.startswith('#obj_info'):
-                    obj_info.append(line.strip()[1:])
-                else:
-                    comments.append(line.strip()[1:])
+                comments.append(line.strip()[1:])
                 
             elif line.startswith('v '):
                 v.append(line.strip()[1:].split())
@@ -41,11 +38,10 @@ def read_obj(filename):
                 f.append(line.strip()[2:])
                 
                 
-    v = pd.DataFrame(v, dtype='f4', columns=['x', 'y', 'z'])
+    vertex = pd.DataFrame(v, dtype='f4', columns=['x', 'y', 'z'])
     vn = pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz'])
-    vertex = pd.concat([v, vn], axis=1)
     
-    if "//" in f[0]:
+    if len(f) > 0 and "//" in f[0]:
         face_columns = ['v1', 'vn1', 'v2', 'vn2', 'v3', 'vn3']
     elif len(vn) > 0:
         face_columns = ['v1', 'vt1', 'vn1', 'v2', 'vt2', 'vn2', 'v3', 'vt3', 'vn3']
@@ -56,7 +52,7 @@ def read_obj(filename):
     
     face = pd.DataFrame(f, dtype='i4', columns=face_columns)
     
-    data = {'comments': comments, 'obj_info': obj_info, 'vertex': vertex, 'face': face}
+    data = {'comments': comments, 'obj_info': obj_info, 'vertex': vertex, 'face': face, "normals":vn}
     
     return data
             
@@ -91,10 +87,13 @@ def write_obj(filename, vertex=None, face=None, comments=None, obj_info=None):
 
     if vertex is not None:
         # because we don't want the insert on the original data
-        vertex = vertex.copy()
+        vertex = vertex[["x", "y", "z"]]
         vertex.insert(loc=0, column="obj_v", value="v")
         vertex.to_csv(filename, sep=" ", index=False, header=False, mode='a',
                                                                 encoding='ascii')
+    
+    #if face is not None:
+
                                                                                         
     return True
             
