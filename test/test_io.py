@@ -112,3 +112,11 @@ def test_write_obj():
     assert all(data["vertex"][["x", "y", "z"]] == writed_obj["vertex"])
     
     os.remove(data_path + 'writed.obj')
+
+
+def test_read_pcd():
+    pcd = read_obj(data_path + '.pcd')
+    
+    assert_vertex_xyz(pcd)
+    assert_vertex_color(pcd)
+
