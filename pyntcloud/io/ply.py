@@ -106,7 +106,7 @@ def read_ply(filename):
                     dtypes[n].append((line[2].decode(), ext + ply_dtypes[line[1]]))
                 
             count += 1
-            
+        
         # for ascii
         sizes.insert(0, count)
         # for bin

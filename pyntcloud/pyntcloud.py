@@ -49,7 +49,7 @@ class PyntCloud(object):
 
         """
         formats_readers = {".ply": read_ply,
-                           ".npz": read_npz
+                           ".npz": read_npz,
                           }
         
         ext = filename[-4:]
