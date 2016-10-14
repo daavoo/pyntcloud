@@ -9,10 +9,11 @@ import pandas as pd
 
 from scipy import spatial
 
-from .filters.kdtree_filters import (radious_outlier_removal,
-                                     statistical_outilier_removal)
+from .filters.kdtree_filters import radious_outlier_removal, statistical_outilier_removal
 from .filters.other_filters import pass_through
-from .io.npz import read_npz
+from .io.npz import read_npz, write_npz
+from .io.obj import read_obj, write_obj
+from .io.pcd import read_pcd, write_pcd
 from .io.ply import read_ply, write_ply
 
 
@@ -48,11 +49,13 @@ class PyntCloud(object):
             PyntCloud's attributes
 
         """
-        formats_readers = {".ply": read_ply,
-                           ".npz": read_npz,
+        formats_readers = {"NPZ": read_npz,
+                           "OBJ": read_obj,
+                           "PCD": read_pcd,
+                           "PLY": read_ply
                           }
         
-        ext = filename[-4:]
+        ext = filename.split(".")[-1].upper()
         if ext not in formats_readers.keys():
             raise ValueError("Unsupported file format; supported formats are: " 
                             + "  ".join(formats_readers.keys()))
