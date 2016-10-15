@@ -80,6 +80,10 @@ def read_ply(filename):
                 line = line.split()
                 
                 name = line[1].decode()
+                if name == "vertex":
+                    name = "points"
+                elif name == "face":
+                    name = "mesh"
                 size = int(line[2])
                 
                 names.append(name)
