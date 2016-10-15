@@ -50,11 +50,12 @@ def read_pcd(filename):
         data["vertex"] = pd.read_csv(filename, sep=" ", header=None, skiprows=skip,
                             names=header["fields"] )
         
+        data["vertex"][["x", "y", "z"]] = data["vertex"][["x", "y", "z"]].astype("float32")
         # decode the WTFARETHAT rgb values from PCD
         rgb = data["vertex"]["rgb"].values.astype(int)
-        data["vertex"]["r"] = np.asarray((rgb >> 16) & 255, dtype=np.uint8)
-        data["vertex"]["g"]  = np.asarray((rgb >> 8) & 255, dtype=np.uint8)
-        data["vertex"]["b"] = np.asarray(rgb & 255, dtype=np.uint8)
+        data["vertex"]["red"] = np.asarray((rgb >> 16) & 255, dtype=np.uint8)
+        data["vertex"]["green"]  = np.asarray((rgb >> 8) & 255, dtype=np.uint8)
+        data["vertex"]["blue"] = np.asarray(rgb & 255, dtype=np.uint8)
 
         data["vertex"].drop("rgb", 1, inplace=True)
 
@@ -69,6 +70,7 @@ def write_pcd(filename, vertex, comments=None):
         filename += '.pcd'
 
     if set(['red', 'green', 'blue']).issubset(vertex.columns):
+        # encode the WTFARETHAT rgb values for PCD
         rgb = vertex[["red", "green", "blue"]].values.astype(np.uint32)
         vertex.drop(["red", "green", "blue"], 1, inplace=True)
         vertex["rgb"] = np.array((rgb[:, 0] << 16) | (rgb[:, 1] << 8) | (rgb[:, 2] << 0),

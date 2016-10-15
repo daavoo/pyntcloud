@@ -2,6 +2,7 @@ import os
 
 from pyntcloud.io.npz import read_npz, write_npz
 from pyntcloud.io.obj import read_obj, write_obj
+from pyntcloud.io.pcd import read_pcd, write_pcd
 from pyntcloud.io.ply import read_ply, write_ply
 
 # just in case test are being runned from other directory
@@ -115,7 +116,7 @@ def test_write_obj():
 
 
 def test_read_pcd():
-    pcd = read_obj(data_path + '.pcd')
+    pcd = read_pcd(data_path + '.pcd')
     
     assert_vertex_xyz(pcd)
     assert_vertex_color(pcd)
