@@ -121,3 +121,15 @@ def test_read_pcd():
     assert_points_xyz(pcd)
     assert_points_color(pcd)
 
+
+def test_write_pcd():
+    data = read_ply(data_path + '_bin.ply')    
+    
+    write_pcd(data_path + 'writed.pcd', points=data["points"], comments=data["comments"])  
+
+    writed_pcd = read_pcd(data_path + 'writed.pcd')
+    
+    assert all(data["points"] == writed_pcd["points"])
+    
+    os.remove(data_path + 'writed.pcd')
+

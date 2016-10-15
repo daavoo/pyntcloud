@@ -87,6 +87,7 @@ def write_obj(filename, points=None, mesh=None, comments=None, obj_info=None):
 
     if points is not None:
         # because we don't want the insert on the original data
+        points = points.copy()
         points = points[["x", "y", "z"]]
         points.insert(loc=0, column="obj_v", value="v")
         points.to_csv(filename, sep=" ", index=False, header=False, mode='a',

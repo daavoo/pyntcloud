@@ -66,6 +66,8 @@ def read_pcd(filename):
 
 def write_pcd(filename, points, comments=None):
 
+    points = points.copy()
+    
     if not filename.endswith('pcd'):
         filename += '.pcd'
 
