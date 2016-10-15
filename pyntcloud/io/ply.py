@@ -88,18 +88,18 @@ def read_ply(filename):
             elif b'property' in line:
                 line = line.split()
     
-                # element face
+                # element mesh
                 if b'list' in line:
-                    face_names = ['n_vertex', 'v1', 'v2', 'v3']
+                    mesh_names = ['n_points', 'v1', 'v2', 'v3']
                     
                     # the first number has different dtype than the list
-                    dtypes[n].append((face_names[0], ext + ply_dtypes[line[2]]))
+                    dtypes[n].append((mesh_names[0], ext + ply_dtypes[line[2]]))
                     
                     # rest of the numbers have the same dtype
                     dt = ext + ply_dtypes[line[3]]
                     
                     for j in range(1, 4):
-                        dtypes[n].append((face_names[j], dt))
+                        dtypes[n].append((mesh_names[j], dt))
     
                 # regular elements
                 else:
@@ -142,7 +142,7 @@ def read_ply(filename):
     return data
 
 
-def write_ply(filename, vertex=None, face=None, comments=None, obj_info=None,
+def write_ply(filename, points=None, mesh=None, comments=None, obj_info=None,
                                                         as_text=False, **kwargs):
     """
 
@@ -150,8 +150,8 @@ def write_ply(filename, vertex=None, face=None, comments=None, obj_info=None,
     ----------
     filename: str
         The created file will be named with this
-    vertex: DataFrame
-    face: DataFrame
+    points: DataFrame
+    mesh: DataFrame
     comments: list[str] or str
     obj_info: list[str] or str
     as_text: boolean
@@ -181,10 +181,10 @@ def write_ply(filename, vertex=None, face=None, comments=None, obj_info=None,
             header.extend(comments)
         if obj_info is not None:
             header.extend(obj_info)
-        if vertex is not None:
-            header.extend(describe_element('vertex', vertex))
-        if face is not None:
-            header.extend(describe_element('face', face))
+        if points is not None:
+            header.extend(describe_element('vertex', points))
+        if mesh is not None:
+            header.extend(describe_element('face', mesh))
         for key in kwargs:
             header.extend(describe_element(key, kwargs[key]))
 
@@ -196,11 +196,11 @@ def write_ply(filename, vertex=None, face=None, comments=None, obj_info=None,
     # close the file in text mode
 
     if as_text:
-        if vertex is not None:
-            vertex.to_csv(filename, sep=" ", index=False, header=False, mode='a',
+        if points is not None:
+            points.to_csv(filename, sep=" ", index=False, header=False, mode='a',
                                                                 encoding='ascii')
-        if face is not None:
-            face.to_csv(filename, sep=" ", index=False, header=False, mode='a',
+        if mesh is not None:
+            mesh.to_csv(filename, sep=" ", index=False, header=False, mode='a',
                                                                 encoding='ascii')
         for key in kwargs:
             kwargs[key].to_csv(filename, sep=" ", index=False, header=False, mode='a',
@@ -208,10 +208,10 @@ def write_ply(filename, vertex=None, face=None, comments=None, obj_info=None,
     else:
         # open in binary and append to use tofile
         with open(filename, 'ab') as ply:
-            if vertex is not None:
-                vertex.to_records(index=False).tofile(ply)
-            if face is not None:
-                face.to_records(index=False).tofile(ply)
+            if points is not None:
+                points.to_records(index=False).tofile(ply)
+            if mesh is not None:
+                mesh.to_records(index=False).tofile(ply)
             for key in kwargs:
                 kwargs[key].to_records(index=False).tofile(ply)
     return True
@@ -233,7 +233,7 @@ def describe_element(name, df):
     element = ['element ' + name + ' ' + str(len(df))]
     
     if name == 'face':
-        element.append("property list uchar int vertex_indices")
+        element.append("property list uchar int points_indices")
         
     else:
         for i in range(len(df.columns)):

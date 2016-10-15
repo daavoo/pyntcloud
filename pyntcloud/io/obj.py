@@ -38,33 +38,33 @@ def read_obj(filename):
                 f.append(line.strip()[2:])
                 
                 
-    vertex = pd.DataFrame(v, dtype='f4', columns=['x', 'y', 'z'])
+    points = pd.DataFrame(v, dtype='f4', columns=['x', 'y', 'z'])
     vn = pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz'])
     
     if len(f) > 0 and "//" in f[0]:
-        face_columns = ['v1', 'vn1', 'v2', 'vn2', 'v3', 'vn3']
+        mesh_columns = ['v1', 'vn1', 'v2', 'vn2', 'v3', 'vn3']
     elif len(vn) > 0:
-        face_columns = ['v1', 'vt1', 'vn1', 'v2', 'vt2', 'vn2', 'v3', 'vt3', 'vn3']
+        mesh_columns = ['v1', 'vt1', 'vn1', 'v2', 'vt2', 'vn2', 'v3', 'vt3', 'vn3']
     else:
-        face_columns = ['v1', 'vt1', 'v2', 'vt2', 'v3', 'vt3']
+        mesh_columns = ['v1', 'vt1', 'v2', 'vt2', 'v3', 'vt3']
     
     f = [re.split(r'\D+', x) for x in f]
     
-    face = pd.DataFrame(f, dtype='i4', columns=face_columns)
+    mesh = pd.DataFrame(f, dtype='i4', columns=mesh_columns)
     
-    data = {'comments': comments, 'obj_info': obj_info, 'vertex': vertex, 'face': face, "normals":vn}
+    data = {'comments': comments, 'obj_info': obj_info, 'points': points, 'mesh': mesh, "normals":vn}
     
     return data
             
 
-def write_obj(filename, vertex=None, face=None, comments=None, obj_info=None):
+def write_obj(filename, points=None, mesh=None, comments=None, obj_info=None):
     """
     Parameters
     ----------
     filename:   str
         The created file will be named with this
-    vertex:     pd.DataFrame
-    face:       pd.DataFrame
+    points:     pd.DataFrame
+    mesh:       pd.DataFrame
     comments:   list[str] or str
     obj_info:   list[str] or str
 
@@ -85,14 +85,14 @@ def write_obj(filename, vertex=None, face=None, comments=None, obj_info=None):
         for line in obj_info:
             obj.write("#%s\n" % line.strip())
 
-    if vertex is not None:
+    if points is not None:
         # because we don't want the insert on the original data
-        vertex = vertex[["x", "y", "z"]]
-        vertex.insert(loc=0, column="obj_v", value="v")
-        vertex.to_csv(filename, sep=" ", index=False, header=False, mode='a',
+        points = points[["x", "y", "z"]]
+        points.insert(loc=0, column="obj_v", value="v")
+        points.to_csv(filename, sep=" ", index=False, header=False, mode='a',
                                                                 encoding='ascii')
     
-    #if face is not None:
+    #if mesh is not None:
 
                                                                                         
     return True
