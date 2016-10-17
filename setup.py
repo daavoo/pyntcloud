@@ -14,6 +14,7 @@ setup(
               "pyntcloud.io",
               "pyntcloud.numba_functions",
               "pyntcloud.ransac",
+              "pyntcloud.scalar_fields",
               "pyntcloud.statistics",
               "pyntcloud.structures"],
     keywords=[
@@ -22,8 +23,8 @@ setup(
     ],
     install_requires=[
         "numpy",
-         "scipy",
-         "pandas",
+        "scipy",
+        "pandas",
     ],
     classifiers=[
             "Development Status :: 1 - Planning",

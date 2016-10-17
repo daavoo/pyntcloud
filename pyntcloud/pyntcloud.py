@@ -15,18 +15,34 @@ from .io.npz import read_npz, write_npz
 from .io.obj import read_obj, write_obj
 from .io.pcd import read_pcd, write_pcd
 from .io.ply import read_ply, write_ply
+from .scalar_fields import need_normals
+from .scalar_fields import need_rgb
 
+
+# Description for __repr__ method
 DESCRIPTION = """\
 \tPyntCloud
 \t=========\n
 {} points with {} scalar fields
 {} faces
-{} kdtrees
+kdtree: {}
 {} octrees
 {} voxelgrids
 Centroid: {}, {}, {}\n
 Other attributes:{}        
 """
+
+# Avaliable scalar fields
+NEED_NORMALS = {
+'inclination_deg': 'inclination_deg',
+'inclination_rad': 'inclination_rad',
+'orientation_deg': 'orientation_deg',
+'orientation_rad': 'orientation_rad',
+}
+
+NEED_NEIGHBORS = {
+'eigen_decomposition' : ['eigval_1', 'eigval_2', 'eigval_3', 'eigvec_1', 'eigvec_2', 'eigvec_3']
+}
 
 
 class PyntCloud(object):
@@ -41,7 +57,6 @@ class PyntCloud(object):
         elif not set(['x', 'y', 'z']).issubset(kwargs["points"].columns):
             raise ValueError("Points must have x, y and z coordinates")
 
-        self.kdtrees = []
         self.octrees = []
         self.voxelgrids = []
 
@@ -71,10 +86,9 @@ class PyntCloud(object):
         except AttributeError:
             n_faces = 0
 
-        return DESCRIPTION.format(
-                                    len(self.points), len(self.points.columns),
+        return DESCRIPTION.format(  len(self.points), len(self.points.columns),
                                     n_faces,
-                                    len(self.kdtrees),
+                                    hasattr(self, "kdtree"),
                                     len(self.octrees),
                                     len(self.voxelgrids),
                                     self.centroid[0], self.centroid[1], self.centroid[2],
@@ -116,158 +130,52 @@ class PyntCloud(object):
                           }
         
         ext = filename.split(".")[-1].upper()
+
         if ext not in formats_readers.keys():
             raise ValueError("Unsupported file format; supported formats are: " 
                             + "  ".join(formats_readers.keys()))
         else:
             return PyntCloud( **formats_readers[ext](filename) )
 
+    
+    def add_scalar_field(self, sf, **kwargs):
+        """ Add one or multiple scalar fields to PyntCloud.points
 
-    def add_normals(self, neighbors, element='vertex', and_curvature=True):
+        NEED NORMALS (nx, ny, nz):
+            - 'inclination_deg'
+            - 'inclination_rad'
+            - 'orientation_deg'
+            - 'orientation_rad'
+
+        NEED RGB (red, green, blue):
+            - 'rgb_intensity'  # adds 3 scalar fields (Ri, Gi, Bi)
+            - 'hsv'  # adds 3 scalar fields (H, S, V)
+            - 'relative_luminance'  # conversion RGB-GRAY
+        
+        NEED NEIGHBORS (x, y, z):
+            - 'eigen_decomposition'  # adds 6 scalar fields (eigval_1, eigval_2, eigval_3, eigvec_1, eigvec_2, eigvec_3)
+
+        NEED EIGEN_DECOMPOSITION (eigval_1, eigval_2, eigval_3, eigvec_1, eigvec_2, eigvec_3):
+            - 'curvature'        
         """
-        """
+        if sf in NEED_NORMALS.keys():
+            if isinstance(NEED_NORMALS[sf], list):
+                all_sf = getattr(need_normals, sf)(self.points[["nx", "ny", "nz"]].values)
+                for i in range(len(NEED_NORMALS[sf])):
+                    self.points[NEED_NORMALS[sf][i]] = all_sf[i]
+            else:
+                self.points[sf] = getattr(need_normals, sf)(self.points[["nx", "ny", "nz"]].values)
 
-        cloud = getattr(self, element)
+        elif sf in NEED_RGB.keys():
+            if isinstance(NEED_RGB[sf], list):
+                all_sf = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values)
+                for i in range(len(NEED_RGB[sf])):
+                    self.points[NEED_RGB[sf][i]] = all_sf[i]
+            else:
+                self.points[sf] = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values)
+            
 
-        #: compute PCA over each group of K neighbors
-        eigenvalues, eigenvectors = np.linalg.eig(vCov(neighbors))
-
-        #: get the indices of the smallest eigenvector
-        sort = eigenvalues.argsort()[:,0]
-
-        #: create an empty array
-        normals = np.empty(eigenvalues.shape)
-
-        #: fill with the correspondig smallest eigenvector
-        #: separating to avoid memory break
-        normals[sort == 0] = eigenvectors[sort == 0][:,:,0]
-        normals[sort == 1] = eigenvectors[sort == 1][:,:,1]
-        normals[sort == 2] = eigenvectors[sort == 2][:,:,2]
-
-        if and_curvature:
-            eigenvalues.sort()
-
-            #: get curvature by divinging the lowest eigenvalue by the sum of all the eigenvalues
-            curvature = eigenvalues[:,0] / np.sum(eigenvalues, axis=1)
-
-            cloud['curvature_' + str(neighbors.shape[1])] = curvature
-
-        cloud['nx'] = normals[:,0]
-        cloud['ny'] = normals[:,1]
-        cloud['nz'] = normals[:,2]
-
-        setattr(self, element, cloud)
-
-
-    def orient_normals(self, view_points, element='vertex'):
-
-        cloud = getattr(self, element)
-
-        centroids = cloud[['centroid_x','centroid_y','centroid_z']].drop_duplicates().values
-
-        remain_idx = list(range(centroids.shape[0]))
-
-        view_rays = np.zeros_like(centroids, dtype=np.float32)
-
-
-
-    def add_inclination(self, element='vertex', degrees=True):
-        """ Adds inclination (with respect to z-axis) values to PyntCloud.element
-
-        Parameters
-        ----------
-        degrees(Optional) : bool
-            Set the oputput inclination units:
-                If True(Default) set units to degrees.
-                If False set units to radians.
-
-        Notes
-        -----
-        This function expects the PyntCloud to have a numpy structured array
-        with normals x,y,z values (correctly named) as the corresponding element
-        atribute.
-
-        """
-
-        cloud = getattr(self, element)
-
-        angle = np.arccos(cloud['nz'].values)
-
-        if degrees:
-
-            cloud = cloud.assign(inclination_deg = np.rad2deg(angle))
-
-        else:
-
-            cloud = cloud.assign(inclination_rad = angle)
-
-        setattr(self, element, cloud)
-
-
-    def add_orientation(self, element='vertex', degrees=True):
-        """ Adds orientation (with respect to y-axis) values to PyntCloud.element
-
-        Parameters
-        ----------
-        degrees(Optional) : bool
-            Set the oputput orientation units:
-                If True(Default) set units to degrees.
-                If False set units to radians.
-
-        Notes
-        -----
-        This function expects the PyntCloud to have a numpy structured array
-        with normals x,y,z values (correctly named) as the corresponding element
-        atribute.
-
-        """
-
-        cloud = getattr(self, element)
-
-        nx = cloud['nx'].values
-        ny = cloud['ny'].values
-
-        angle = np.arctan2(nx,ny)
-
-        #: convert (-180 , 180) to (0 , 360)
-        angle[(np.where(angle < 0))] = (2*np.pi) + angle[(np.where(angle < 0))]
-
-        if degrees:
-
-            cloud['orientation_deg'] = np.rad2deg(angle)
-
-        else:
-
-            cloud['orientation_rad'] = angle
-
-        setattr(self, element, cloud)
-
-
-    def add_zscore_of(self, scalar_field, element='vertex'):
-        """ Adds the Standard score values of the given SF to PyntCloud.element
-
-        Parameters
-        ----------
-        scalar_field : str
-            The desired scalar fields from wich we want to estimate the Standard scores.
-
-        Notes
-        -----
-        This function expects the PyntCloud to have a numpy structured array
-        with the given Scalar Field as the corresponding element atribute.
-
-        This function will add a new scalar field named as the original scalar
-        field with a 'Z' on the front.
-
-        """
-
-        cloud = getattr(self, element)
-
-        v = cloud[scalar_field]
-
-        cloud['Z_' + scalar_field] = (v - v.mean()) / v.std(ddof=0)
-
-        setattr(self, element, cloud)
+        return str(sf) + " ADDED"
 
 
     def add_dist_to_point(self, point, element='vertex', metric='euclidean'):
