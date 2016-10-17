@@ -16,24 +16,84 @@ from .io.obj import read_obj, write_obj
 from .io.pcd import read_pcd, write_pcd
 from .io.ply import read_ply, write_ply
 
+DESCRIPTION = """\
+\tPyntCloud
+\t=========\n
+{} points with {} scalar fields
+{} faces
+{} kdtrees
+{} octrees
+{} voxelgrids
+Centroid: {}, {}, {}\n
+Other attributes:{}        
+"""
 
 
 class PyntCloud(object):
+    """ A Pythonic Point Cloud
+    """
     
-    
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):  
 
-        if not args and not kwargs:
-            setattr(self, 'vertex', pd.DataFrame())
+        if "points" not in kwargs:
+            raise ValueError("There must be a 'points' key in the kwargs")
 
-        for dic in args:
-            for k in dic:
-                setattr(self, k, dic[k])
-                
+        elif not set(['x', 'y', 'z']).issubset(kwargs["points"].columns):
+            raise ValueError("Points must have x, y and z coordinates")
+
+        self.kdtrees = []
+        self.octrees = []
+        self.voxelgrids = []
+
         for key in kwargs:
-            setattr(self, key, kwargs[key])
-            
+            if "kdtree" in key:
+                self.kdtrees.append(kwargs[key])
+            elif "octree" in key:
+                self.octrees.append(kwargs[key])
+            elif "voxelgrid" in key:
+                self.voxelgrids.append(kwargs[key])
+            else:
+                setattr(self, key, kwargs[key])
+        
+        self.centroid = np.mean(self.points[["x", "y", "z"]].values, axis=0)
+        
 
+    def __repr__(self):
+
+        others = []
+        for name in self.__dict__:
+            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid"]:
+                others.append("\n\t " + name + ": " + str(type(name)))
+        others = "".join(others)
+
+        try:
+            n_faces = len(self.mesh)
+        except AttributeError:
+            n_faces = 0
+
+        return DESCRIPTION.format(
+                                    len(self.points), len(self.points.columns),
+                                    n_faces,
+                                    len(self.kdtrees),
+                                    len(self.octrees),
+                                    len(self.voxelgrids),
+                                    self.centroid[0], self.centroid[1], self.centroid[2],
+                                    others                                    
+                                    )
+
+
+    @property
+    def points(self):
+        return self.__points
+
+    
+    @points.setter
+    def points(self, df):
+        if not isinstance(df, pd.DataFrame):
+            raise TypeError("Points argument is not a DataFrame")
+        self.__points = df
+
+             
     @classmethod
     def from_file(cls, filename):
         """ Extracts data from file and constructs a PyntCloud with it
@@ -60,7 +120,7 @@ class PyntCloud(object):
             raise ValueError("Unsupported file format; supported formats are: " 
                             + "  ".join(formats_readers.keys()))
         else:
-            return PyntCloud(formats_readers[ext](filename))
+            return PyntCloud( **formats_readers[ext](filename) )
 
 
     def add_normals(self, neighbors, element='vertex', and_curvature=True):
