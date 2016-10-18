@@ -1,10 +1,7 @@
 import os
 
 from pyntcloud import PyntCloud
-from pyntcloud.io.ply import write_ply
-from pyntcloud.io.obj import write_obj
-from pyntcloud.io.npz import write_npz
-from pyntcloud.io.pcd import write_pcd
+
 
 # just in case test are being runned from other directory
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -58,10 +55,10 @@ def test_read_ply_ascii():
 def test_write_ply():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    write_ply(data_path + 'writed_ascii.ply', points=data.points, mesh=data.mesh,
-              comments=data.comments, obj_info=data.obj_info, as_text=True)  
-    write_ply(data_path + 'writed_bin.ply', points=data.points, mesh=data.mesh,
-              comments=data.comments, obj_info=data.obj_info, as_text=False) 
+    data.to_file(data_path + 'writed_ascii.ply', points=data.points, mesh=data.mesh,
+                        comments=data.comments, obj_info=data.obj_info, as_text=True)  
+    data.to_file(data_path + 'writed_bin.ply', points=data.points, mesh=data.mesh,
+                        comments=data.comments, obj_info=data.obj_info, as_text=False) 
               
     writed_ply_ascii = PyntCloud.from_file(data_path + 'writed_ascii.ply')
     writed_ply_bin = PyntCloud.from_file(data_path + 'writed_bin.ply')
@@ -86,7 +83,7 @@ def test_read_npz():
 def test_write_npz():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
 
-    write_npz(data_path + 'writed_npz.npz', points=data.points, mesh=data.mesh,
+    data.to_file(data_path + 'writed_npz.npz', points=data.points, mesh=data.mesh,
               comments=data.comments, obj_info=data.obj_info)  
 
     writed_npz = PyntCloud.from_file(data_path + 'writed_npz.npz')
@@ -106,7 +103,7 @@ def test_read_obj():
 def test_write_obj():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    write_obj(data_path + 'writed.obj', points=data.points, mesh=data.mesh,
+    data.to_file(data_path + 'writed.obj', points=data.points, mesh=data.mesh,
               comments=data.comments, obj_info=data.obj_info)  
 
     writed_obj = PyntCloud.from_file(data_path + 'writed.obj')
@@ -126,7 +123,7 @@ def test_read_pcd():
 def test_write_pcd():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    write_pcd(data_path + 'writed.pcd', points=data.points, comments=data.comments)  
+    data.to_file(data_path + 'writed.pcd', points=data.points, comments=data.comments)  
 
     writed_pcd = PyntCloud.from_file(data_path + 'writed.pcd')
     
