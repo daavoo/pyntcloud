@@ -1,8 +1,6 @@
 #  HAKUNA MATATA
 
-"""
-PyntCloud class
-"""
+import inspect
 
 import numpy as np
 import pandas as pd
@@ -19,20 +17,20 @@ from .scalar_fields import need_normals
 from .scalar_fields import need_rgb
 
 
-# Description for __repr__ method
+### __repr__ method
 DESCRIPTION = """\
 \tPyntCloud
 \t=========\n
 {} points with {} scalar fields
 {} faces
-kdtree: {}
+{} kdtrees
 {} octrees
 {} voxelgrids
 Centroid: {}, {}, {}\n
 Other attributes:{}        
 """
 
-# Avaliable scalar fields
+### Avaliable scalar fields
 NEED_NORMALS = {
 'inclination_deg': 'inclination_deg',
 'inclination_rad': 'inclination_rad',
@@ -44,6 +42,41 @@ NEED_NEIGHBORS = {
 'eigen_decomposition' : ['eigval_1', 'eigval_2', 'eigval_3', 'eigvec_1', 'eigvec_2', 'eigvec_3']
 }
 
+### I/O 
+FORMATS_READERS = {
+"NPZ": read_npz,
+"OBJ": read_obj,
+"PCD": read_pcd,
+"PLY": read_ply
+}
+
+FORMATS_WRITERS = {
+"NPZ": write_npz,
+"OBJ": write_obj,
+"PCD": write_pcd,
+"PLY": write_ply
+}
+
+
+
+
+### Constant Exceptions
+MUST_HAVE_POINTS = ValueError("There must be a 'points' key in the kwargs")
+UNSOPORTED_IN = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))
+UNSOPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
+
+
+"""  
+ ________  ___    ___ ________   _________  ________  ___       ________  ___  ___  ________     
+|\   __  \|\  \  /  /|\   ___  \|\___   ___\\   ____\|\  \     |\   __  \|\  \|\  \|\   ___ \    
+\ \  \|\  \ \  \/  / | \  \\ \  \|___ \  \_\ \  \___|\ \  \    \ \  \|\  \ \  \\\  \ \  \_|\ \   
+ \ \   ____\ \    / / \ \  \\ \  \   \ \  \ \ \  \    \ \  \    \ \  \\\  \ \  \\\  \ \  \ \\ \  
+  \ \  \___|\/  /  /   \ \  \\ \  \   \ \  \ \ \  \____\ \  \____\ \  \\\  \ \  \\\  \ \  \_\\ \ 
+   \ \__\ __/  / /      \ \__\\ \__\   \ \__\ \ \_______\ \_______\ \_______\ \_______\ \_______\
+    \|__||\___/ /        \|__| \|__|    \|__|  \|_______|\|_______|\|_______|\|_______|\|_______|
+         \|___|/                                                                                 
+                                                                                                                                                                                                                                                                                                  
+"""
 
 class PyntCloud(object):
     """ A Pythonic Point Cloud
@@ -52,11 +85,12 @@ class PyntCloud(object):
     def __init__(self, **kwargs):  
 
         if "points" not in kwargs:
-            raise ValueError("There must be a 'points' key in the kwargs")
+            raise MUST_HAVE_POINTS
 
         elif not set(['x', 'y', 'z']).issubset(kwargs["points"].columns):
             raise ValueError("Points must have x, y and z coordinates")
-
+        
+        self.kdtrees = []
         self.octrees = []
         self.voxelgrids = []
 
@@ -88,7 +122,7 @@ class PyntCloud(object):
 
         return DESCRIPTION.format(  len(self.points), len(self.points.columns),
                                     n_faces,
-                                    hasattr(self, "kdtree"),
+                                    len(self.kdtrees),
                                     len(self.octrees),
                                     len(self.voxelgrids),
                                     self.centroid[0], self.centroid[1], self.centroid[2],
@@ -123,21 +157,48 @@ class PyntCloud(object):
             PyntCloud's attributes
 
         """
-        formats_readers = {"NPZ": read_npz,
-                           "OBJ": read_obj,
-                           "PCD": read_pcd,
-                           "PLY": read_ply
-                          }
-        
         ext = filename.split(".")[-1].upper()
 
-        if ext not in formats_readers.keys():
-            raise ValueError("Unsupported file format; supported formats are: " 
-                            + "  ".join(formats_readers.keys()))
+        if ext not in FORMATS_READERS.keys():
+            raise UNSOPORTED_IN
         else:
-            return PyntCloud( **formats_readers[ext](filename) )
+            return PyntCloud( **FORMATS_READERS[ext](filename) )
 
     
+    def to_file(self, filename, **kwargs):
+        """ Save PyntCloud's data to file 
+        Parameters
+        ----------
+        filename : str
+            Path to the file from wich the data will be readed
+
+        """
+
+        ext = filename.split(".")[-1].upper()
+
+        if ext not in FORMATS_WRITERS.keys():
+            raise UNSOPORTED_OUT
+
+        else:
+            if "points" not in kwargs:
+                raise MUST_HAVE_POINTS
+
+            required_args = [arg for arg in inspect.signature(FORMATS_WRITERS[ext]).parameters]
+
+            if "kwargs" in required_args:
+                FORMATS_WRITERS[ext](filename, **kwargs)
+            
+            else:
+                valid_args = {}
+                for key in kwargs:
+                    if key in required_args:
+                        valid_args[key] = kwargs[key]
+                FORMATS_WRITERS[ext](filename, **valid_args)
+
+        return True
+
+            
+
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
 
@@ -176,43 +237,6 @@ class PyntCloud(object):
             
 
         return str(sf) + " ADDED"
-
-
-    def add_dist_to_point(self, point, element='vertex', metric='euclidean'):
-        """ Adds the distance between PyntCloud.vertex's points and the given point
-
-        Parameters
-        ----------
-        point: array
-            The point to wich the distances will be computated.It must be given
-            as an array with 3 elements, corresponding to the X,Y,Z coordinates.
-
-        metric(Optional): str
-            The "type" of the distance. See: "scipy.spatial.distance.cdist" docs
-            for more information.
-
-        Notes
-        -----
-        The corresponding distance will be added as a new SF for every point
-        in PyntCloud.element.
-
-        """
-
-        cloud = getattr(self, element)
-
-        #: store the point formatted to use the scipy's cdist
-        origin = np.array([point])
-
-        coords = cloud[['x','y','z',]]
-
-        #:get the coordiantes of the point as str in order to name the SF
-        name = ','.join(str(e) for e in point)
-
-        distance = spatial.distance.cdist(origin, coords, metric).flatten()
-
-        cloud['to:' + name] = distance
-
-        setattr(self, element, cloud)
 
 
     def add_rgb_intensity(self, element='vertex'):

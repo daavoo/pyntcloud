@@ -20,7 +20,7 @@ def orientation_deg(normals):
 
 def orientation_rad(normals):
     angle = np.arctan2(normals[:,0], normals[:,1])
-    #: convert (-180 , 180) to (0 , 360)
+    #: convert (-PI , PI) to (0 , 2*PI)
     angle = np.where(angle <0, angle + (2*np.pi), angle)
     return angle
 
