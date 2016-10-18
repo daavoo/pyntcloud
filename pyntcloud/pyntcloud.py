@@ -38,6 +38,10 @@ NEED_NORMALS = {
 'orientation_rad': 'orientation_rad',
 }
 
+NEED_RGB = {
+'rgb_intensity' : ['Ri', 'Gi', 'Bi']
+}
+
 NEED_NEIGHBORS = {
 'eigen_decomposition' : ['eigval_1', 'eigval_2', 'eigval_3', 'eigvec_1', 'eigvec_2', 'eigvec_3']
 }
@@ -146,7 +150,7 @@ class PyntCloud(object):
 
         elif not set(['x', 'y', 'z']).issubset(df.columns):
             raise MUST_HAVE_XYZ
-            
+
         self.__points = df
 
              
@@ -201,6 +205,8 @@ class PyntCloud(object):
                 for key in kwargs:
                     if key in required_args:
                         valid_args[key] = kwargs[key]
+                    else:
+                        print("Skipping:", key)
                 FORMATS_WRITERS[ext](filename, **valid_args)
 
         return True
@@ -237,36 +243,14 @@ class PyntCloud(object):
 
         elif sf in NEED_RGB.keys():
             if isinstance(NEED_RGB[sf], list):
-                all_sf = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values)
+                all_sf = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values.astype("f"))
                 for i in range(len(NEED_RGB[sf])):
                     self.points[NEED_RGB[sf][i]] = all_sf[i]
             else:
-                self.points[sf] = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values)
+                self.points[sf] = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values.astype("f"))
             
 
         return str(sf) + " ADDED"
-
-
-    def add_rgb_intensity(self, element='vertex'):
-        """ Adds Red, Blue and Green intensity values to PyntCloud.vertex
-
-        Notes
-        -----
-        This function expects the PyntCloud to have a numpy structured array
-        with rgb values (correctly named) as the corresponding vertex atribute.
-
-        """
-        cloud = getattr(self, element)
-
-        r = cloud['red'].values.astype(np.float, copy=False)
-        g = cloud['green'].values.astype(np.float, copy=False)
-        b = cloud['blue'].values.astype(np.float, copy=False)
-
-        rgb = r + g + b
-
-        cloud['Ri'] = r / rgb
-        cloud['Gi'] = g / rgb
-        cloud['Bi'] = b / rgb
 
 
     def add_relative_luminance(self, element='vertex'):
