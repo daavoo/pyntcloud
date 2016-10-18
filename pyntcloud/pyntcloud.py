@@ -66,16 +66,22 @@ UNSOPORTED_IN = ValueError("Unsupported file format; supported formats are: "  +
 UNSOPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
 
 
-"""  
- ________  ___    ___ ________   _________  ________  ___       ________  ___  ___  ________     
-|\   __  \|\  \  /  /|\   ___  \|\___   ___\\   ____\|\  \     |\   __  \|\  \|\  \|\   ___ \    
-\ \  \|\  \ \  \/  / | \  \\ \  \|___ \  \_\ \  \___|\ \  \    \ \  \|\  \ \  \\\  \ \  \_|\ \   
- \ \   ____\ \    / / \ \  \\ \  \   \ \  \ \ \  \    \ \  \    \ \  \\\  \ \  \\\  \ \  \ \\ \  
-  \ \  \___|\/  /  /   \ \  \\ \  \   \ \  \ \ \  \____\ \  \____\ \  \\\  \ \  \\\  \ \  \_\\ \ 
-   \ \__\ __/  / /      \ \__\\ \__\   \ \__\ \ \_______\ \_______\ \_______\ \_______\ \_______\
-    \|__||\___/ /        \|__| \|__|    \|__|  \|_______|\|_______|\|_______|\|_______|\|_______|
-         \|___|/                                                                                 
-                                                                                                                                                                                                                                                                                                  
+"""                                                                                                         
+,-.----.                                                                                                     
+\    /  \                                ___       ,----..     ,--,                                          
+|   :    \                             ,--.'|_    /   /   \  ,--.'|                                    ,---, 
+|   |  .\ :                   ,---,    |  | :,'  |   :     : |  | :       ,---.            ,--,      ,---.'| 
+.   :  |: |               ,-+-. /  |   :  : ' :  .   |  ;. / :  : '      '   ,'\         ,'_ /|      |   | : 
+|   |   \ :       .--,   ,--.'|'   | .;__,'  /   .   ; /--`  |  ' |     /   /   |   .--. |  | :      |   | | 
+|   : .   /     /_ ./|  |   |  ,"' | |  |   |    ;   | ;     '  | |    .   ; ,. : ,'_ /| :  . |    ,--.__| | 
+;   | |`-'   , ' , ' :  |   | /  | | :__,'| :    |   : |     |  | :    '   | |: : |  ' | |  . .   /   ,'   | 
+|   | ;     /___/ \: |  |   | |  | |   '  : |__  .   | '___  '  : |__  '   | .; : |  | ' |  | |  .   '  /  | 
+:   ' |      .  \  ' |  |   | |  |/    |  | '.'| '   ; : .'| |  | '.'| |   :    | :  | : ;  ; |  '   ; |:  | 
+:   : :       \  ;   :  |   | |--'     ;  :    ; '   | '/  : ;  :    ;  \   \  /  '  :  `--'   \ |   | '/  ' 
+|   | :        \  \  ;  |   |/         |  ,   /  |   :    /  |  ,   /    `----'   :  ,      .-./ |   :    :| 
+`---'.|         :  \  \ '---'           ---`-'    \   \ .'    ---`-'               `--`----'      \   \  /   
+  `---`          \  ' ;                            `---`                                           `----'    
+                  `--`                                                                                                                                                                                                                                                                                                                                                                    
 """
 
 class PyntCloud(object):
@@ -261,25 +267,6 @@ class PyntCloud(object):
         cloud['Bi'] = b / rgb
 
 
-    def add_hsv(self, element='vertex'):
-        """ Adds the values obtained from conversion RGB-HSV to PyntCloud.vertex
-
-        Notes
-        -----
-        This function expects the PyntCloud to have a numpy structured array
-        as PyntCloud.vertex attribute, with valid RGB values correctly named
-        ('red', 'green', 'blue')
-
-        The corresponding HSV values will be added as 3 news SF for every point
-        in PyntCloud.vertex
-
-        """
-
-        cloud = getattr(self, element)
-
-        raise NotImplementedError
-
-
     def add_relative_luminance(self, element='vertex'):
         """ Adds the relative luminance values(conversion RGB-GRAY) to PyntCloud.element
 
@@ -425,45 +412,6 @@ class PyntCloud(object):
         else:
 
             return neighbors
-
-
-    def get_centroid(self, element='vertex', and_set=True):
-        """ Computes the centroid of the given PyntCloud.element
-
-        Parameters
-        ----------
-        element: str
-            The PyntCloud's element from wich we want to compute the centroid.
-
-        Returns
-        -------
-        centroid : array
-            The (x,y,z) coordiantes of the PyntCloud.element's centroid.
-
-        and_set(Optional): bool
-            If True(Default): set a new attribute with the computed element
-            If False: return the computed element
-
-        Notes
-        -----
-        This function expects the PyntCloud to have the elemenent as a numpy
-        structured array, with (x,y,z) coordenates correctly named.
-
-        """
-
-        cloud = getattr(self, element)
-
-        xyz = cloud[['x','y','z']]
-
-        centroid = np.mean(xyz, axis=0)
-
-        if and_set:
-
-            setattr(self, 'centroid', centroid)
-
-        else:
-
-            return centroid
 
 
     def get_transf(self, element='vertex', and_set=True):
