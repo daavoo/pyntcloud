@@ -84,3 +84,13 @@ def test_rgb_intensity():
     assert max(sphere.points["Bi"]) <= 1
 
     sphere.points.drop(["Ri", "Gi", "Bi"], 1, inplace=True)
+
+
+def test_relative_luminance():
+    
+    sphere.add_scalar_field('relative_luminance')
+
+    assert min(sphere.points["relative_luminance"]) >= 0
+    assert max(sphere.points["relative_luminance"]) < 255.01  # floating point error
+
+    sphere.points.drop("relative_luminance", 1, inplace=True)

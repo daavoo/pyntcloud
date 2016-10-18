@@ -39,7 +39,8 @@ NEED_NORMALS = {
 }
 
 NEED_RGB = {
-'rgb_intensity' : ['Ri', 'Gi', 'Bi']
+'rgb_intensity' : ['Ri', 'Gi', 'Bi'],
+'relative_luminance': 'relative_luminance'
 }
 
 NEED_NEIGHBORS = {
@@ -225,7 +226,7 @@ class PyntCloud(object):
         NEED RGB (red, green, blue):
             - 'rgb_intensity'  # adds 3 scalar fields (Ri, Gi, Bi)
             - 'hsv'  # adds 3 scalar fields (H, S, V)
-            - 'relative_luminance'  # conversion RGB-GRAY
+            - 'relative_luminance'  
         
         NEED NEIGHBORS (x, y, z):
             - 'eigen_decomposition'  # adds 6 scalar fields (eigval_1, eigval_2, eigval_3, eigvec_1, eigvec_2, eigvec_3)
@@ -251,40 +252,6 @@ class PyntCloud(object):
             
 
         return str(sf) + " ADDED"
-
-
-    def add_relative_luminance(self, element='vertex'):
-        """ Adds the relative luminance values(conversion RGB-GRAY) to PyntCloud.element
-
-        Parameters
-        ----------
-        element(Optional) : str
-            The PyntCloud's element where the function will look for RGB values
-            in order to compute the relative luminance.
-
-        Notes
-        -----
-        This function expects the PyntCloud to have a numpy structured array
-        as PyntCloud.vertex attribute, with valid RGB values correctly named
-        ('red', 'green', 'blue')
-
-        The corresponding realtive_luminance values will be added as 1 new SF
-        for every point in PyntCloud.element
-
-        """
-
-        cloud = getattr(self, element)
-
-        #: luminosity function coefficients
-        coef = np.array([0.2125, 0.7154, 0.0721])
-
-        rgb = cloud[['red','green','blue']]
-
-        gray = np.einsum('ij, j', rgb, coef)
-
-        cloud['Relative_Luminance'] = gray
-
-        setattr(self, element, cloud)
 
 
     def get_Octree(self, n=1, element='vertex'):
