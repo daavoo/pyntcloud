@@ -42,6 +42,7 @@ NEED_NEIGHBORS = {
 'eigen_decomposition' : ['eigval_1', 'eigval_2', 'eigval_3', 'eigvec_1', 'eigvec_2', 'eigvec_3']
 }
 
+
 ### I/O 
 FORMATS_READERS = {
 "NPZ": read_npz,
@@ -58,10 +59,10 @@ FORMATS_WRITERS = {
 }
 
 
-
-
 ### Constant Exceptions
 MUST_HAVE_POINTS = ValueError("There must be a 'points' key in the kwargs")
+MUST_HAVE_XYZ = ValueError("Points must have x, y and z coordinates")
+MUST_BE_DF = TypeError("Points argument is not a DataFrame")
 UNSOPORTED_IN = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))
 UNSOPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
 
@@ -92,9 +93,6 @@ class PyntCloud(object):
 
         if "points" not in kwargs:
             raise MUST_HAVE_POINTS
-
-        elif not set(['x', 'y', 'z']).issubset(kwargs["points"].columns):
-            raise ValueError("Points must have x, y and z coordinates")
         
         self.kdtrees = []
         self.octrees = []
@@ -144,7 +142,11 @@ class PyntCloud(object):
     @points.setter
     def points(self, df):
         if not isinstance(df, pd.DataFrame):
-            raise TypeError("Points argument is not a DataFrame")
+            raise MUST_BE_DF
+
+        elif not set(['x', 'y', 'z']).issubset(df.columns):
+            raise MUST_HAVE_XYZ
+            
         self.__points = df
 
              
