@@ -15,6 +15,7 @@ from .io.pcd import read_pcd, write_pcd
 from .io.ply import read_ply, write_ply
 from .scalar_fields import need_normals
 from .scalar_fields import need_rgb
+from .structures.voxelgrid import VoxelGrid
 
 
 ### __repr__ method
@@ -24,6 +25,7 @@ DESCRIPTION = """\
 {} points with {} scalar fields
 {} faces
 {} kdtrees
+{} neighbourhoods
 {} octrees
 {} voxelgrids
 Centroid: {}, {}, {}\n
@@ -43,7 +45,7 @@ NEED_RGB = {
 'relative_luminance': 'relative_luminance'
 }
 
-NEED_NEIGHBORS = {
+NEED_NEIGHBOURHOOD = {
 'eigen_decomposition' : ['eigval_1', 'eigval_2', 'eigval_3', 'eigvec_1', 'eigvec_2', 'eigvec_3']
 }
 
@@ -67,9 +69,14 @@ FORMATS_WRITERS = {
 ### Constant Exceptions
 MUST_HAVE_POINTS = ValueError("There must be a 'points' key in the kwargs")
 MUST_HAVE_XYZ = ValueError("Points must have x, y and z coordinates")
-MUST_BE_DF = TypeError("Points argument is not a DataFrame")
 UNSOPORTED_IN = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))
 UNSOPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
+UNSOPORTED_SF = ValueError("Unsupported scalar field; supported scalar fields are: "  + "  ".join(NEED_NORMALS.keys()) 
+                            +"  ".join(NEED_RGB.keys()) +"  ".join(NEED_NEIGHBOURHOOD.keys()) )
+UNSOPORTED_STRUCTURE = ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'neighbourhood'")
+MUST_BE_DF = TypeError("Points argument is not a DataFrame")
+MISSING_N = AttributeError("Missing required argument: 'n'")
+
 
 
 """                                                                                                         
@@ -100,12 +107,15 @@ class PyntCloud(object):
             raise MUST_HAVE_POINTS
         
         self.kdtrees = []
+        self.neighbourhoods= []
         self.octrees = []
         self.voxelgrids = []
 
         for key in kwargs:
             if "kdtree" in key:
                 self.kdtrees.append(kwargs[key])
+            elif "neighbourhood" in key:
+                self.neighbourhoods.append(kwargs[key])
             elif "octree" in key:
                 self.octrees.append(kwargs[key])
             elif "voxelgrid" in key:
@@ -113,14 +123,16 @@ class PyntCloud(object):
             else:
                 setattr(self, key, kwargs[key])
         
-        self.centroid = np.mean(self.points[["x", "y", "z"]].values, axis=0)
+        # store xyz to share memory along structures
+        self.xyz = self.points[["x", "y", "z"]].values
+        self.centroid = np.mean(self.xyz, axis=0)
         
 
     def __repr__(self):
 
         others = []
         for name in self.__dict__:
-            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid"]:
+            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid", "xyz"]:
                 others.append("\n\t " + name + ": " + str(type(name)))
         others = "".join(others)
 
@@ -132,6 +144,7 @@ class PyntCloud(object):
         return DESCRIPTION.format(  len(self.points), len(self.points.columns),
                                     n_faces,
                                     len(self.kdtrees),
+                                    len(self.neighbourhoods),
                                     len(self.octrees),
                                     len(self.voxelgrids),
                                     self.centroid[0], self.centroid[1], self.centroid[2],
@@ -202,12 +215,7 @@ class PyntCloud(object):
                 FORMATS_WRITERS[ext](filename, **kwargs)
             
             else:
-                valid_args = {}
-                for key in kwargs:
-                    if key in required_args:
-                        valid_args[key] = kwargs[key]
-                    else:
-                        print("Skipping:", key)
+                valid_args = {key: kwargs[key] if key in required_args} 
                 FORMATS_WRITERS[ext](filename, **valid_args)
 
         return True
@@ -228,7 +236,7 @@ class PyntCloud(object):
             - 'hsv'  # adds 3 scalar fields (H, S, V)
             - 'relative_luminance'  
         
-        NEED NEIGHBORS (x, y, z):
+        NEED NEIGHBOURHOOD (from PyntCloud's neighbourhoods):
             - 'eigen_decomposition'  # adds 6 scalar fields (eigval_1, eigval_2, eigval_3, eigvec_1, eigvec_2, eigvec_3)
 
         NEED EIGEN_DECOMPOSITION (eigval_1, eigval_2, eigval_3, eigvec_1, eigvec_2, eigvec_3):
@@ -249,123 +257,47 @@ class PyntCloud(object):
                     self.points[NEED_RGB[sf][i]] = all_sf[i]
             else:
                 self.points[sf] = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values.astype("f"))
-            
+        
+        else:
+            raise UNSOPORTED_SF
 
         return str(sf) + " ADDED"
 
+    
+    def add_structure(self, structure, **kwargs):
+        """ Build a structure and add it to the corresponding PyntCloud's attribute
 
-    def get_Octree(self, n=1, element='vertex'):
-        """ Computes the Octree of the given PyntCloud.element
-
-        Parameters
-        ----------
-
-        n(Optional): int
-            The number of the maximum level of subdivision.
-
-        element(Optional): str
-            The PyntCloud.element where the function will search for the xyz
-            coordinates to build the octree.
-
-        Returns
-        -------
-        octree : pyntcloud's VoxelGrid instance
-            The Octree's structure of xyz coordinates of the given element.
+        NEED XYZ (x, y, z):
+            - 'kdtree'
+            - 'voxelgrid'
+        
+        NEED KDTREE :
+            - 'neighbourhood' # requires argument "n"  to indicate wich kdtree use
 
         """
-        raise NotImplementedError
+        
+        if struc == 'kdtree':
+            self.kdtrees.append(spatial.cKDTree(self.xyz))
 
+        elif structure == 'voxelgrid':            
+            required_args = [arg for arg in inspect.signature(VoxelGrid).parameters]
+            valid_args = {key: kwargs[key] if key in required_args} 
 
-    def get_KDTree(self, scalar_fields, element='vertex', and_set=True):
-        """ Computes the KDTree of the given PyntCloud.element's scalar fields.
+            self.voxelgrids.append(VoxelGrid(self.xyz, **valid_args))
+        
+        elif structure == 'neighbourhood':
+            if 'n' not in kwargs:
+                raise MISSING_N
+            n = kwargs["n"]
 
-        Parameters
-        ----------
-        scalar_fields: list[str]
-            The names of the scalar fields.
+            required_args = ['k', 'eps', 'p', 'distance_upper_bound']
+            valid_args = {key: kwargs[key] if key in required_args} 
 
-         element(Optional): str
-            The PyntCloud's element where the function will look for the scalar
-            fields in order to compute the KDTree. Default: PyntCloud.vertex.
-
-        and_set(Optional): bool
-            If True(Default): set a new attribute with the computed element
-            If False: return the computed element
-
-        Returns
-        -------
-        kdtree : scipy's KDTree instance
-            The KDTree's structure of the given scalar fields.
-
-        """
-
-        cloud = getattr(self, element)
-
-        stacked = cloud[scalar_fields]
-
-        kdtree = spatial.cKDTree(stacked)
-
-        if and_set:
-
-            setattr(self, 'kdtree', kdtree)
-
+            kd = self.kdtrees[n]
+            self.neighbourhoods.append(kd.query(self.xyz, n_jobs=-1, **valid_args))
+        
         else:
-
-            return kdtree
-
-
-    def get_k_neighbors(self, k, kdtree=None, element='vertex', and_set=True):
-        """ Computes the K nearest neighbors of the PyntCloud.element's KDTree
-
-        Parameters
-        ----------
-        k: int
-            The number of nearest neighbors that will be computed for each point.
-
-        kdtree(Optional): scipy's KDTree instance
-            The KDTree's structure which will be used to compute the neighbors.
-            If no KDTree is supplied, it will be computed using the x,y,z scalar
-            fields of the given element.
-
-        element(Optional): str
-            The PyntCloud's element from where the x,y,z scalar fields will be
-            used if no KDTree is supplied.
-
-        and_set(Optional): bool
-            If True(Default): set a new attribute with the computed element
-            If False: return the computed element
-
-        Returns
-        -------
-        neighbors : array
-            The array containing the K neighbors for each point.
-            With shape: (N, k, 3). Where:
-                N is the number of points in the PyntCloud.element.
-                k the number of neighbors finded for each point.
-                And the last dimension contains the XYZ  coordinates for each of
-                    those 'k' neighbors.
-
-        """
-
-        if not kdtree:
-
-            kdtree = self.get_KDTree('x','y','z', element=element)
-
-        xyz = self.kdtree.data
-
-        d, i = self.kdtree.query(xyz, k=k, n_jobs=-1)
-
-        #: group the neighbors in one array
-        neighbors = xyz[i]
-
-        if and_set:
-
-            setattr(self, 'neighbors_'+str(k), neighbors)
-
-        else:
-
-            return neighbors
-
+            raise UNSOPORTED_STRUCTURE
 
     def get_transf(self, element='vertex', and_set=True):
         """ Get a transformer matrix from the given element
