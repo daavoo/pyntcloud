@@ -5,7 +5,7 @@ import inspect
 import numpy as np
 import pandas as pd
 
-from scipy import spatial
+from scipy.spatial import cKDTree
 
 from .filters.kdtree_filters import radious_outlier_removal, statistical_outilier_removal
 from .filters.other_filters import pass_through
@@ -107,7 +107,7 @@ class PyntCloud(object):
             raise MUST_HAVE_POINTS
         
         self.kdtrees = []
-        self.neighbourhoods= []
+        self.neighbourhoods= {}
         self.octrees = []
         self.voxelgrids = []
 
@@ -215,7 +215,7 @@ class PyntCloud(object):
                 FORMATS_WRITERS[ext](filename, **kwargs)
             
             else:
-                valid_args = {key: kwargs[key] if key in required_args} 
+                valid_args = {key: kwargs[key] for key in kwargs if key in required_args} 
                 FORMATS_WRITERS[ext](filename, **valid_args)
 
         return True
@@ -276,14 +276,14 @@ class PyntCloud(object):
 
         """
         
-        if struc == 'kdtree':
-            self.kdtrees.append(spatial.cKDTree(self.xyz))
+        if structure == 'kdtree':
+            self.kdtrees.append(cKDTree(self.xyz))
 
         elif structure == 'voxelgrid':            
             required_args = [arg for arg in inspect.signature(VoxelGrid).parameters]
-            valid_args = {key: kwargs[key] if key in required_args} 
+            valid_args = {key: kwargs[key] for key in kwargs if key in required_args}  
 
-            self.voxelgrids.append(VoxelGrid(self.xyz, **valid_args))
+            self.voxelgrids.append( VoxelGrid(self.xyz, **valid_args) )
         
         elif structure == 'neighbourhood':
             if 'n' not in kwargs:
@@ -291,10 +291,19 @@ class PyntCloud(object):
             n = kwargs["n"]
 
             required_args = ['k', 'eps', 'p', 'distance_upper_bound']
-            valid_args = {key: kwargs[key] if key in required_args} 
+            valid_args = {key: kwargs[key] for key in kwargs if key in required_args} 
+
+            # set k=2 because first neighbour is itself 
+            if 'k' not in valid_args or valid_args["k"] == 1:
+                valid_args["k"] = 2
 
             kd = self.kdtrees[n]
-            self.neighbourhoods.append(kd.query(self.xyz, n_jobs=-1, **valid_args))
+            d, i = kd.query(self.xyz, n_jobs=-1, **valid_args)
+
+            id = "n: {} | k: {}".format(n, valid_args["k"])
+
+            # discard itself [:,1:]
+            self.neighbourhoods[id] = (d[:,1:], i[:,1:]) 
         
         else:
             raise UNSOPORTED_STRUCTURE

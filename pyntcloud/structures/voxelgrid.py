@@ -38,6 +38,7 @@ class VoxelGrid(object):
                     The bounding box is allowed to have dimensions of different sizes.
         """
         self.points = points
+        self.id = "(x_y_z:{} bb_cuboid:{})".format(x_y_z, bb_cuboid)
 
         xyzmin = np.min(points, axis=0) 
         xyzmax = np.max(points, axis=0)
@@ -66,6 +67,10 @@ class VoxelGrid(object):
         self.n_voxels = (len(segments[0]) -1) * (len(segments[1]) -1) * (len(segments[2]) -1)
         if build:
             self.build()
+    
+
+    def __repr__(self):
+        return self.id
 
     def build(self):
 
@@ -80,13 +85,13 @@ class VoxelGrid(object):
         structure[:,2] = np.argmin(self.points[:,2,np.newaxis] > self.segments[2], axis=1)
         structure[:,2] = np.where(structure[:,2] !=0, structure[:,2] -1, 0 )
 
-        # convert voxel_x , voxel_y, voxel_z into a single voxel_n
-        n_x = len(self.segments[0]) - 1
-        n_y = len(self.segments[1]) - 1
-        structure[:,3] = (structure[:,0] * n_x) + structure[:,1] + (n_x * n_y * structure[:,2])
+        # i = x + WIDTH * (y + HEIGHT * z)
+        WIDTH = len(self.segments[0]) - 1
+        HEIGHT = len(self.segments[2]) - 1
+        structure[:,3] = structure[:,0] + WIDTH *  (structure[:,1]  + HEIGHT * structure[:,2])
         
         self.structure = structure
-
+        
         self.vector = np.bincount(np.concatenate((self.structure[:,3], np.arange(self.n_voxels)))) -1
  
     def plot(self):
@@ -98,7 +103,7 @@ class VoxelGrid(object):
 
         plt.tight_layout()
 
-        imgs = self.vector.reshape([n_x, n_y, n_z])
+        imgs = self.vector.reshape([n_z, n_y, n_x])
 
         for i,ax in enumerate(axes.flat):
             if i >= len(imgs):
