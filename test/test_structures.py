@@ -6,5 +6,5 @@ from pyntcloud import PyntCloud
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 sphere = PyntCloud.from_file('../data/sphere.ply')
 
-def test_kdtree():
+#def test_kdtree():
     

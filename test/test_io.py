@@ -26,7 +26,7 @@ def assert_points_color(data):
     assert str(data.points['green'].dtype) == 'uint8'
     assert str(data.points['blue'].dtype) == 'uint8'
 
-def assert_ply_mesh(data):
+def assert_mesh(data):
     assert data.mesh["v1"][23] == 227
     assert data.mesh["v2"][23] == 225
     assert data.mesh["v3"][23] == 223
@@ -41,7 +41,7 @@ def test_read_ply_bin():
 
     assert_points_xyz(ply_bin)
     assert_points_color(ply_bin)
-    assert_ply_mesh(ply_bin)    
+    assert_mesh(ply_bin)    
 
 
 def test_read_ply_ascii():
@@ -49,7 +49,7 @@ def test_read_ply_ascii():
 
     assert_points_xyz(ply_ascii)
     assert_points_color(ply_ascii)
-    assert_ply_mesh(ply_ascii)   
+    assert_mesh(ply_ascii)   
     
     
 def test_write_ply():
@@ -77,7 +77,7 @@ def test_read_npz():
 
     assert_points_xyz(npz)
     assert_points_color(npz)
-    assert_ply_mesh(npz)    
+    assert_mesh(npz)    
     
     
 def test_write_npz():
@@ -130,4 +130,13 @@ def test_write_pcd():
     assert all(data.points == writed_pcd.points)
     
     os.remove(data_path + 'writed.pcd')
+
+
+def test_read_mat():
+    mat = PyntCloud.from_file(data_path + '.mat')
+    
+    assert_points_xyz(mat)
+    assert_points_color(mat)
+    assert_mesh(mat)
+
 
