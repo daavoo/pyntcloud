@@ -9,6 +9,7 @@ from scipy.spatial import cKDTree
 
 from .filters.kdtree_filters import radious_outlier_removal, statistical_outilier_removal
 from .filters.other_filters import pass_through
+from .io.mat import read_mat
 from .io.npz import read_npz, write_npz
 from .io.obj import read_obj, write_obj
 from .io.pcd import read_pcd, write_pcd
@@ -52,6 +53,7 @@ NEED_NEIGHBOURHOOD = {
 
 ### I/O 
 FORMATS_READERS = {
+"MAT": read_mat,
 "NPZ": read_npz,
 "OBJ": read_obj,
 "PCD": read_pcd,
