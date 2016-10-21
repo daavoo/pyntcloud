@@ -1,7 +1,7 @@
-![pyntcloud Logo](data/pyntcloud.png)
+![pyntcloud Logo](docs/data/pyntcloud.png)
 3D Point Clouds in Python
 =============================
-![3Dpython](data/3Dpython.png)
+![3Dpython](docs/data/3Dpython.png)
 
 Pyntcloud is a Python (>3.5) library for working with 3D point clouds.
 
