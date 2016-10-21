@@ -21,14 +21,14 @@ from .structures.voxelgrid import VoxelGrid
 
 ### __repr__ method
 DESCRIPTION = """\
-\tPyntCloud
-\t=========\n
+PyntCloud
+=========\n
 {} points with {} scalar fields
-{} faces
+{} faces in mesh
 {} kdtrees
 {} neighbourhoods
 {} octrees
-{} voxelgrids
+{} voxelgrids\n
 Centroid: {}, {}, {}\n
 Other attributes:{}        
 """
@@ -134,7 +134,7 @@ class PyntCloud(object):
 
         others = []
         for name in self.__dict__:
-            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid", "xyz"]:
+            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid", "xyz", "neighbourhoods"]:
                 others.append("\n\t " + name + ": " + str(type(name)))
         others = "".join(others)
 
@@ -192,7 +192,8 @@ class PyntCloud(object):
         else:
             return PyntCloud( **FORMATS_READERS[ext](filename) )
 
-    
+
+    @classmethod
     def to_file(self, filename, **kwargs):
         """ Save PyntCloud's data to file 
         Parameters
