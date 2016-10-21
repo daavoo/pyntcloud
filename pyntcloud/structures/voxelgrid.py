@@ -1,7 +1,7 @@
 #  HAKUNA MATATA
 
 """
-VoxelGrid Main Class
+VoxelGrid Class
 """
 
 import numpy as np
