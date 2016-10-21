@@ -16,3 +16,5 @@
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
 data/* filter=lfs diff=lfs merge=lfs -text
+docs/data/* filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
