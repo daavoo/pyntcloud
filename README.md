@@ -13,6 +13,7 @@ Accurate [3D point clouds](https://en.wikipedia.org/wiki/Point_cloud) can (easil
 - [3D reconstruction from multiple images](https://en.wikipedia.org/wiki/3D_reconstruction_from_multiple_images).
 The aim of [pyntcloud](https://github.com/daavoo/pyntcloud) is to provide a way to work with 3D point clouds using Python in a clear, fluent and simple way.
 Here you can find a quick introduction to the two main concepts on wich this library is based:
+
 #### [What is a point cloud](docs/Introduction/what_is_a_point_cloud.ipynb)
 #### [What is a PyntCloud](docs/Introduction/what_is_a_PyntCloud.ipynb)
 
