@@ -67,10 +67,11 @@ class VoxelGrid(object):
         self.n_voxels = (len(segments[0]) -1) * (len(segments[1]) -1) * (len(segments[2]) -1)
         if build:
             self.build()
-    
+
 
     def __repr__(self):
         return self.id
+
 
     def build(self):
 
@@ -93,6 +94,7 @@ class VoxelGrid(object):
         self.structure = structure
         
         self.vector = np.bincount(np.concatenate((self.structure[:,3], np.arange(self.n_voxels)))) -1
+        
  
     def plot(self):
         n_x = int(len(self.segments[0]) - 1)

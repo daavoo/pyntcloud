@@ -4,10 +4,6 @@
 Neighbourhood Class
 """
 
-import numpy as np
-from matplotlib import pyplot as plt
-
-
 class Neighbourhood(object):
     
     def __init__(self, n, k, d, i):
@@ -28,9 +24,10 @@ class Neighbourhood(object):
         """
         self.n = n
         self.k = k
+        self.id = "n:{} k:{}".format(self.n, self.k)
         self.distances = d
         self.indices = i
 
 
     def __repr__(self):
-        return "n:{} k:{}".format(self.n, self.k)
+        return self.id
