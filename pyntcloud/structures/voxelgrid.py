@@ -38,7 +38,7 @@ class VoxelGrid(object):
                     The bounding box is allowed to have dimensions of different sizes.
         """
         self.points = points
-        self.id = "(x_y_z:{} bb_cuboid:{})".format(x_y_z, bb_cuboid)
+        self.id = "x_y_z:{} bb_cuboid:{}".format(x_y_z, bb_cuboid)
 
         xyzmin = np.min(points, axis=0) 
         xyzmax = np.max(points, axis=0)
@@ -65,12 +65,9 @@ class VoxelGrid(object):
         self.segments = segments
         
         self.n_voxels = (len(segments[0]) -1) * (len(segments[1]) -1) * (len(segments[2]) -1)
+        
         if build:
             self.build()
-
-
-    def __repr__(self):
-        return self.id
 
 
     def build(self):
@@ -94,7 +91,7 @@ class VoxelGrid(object):
         self.structure = structure
         
         self.vector = np.bincount(np.concatenate((self.structure[:,3], np.arange(self.n_voxels)))) -1
-        
+
  
     def plot(self):
         n_x = int(len(self.segments[0]) - 1)

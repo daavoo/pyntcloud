@@ -79,7 +79,6 @@ UNSOPORTED_SF = ValueError("Unsupported scalar field; supported scalar fields ar
                             +"  ".join(NEED_RGB.keys()) +"  ".join(NEED_NEIGHBOURHOOD.keys()) )
 UNSOPORTED_STRUCTURE = ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'neighbourhood'")
 MUST_BE_DF = TypeError("Points argument is not a DataFrame")
-MISSING_N = AttributeError("Missing required argument: 'n'")
 
 
 
@@ -283,7 +282,7 @@ class PyntCloud(object):
         
         if structure == 'kdtree':
             valid_args = {key: kwargs[key] for key in kwargs if key in signature(KDTree).parameters}  
-            kdtree = KDTree(self.xyz)
+            kdtree = KDTree(self.xyz, **valid_args)
             self.kdtrees[kdtree.id] = kdtree
 
         elif structure == 'voxelgrid':            
@@ -293,8 +292,11 @@ class PyntCloud(object):
         
         elif structure == 'neighbourhood':
             if 'n' not in kwargs:
-                raise MISSING_N
-            n = kwargs["n"]
+                kwargs["n"] = 0
+
+            for n, k in enumerate(self.kdtrees):
+                if n == kwargs["n"]:
+                    id = k
 
             valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
 
@@ -302,7 +304,7 @@ class PyntCloud(object):
             if 'k' not in valid_args or valid_args["k"] == 1:
                 valid_args["k"] = 2
 
-            d, i = self.kdtrees[n].query(self.xyz, n_jobs=-1, **valid_args)
+            d, i = self.kdtrees[id].query(self.xyz, n_jobs=-1, **valid_args)
 
             # discard self neighbour with [:,1:]
             neighbourhood = Neighbourhood( n, valid_args["k"], d[:,1:], i[:,1:])
@@ -311,6 +313,8 @@ class PyntCloud(object):
         
         else:
             raise UNSOPORTED_STRUCTURE
+        
+        return str(structure) + " ADDED"
 
     def get_transf(self, element='vertex', and_set=True):
         """ Get a transformer matrix from the given element

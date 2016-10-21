@@ -48,3 +48,4 @@ Temporary Items
 .vscode/launch.json
 .vscode/settings.json
 *.pyc
+.cache/v/cache/lastfailed

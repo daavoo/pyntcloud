@@ -28,6 +28,3 @@ class Neighbourhood(object):
         self.distances = d
         self.indices = i
 
-
-    def __repr__(self):
-        return self.id
