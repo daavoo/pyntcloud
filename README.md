@@ -32,8 +32,8 @@ Here you can find how to work scalar fields in pyntcloud:
 ### Working with structures
 The raw information of the point cloud needs to be structured in some way to enable a lot of different applications and algorithms. 
 Here you can find how to work with structures in pyntcloud:
-#### [Adding scalar fields](docs/Scalar Fields/adding_scalar_fields.ipynb)
-#### [Avaliable scalar fields](docs/Scalar Fields/avaliable_scalar_fields.ipynb)
+#### [Adding structures](docs/Scalar Fields/adding_scalar_fields.ipynb)
+#### [Avaliable structures](docs/Scalar Fields/avaliable_scalar_fields.ipynb)
 
 ## SAMPLE DATA 
 
