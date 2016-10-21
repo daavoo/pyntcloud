@@ -24,9 +24,11 @@ Pyntcloud is a Python library for working with 3D point clouds.
 
 Inside the folder `docs/data` you can find examples of point clouds in different formats.
 
+## INSTALATION
+
 Version 0.1 will be reslased soon.
 
-Recommended instalation:
+Recommended instalation for now:
 
 ```
 git clone https://github.com/daavoo/pyntcloud.git
