@@ -1,10 +1,10 @@
 #  HAKUNA MATATA
 
-import inspect
 
 import numpy as np
 import pandas as pd
 
+from inspect import signature
 from scipy.spatial import cKDTree
 
 from .filters.kdtree_filters import radious_outlier_removal, statistical_outilier_removal
@@ -16,6 +16,8 @@ from .io.pcd import read_pcd, write_pcd
 from .io.ply import read_ply, write_ply
 from .scalar_fields import need_normals
 from .scalar_fields import need_rgb
+from .structures.kdtree import KDTree
+from .structures.neighbourhood import Neighbourhood
 from .structures.voxelgrid import VoxelGrid
 
 
@@ -108,20 +110,20 @@ class PyntCloud(object):
         if "points" not in kwargs:
             raise MUST_HAVE_POINTS
         
-        self.kdtrees = []
+        self.kdtrees = {}
         self.neighbourhoods= {}
-        self.octrees = []
-        self.voxelgrids = []
+        self.octrees = {}
+        self.voxelgrids = {}
 
         for key in kwargs:
-            if "kdtree" in key:
-                self.kdtrees.append(kwargs[key])
-            elif "neighbourhood" in key:
-                self.neighbourhoods.append(kwargs[key])
-            elif "octree" in key:
-                self.octrees.append(kwargs[key])
-            elif "voxelgrid" in key:
-                self.voxelgrids.append(kwargs[key])
+            if "kdtrees" in key:
+                self.kdtrees = kwargs[key]
+            elif "neighbourhoods" in key:
+                self.neighbourhoods = kwargs[key]
+            elif "octrees" in key:
+                self.octrees = kwargs[key]
+            elif "voxelgrids" in key:
+                self.voxelgrids = kwargs[key]
             else:
                 setattr(self, key, kwargs[key])
         
@@ -280,33 +282,32 @@ class PyntCloud(object):
         """
         
         if structure == 'kdtree':
-            self.kdtrees.append(cKDTree(self.xyz))
+            valid_args = {key: kwargs[key] for key in kwargs if key in signature(KDTree).parameters}  
+            kdtree = KDTree(self.xyz)
+            self.kdtrees[kdtree.id] = kdtree
 
         elif structure == 'voxelgrid':            
-            required_args = [arg for arg in inspect.signature(VoxelGrid).parameters]
-            valid_args = {key: kwargs[key] for key in kwargs if key in required_args}  
-
-            self.voxelgrids.append( VoxelGrid(self.xyz, **valid_args) )
+            valid_args = {key: kwargs[key] for key in kwargs if key in signature(VoxelGrid).parameters}  
+            voxelgrid = VoxelGrid(self.xyz, **valid_args)
+            self.voxelgrids[voxelgrid.id] = voxelgrid
         
         elif structure == 'neighbourhood':
             if 'n' not in kwargs:
                 raise MISSING_N
             n = kwargs["n"]
 
-            required_args = ['k', 'eps', 'p', 'distance_upper_bound']
-            valid_args = {key: kwargs[key] for key in kwargs if key in required_args} 
+            valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
 
             # set k=2 because first neighbour is itself 
             if 'k' not in valid_args or valid_args["k"] == 1:
                 valid_args["k"] = 2
 
-            kd = self.kdtrees[n]
-            d, i = kd.query(self.xyz, n_jobs=-1, **valid_args)
+            d, i = self.kdtrees[n].query(self.xyz, n_jobs=-1, **valid_args)
 
-            id = "n: {} | k: {}".format(n, valid_args["k"])
+            # discard self neighbour with [:,1:]
+            neighbourhood = Neighbourhood( n, valid_args["k"], d[:,1:], i[:,1:])
 
-            # discard itself [:,1:]
-            self.neighbourhoods[id] = (d[:,1:], i[:,1:]) 
+            self.neighbourhoods[neighbourhood.id] = neighbourhood
         
         else:
             raise UNSOPORTED_STRUCTURE
