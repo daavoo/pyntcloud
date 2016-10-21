@@ -12,13 +12,13 @@ Pyntcloud is a Python library for working with 3D point clouds.
 
 ### [Reading and Writing point clouds](docs/Reading and Writing/Index.ipynb)
 
-#### [PyntCloud I/O](docs/Introduction/from_file & to_file.ipynb)
-#### [Supported file formats](docs/Introduction/supported file formats.ipynb)
+#### [PyntCloud I/O](docs/Reading and Writing/from_file & to_file.ipynb)
+#### [Supported file formats](docs/Reading and Writing/supported file formats.ipynb)
 
 ### [Working with scalar fields](docs/Scalar Fields/Index.ipynb)
 
-#### [Adding scalar fields](docs/Introduction/adding scalar fields.ipynb)
-#### [Avaliable scalar fields](docs/Introduction/avaliable scalar fields.ipynb)
+#### [Adding scalar fields](docs/Scalar Fields/adding scalar fields.ipynb)
+#### [Avaliable scalar fields](docs/Scalar Fields/avaliable scalar fields.ipynb)
 
 ## SAMPLE DATA 
 
