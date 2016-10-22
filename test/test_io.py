@@ -5,31 +5,31 @@ from pyntcloud import PyntCloud
 
 # just in case test are being runned from other directory
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
-data_path = '../docs/data/python'
+data_path = '../docs/data/test/test'
 
 
 def assert_points_xyz(data):
-    assert data.points['x'][23] == -1.5
-    assert data.points['y'][23] == -5.5
-    assert data.points['z'][23] == 1.5
+    assert data.points['x'][7] == 1.0
+    assert data.points['y'][7] == 1.0
+    assert data.points['z'][7] == 1.0
 
     assert str(data.points["x"].dtype) == 'float32'
     assert str(data.points["y"].dtype) == 'float32'
     assert str(data.points["z"].dtype) == 'float32'
     
 def assert_points_color(data):
-    assert data.points['red'][23] == 0
-    assert data.points['green'][23] == 170
-    assert data.points['blue'][23] == 255
+    assert data.points['red'][7] == 255
+    assert data.points['green'][7] == 0
+    assert data.points['blue'][7] == 0
 
     assert str(data.points['red'].dtype) == 'uint8'
     assert str(data.points['green'].dtype) == 'uint8'
     assert str(data.points['blue'].dtype) == 'uint8'
 
 def assert_mesh(data):
-    assert data.mesh["v1"][23] == 227
-    assert data.mesh["v2"][23] == 225
-    assert data.mesh["v3"][23] == 223
+    assert data.mesh["v1"][0] == 3
+    assert data.mesh["v2"][0] == 1
+    assert data.mesh["v3"][0] == 4
 
     assert str(data.mesh['v1'].dtype) == 'int32'
     assert str(data.mesh['v2'].dtype) == 'int32'
@@ -127,7 +127,7 @@ def test_write_pcd():
 
     writed_pcd = PyntCloud.from_file(data_path + 'writed.pcd')
     
-    assert all(data.points == writed_pcd.points)
+    assert all(data.points[["x", "y", "z", "red", "green", "blue"]] == writed_pcd.points)
     
     os.remove(data_path + 'writed.pcd')
 

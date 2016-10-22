@@ -213,7 +213,7 @@ class PyntCloud(object):
             if "points" not in kwargs:
                 raise MUST_HAVE_POINTS
 
-            required_args = [arg for arg in inspect.signature(FORMATS_WRITERS[ext]).parameters]
+            required_args = [arg for arg in signature(FORMATS_WRITERS[ext]).parameters]
 
             if "kwargs" in required_args:
                 FORMATS_WRITERS[ext](filename, **kwargs)

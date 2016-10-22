@@ -57,7 +57,7 @@ def read_obj(filename):
     return data
             
 
-def write_obj(filename, points=None, mesh=None, comments=None, obj_info=None):
+def write_obj(filename, points=None, mesh=None, comments=[], obj_info=[]):
     """
     Parameters
     ----------
