@@ -45,7 +45,8 @@ NEED_NORMALS = {
 
 NEED_RGB = {
 'rgb_intensity' : ['Ri', 'Gi', 'Bi'],
-'relative_luminance': 'relative_luminance'
+'relative_luminance': 'relative_luminance',
+'hsv' : ['H', 'S', 'V']
 }
 
 NEED_NEIGHBOURHOOD = {

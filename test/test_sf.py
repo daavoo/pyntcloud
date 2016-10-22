@@ -5,92 +5,82 @@ from pyntcloud import PyntCloud
 
 # just in case test are being runned from other directory
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
-sphere = PyntCloud.from_file('../docs/data/sphere.ply')
+cloud = PyntCloud.from_file('../docs/data/test/test_bin.ply')
 
 
 def test_inclination_deg():
     
-    sphere.add_scalar_field('inclination_deg')
+    cloud.add_scalar_field('inclination_deg')
 
-    assert min(sphere.points["inclination_deg"]) >= 0
-    assert max(sphere.points["inclination_deg"]) <= 180
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["inclination_deg"].values[0] > 89
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["inclination_deg"].values[0] < 91
-    assert sphere.points[sphere.points.y == sphere.points.y.max()]["inclination_deg"].values[0] > 89
-    assert sphere.points[sphere.points.y == sphere.points.y.max()]["inclination_deg"].values[0] < 91
-    assert sphere.points[sphere.points.z == sphere.points.z.max()]["inclination_deg"].values[0] > -1
-    assert sphere.points[sphere.points.z == sphere.points.z.max()]["inclination_deg"].values[0] < 1
+    assert min(cloud.points["inclination_deg"]) >= 0
+    assert max(cloud.points["inclination_deg"]) <= 180
 
-    sphere.points.drop("inclination_deg", 1, inplace=True)
+    cloud.points.drop("inclination_deg", 1, inplace=True)
 
 
 def test_inclination_rad():
     
-    sphere.add_scalar_field('inclination_rad')
+    cloud.add_scalar_field('inclination_rad')
 
-    assert min(sphere.points["inclination_rad"]) >= 0
-    assert max(sphere.points["inclination_rad"]) <= PI
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["inclination_rad"].values[0] > (PI/2) - 1
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["inclination_rad"].values[0] < (PI/2) + 1
-    assert sphere.points[sphere.points.y == sphere.points.y.max()]["inclination_rad"].values[0] > (PI/2) - 1
-    assert sphere.points[sphere.points.y == sphere.points.y.max()]["inclination_rad"].values[0] < (PI/2) + 1
-    assert sphere.points[sphere.points.z == sphere.points.z.max()]["inclination_rad"].values[0] > -1
-    assert sphere.points[sphere.points.z == sphere.points.z.max()]["inclination_rad"].values[0] < 1
+    assert min(cloud.points["inclination_rad"]) >= 0
+    assert max(cloud.points["inclination_rad"]) <= PI
 
-    sphere.points.drop("inclination_rad", 1, inplace=True)
+    cloud.points.drop("inclination_rad", 1, inplace=True)
 
 
 def test_orientation_deg():
     
-    sphere.add_scalar_field('orientation_deg')
+    cloud.add_scalar_field('orientation_deg')
 
-    assert min(sphere.points["orientation_deg"]) >= 0
-    assert max(sphere.points["orientation_deg"]) <= 360
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["orientation_deg"].values[0] > 89
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["orientation_deg"].values[0] < 91
-    assert sphere.points[sphere.points.x == sphere.points.x.min()]["orientation_deg"].values[0] > 269
-    assert sphere.points[sphere.points.x == sphere.points.x.min()]["orientation_deg"].values[0] < 271
-    assert sphere.points[sphere.points.y == sphere.points.y.min()]["orientation_deg"].values[0] > 179
-    assert sphere.points[sphere.points.y == sphere.points.y.min()]["orientation_deg"].values[0] < 181
+    assert min(cloud.points["orientation_deg"]) >= 0
+    assert max(cloud.points["orientation_deg"]) <= 360
 
-    sphere.points.drop("orientation_deg", 1, inplace=True)
+    cloud.points.drop("orientation_deg", 1, inplace=True)
 
 
 def test_orientation_rad():
     
-    sphere.add_scalar_field('orientation_rad')
+    cloud.add_scalar_field('orientation_rad')
 
-    assert min(sphere.points["orientation_rad"]) >= 0
-    assert max(sphere.points["orientation_rad"]) <= 2 * PI
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["orientation_rad"].values[0] > (PI/2) - 1
-    assert sphere.points[sphere.points.x == sphere.points.x.max()]["orientation_rad"].values[0] < (PI/2) + 1
-    assert sphere.points[sphere.points.x == sphere.points.x.min()]["orientation_rad"].values[0] > (3/2 * PI) - 1
-    assert sphere.points[sphere.points.x == sphere.points.x.min()]["orientation_rad"].values[0] < (3/2 * PI) + 1
-    assert sphere.points[sphere.points.y == sphere.points.y.min()]["orientation_rad"].values[0] > PI - 1
-    assert sphere.points[sphere.points.y == sphere.points.y.min()]["orientation_rad"].values[0] < PI + 1
+    assert min(cloud.points["orientation_rad"]) >= 0
+    assert max(cloud.points["orientation_rad"]) <= 2 * PI
 
-    sphere.points.drop("orientation_rad", 1, inplace=True)
+    cloud.points.drop("orientation_rad", 1, inplace=True)
 
 
 def test_rgb_intensity():
     
-    sphere.add_scalar_field('rgb_intensity')
+    cloud.add_scalar_field('rgb_intensity')
 
-    assert min(sphere.points["Ri"]) >= 0
-    assert min(sphere.points["Gi"]) >= 0
-    assert min(sphere.points["Bi"]) >= 0
-    assert max(sphere.points["Ri"]) <= 1
-    assert max(sphere.points["Gi"]) <= 1
-    assert max(sphere.points["Bi"]) <= 1
+    assert min(cloud.points["Ri"]) >= 0
+    assert min(cloud.points["Gi"]) >= 0
+    assert min(cloud.points["Bi"]) >= 0
+    assert max(cloud.points["Ri"]) <= 1
+    assert max(cloud.points["Gi"]) <= 1
+    assert max(cloud.points["Bi"]) <= 1
 
-    sphere.points.drop(["Ri", "Gi", "Bi"], 1, inplace=True)
+    cloud.points.drop(["Ri", "Gi", "Bi"], 1, inplace=True)
 
 
 def test_relative_luminance():
     
-    sphere.add_scalar_field('relative_luminance')
+    cloud.add_scalar_field('relative_luminance')
 
-    assert min(sphere.points["relative_luminance"]) >= 0
-    assert max(sphere.points["relative_luminance"]) < 255.01  # floating point error
+    assert min(cloud.points["relative_luminance"]) >= 0
+    assert max(cloud.points["relative_luminance"]) < 255.01  
 
-    sphere.points.drop("relative_luminance", 1, inplace=True)
+    cloud.points.drop("relative_luminance", 1, inplace=True)
+
+
+def test_hsv():
+
+    cloud.add_scalar_field('hsv')
+
+    assert min(cloud.points["H"]) >= 0
+    assert max(cloud.points["H"]) <= 360
+    assert min(cloud.points["S"]) >= 0
+    assert max(cloud.points["S"]) <= 1
+    assert min(cloud.points["V"]) >= 0
+    assert max(cloud.points["V"]) <= 100
+
+    cloud.points.drop(["H", "S", "V"], 1, inplace=True)
