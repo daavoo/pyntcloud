@@ -55,7 +55,7 @@ TEMPLATE = """
 
 				container = document.getElementById( 'container' );
 				
-				camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
 				camera.position.x = {camera_x};
 				camera.position.y = {camera_y};
 				camera.position.z = {camera_z};
@@ -71,7 +71,7 @@ TEMPLATE = """
 				geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
 				geometry.computeBoundingSphere();
 
-				var material = new THREE.PointsMaterial( {{ size: 0.1, vertexColors: THREE.VertexColors }} );
+				var material = new THREE.PointsMaterial( {{ size: {size}, vertexColors: THREE.VertexColors }} );
 
 				points = new THREE.Points( geometry, material );
 
@@ -107,13 +107,17 @@ TEMPLATE = """
 </html>
 """
 
-def plot3D(xyz, colors=None):
+def plot3D(xyz, colors=None, size=0.1):
+    # swap y-z
+    temp = xyz[:,1].copy()
+    xyz[:,1] = xyz[:,2]
+    xyz[:,2] = temp
 
     positions = (xyz - xyz.mean(0)).reshape(-1).tolist()
     camera_position = xyz.max(0) + abs(xyz.max(0))
 
     if colors is None:
-        colors = [255,0,0] * len(positions)
+        colors = [1,0.5,0] * len(positions)
     
     elif len(colors.shape) > 1:
         colors = colors.reshape(-1).tolist()
@@ -123,6 +127,7 @@ def plot3D(xyz, colors=None):
 									camera_y=camera_position[1],
 									camera_z=camera_position[2],
 									positions=positions,
-									colors=colors))
+									colors=colors,
+									size=size))
 
     return IFrame("plot3D.html",width=800, height=800)

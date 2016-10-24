@@ -319,24 +319,18 @@ class PyntCloud(object):
         return str(structure) + " ADDED"
     
 
-    def plot(self, colors=["red", "green", "blue"]):
+    def plot(self, sf=["red", "green", "blue"]):
 
         try:
-            colors = self.points[colors].values
+            colors = self.points[sf].values
         except:
             colors = None
         
-        if isinstance(colors, list):
-            if len(colors) == 3:
-                if colors == ["red", "green", "blue"]:
-                    colors /= 255
-                else:
-                    colors /= colors.max()
-            else:
-                colors = None
+        if sf == ["red", "green", "blue"]:
+            colors = colors/255
         else:
             colors = plt.cm.ScalarMappable().to_rgba(colors)[:,:-1]
-        
+
         return plot3D(self.xyz, colors)
 
 
