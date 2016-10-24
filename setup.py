@@ -12,6 +12,7 @@ setup(
               "pyntcloud.filters",
               "pyntcloud.geometry",
               "pyntcloud.io",
+              "pyntcloud.plot",
               "pyntcloud.numba_functions",
               "pyntcloud.ransac",
               "pyntcloud.scalar_fields",

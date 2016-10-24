@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from inspect import signature
-from scipy.spatial import cKDTree
+from matplotlib import pyplot as plt
 
 from .filters.kdtree_filters import radious_outlier_removal, statistical_outilier_removal
 from .filters.other_filters import pass_through
@@ -14,6 +14,7 @@ from .io.npz import read_npz, write_npz
 from .io.obj import read_obj, write_obj
 from .io.pcd import read_pcd, write_pcd
 from .io.ply import read_ply, write_ply
+from .plot.threejs import plot3D
 from .scalar_fields import need_normals
 from .scalar_fields import need_rgb
 from .structures.kdtree import KDTree
@@ -316,6 +317,28 @@ class PyntCloud(object):
             raise UNSOPORTED_STRUCTURE
         
         return str(structure) + " ADDED"
+    
+
+    def plot(self, colors=["red", "green", "blue"]):
+
+        try:
+            colors = self.points[colors].values
+        except:
+            colors = None
+        
+        if isinstance(colors, list):
+            if len(colors) == 3:
+                if colors == ["red", "green", "blue"]:
+                    colors /= 255
+                else:
+                    colors /= colors.max()
+            else:
+                colors = None
+        else:
+            colors = plt.cm.ScalarMappable().to_rgba(colors)[:,:-1]
+        
+        return plot3D(self.xyz, colors)
+
 
     def get_transf(self, element='vertex', and_set=True):
         """ Get a transformer matrix from the given element
