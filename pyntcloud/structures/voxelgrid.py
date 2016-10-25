@@ -74,14 +74,11 @@ class VoxelGrid(object):
 
         structure = np.zeros((len(self.points), 4), dtype=int)
 
-        structure[:,0] = np.argmin(self.points[:,0,np.newaxis] > self.segments[0], axis=1) 
-        structure[:,0] = np.where(structure[:,0] !=0, structure[:,0] -1, 0 )
+        structure[:,0] = np.searchsorted(self.segments[0], self.points[:,0]) - 1
 
-        structure[:,1] = np.argmin(self.points[:,1,np.newaxis] > self.segments[1], axis=1) 
-        structure[:,1] = np.where(structure[:,1] !=0, structure[:,1] -1, 0 )
+        structure[:,1] = np.searchsorted(self.segments[1], self.points[:,1]) - 1
 
-        structure[:,2] = np.argmin(self.points[:,2,np.newaxis] > self.segments[2], axis=1)
-        structure[:,2] = np.where(structure[:,2] !=0, structure[:,2] -1, 0 )
+        structure[:,2] = np.searchsorted(self.segments[2], self.points[:,2]) - 1
 
         # i = x + WIDTH * (y + HEIGHT * z)
         WIDTH = len(self.segments[0]) - 1
