@@ -40,8 +40,8 @@ class VoxelGrid(object):
         self.points = points
         self.id = "x_y_z:{} bb_cuboid:{}".format(x_y_z, bb_cuboid)
 
-        xyzmin = np.min(points, axis=0) 
-        xyzmax = np.max(points, axis=0)
+        xyzmin = np.min(points, axis=0) - 0.001
+        xyzmax = np.max(points, axis=0) + 0.001
 
         if bb_cuboid:
             #: adjust to obtain a  minimum bounding box with all sides of equal lenght 

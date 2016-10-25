@@ -334,41 +334,6 @@ class PyntCloud(object):
         return plot3D(self.xyz, colors)
 
 
-    def get_transf(self, element='vertex', and_set=True):
-        """ Get a transformer matrix from the given element
-
-        Parameters
-        ----------
-         element(Optional): str
-            The PyntCloud's element where the function will look for the scalar
-            fields in order to compute the transformer matrix.
-
-        and_set(Optional): bool
-            If True(Default): set a new attribute with the computed element
-            If False: return the computed element
-
-        Returns
-        -------
-        transf : (N,4) array
-            The transformer matrix of the element.
-
-
-        """
-        cloud = getattr(self, element)
-
-        transf = cloud[['x','y','z']]
-
-        transf = np.c_[ transf, np.ones(transf.shape[0]) ]
-
-        if and_set:
-
-            setattr(self, 'transf', transf)
-
-        else:
-
-            return transf
-
-
     def clean_SOR(self, kdtree, element='vertex', k=8, z_max=2 ):
         """ Applies a Statistical Outlier Removal filter on the given KDTree.
 
