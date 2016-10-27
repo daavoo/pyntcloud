@@ -61,7 +61,3 @@ def hsv(rgb):
     
     return H, S, V 
 
-
-####
-#### NEED NEIGHBOURHOOD
-####
