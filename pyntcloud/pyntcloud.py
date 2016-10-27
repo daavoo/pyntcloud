@@ -7,19 +7,10 @@ import pandas as pd
 from inspect import signature
 from matplotlib import pyplot as plt
 
-from .filters.kdtree_filters import radious_outlier_removal, statistical_outilier_removal
-from .filters.other_filters import pass_through
-from .io.mat import read_mat
-from .io.npz import read_npz, write_npz
-from .io.obj import read_obj, write_obj
-from .io.pcd import read_pcd, write_pcd
-from .io.ply import read_ply, write_ply
-from .plot.threejs import plot3D
-from .scalar_fields import need_normals
-from .scalar_fields import need_rgb
-from .structures.kdtree import KDTree
-from .structures.neighbourhood import Neighbourhood
-from .structures.voxelgrid import VoxelGrid
+from .io import *
+from .plot import *
+from .scalar_fields import *
+from .structures import *
 
 
 ### __repr__ method
@@ -35,42 +26,6 @@ PyntCloud
 Centroid: {}, {}, {}\n
 Other attributes:{}        
 """
-
-### Avaliable scalar fields
-NEED_NORMALS = {
-'inclination_deg': 'inclination_deg',
-'inclination_rad': 'inclination_rad',
-'orientation_deg': 'orientation_deg',
-'orientation_rad': 'orientation_rad',
-}
-
-NEED_RGB = {
-'rgb_intensity' : ['Ri', 'Gi', 'Bi'],
-'relative_luminance': 'relative_luminance',
-'hsv' : ['H', 'S', 'V']
-}
-
-NEED_NEIGHBOURHOOD = {
-'eigen_decomposition' : ['eigval_1', 'eigval_2', 'eigval_3', 'eigvec_1', 'eigvec_2', 'eigvec_3']
-}
-
-
-### I/O 
-FORMATS_READERS = {
-"MAT": read_mat,
-"NPZ": read_npz,
-"OBJ": read_obj,
-"PCD": read_pcd,
-"PLY": read_ply
-}
-
-FORMATS_WRITERS = {
-"NPZ": write_npz,
-"OBJ": write_obj,
-"PCD": write_pcd,
-"PLY": write_ply
-}
-
 
 ### Constant Exceptions
 MUST_HAVE_POINTS = ValueError("There must be a 'points' key in the kwargs")
@@ -249,20 +204,42 @@ class PyntCloud(object):
             - 'curvature'        
         """
         if sf in NEED_NORMALS.keys():
+            normals = self.points[["nx", "ny", "nz"]].values
+
             if isinstance(NEED_NORMALS[sf], list):
-                all_sf = getattr(need_normals, sf)(self.points[["nx", "ny", "nz"]].values)
+                all_sf = getattr(scalar_fields, sf)(normals)
+
                 for i in range(len(NEED_NORMALS[sf])):
                     self.points[NEED_NORMALS[sf][i]] = all_sf[i]
+
             else:
-                self.points[sf] = getattr(need_normals, sf)(self.points[["nx", "ny", "nz"]].values)
+                self.points[sf] = getattr(scalar_fields, sf)(normals)
+
 
         elif sf in NEED_RGB.keys():
+            rgb = self.points[["red", "green", "blue"]].values.astype("f")
+
             if isinstance(NEED_RGB[sf], list):
-                all_sf = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values.astype("f"))
+                all_sf = getattr(scalar_fields, sf)(rgb)
+
                 for i in range(len(NEED_RGB[sf])):
                     self.points[NEED_RGB[sf][i]] = all_sf[i]
+
             else:
-                self.points[sf] = getattr(need_rgb, sf)(self.points[["red", "green", "blue"]].values.astype("f"))
+                self.points[sf] = getattr(scalar_fields, sf)(rgb)
+
+        
+        elif sf in NEED_NEIGHBOURHOOD.keys():
+            neighourhood = self.xyz[self.neighbourhoods[kwargs["n_hood"]].indices]
+            
+            if isinstance(NEED_NEIGHBOURHOOD[sf], list):
+                all_sf = getattr(scalar_fields, sf)(neighbourhood)
+
+                for i in range(len(NEED_NEIGHBOURHOOD[sf])):
+                    self.points[NEED_NEIGHBOURHOOD[sf][i]] = all_sf[i]
+            
+            else:
+                self.points[sf] = getattr(scalar_fields, sf)(neighbourhood)
         
         else:
             raise UNSOPORTED_SF
@@ -293,23 +270,14 @@ class PyntCloud(object):
             self.voxelgrids[voxelgrid.id] = voxelgrid
         
         elif structure == 'neighbourhood':
-            if 'n' not in kwargs:
-                kwargs["n"] = 0
-
-            for n, k in enumerate(self.kdtrees):
-                if n == kwargs["n"]:
-                    id = k
 
             valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
 
             # set k=2 because first neighbour is itself 
             if 'k' not in valid_args or valid_args["k"] == 1:
                 valid_args["k"] = 2
-
-            d, i = self.kdtrees[id].query(self.xyz, n_jobs=-1, **valid_args)
-
-            # discard self neighbour with [:,1:]
-            neighbourhood = Neighbourhood( n, valid_args["k"], d[:,1:], i[:,1:])
+            
+            neighbourhood = Neighbourhood( self.kdtrees[kwargs["kdtree"]], **valid_args)
 
             self.neighbourhoods[neighbourhood.id] = neighbourhood
         
