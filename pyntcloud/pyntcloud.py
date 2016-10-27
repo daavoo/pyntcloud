@@ -247,7 +247,7 @@ class PyntCloud(object):
         return str(sf) + " ADDED"
 
     
-    def add_structure(self, structure, **kwargs):
+    def add_structure(self, structure_name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
 
         NEED XYZ (x, y, z):
@@ -259,17 +259,17 @@ class PyntCloud(object):
 
         """
         
-        if structure == 'kdtree':
+        if structure_name == 'kdtree':
             valid_args = {key: kwargs[key] for key in kwargs if key in signature(KDTree).parameters}  
-            kdtree = KDTree(self.xyz, **valid_args)
-            self.kdtrees[kdtree.id] = kdtree
+            structure = KDTree(self.xyz, **valid_args)
+            self.kdtrees[structure.id] = structure
 
-        elif structure == 'voxelgrid':            
+        elif structure_name == 'voxelgrid':            
             valid_args = {key: kwargs[key] for key in kwargs if key in signature(VoxelGrid).parameters}  
-            voxelgrid = VoxelGrid(self.xyz, **valid_args)
-            self.voxelgrids[voxelgrid.id] = voxelgrid
+            structure = VoxelGrid(self.xyz, **valid_args)
+            self.voxelgrids[structure.id] = structure
         
-        elif structure == 'neighbourhood':
+        elif structure_name == 'neighbourhood':
 
             valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
 
@@ -277,14 +277,14 @@ class PyntCloud(object):
             if 'k' not in valid_args or valid_args["k"] == 1:
                 valid_args["k"] = 2
             
-            neighbourhood = Neighbourhood( self.kdtrees[kwargs["kdtree"]], **valid_args)
+            structure = Neighbourhood( self.kdtrees[kwargs["kdtree"]], **valid_args)
 
-            self.neighbourhoods[neighbourhood.id] = neighbourhood
+            self.neighbourhoods[structure.id] = structure
         
         else:
             raise UNSOPORTED_STRUCTURE
         
-        return str(structure) + " ADDED"
+        return "Added: " + str(structure_name) + " " +  structure.id 
     
 
     def plot(self, sf=["red", "green", "blue"]):
