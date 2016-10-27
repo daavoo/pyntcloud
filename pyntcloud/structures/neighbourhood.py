@@ -6,25 +6,17 @@ Neighbourhood Class
 
 class Neighbourhood(object):
     
-    def __init__(self, n, k, d, i):
+    def __init__(self, kdtree, k, **kwargs):
         """
         Parameters
         ----------         
-        n: int 
-            Indicates wich KDTree was used to generate the Neighbourhood. 
-            "n"" is the index in the PyntCloud.kdtrees list.
-        
-        k: int 
-            Number of neighbours.
-        
-        d: ndarray
-            Distances returned from KDTree.query
-        i: ndarray
-            Indices returned from KDTree.query
         """
-        self.n = n
         self.k = k
-        self.id = "n:{} k:{}".format(self.n, self.k)
-        self.distances = d
-        self.indices = i
+        self.id = "{}-{}".format(kdtree.id, self.k)
+
+        d, i = kdtree.query(kdtree.data, k=k, n_jobs=-1, **kwargs)
+        # discard self neighbour with [:,1:]
+        self.distances = d[:,1:]
+        self.indices = i[:,1:]
+        
 
