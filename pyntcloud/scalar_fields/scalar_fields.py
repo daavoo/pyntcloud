@@ -61,3 +61,51 @@ def hsv(rgb):
     
     return H, S, V 
 
+####
+#### NEED NEIGHBOURHOOD
+####
+
+def eigen_values(n_hood):
+    return n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
+
+def eigen_sum(n_hood):
+    ev1, ev2, ev3 = n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
+    return ev1 + ev2 + ev3
+
+def omnivariance(n_hood):
+    ev1, ev2, ev3 = n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
+    return (ev1 * ev2 * ev3) ** (1/3)
+
+def eigenentropy(n_hood):
+    ev = n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
+    result = np.zeros_like(eig_val1)
+    for i in range(3):
+        result += ev[i] * np.log(ev[i])
+    return - result
+
+def anisotropy(n_hood):
+    ev1, ev3 = n_hood.eig_val1, n_hood.eig_val3
+    return (ev1 - ev3) / ev1
+
+def planarity(n_hood):
+    ev2, ev3 = n_hood.eig_val2, n_hood.eig_val3
+    return (ev2 - ev3) / ev1
+
+def linearity(n_hood):
+    ev1, ev2, ev3 = n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
+    return (ev1 - ev2) / ev1
+
+def curvature(n_hood):
+    ev1, ev2, ev3 = n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
+    return ev3 / (ev1 + ev2 + ev3)
+
+def sphericity(n_hood):
+    ev1, ev3 = n_hood.eig_val1, n_hood.eig_val3
+    return ev3 / ev1
+
+def verticality(n_hood):
+    evc3 = n_hood.eig_vec3
+    return 1 - abs( evc3.dot([0,0,1]) )
+
+
+

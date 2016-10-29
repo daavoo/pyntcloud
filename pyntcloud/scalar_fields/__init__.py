@@ -19,7 +19,20 @@ NEED_RGB = {
 }
 
 NEED_NEIGHBOURHOOD = {
-'eigen_decomposition' : ['eigval_1', 'eigval_2', 'eigval_3', 'eigvec_1', 'eigvec_2', 'eigvec_3']
+'eigen_values': ['e_1', 'e_2', 'e_3'],
+'eigen_sum': 'eigen_sum',
+'omnivariance': 'omnivariance',
+'eigenentropy': 'eigenentropy',
+'anisotropy': 'anisotropy',
+'planarity': 'planarity',
+'linearity': 'linearity',
+'curvature': 'curvature',
+'sphericity': 'sphericity',
+'verticality':'verticality'
 }
+
+ALL_SF = "  ".join(NEED_NORMALS.keys()) + " "\
+        "  ".join(NEED_RGB.keys()) + " "\
+        "  ".join(NEED_NEIGHBOURHOOD.keys())
 
 

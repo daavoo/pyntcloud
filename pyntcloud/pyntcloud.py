@@ -32,8 +32,7 @@ MUST_HAVE_POINTS = ValueError("There must be a 'points' key in the kwargs")
 MUST_HAVE_XYZ = ValueError("Points must have x, y and z coordinates")
 UNSOPORTED_IN = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))
 UNSOPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
-UNSOPORTED_SF = ValueError("Unsupported scalar field; supported scalar fields are: "  + "  ".join(NEED_NORMALS.keys()) 
-                            +"  ".join(NEED_RGB.keys()) +"  ".join(NEED_NEIGHBOURHOOD.keys()) )
+UNSOPORTED_SF = ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
 UNSOPORTED_STRUCTURE = ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'neighbourhood'")
 MUST_BE_DF = TypeError("Points argument is not a DataFrame")
 
@@ -186,22 +185,28 @@ class PyntCloud(object):
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
 
-        NEED NORMALS (nx, ny, nz):
+        NEED NORMALS 
             - 'inclination_deg'
             - 'inclination_rad'
             - 'orientation_deg'
             - 'orientation_rad'
 
-        NEED RGB (red, green, blue):
-            - 'rgb_intensity'  # adds 3 scalar fields (Ri, Gi, Bi)
-            - 'hsv'  # adds 3 scalar fields (H, S, V)
+        NEED RGB 
+            - 'rgb_intensity': [Ri, Gi, Bi]
+            - 'hsv': [H, S, V]
             - 'relative_luminance'  
         
-        NEED NEIGHBOURHOOD (from PyntCloud's neighbourhoods):
-            - 'eigen_decomposition'  # adds 6 scalar fields (eigval_1, eigval_2, eigval_3, eigvec_1, eigvec_2, eigvec_3)
-
-        NEED EIGEN_DECOMPOSITION (eigval_1, eigval_2, eigval_3, eigvec_1, eigvec_2, eigvec_3):
-            - 'curvature'        
+        NEED NEIGHBOURHOOD
+            - 'eigen_values': [{}-e_1, {}-e_2, {}-e_3]   # {}: neighbourhood.id
+            - 'eigen_sum'
+            - 'omnivariance'
+            - 'eigenentropy'
+            - 'anisotropy'
+            - 'planarity'
+            - 'linearity'
+            - 'curvature'
+            - 'sphericity'
+            - 'verticality'       
         """
         if sf in NEED_NORMALS.keys():
             normals = self.points[["nx", "ny", "nz"]].values
@@ -230,16 +235,18 @@ class PyntCloud(object):
 
         
         elif sf in NEED_NEIGHBOURHOOD.keys():
-            neighourhood = self.xyz[self.neighbourhoods[kwargs["n_hood"]].indices]
+            n_hood = self.neighbourhoods[kwargs["n_hood"]]
             
             if isinstance(NEED_NEIGHBOURHOOD[sf], list):
-                all_sf = getattr(scalar_fields, sf)(neighbourhood)
+                all_sf = getattr(scalar_fields, sf)(n_hood)
 
                 for i in range(len(NEED_NEIGHBOURHOOD[sf])):
-                    self.points[NEED_NEIGHBOURHOOD[sf][i]] = all_sf[i]
+                    id = n_hood.id + "-{}".format(NEED_NEIGHBOURHOOD[sf][i])
+                    self.points[id] = all_sf[i]
             
             else:
-                self.points[sf] = getattr(scalar_fields, sf)(neighbourhood)
+                id = n_hood.id + "-{}".format(NEED_NEIGHBOURHOOD[sf])
+                self.points[id] = getattr(scalar_fields, sf)(n_hood)
         
         else:
             raise UNSOPORTED_SF
@@ -287,7 +294,7 @@ class PyntCloud(object):
         return "Added: " + str(structure_name) + " " +  structure.id 
     
 
-    def plot(self, sf=["red", "green", "blue"]):
+    def plot(self, sf=["red", "green", "blue"], size=0.1):
 
         try:
             colors = self.points[sf].values
@@ -299,7 +306,7 @@ class PyntCloud(object):
         else:
             colors = plt.cm.ScalarMappable().to_rgba(colors)[:,:-1]
 
-        return plot3D(self.xyz, colors)
+        return plot3D(self.xyz, colors, size)
 
 
     def clean_SOR(self, kdtree, element='vertex', k=8, z_max=2 ):
