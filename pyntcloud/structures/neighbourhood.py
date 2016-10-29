@@ -79,7 +79,7 @@ class Neighbourhood(object):
         The optional parameter (z_max) should be used in order to adjust
         the filter to the desired result.
         
-        A LOWER 'z_max' value will result(normally) in a HIGHER number of points trimmed.
+        A LOWER 'z_max' value will result in a HIGHER number of points trimmed.
         """
 
         z_distances = zscore(np.mean(distances, axis=1), ddof=1)
@@ -87,55 +87,40 @@ class Neighbourhood(object):
         sor_filter = abs(z_distances) < z_max
 
         return sor_filter
-    
-    def radious_outlier_removal(kdtree, k, r):
-    """ Compute a Radious Outlier Removal filter on the given KDTree
-    
-    Parameters
-    ----------                        
-    kdtree: scipy's KDTree instance
-        The KDTree's structure which will be used to
-        compute the filter.
         
-    k: int
-        The number of nearest neighbors wich will be used to estimate the 
-        mean distance from each point to his nearest neighbors.
+    
+    def filter_ROR(self, r):
+        """ Compute a Radious Outlier Removal filter using the Neighbourhood.
         
-    r: float
-        The radius of the sphere with center on each point and where the filter
-        will look for the required number of k neighboors.    
+        Parameters
+        ----------                                    
+        r: float
+            The radius of the sphere with center on each point. The filter
+            will look for the required number of neighboors inside that sphere.    
+            
+        Returns
+        -------
+        ror_filter : boolean array
+            The boolean mask indicating wherever a point should be keeped or not.
+            The size of the boolean mask will be the same as the number of points
+            in the Neighbourhood.
+            
+        Notes
+        -----          
+        > The distances between each point and his 'k' nearest neighbors that 
+            exceed the given 'r' are marked as False.
         
-    Returns
-    -------
-    ror_filter : boolean array
-        The boolean mask indicating wherever a point should be keeped or not.
-        The size of the boolean mask will be the same as the number of points
-        in the KDTree.
+        > The points having any distance marked as False will be trimmed.
         
-    Notes
-    -----
-    > The filter computes the distances between each point and his 'k' nearest 
-        neighbors.
-        
-    > The distances exceeding the given 'r' are marked as inf.
-    
-    > The points having any inf distance are marked as False, in order to be
-        trimmed.
-    
-    The 2 parameters (k and r) should be used in order to adjust the filter to
-    the desired result.
-    
-    A HIGHER 'k' value will result(normally) in a HIGHER number of points trimmed.
-    
-    A LOWER 'r' value will result(normally) in a HIGHER number of points trimmed.
-    
-    """
-    
-    distances, i = kdtree.query(kdtree.data, k=k, distance_upper_bound=r, n_jobs=-1) 
-    
-    ror_filter = np.any(np.isinf(distances), axis=1)
-    
-    return ror_filter
+        The parameter r should be used in order to adjust the filter to
+        the desired result.
+                
+        A LOWER 'r' value will result in a HIGHER number of points trimmed.
+        """
+
+        ror_filter = np.all(self.distances > r, axis=1)
+
+        return ror_filter
 
 
         
