@@ -7,6 +7,7 @@ import pandas as pd
 from inspect import signature
 from matplotlib import pyplot as plt
 
+from .filters import *
 from .io import *
 from .plot import *
 from .scalar_fields import *
@@ -22,7 +23,8 @@ PyntCloud
 {} kdtrees
 {} neighbourhoods
 {} octrees
-{} voxelgrids\n
+{} voxelgrids
+{} filters\n
 Centroid: {}, {}, {}\n
 Other attributes:{}        
 """
@@ -66,9 +68,10 @@ class PyntCloud(object):
             raise MUST_HAVE_POINTS
         
         self.kdtrees = {}
-        self.neighbourhoods= {}
+        self.neighbourhoods = {}
         self.octrees = {}
         self.voxelgrids = {}
+        self.filters = {}
 
         for key in kwargs:
             if "kdtrees" in key:
@@ -79,6 +82,8 @@ class PyntCloud(object):
                 self.octrees = kwargs[key]
             elif "voxelgrids" in key:
                 self.voxelgrids = kwargs[key]
+            elif "filters" in key:
+                self.filters = kwargs[key]
             else:
                 setattr(self, key, kwargs[key])
         
@@ -106,6 +111,7 @@ class PyntCloud(object):
                                     len(self.neighbourhoods),
                                     len(self.octrees),
                                     len(self.voxelgrids),
+                                    len(self.filters),
                                     self.centroid[0], self.centroid[1], self.centroid[2],
                                     others                                    
                                     )
@@ -181,7 +187,6 @@ class PyntCloud(object):
         return True
 
             
-
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
 
@@ -208,45 +213,45 @@ class PyntCloud(object):
             - 'sphericity'
             - 'verticality'       
         """
-        if sf in NEED_NORMALS.keys():
+        if sf in SF_NORMALS.keys():
             normals = self.points[["nx", "ny", "nz"]].values
 
-            if isinstance(NEED_NORMALS[sf], list):
-                all_sf = getattr(scalar_fields, sf)(normals)
+            if isinstance(SF_NORMALS[sf], tuple):
+                all_sf = SF_NORMALS[sf][1](normals)
 
-                for i in range(len(NEED_NORMALS[sf])):
-                    self.points[NEED_NORMALS[sf][i]] = all_sf[i]
+                for i, name in enumerate(SF_NORMALS[sf][0]):
+                    self.points[name] = all_sf[i]
 
             else:
-                self.points[sf] = getattr(scalar_fields, sf)(normals)
+                self.points[sf] = SF_NORMALS[sf](normals)
 
 
-        elif sf in NEED_RGB.keys():
+        elif sf in SF_RGB.keys():
             rgb = self.points[["red", "green", "blue"]].values.astype("f")
 
-            if isinstance(NEED_RGB[sf], list):
-                all_sf = getattr(scalar_fields, sf)(rgb)
+            if isinstance(SF_RGB[sf], tuple):
+                all_sf = SF_RGB[sf][1](normals)
 
-                for i in range(len(NEED_RGB[sf])):
-                    self.points[NEED_RGB[sf][i]] = all_sf[i]
+                for i, name in enumerate(SF_RGB[sf][0]):
+                    self.points[name] = all_sf[i]
 
             else:
-                self.points[sf] = getattr(scalar_fields, sf)(rgb)
+                self.points[sf] = SF_RGB[sf](rgb)
 
         
-        elif sf in NEED_NEIGHBOURHOOD.keys():
+        elif sf in SF_NEIGHBOURHOOD.keys():
             n_hood = self.neighbourhoods[kwargs["n_hood"]]
             
-            if isinstance(NEED_NEIGHBOURHOOD[sf], list):
-                all_sf = getattr(scalar_fields, sf)(n_hood)
+            if isinstance(SF_NEIGHBOURHOOD[sf], tuple):
+                all_sf = SF_NEIGHBOURHOOD[sf][1](n_hood)
 
-                for i in range(len(NEED_NEIGHBOURHOOD[sf])):
-                    id = n_hood.id + "-{}".format(NEED_NEIGHBOURHOOD[sf][i])
+                 for i, name in enumerate(SF_NEIGHBOURHOOD[sf][0]):
+                    id = n_hood.id + "-{}".format(name)
                     self.points[id] = all_sf[i]
             
             else:
-                id = n_hood.id + "-{}".format(NEED_NEIGHBOURHOOD[sf])
-                self.points[id] = getattr(scalar_fields, sf)(n_hood)
+                id = n_hood.id + "-{}".format(sf)
+                self.points[id] = SF_NEIGHBOURHOOD[sf](n_hood)
         
         else:
             raise UNSOPORTED_SF
@@ -257,12 +262,12 @@ class PyntCloud(object):
     def add_structure(self, structure_name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
 
-        NEED XYZ (x, y, z):
+        NEED XYZ:
             - 'kdtree'
             - 'voxelgrid'
         
-        NEED KDTREE :
-            - 'neighbourhood' # requires argument "n"  to indicate wich kdtree use
+        NEED KDTREE:
+            - 'neighbourhood'
 
         """
         
@@ -280,7 +285,6 @@ class PyntCloud(object):
 
             valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
 
-            
             if 'k' not in valid_args:
                 valid_args["k"] = 2
             else:
@@ -295,6 +299,21 @@ class PyntCloud(object):
             raise UNSOPORTED_STRUCTURE
         
         return "Added: " + str(structure_name) + " " +  structure.id 
+
+    def add_filter(self, filter_name, **kwargs):
+        """ Build a filter and add it to the corresponding PyntCloud's attribute
+        
+        NEED NEIGHBOURHOOD:
+            - 'SOR'
+            - 'ROR'
+        """
+
+        if filter_name in USE_NEIGHBOURHOOD:
+             n_hood = self.neighbourhoods[kwargs["n_hood"]]
+
+
+
+             
     
 
     def plot(self, sf=["red", "green", "blue"], size=0.1, cmap="hsv"):
@@ -313,127 +332,6 @@ class PyntCloud(object):
         return plot3D(self.xyz, colors, size)
 
 
-    def clean_SOR(self, kdtree, element='vertex', k=8, z_max=2 ):
-        """ Applies a Statistical Outlier Removal filter on the given KDTree.
-
-        Parameters
-        ----------
-        kdtree: scipy's KDTree instance
-            The KDTree's structure which will be used to
-            compute the filter.
-
-        element(Optional): str
-            The PyntCloud.element where the fillter will be apllied.
-
-        k(Optional): int
-            The number of nearest neighbors wich will be used to estimate the
-            mean distance from each point to his nearest neighbors.
-            Default : 8
-
-        z_max(Optional): int
-            The maximum Z score wich determines if the point is an outlier or
-            not.
-
-        Notes
-        -----
-        Check the filter_SOR function for more information.
-
-        """
-        cloud = getattr(self, element)
-
-        filtered = statistical_outilier_removal(kdtree, k, z_max)
-
-        setattr(self, element, cloud[filtered])
-
-
-    def clean_ROR(self, kdtree,  k, r, element='vertex'):
-        """ Applies a Radious Outlier Removal filter on the given KDTree.
-
-        Parameters
-        ----------
-        kdtree: scipy's KDTree instance
-            The KDTree's structure which will be used to
-            compute the filter.
-
-        k: int
-            The number of nearest neighbors wich will be used to estimate the
-            mean distance from each point to his nearest neighbors.
-
-        r: float
-            The radius of the sphere with center on each point and where the filter
-            will look for the required number of k neighboors.
-
-        Notes
-        -----
-        Check the filter_ROR function for more information.
-
-        """
-
-        cloud = getattr(self, element)
-
-        filtered = radious_outlier_removal(kdtree, k, r)
-
-        setattr(self, element, cloud[filtered])
-
-
-    def clean_PT(self, element='vertex', min_x=-np.inf, max_x=np.inf,
-                 min_y=-np.inf, max_y=np.inf, min_z=-np.inf, max_z=np.inf):
-        """ Applies a Pass Through filter on the given element
-
-        Parameters
-        ----------
-        element(Optional) : str
-            The sPyntCloud's element where the function will look for the xyz
-            coordinates in order to aplly the filter. Default: vertex
-
-        Notes
-        -----
-        The function expects the element to have the scalar fields x,y and z
-        correctly named.
-
-        Check the filter_BB function for more information.
-        """
-
-        cloud = getattr(self, element)
-
-        points  = cloud[['x','y','z']]
-
-        filtered = pass_through(points, min_x, max_x, min_y, max_y, min_z, max_z)
-
-        setattr(self, element, cloud[filtered])
-
-
-    def octree_subsample(self, octree, element='vertex'):
-        """ Subsamples the point cloud based on the given octree
-
-        Parameters
-        ----------
-        octree : pyntcloud's VoxelGrid instance
-            The Octree's structure that will be used to subsamble the point cloud
-
-        Notes
-        -----
-        The function will keep only 1 point per octree's voxel, by searching in
-        all the points inside an octree's voxel for the point that is nearer to
-        the octree's voxel centroid.
-
-        """
-
-        cloud = getattr(self, element)
-
-        cloud = pd.concat([cloud, octree.structure], axis=1)
-
-        v2 = cloud[['x','y','z']].as_matrix()
-
-        v1 = cloud[['centroid_x','centroid_y','centroid_z']].as_matrix()
-
-        cloud['distances'] = np.linalg.norm(v2 - v1, axis=1)
-
-        cloud = cloud.loc[cloud.groupby(['voxel_x','voxel_y','voxel_z'])['distances'].idxmin()]
-
-        setattr(self, element, cloud)
-
-
     def random_subsample(self, n_points, element='vertex'):
         """ Subsamples the point cloud randomly
 
@@ -447,10 +345,3 @@ class PyntCloud(object):
         cloud = getattr(self, element)
 
         setattr(self, element, cloud.sample(n_points))
-        
-
-def vCov(data, sort=True):
-
-    diffs = data - data.mean(1,keepdims=True)
-
-    return np.einsum('ijk,ijl->ikl',diffs,diffs) / data.shape[1]

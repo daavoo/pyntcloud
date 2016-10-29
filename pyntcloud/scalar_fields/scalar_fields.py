@@ -61,9 +61,9 @@ def hsv(rgb):
     
     return H, S, V 
 
-####
-#### NEED NEIGHBOURHOOD
-####
+######################
+# NEED NEIGHBOURHOOD #
+######################
 
 def eigen_values(n_hood):
     return n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
