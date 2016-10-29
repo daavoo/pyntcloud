@@ -280,9 +280,12 @@ class PyntCloud(object):
 
             valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
 
-            # set k=2 because first neighbour is itself 
-            if 'k' not in valid_args or valid_args["k"] == 1:
+            
+            if 'k' not in valid_args:
                 valid_args["k"] = 2
+            else:
+                # +1 because first neighbour is itself 
+                valid_args["k"] += 1
             
             structure = Neighbourhood( self.kdtrees[kwargs["kdtree"]], **valid_args)
 
