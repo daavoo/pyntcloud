@@ -6,6 +6,6 @@ HAKUNA MATATA
 from .filters import *
 
 F_NEIGHBOURHOOD = {
-"ROR": radious_outlier_removal,
-"SOR": statistical_outlier_removal
+"ROR": ('r', radious_outlier_removal),
+"SOR": ('z_max', statistical_outlier_removal)
 }

@@ -96,7 +96,7 @@ class PyntCloud(object):
 
         others = []
         for name in self.__dict__:
-            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid", "xyz", "neighbourhoods"]:
+            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid", "xyz", "neighbourhoods", "filters"]:
                 others.append("\n\t " + name + ": " + str(type(name)))
         others = "".join(others)
 
@@ -245,7 +245,7 @@ class PyntCloud(object):
             if isinstance(SF_NEIGHBOURHOOD[sf], tuple):
                 all_sf = SF_NEIGHBOURHOOD[sf][1](n_hood)
 
-                 for i, name in enumerate(SF_NEIGHBOURHOOD[sf][0]):
+                for i, name in enumerate(SF_NEIGHBOURHOOD[sf][0]):
                     id = n_hood.id + "-{}".format(name)
                     self.points[id] = all_sf[i]
             
@@ -256,7 +256,7 @@ class PyntCloud(object):
         else:
             raise UNSOPORTED_SF
 
-        return str(sf) + " ADDED"
+        return "Added: " + str(sf)
 
     
     def add_structure(self, structure_name, **kwargs):
@@ -300,6 +300,7 @@ class PyntCloud(object):
         
         return "Added: " + str(structure_name) + " " +  structure.id 
 
+
     def add_filter(self, filter_name, **kwargs):
         """ Build a filter and add it to the corresponding PyntCloud's attribute
         
@@ -308,15 +309,21 @@ class PyntCloud(object):
             - 'ROR'
         """
 
-        if filter_name in USE_NEIGHBOURHOOD:
+        if filter_name in F_NEIGHBOURHOOD.keys():
              n_hood = self.neighbourhoods[kwargs["n_hood"]]
 
+             valid_args = {key: kwargs[key] for key in kwargs if key in F_NEIGHBOURHOOD[filter_name][0]} 
 
+             filter, filter_parameter = F_NEIGHBOURHOOD[filter_name][1](n_hood, **valid_args)
 
+             id = n_hood.id + "-{}-{}".format(filter_name, filter_parameter)
              
+             self.filters[id] = filter  
+
+        return "Added: " + str(filter_name)       
     
 
-    def plot(self, sf=["red", "green", "blue"], size=0.1, cmap="hsv"):
+    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, ):
 
         try:
             colors = self.points[sf].values
@@ -328,8 +335,16 @@ class PyntCloud(object):
         else:
             s_m = plt.cm.ScalarMappable(cmap=cmap)
             colors = s_m.to_rgba(colors)[:,:-1]
+        
+        if filter is not None:
+            mask = self.filters[filter]
+            xyz = self.xyz[mask]
+            if colors is not None:
+                colors = colors[mask]
+        else:
+            xyz = self.xyz
 
-        return plot3D(self.xyz, colors, size)
+        return plot3D(xyz, colors, size)
 
 
     def random_subsample(self, n_points, element='vertex'):
