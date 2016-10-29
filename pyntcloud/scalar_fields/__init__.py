@@ -31,8 +31,8 @@ SF_NEIGHBOURHOOD = {
 'verticality':verticality
 }
 
-ALL_SF = "  ".join(SF_NORMALS.keys()) + " "\
-        "  ".join(SF_RGB.keys()) + " "\
+ALL_SF = "  ".join(SF_NORMALS.keys()) + " " + \
+        "  ".join(SF_RGB.keys()) + " " + \
         "  ".join(SF_NEIGHBOURHOOD.keys())
 
 

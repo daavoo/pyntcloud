@@ -32,10 +32,11 @@ Other attributes:{}
 ### Constant Exceptions
 MUST_HAVE_POINTS = ValueError("There must be a 'points' key in the kwargs")
 MUST_HAVE_XYZ = ValueError("Points must have x, y and z coordinates")
-UNSOPORTED_IN = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))
-UNSOPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
-UNSOPORTED_SF = ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
-UNSOPORTED_STRUCTURE = ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'neighbourhood'")
+UNSUPPORTED_IN = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))
+UNSUPPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
+UNSUPPORTED_SF = ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
+UNSUPPORTED_STRUCTURE = ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'neighbourhood'")
+UNSUPPORTED_FILTER = ValueError("Unsupported filter; supported filters are: "  + ALL_FILTERS )
 MUST_BE_DF = TypeError("Points argument is not a DataFrame")
 
 
@@ -151,7 +152,7 @@ class PyntCloud(object):
         ext = filename.split(".")[-1].upper()
 
         if ext not in FORMATS_READERS.keys():
-            raise UNSOPORTED_IN
+            raise UNSUPPORTED_IN
         else:
             return PyntCloud( **FORMATS_READERS[ext](filename) )
 
@@ -169,7 +170,7 @@ class PyntCloud(object):
         ext = filename.split(".")[-1].upper()
 
         if ext not in FORMATS_WRITERS.keys():
-            raise UNSOPORTED_OUT
+            raise UNSUPPORTED_OUT
 
         else:
             if "points" not in kwargs:
@@ -254,7 +255,7 @@ class PyntCloud(object):
                 self.points[id] = SF_NEIGHBOURHOOD[sf](n_hood)
         
         else:
-            raise UNSOPORTED_SF
+            raise UNSUPPORTED_SF
 
         return "Added: " + str(sf)
 
@@ -296,14 +297,17 @@ class PyntCloud(object):
             self.neighbourhoods[structure.id] = structure
         
         else:
-            raise UNSOPORTED_STRUCTURE
+            raise UNSUPPORTED_STRUCTURE
         
         return "Added: " + str(structure_name) + " " +  structure.id 
 
 
     def add_filter(self, filter_name, **kwargs):
         """ Build a filter and add it to the corresponding PyntCloud's attribute
-        
+
+        NEED XYZ:
+            - 'BB'
+
         NEED NEIGHBOURHOOD:
             - 'SOR'
             - 'ROR'
@@ -319,6 +323,15 @@ class PyntCloud(object):
              id = n_hood.id + "-{}-{}".format(filter_name, filter_parameter)
              
              self.filters[id] = filter  
+        
+        elif filter_name in F_XYZ.keys():
+            valid_args = {key: kwargs[key] for key in kwargs if key in F_XYZ[filter_name][0]} 
+            filter, filter_parameters= F_XYZ[filter_name][1](self.xyz, **valid_args)
+            self.filters[filter_parameters] = filter
+        
+        else:
+            raise UNSUPPORTED_FILTER
+
 
         return "Added: " + str(filter_name)       
     
