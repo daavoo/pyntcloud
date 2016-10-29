@@ -71,17 +71,46 @@ TEMPLATE = """
 				geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
 				geometry.computeBoundingSphere();
 
-				var material = new THREE.PointsMaterial( {{ size: {size}, vertexColors: THREE.VertexColors }} );
+				var material = new THREE.PointsMaterial( {{ size: {points_size}, vertexColors: THREE.VertexColors }} );
 
 				points = new THREE.Points( geometry, material );
 
 				scene.add( points );
-				
+
+				var axis_size = {axis_size}
+
+				var x_geometry = new THREE.Geometry();
+				x_geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+				x_geometry.vertices.push(new THREE.Vector3(axis_size, 0, 0));
+				var x_material = new THREE.LineBasicMaterial({{
+					color: 0xff0000
+				}});
+				var x_axis = new THREE.Line(x_geometry, x_material);
+				scene.add(x_axis);
+
+				var y_geometry = new THREE.Geometry();
+				y_geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+				y_geometry.vertices.push(new THREE.Vector3(0, axis_size, 0));
+				var y_material = new THREE.LineBasicMaterial({{
+					color: 0x0000ff
+				}});
+				var y_axis = new THREE.Line(y_geometry, y_material);
+				scene.add(y_axis);
+
+				var z_geometry = new THREE.Geometry();
+				z_geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+				z_geometry.vertices.push(new THREE.Vector3(0, 0, axis_size));
+				var z_material = new THREE.LineBasicMaterial({{
+					color: 0x00ff00
+				}});
+				var z_axis = new THREE.Line(z_geometry, z_material);
+				scene.add(z_axis);
+    
 				renderer = new THREE.WebGLRenderer( {{ antialias: false }} );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
-                controls = new THREE.OrbitControls( camera, renderer.domElement );
+                    controls = new THREE.OrbitControls( camera, renderer.domElement );
 
 				container.appendChild( renderer.domElement );
 
@@ -107,20 +136,25 @@ TEMPLATE = """
 </html>
 """
 
-def plot3D(xyz, colors=None, size=0.1):
+def plot3D(xyz, colors=None, size=0.1, axis=True):
     # swap y-z
-    temp = xyz[:,1].copy()
-    xyz[:,1] = xyz[:,2]
-    xyz[:,2] = temp
+    points = xyz[:,[0,2,1]]
+    points[:,-1] *= -1
 
-    positions = (xyz - xyz.mean(0)).reshape(-1).tolist()
-    camera_position = xyz.max(0) + abs(xyz.max(0))
+
+    positions = points.reshape(-1).tolist()
+    camera_position = points.max(0) + abs(points.max(0))
 
     if colors is None:
         colors = [1,0.5,0] * len(positions)
     
     elif len(colors.shape) > 1:
         colors = colors.reshape(-1).tolist()
+    
+    if axis:
+        axis_size = (points - points.mean(0)).ptp(0).max()
+    else:
+        axis_size = 0
 
     with open("plot3D.html", "w") as html:
         html.write(TEMPLATE.format(camera_x=camera_position[0],
@@ -128,6 +162,7 @@ def plot3D(xyz, colors=None, size=0.1):
 									camera_z=camera_position[2],
 									positions=positions,
 									colors=colors,
-									size=size))
+									points_size=size,
+									axis_size=axis_size))
 
     return IFrame("plot3D.html",width=800, height=800)

@@ -3,4 +3,4 @@
 HAKUNA MATATA
 """
 
-from .threejs import plot3D
+from .points import plot3D

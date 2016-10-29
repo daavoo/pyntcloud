@@ -323,7 +323,7 @@ class PyntCloud(object):
         return "Added: " + str(filter_name)       
     
 
-    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, ):
+    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=True ):
 
         try:
             colors = self.points[sf].values
@@ -344,7 +344,7 @@ class PyntCloud(object):
         else:
             xyz = self.xyz
 
-        return plot3D(xyz, colors, size)
+        return plot3D(xyz=xyz, colors=colors, size=size, axis=axis)
 
 
     def random_subsample(self, n_points, element='vertex'):
