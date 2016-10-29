@@ -19,7 +19,7 @@ NEED_RGB = {
 }
 
 NEED_NEIGHBOURHOOD = {
-'eigen_values': ['e_1', 'e_2', 'e_3'],
+'eigen_values': ['e1', 'e2', 'e3'],
 'eigen_sum': 'eigen_sum',
 'omnivariance': 'omnivariance',
 'eigenentropy': 'eigenentropy',

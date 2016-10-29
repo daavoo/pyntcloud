@@ -197,7 +197,7 @@ class PyntCloud(object):
             - 'relative_luminance'  
         
         NEED NEIGHBOURHOOD
-            - 'eigen_values': [{}-e_1, {}-e_2, {}-e_3]   # {}: neighbourhood.id
+            - 'eigen_values': [{}-e1, {}-e2, {}-e3]   # {}: neighbourhood.id
             - 'eigen_sum'
             - 'omnivariance'
             - 'eigenentropy'
@@ -294,7 +294,7 @@ class PyntCloud(object):
         return "Added: " + str(structure_name) + " " +  structure.id 
     
 
-    def plot(self, sf=["red", "green", "blue"], size=0.1):
+    def plot(self, sf=["red", "green", "blue"], size=0.1, cmap="hsv"):
 
         try:
             colors = self.points[sf].values
@@ -304,7 +304,8 @@ class PyntCloud(object):
         if sf == ["red", "green", "blue"]:
             colors = colors/255
         else:
-            colors = plt.cm.ScalarMappable().to_rgba(colors)[:,:-1]
+            s_m = plt.cm.ScalarMappable(cmap=cmap)
+            colors = s_m.to_rgba(colors)[:,:-1]
 
         return plot3D(self.xyz, colors, size)
 
