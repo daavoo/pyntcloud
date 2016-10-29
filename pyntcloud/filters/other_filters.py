@@ -5,7 +5,6 @@ Other filters
 """ 
 import numpy as np
 
-
 def pass_through(points, min_x=-np.inf, max_x=np.inf, min_y=-np.inf, max_y=np.inf,
               min_z=-np.inf, max_z=np.inf):
     """ Compute a Pass Through filter on the given points
