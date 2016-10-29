@@ -10,7 +10,8 @@ F_NEIGHBOURHOOD = {
 "SOR": ('z_max', statistical_outlier_removal)
 }
 F_XYZ = {
-"BB": (["min_x", "max_x", "min_y", "max_y", "min_z", "max_z"], bounding_box)
+"BB": (["min_x", "max_x", "min_y", "max_y", "min_z", "max_z"], bounding_box),
+"random": ('size', random)
 }
 
 ALL_FILTERS = "  ".join(F_NEIGHBOURHOOD.keys()) + "  " + \

@@ -307,6 +307,7 @@ class PyntCloud(object):
 
         NEED XYZ:
             - 'BB'
+            - 'random'
 
         NEED NEIGHBOURHOOD:
             - 'SOR'
@@ -320,14 +321,14 @@ class PyntCloud(object):
 
              filter, filter_parameter = F_NEIGHBOURHOOD[filter_name][1](n_hood, **valid_args)
 
-             id = n_hood.id + "-{}-{}".format(filter_name, filter_parameter)
+             id = n_hood.id + "-{}: {}".format(filter_name, filter_parameter)
              
              self.filters[id] = filter  
         
         elif filter_name in F_XYZ.keys():
             valid_args = {key: kwargs[key] for key in kwargs if key in F_XYZ[filter_name][0]} 
             filter, filter_parameters= F_XYZ[filter_name][1](self.xyz, **valid_args)
-            self.filters[filter_parameters] = filter
+            self.filters["{}: {}".format(filter_name, filter_parameters)] = filter
         
         else:
             raise UNSUPPORTED_FILTER
@@ -335,6 +336,11 @@ class PyntCloud(object):
 
         return "Added: " + str(filter_name)       
     
+    
+    def apply_filter(self, filter_name):
+        return
+
+
 
     def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=True ):
 
@@ -359,17 +365,4 @@ class PyntCloud(object):
 
         return plot3D(xyz=xyz, colors=colors, size=size, axis=axis)
 
-
-    def random_subsample(self, n_points, element='vertex'):
-        """ Subsamples the point cloud randomly
-
-        Parameters
-        ----------
-        n_points : int
-            The number of points that will have the subsampled cloud.
-
-        """
-
-        cloud = getattr(self, element)
-
-        setattr(self, element, cloud.sample(n_points))
+    
