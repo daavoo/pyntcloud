@@ -136,7 +136,7 @@ TEMPLATE = """
 </html>
 """
 
-def plot3D(xyz, colors=None, size=0.1, axis=True):
+def plot_points(xyz, colors=None, size=0.1, axis=True):
     # swap y-z
     points = xyz[:,[0,2,1]]
     points[:,-1] *= -1
