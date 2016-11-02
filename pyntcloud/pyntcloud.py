@@ -349,9 +349,9 @@ class PyntCloud(object):
         except:
             colors = None
         
-        if sf == ["red", "green", "blue"]:
+        if sf == ["red", "green", "blue"] and colors is not None:
             colors = colors/255
-        else:
+        elif colors is not None:
             s_m = plt.cm.ScalarMappable(cmap=cmap)
             colors = s_m.to_rgba(colors)[:,:-1]
         
@@ -363,6 +363,6 @@ class PyntCloud(object):
         else:
             xyz = self.xyz
 
-        return plot3D(xyz=xyz, colors=colors, size=size, axis=axis)
+        return plot_points(xyz=xyz, colors=colors, size=size, axis=axis)
 
     
