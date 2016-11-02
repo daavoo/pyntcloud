@@ -88,7 +88,7 @@ def anisotropy(n_hood):
     return (ev1 - ev3) / ev1
 
 def planarity(n_hood):
-    ev2, ev3 = n_hood.eig_val2, n_hood.eig_val3
+    ev1, ev2, ev3 = n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
     return (ev2 - ev3) / ev1
 
 def linearity(n_hood):
