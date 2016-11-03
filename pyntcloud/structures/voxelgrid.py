@@ -68,7 +68,7 @@ class VoxelGrid(object):
         self.n_voxels = self.shape[0] * self.shape[1] * self.shape[2]
         
         self.id = "{},{},{}-{}".format(*self.shape , bb_cuboid)
-        
+
         if build:
             self.build()
 
@@ -90,7 +90,7 @@ class VoxelGrid(object):
         
         self.structure = structure
         
-        self.vector = np.bincount(np.concatenate((self.structure[:,3], np.arange(self.n_voxels)))) -1
+        self.vector = np.bincount(self.structure[:,3])
 
  
     def plot(self):
