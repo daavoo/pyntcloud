@@ -62,10 +62,13 @@ class VoxelGrid(object):
                 segments.append(np.clip(x_y_z[i], xyzmin[i], xyzmax[i])) 
         
         self.segments = segments
+
+        self.shape = [len(segments[0]) -1, len(segments[1]) -1, len(segments[2]) -1]
+
+        self.n_voxels = self.shape[0] * self.shape[1] * self.shape[2]
         
-        self.n_voxels = (len(segments[0]) -1) * (len(segments[1]) -1) * (len(segments[2]) -1)
+        self.id = "{},{},{}-{}".format(*self.shape , bb_cuboid)
         
-        self.id = "{},{},{}-{}".format(len(segments[0]) -1, len(segments[1]) -1, len(segments[2]) -1, bb_cuboid)
         if build:
             self.build()
 
