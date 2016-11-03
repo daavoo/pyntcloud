@@ -96,4 +96,3 @@ def S(sx, sy, sz):
     )
     
     return S
-
