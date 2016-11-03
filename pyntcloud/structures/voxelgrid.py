@@ -6,7 +6,7 @@ VoxelGrid Class
 
 import numpy as np
 from matplotlib import pyplot as plt
-
+from ..plot import plot_voxelgrid
 
 class VoxelGrid(object):
     
@@ -24,11 +24,6 @@ class VoxelGrid(object):
                 x_y_z[0]: x axis 
                 x_y_z[1]: y axis 
                 x_y_z[2]: z axis
-
-                if x_y_z[i] is an int then -> np.linspace(xyzmin[i], xyzmax[i],
-                                                             num=(x_y_z[i] + 1))
-
-                if x_y_z[i] is an array then the values will be used as segments.
 
         bb_cuboid(Optional): bool
                 If True(Default):   
@@ -52,22 +47,23 @@ class VoxelGrid(object):
         self.xyzmax = xyzmax
 
         segments = []
+        shape = []
 
         for i in range(3):
-            if type(x_y_z[i]) is int:
-                # note the +1 in num 
-                segments.append(np.linspace(xyzmin[i], xyzmax[i], num=(x_y_z[i] + 1)))
-            else:
-                # clip in case the given segments exceed the bounding box
-                segments.append(np.clip(x_y_z[i], xyzmin[i], xyzmax[i])) 
+            # note the +1 in num 
+            if type(x_y_z[i]) is not int:
+                raise TypeError("x_y_z[{}] must be int".format(i))
+            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(x_y_z[i] + 1), retstep=True)
+            segments.append(s)
+            shape.append(step)
         
         self.segments = segments
 
-        self.shape = [len(segments[0]) -1, len(segments[1]) -1, len(segments[2]) -1]
+        self.shape = shape
 
-        self.n_voxels = self.shape[0] * self.shape[1] * self.shape[2]
+        self.n_voxels = x_y_z[0] * x_y_z[1] * x_y_z[2]
         
-        self.id = "{},{},{}-{}".format(*self.shape , bb_cuboid)
+        self.id = "{},{},{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
         if build:
             self.build()
@@ -85,32 +81,38 @@ class VoxelGrid(object):
 
         # i = x + WIDTH * (y + HEIGHT * z)
         WIDTH = len(self.segments[0]) - 1
-        HEIGHT = len(self.segments[2]) - 1
+        HEIGHT = len(self.segments[1]) - 1
         structure[:,3] = structure[:,0] + WIDTH *  (structure[:,1]  + HEIGHT * structure[:,2])
         
         self.structure = structure
         
-        self.vector = np.bincount(self.structure[:,3])
+        self.vector = np.bincount(np.concatenate((self.structure[:,3], np.arange(self.n_voxels)))) -1
 
  
-    def plot(self):
-        n_x = int(len(self.segments[0]) - 1)
-        n_y = int(len(self.segments[1]) - 1)
-        n_z = int(len(self.segments[2]) - 1)
+    def plot(self, d=3, cmap="Oranges", axis=True):
 
-        fig, axes= plt.subplots(int(np.ceil(n_z / 4)), 4, figsize=(8,8))
+        if d == 2:
+            n_x = int(len(self.segments[0]) - 1)
+            n_y = int(len(self.segments[1]) - 1)
+            n_z = int(len(self.segments[2]) - 1)
 
-        plt.tight_layout()
+            fig, axes= plt.subplots(int(np.ceil(n_z / 4)), 4, figsize=(8,8))
 
-        imgs = self.vector.reshape([n_z, n_y, n_x])
+            plt.tight_layout()
 
-        for i,ax in enumerate(axes.flat):
-            if i >= len(imgs):
-                break
-            im = ax.imshow(imgs[i], cmap="YlOrRd", interpolation="none")
-            ax.set_title("Level " + str(i))
+            imgs = self.vector.reshape([n_z, n_y, n_x])[:,::-1,:]
 
-        fig.subplots_adjust(right=0.8)
-        cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-        cbar = fig.colorbar(im, cax=cbar_ax)
-        cbar.set_label('NUMBER OF POINTS IN VOXEL')
+            for i,ax in enumerate(axes.flat):
+                if i >= len(imgs):
+                    break
+                im = ax.imshow(imgs[i], cmap=cmap, interpolation="none")
+                ax.set_title("Level " + str(i))
+
+            fig.subplots_adjust(right=0.8)
+            cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+            cbar = fig.colorbar(im, cax=cbar_ax)
+            cbar.set_label('NUMBER OF POINTS IN VOXEL')
+
+        elif d == 3:
+            return plot_voxelgrid(self, cmap=cmap, axis=True)
+
