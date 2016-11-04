@@ -1,6 +1,7 @@
 
 from IPython.display import IFrame
 
+import numpy as np
 TEMPLATE = """
 <!DOCTYPE html>
 <head>
@@ -56,55 +57,37 @@ body {{
 
 	function init() {{
 
-		container = document.getElementById( 'container' );
+		var camera_x = {camera_x};
+		var camera_y = {camera_y};
+		var camera_z = {camera_z};
+		var positions = new Float32Array({positions});
+		var colors = new Float32Array({colors});
+		var points_size = {points_size};
+		var axis_size = {axis_size};
 
-		camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
-		camera.position.x = {camera_x};
-		camera.position.y = {camera_y};
-		camera.position.z = {camera_z};
+		container = document.getElementById( 'container' );
 
 		scene = new THREE.Scene();
 
+		camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
+		camera.position.x = camera_x;
+		camera.position.y = camera_y;
+		camera.position.z = camera_z;
+		camera.up = new THREE.Vector3( 0, 0, 1 );		
+
+		var axisHelper = new THREE.AxisHelper( axis_size );
+		scene.add( axisHelper );
+
 		var geometry = new THREE.BufferGeometry();
-
-		var positions = new Float32Array({positions});
-		var colors = new Float32Array({colors});
-
 		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
 		geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
 		geometry.computeBoundingSphere();
 
-		var material = new THREE.PointsMaterial( {{ size: {points_size}, vertexColors: THREE.VertexColors }} );
+		var material = new THREE.PointsMaterial( {{ size: points_size, vertexColors: THREE.VertexColors }} );
 
 		points = new THREE.Points( geometry, material );
-
 		scene.add( points );
 
-		var axis_size = {axis_size};
-		var axis_x = {axis_x};
-		var axis_y = {axis_y};
-		var axis_z = {axis_z};
-
-		var x_geometry = new THREE.Geometry();
-		x_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
-		x_geometry.vertices.push(new THREE.Vector3(axis_x + axis_size, axis_y, axis_z));
-		var x_material = new THREE.LineBasicMaterial({{ color: 0xff0000 }});
-		var x_axis = new THREE.Line(x_geometry, x_material);
-		scene.add(x_axis);
-
-		var y_geometry = new THREE.Geometry();
-		y_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
-		y_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y + axis_size, axis_z));
-		var y_material = new THREE.LineBasicMaterial({{ color: 0x0000ff }});
-		var y_axis = new THREE.Line(y_geometry, y_material);
-		scene.add(y_axis);
-
-		var z_geometry = new THREE.Geometry();
-		z_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
-		z_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z + axis_size));
-		var z_material = new THREE.LineBasicMaterial({{color: 0x00ff00}});
-		var z_axis = new THREE.Line(z_geometry, z_material);
-		scene.add(z_axis);
 
 		renderer = new THREE.WebGLRenderer( {{ antialias: false }} );
 		renderer.setPixelRatio( window.devicePixelRatio );
@@ -138,13 +121,9 @@ body {{
 """
 
 def plot_points(xyz, colors=None, size=0.1, axis=True):
-	# swap y-z
-	points = xyz[:,[0,2,1]]
-	points[:,-1] *= -1
 
-
-	positions = points.reshape(-1).tolist()
-	camera_position = points.max(0) + abs(points.max(0))
+	positions = xyz.reshape(-1).tolist()
+	camera_position = xyz.max(0) + abs(xyz.max(0))
 
 	if colors is None:
 		colors = [1,0.5,0] * len(positions)
@@ -153,8 +132,7 @@ def plot_points(xyz, colors=None, size=0.1, axis=True):
 		colors = colors.reshape(-1).tolist()
 
 	if axis:
-		axis_size = points.ptp() * 1.5
-		axis_position = points.min(0)
+		axis_size = xyz.ptp() * 1.5
 	else:
 		axis_size = 0
 
@@ -166,9 +144,6 @@ def plot_points(xyz, colors=None, size=0.1, axis=True):
 			positions=positions,
 			colors=colors,
 			points_size=size,
-			axis_size=axis_size,
-			axis_x=axis_position[0],
-			axis_y=axis_position[1],
-			axis_z=axis_position[2]))
+			axis_size=axis_size))
 
 	return IFrame("plot_points.html",width=800, height=800)
