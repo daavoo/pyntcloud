@@ -4,165 +4,171 @@ from IPython.display import IFrame
 TEMPLATE = """
 <!DOCTYPE html>
 <head>
-	<title>PyntCloud</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<style>
-		body {{
-			color: #cccccc;
-			font-family: Monospace;
-			font-size: 13px;
-			text-align: center;
-			background-color: #050505;
-			margin: 0px;
-			overflow: hidden;
-		}}
-		#logo_container {{
-			position: absolute;
-			top: 0px;
-			width: 100%;
-		}}
-		.logo {{
-			max-width: 20%;
-		}}
-	</style>
+
+<title>PyntCloud</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<style>
+body {{
+	color: #cccccc;
+	font-family: Monospace;
+	font-size: 13px;
+	text-align: center;
+	background-color: #050505;
+	margin: 0px;
+	overflow: hidden;
+}}
+#logo_container {{
+	position: absolute;
+	top: 0px;
+	width: 100%;
+}}
+.logo {{
+	max-width: 20%;
+}}
+</style>
+
 </head>
 <body>
-	<div>
-		<img class="logo" src="https://media.githubusercontent.com/media/daavoo/pyntcloud/master/docs/data/pyntcloud.png">
-	</div>
 
-	<div id="container">
-	</div>
+<div>
+	<img class="logo" src="https://media.githubusercontent.com/media/daavoo/pyntcloud/master/docs/data/pyntcloud.png">
+</div>
 
-	<script src="http://threejs.org/build/three.js"></script>
-	<script src="http://threejs.org/examples/js/Detector.js"></script>
-	<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
-	<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+<div id="container">
+</div>
 
-	<script>
+<script src="http://threejs.org/build/three.js"></script>
+<script src="http://threejs.org/examples/js/Detector.js"></script>
+<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
 
-			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+<script>
 
-			var container, stats;
-			var camera, scene, renderer;
-			var points;
+	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-			init();
-			animate();
+	var container, stats;
+	var camera, scene, renderer;
+	var points;
 
-			function init() {{
+	init();
+	animate();
 
-				container = document.getElementById( 'container' );
-				
-				camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
-				camera.position.x = {camera_x};
-				camera.position.y = {camera_y};
-				camera.position.z = {camera_z};
+	function init() {{
 
-				scene = new THREE.Scene();
+		container = document.getElementById( 'container' );
 
-				var geometry = new THREE.BufferGeometry();
+		camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
+		camera.position.x = {camera_x};
+		camera.position.y = {camera_y};
+		camera.position.z = {camera_z};
 
-				var positions = new Float32Array({positions});
-				var colors = new Float32Array({colors});
+		scene = new THREE.Scene();
 
-				geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-				geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
-				geometry.computeBoundingSphere();
+		var geometry = new THREE.BufferGeometry();
 
-				var material = new THREE.PointsMaterial( {{ size: {points_size}, vertexColors: THREE.VertexColors }} );
+		var positions = new Float32Array({positions});
+		var colors = new Float32Array({colors});
 
-				points = new THREE.Points( geometry, material );
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+		geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+		geometry.computeBoundingSphere();
 
-				scene.add( points );
+		var material = new THREE.PointsMaterial( {{ size: {points_size}, vertexColors: THREE.VertexColors }} );
 
-				var axis_size = {axis_size}
+		points = new THREE.Points( geometry, material );
 
-				var x_geometry = new THREE.Geometry();
-				x_geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-				x_geometry.vertices.push(new THREE.Vector3(axis_size, 0, 0));
-				var x_material = new THREE.LineBasicMaterial({{
-					color: 0xff0000
-				}});
-				var x_axis = new THREE.Line(x_geometry, x_material);
-				scene.add(x_axis);
+		scene.add( points );
 
-				var y_geometry = new THREE.Geometry();
-				y_geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-				y_geometry.vertices.push(new THREE.Vector3(0, axis_size, 0));
-				var y_material = new THREE.LineBasicMaterial({{
-					color: 0x0000ff
-				}});
-				var y_axis = new THREE.Line(y_geometry, y_material);
-				scene.add(y_axis);
+		var axis_size = {axis_size};
+		var axis_x = {axis_x};
+		var axis_y = {axis_y};
+		var axis_z = {axis_z};
 
-				var z_geometry = new THREE.Geometry();
-				z_geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-				z_geometry.vertices.push(new THREE.Vector3(0, 0, axis_size));
-				var z_material = new THREE.LineBasicMaterial({{
-					color: 0x00ff00
-				}});
-				var z_axis = new THREE.Line(z_geometry, z_material);
-				scene.add(z_axis);
-    
-				renderer = new THREE.WebGLRenderer( {{ antialias: false }} );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
+		var x_geometry = new THREE.Geometry();
+		x_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
+		x_geometry.vertices.push(new THREE.Vector3(axis_x + axis_size, axis_y, axis_z));
+		var x_material = new THREE.LineBasicMaterial({{ color: 0xff0000 }});
+		var x_axis = new THREE.Line(x_geometry, x_material);
+		scene.add(x_axis);
 
-                    controls = new THREE.OrbitControls( camera, renderer.domElement );
+		var y_geometry = new THREE.Geometry();
+		y_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
+		y_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y + axis_size, axis_z));
+		var y_material = new THREE.LineBasicMaterial({{ color: 0x0000ff }});
+		var y_axis = new THREE.Line(y_geometry, y_material);
+		scene.add(y_axis);
 
-				container.appendChild( renderer.domElement );
+		var z_geometry = new THREE.Geometry();
+		z_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
+		z_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z + axis_size));
+		var z_material = new THREE.LineBasicMaterial({{color: 0x00ff00}});
+		var z_axis = new THREE.Line(z_geometry, z_material);
+		scene.add(z_axis);
 
-				window.addEventListener( 'resize', onWindowResize, false );
-			}}
+		renderer = new THREE.WebGLRenderer( {{ antialias: false }} );
+		renderer.setPixelRatio( window.devicePixelRatio );
+		renderer.setSize( window.innerWidth, window.innerHeight );
 
-			function onWindowResize() {{
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-			}}
-			
-			function animate() {{
-				requestAnimationFrame( animate );
-				render();
-			}}
+		controls = new THREE.OrbitControls( camera, renderer.domElement );
 
-			function render() {{
-				renderer.render( scene, camera );
-			}}
-		</script>
+		container.appendChild( renderer.domElement );
+
+		window.addEventListener( 'resize', onWindowResize, false );
+	}}
+
+	function onWindowResize() {{
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize( window.innerWidth, window.innerHeight );
+	}}
+
+	function animate() {{
+		requestAnimationFrame( animate );
+		render();
+	}}
+
+	function render() {{
+		renderer.render( scene, camera );
+	}}
+</script>
+
 </body>
 </html>
 """
 
 def plot_points(xyz, colors=None, size=0.1, axis=True):
-    # swap y-z
-    points = xyz[:,[0,2,1]]
-    points[:,-1] *= -1
+	# swap y-z
+	points = xyz[:,[0,2,1]]
+	points[:,-1] *= -1
 
 
-    positions = points.reshape(-1).tolist()
-    camera_position = points.max(0) + abs(points.max(0))
+	positions = points.reshape(-1).tolist()
+	camera_position = points.max(0) + abs(points.max(0))
 
-    if colors is None:
-        colors = [1,0.5,0] * len(positions)
-    
-    elif len(colors.shape) > 1:
-        colors = colors.reshape(-1).tolist()
-    
-    if axis:
-        axis_size = (points - points.mean(0)).ptp(0).max()
-    else:
-        axis_size = 0
+	if colors is None:
+		colors = [1,0.5,0] * len(positions)
 
-    with open("plot3D.html", "w") as html:
-        html.write(TEMPLATE.format(camera_x=camera_position[0],
-									camera_y=camera_position[1],
-									camera_z=camera_position[2],
-									positions=positions,
-									colors=colors,
-									points_size=size,
-									axis_size=axis_size))
+	elif len(colors.shape) > 1:
+		colors = colors.reshape(-1).tolist()
 
-    return IFrame("plot3D.html",width=800, height=800)
+	if axis:
+		axis_size = points.ptp() * 1.5
+		axis_position = points.min(0)
+	else:
+		axis_size = 0
+
+	with open("plot_points.html", "w") as html:
+		html.write(TEMPLATE.format(
+			camera_x=camera_position[0],
+			camera_y=camera_position[1],
+			camera_z=camera_position[2],
+			positions=positions,
+			colors=colors,
+			points_size=size,
+			axis_size=axis_size,
+			axis_x=axis_position[0],
+			axis_y=axis_position[1],
+			axis_z=axis_position[2]))
+
+	return IFrame("plot_points.html",width=800, height=800)
