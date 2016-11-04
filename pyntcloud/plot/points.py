@@ -60,9 +60,17 @@ body {{
 		var camera_x = {camera_x};
 		var camera_y = {camera_y};
 		var camera_z = {camera_z};
+		
+        var look_x = {look_x};
+        var look_y = {look_y};
+        var look_z = {look_z};
+
 		var positions = new Float32Array({positions});
+
 		var colors = new Float32Array({colors});
+
 		var points_size = {points_size};
+
 		var axis_size = {axis_size};
 
 		container = document.getElementById( 'container' );
@@ -75,8 +83,10 @@ body {{
 		camera.position.z = camera_z;
 		camera.up = new THREE.Vector3( 0, 0, 1 );		
 
-		var axisHelper = new THREE.AxisHelper( axis_size );
-		scene.add( axisHelper );
+		if (axis_size > 0){{
+            var axisHelper = new THREE.AxisHelper( axis_size );
+		    scene.add( axisHelper );
+        }}
 
 		var geometry = new THREE.BufferGeometry();
 		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
@@ -94,6 +104,8 @@ body {{
 		renderer.setSize( window.innerWidth, window.innerHeight );
 
 		controls = new THREE.OrbitControls( camera, renderer.domElement );
+		controls.target.copy( new THREE.Vector3(look_x, look_y, look_z) );
+        camera.lookAt( new THREE.Vector3(look_x, look_y, look_z));
 
 		container.appendChild( renderer.domElement );
 
@@ -123,7 +135,10 @@ body {{
 def plot_points(xyz, colors=None, size=0.1, axis=True):
 
 	positions = xyz.reshape(-1).tolist()
+
 	camera_position = xyz.max(0) + abs(xyz.max(0))
+
+	look = xyz.mean(0)
 
 	if colors is None:
 		colors = [1,0.5,0] * len(positions)
@@ -141,6 +156,9 @@ def plot_points(xyz, colors=None, size=0.1, axis=True):
 			camera_x=camera_position[0],
 			camera_y=camera_position[1],
 			camera_z=camera_position[2],
+			look_x=look[0],
+            look_y=look[1],
+            look_z=look[2],
 			positions=positions,
 			colors=colors,
 			points_size=size,

@@ -58,14 +58,15 @@ TEMPLATE = """
 
     function init() {{
 
-        container = document.getElementById( 'container' );
+        var camera_x = {camera_x};
+		var camera_y = {camera_y};
+		var camera_z = {camera_z};
 
-        camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
-        camera.position.x = {camera_x};
-        camera.position.y = {camera_y};
-        camera.position.z = {camera_z};
+        var look_x = {look_x};
+        var look_y = {look_y};
+        var look_z = {look_z};
 
-        var X = new Float32Array({X});
+		var X = new Float32Array({X});
         var Y = new Float32Array({Y});
         var Z = new Float32Array({Z});
 
@@ -73,60 +74,47 @@ TEMPLATE = """
         var G = new Float32Array({G});
         var B = new Float32Array({B});
 
+        var S_x = {S_x};
+        var S_y = {S_y};
+        var S_z = {S_z};
+
+        var n_voxels = {n_voxels};
+        var axis_size = {axis_size};
+
+        container = document.getElementById( 'container' );
+
         scene = new THREE.Scene();
 
-        var geometry = new THREE.BoxGeometry( {S_x}, {S_y}, {S_z} );
-        for ( var i = 0; i < {n_voxels}; i ++ ) {{            
+        camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        camera.position.x = camera_x;
+        camera.position.y = camera_y;
+        camera.position.z = camera_z;
+        camera.up = new THREE.Vector3( 0, 0, 1 );	
 
+        if (axis_size > 0){{
+            var axisHelper = new THREE.AxisHelper( axis_size );
+		    scene.add( axisHelper );
+        }}
+
+        var geometry = new THREE.BoxGeometry( S_x, S_z, S_y );
+
+        for ( var i = 0; i < n_voxels; i ++ ) {{            
             var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {{opacity:0.8, transparent:true}}) );
             mesh.material.color.setRGB(R[i], G[i], B[i]);
-
             mesh.position.x = X[i];
             mesh.position.y = Y[i];
             mesh.position.z = Z[i];
-
             scene.add(mesh);
         }}
         
-        var axis_size = {axis_size};
-        var axis_x = {axis_x};
-        var axis_y = {axis_y};
-        var axis_z = {axis_z};
-
-        var x_geometry = new THREE.Geometry();
-        x_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
-        x_geometry.vertices.push(new THREE.Vector3(axis_x + axis_size, axis_y, axis_z));
-        var x_material = new THREE.LineBasicMaterial({{
-            color: 0xff0000
-        }});
-        var x_axis = new THREE.Line(x_geometry, x_material);
-        scene.add(x_axis);
-
-        var y_geometry = new THREE.Geometry();
-        y_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
-        y_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y + axis_size, axis_z));
-        var y_material = new THREE.LineBasicMaterial({{
-            color: 0x0000ff
-        }});
-        var y_axis = new THREE.Line(y_geometry, y_material);
-        scene.add(y_axis);
-
-        var z_geometry = new THREE.Geometry();
-        z_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z));
-        z_geometry.vertices.push(new THREE.Vector3(axis_x, axis_y, axis_z + axis_size));
-        var z_material = new THREE.LineBasicMaterial({{
-            color: 0x00ff00
-        }});
-        var z_axis = new THREE.Line(z_geometry, z_material);
-        scene.add(z_axis);
-
-
         renderer = new THREE.WebGLRenderer( {{ antialias: false }} );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
 
         controls = new THREE.OrbitControls( camera, renderer.domElement );
-
+        controls.target.copy( new THREE.Vector3(look_x, look_y, look_z) );
+        camera.lookAt( new THREE.Vector3(look_x, look_y, look_z));
+        
         container.appendChild( renderer.domElement );
 
         window.addEventListener( 'resize', onWindowResize, false );
@@ -156,43 +144,40 @@ def plot_voxelgrid(v_grid, cmap="hsv", axis=True):
 
     scaled_shape = v_grid.shape / min(v_grid.shape)
 
-    n_x = int(len(v_grid.segments[0]) - 1)
-    n_y = int(len(v_grid.segments[1]) - 1)
-    n_z = int(len(v_grid.segments[2]) - 1)
-
-    # get nonzero voxels / swap y-z
-    points = (np.argwhere(v_grid.vector.reshape(n_z,n_y,n_x)) * scaled_shape[::-1])[:,[2,0,1]]
-    points[:,-1] *= -1
+    # coordinates returned from argwhere are inversed so use [:, ::-1]
+    points = np.argwhere(v_grid.vector)[:, ::-1] * scaled_shape
 
     s_m = plt.cm.ScalarMappable(cmap=cmap)
-
-    rgb = s_m.to_rgba(v_grid.vector[v_grid.vector > 0])[:,:-1]
+    rgb = s_m.to_rgba(v_grid.vector.reshape(-1)[v_grid.vector.reshape(-1) > 0])[:,:-1]
 
     camera_position = points.max(0) + abs(points.max(0))
+    look = points.mean(0)
+    print(look)
     
     if axis:
         axis_size = points.ptp() * 1.5
-        axis_position = points.min(0) - scaled_shape / 2
     else:
         axis_size = 0
 
     with open("plotVG.html", "w") as html:
-        html.write(TEMPLATE.format( camera_x=camera_position[0],
-                                    camera_y=camera_position[1],
-                                    camera_z=camera_position[2],
-                                    X=points[:,0].tolist(),
-                                    Y=points[:,1].tolist(),
-                                    Z=points[:,2].tolist(),
-                                    R=rgb[:,0].tolist(),
-                                    G=rgb[:,1].tolist(),
-                                    B=rgb[:,2].tolist(),
-                                    S_x=scaled_shape[0],
-                                    S_y=scaled_shape[2],
-                                    S_z=scaled_shape[1],
-                                    n_voxels=sum(v_grid.vector > 0),
-                                    axis_size=axis_size,
-                                    axis_x=axis_position[0],
-                                    axis_y=axis_position[1],
-                                    axis_z=axis_position[2]))
+        html.write(TEMPLATE.format( 
+            camera_x=camera_position[0],
+            camera_y=camera_position[1],
+            camera_z=camera_position[2],
+            look_x=look[0],
+            look_y=look[1],
+            look_z=look[2],
+            X=points[:,0].tolist(),
+            Y=points[:,1].tolist(),
+            Z=points[:,2].tolist(),
+            R=rgb[:,0].tolist(),
+            G=rgb[:,1].tolist(),
+            B=rgb[:,2].tolist(),
+            S_x=scaled_shape[0],
+            S_y=scaled_shape[2],
+            S_z=scaled_shape[1],
+            n_voxels=sum(v_grid.vector.reshape(-1) > 0),
+            axis_size=axis_size))
+
     return IFrame("plotVG.html",width=800, height=800)
 
