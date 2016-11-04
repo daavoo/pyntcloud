@@ -62,6 +62,9 @@ class VoxelGrid(object):
         self.shape = shape
 
         self.n_voxels = x_y_z[0] * x_y_z[1] * x_y_z[2]
+        self.n_x = x_y_z[0]
+        self.n_y = x_y_z[1]
+        self.n_z = x_y_z[2]
         
         self.id = "{},{},{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
@@ -79,33 +82,30 @@ class VoxelGrid(object):
 
         structure[:,2] = np.searchsorted(self.segments[2], self.points[:,2]) - 1
 
-        # i = x + WIDTH * (y + HEIGHT * z)
-        WIDTH = len(self.segments[0]) - 1
-        HEIGHT = len(self.segments[1]) - 1
-        structure[:,3] = structure[:,0] + WIDTH *  (structure[:,1]  + HEIGHT * structure[:,2])
+        # i = ((y * n_x) + x) + (z * (n_x * n_y))
+        structure[:,3] = ((structure[:,1] * self.n_x) + structure[:,0]) + (structure[:,2] * (self.n_x * self.n_y)) 
         
         self.structure = structure
-        
-        self.vector = np.bincount(np.concatenate((self.structure[:,3], np.arange(self.n_voxels)))) -1
+
+        vector = np.zeros(self.n_voxels)
+        count = np.bincount(self.structure[:,3])
+        vector[:len(count)] = count
+
+        self.vector = vector.reshape(self.n_z, self.n_y, self.n_x)
 
  
     def plot(self, d=3, cmap="Oranges", axis=True):
 
         if d == 2:
-            n_x = int(len(self.segments[0]) - 1)
-            n_y = int(len(self.segments[1]) - 1)
-            n_z = int(len(self.segments[2]) - 1)
 
-            fig, axes= plt.subplots(int(np.ceil(n_z / 4)), 4, figsize=(8,8))
+            fig, axes= plt.subplots(int(np.ceil(self.n_z / 4)), 4, figsize=(8,8))
 
             plt.tight_layout()
 
-            imgs = self.vector.reshape([n_z, n_y, n_x])[:,::-1,:]
-
             for i,ax in enumerate(axes.flat):
-                if i >= len(imgs):
+                if i >= len(self.vector):
                     break
-                im = ax.imshow(imgs[i], cmap=cmap, interpolation="none")
+                im = ax.imshow(self.vector[i], cmap=cmap, interpolation="none")
                 ax.set_title("Level " + str(i))
 
             fig.subplots_adjust(right=0.8)
@@ -114,5 +114,5 @@ class VoxelGrid(object):
             cbar.set_label('NUMBER OF POINTS IN VOXEL')
 
         elif d == 3:
-            return plot_voxelgrid(self, cmap=cmap, axis=True)
+            return plot_voxelgrid(self, cmap=cmap, axis=axis)
 
