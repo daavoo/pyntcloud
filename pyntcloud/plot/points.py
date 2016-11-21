@@ -1,7 +1,9 @@
 
 from IPython.display import IFrame
+from matplotlib import pyplot as plt
 
 import numpy as np
+
 TEMPLATE = """
 <!DOCTYPE html>
 <head>
@@ -132,7 +134,7 @@ body {{
 </html>
 """
 
-def plot_points(xyz, colors=None, size=0.1, axis=True):
+def plot_points(xyz, colors=None, size=0.1, axis=False):
 
 	positions = xyz.reshape(-1).tolist()
 
@@ -165,3 +167,5 @@ def plot_points(xyz, colors=None, size=0.1, axis=True):
 			axis_size=axis_size))
 
 	return IFrame("plot_points.html",width=800, height=800)
+
+

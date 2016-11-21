@@ -99,7 +99,7 @@ TEMPLATE = """
         var geometry = new THREE.BoxGeometry( S_x, S_z, S_y );
 
         for ( var i = 0; i < n_voxels; i ++ ) {{            
-            var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {{opacity:0.8, transparent:true}}) );
+            var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial() );
             mesh.material.color.setRGB(R[i], G[i], B[i]);
             mesh.position.x = X[i];
             mesh.position.y = Y[i];
@@ -114,7 +114,7 @@ TEMPLATE = """
         controls = new THREE.OrbitControls( camera, renderer.domElement );
         controls.target.copy( new THREE.Vector3(look_x, look_y, look_z) );
         camera.lookAt( new THREE.Vector3(look_x, look_y, look_z));
-        
+
         container.appendChild( renderer.domElement );
 
         window.addEventListener( 'resize', onWindowResize, false );
@@ -140,7 +140,7 @@ TEMPLATE = """
 """
 
 
-def plot_voxelgrid(v_grid, cmap="hsv", axis=True):
+def plot_voxelgrid(v_grid, cmap="Oranges", axis=False):
 
     scaled_shape = v_grid.shape / min(v_grid.shape)
 
@@ -152,7 +152,6 @@ def plot_voxelgrid(v_grid, cmap="hsv", axis=True):
 
     camera_position = points.max(0) + abs(points.max(0))
     look = points.mean(0)
-    print(look)
     
     if axis:
         axis_size = points.ptp() * 1.5
@@ -180,4 +179,3 @@ def plot_voxelgrid(v_grid, cmap="hsv", axis=True):
             axis_size=axis_size))
 
     return IFrame("plotVG.html",width=800, height=800)
-

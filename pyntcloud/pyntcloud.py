@@ -342,7 +342,7 @@ class PyntCloud(object):
 
 
 
-    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=True ):
+    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False ):
 
         try:
             colors = self.points[sf].values

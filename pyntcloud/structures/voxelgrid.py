@@ -8,6 +8,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from ..plot import plot_voxelgrid
 
+
 class VoxelGrid(object):
     
     def __init__(self, points, x_y_z=[1, 1, 1], bb_cuboid=True, build=True):
@@ -94,7 +95,7 @@ class VoxelGrid(object):
         self.vector = vector.reshape(self.n_z, self.n_y, self.n_x)
 
  
-    def plot(self, d=3, cmap="Oranges", axis=True):
+    def plot(self, d=2, cmap="Oranges", axis=False):
 
         if d == 2:
 
