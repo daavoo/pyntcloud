@@ -5,6 +5,7 @@ VoxelGrid Class
 """
 
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from ..plot import plot_voxelgrid
 
@@ -86,10 +87,10 @@ class VoxelGrid(object):
         # i = ((y * n_x) + x) + (z * (n_x * n_y))
         structure[:,3] = ((structure[:,1] * self.n_x) + structure[:,0]) + (structure[:,2] * (self.n_x * self.n_y)) 
         
-        self.structure = structure
+        self.structure = pd.DataFrame(structure, columns=["voxel_x", "voxel_y", "voxel_z", "voxel_n"])
 
         vector = np.zeros(self.n_voxels)
-        count = np.bincount(self.structure[:,3])
+        count = np.bincount(structure[:,3])
         vector[:len(count)] = count
 
         self.vector = vector.reshape(self.n_z, self.n_y, self.n_x)
