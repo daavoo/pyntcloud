@@ -5,48 +5,55 @@ VoxelGrid Class
 """
 
 import numpy as np
-
+import pandas as pd
 
 class OcTree(object):
     
-    def __init__(self, points, max_level=2, build=True):
-        """
-        Parameters
-        ----------         
-        points: (N,3) ndarray
-                The point cloud from wich we want to construct the VoxelGrid.
-                Where N is the number of points in the point cloud and the second
-                dimension represents the x, y and z coordinates of each point.
-                
-        """
+    def __init__(self, points, max_level=2, bb_cuboid=True, build=True):
         self.points = points
         self.max_level= max_level
-        self.structure = np.zeros((self.points.shape[0], self.max_level))
+        self.structure = pd.DataFrame(np.zeros((self.points.shape[0], self.max_level), dtype=np.uint8))
+        
+        xyzmin = points.min(0)
+        xyzmax = points.max(0)
+
+        if bb_cuboid:
+            #: adjust to obtain a  minimum bounding box with all sides of equal lenght 
+            diff = max(xyzmax-xyzmin) - (xyzmax-xyzmin)
+            xyzmin = xyzmin - diff / 2
+            xyzmax = xyzmax + diff / 2
+
+        self.xyzmin = xyzmin
+        self.xyzmax = xyzmax
         
         if build:
             self.build()
 
-    def build(self):
-
-        level_ptp = self.points.ptp(0) / 4
+    def build(self, early_stop=True):
+        
+        level_ptp = np.ptp([self.xyzmin, self.xyzmax], axis=0) / 2
 
         mid_points = np.zeros_like(self.points)
-        mid_points[:] = (self.points.min(0) + self.points.max(0)) / 2
+        mid_points[:] = (self.xyzmin + self.xyzmax) / 2
 
         for i in range(self.max_level):
-
+            level_ptp /= 2
             bigger = self.points > mid_points
 
-            for j in range(3):
+            for j in range(3):                
                 mid_points[:,j][bigger[:,j]] += level_ptp[j]
                 mid_points[:,j][~bigger[:,j]] -= level_ptp[j]
 
             bigger = bigger.astype(np.uint8)
 
-            # i = ((y * n_x) + x) + (z * (n_x * n_y))
-            self.structure[:,i] = ((bigger[:,1] * 2) + bigger[:,0]) + (bigger[:,2] * (2 * 2))
+            self.structure.loc[:,i] = ((bigger[:,1] * 2) + bigger[:,0]) + (bigger[:,2] * (2 * 2))
 
-            level_ptp /= 2
+            if early_stop and i > 1:
+                less_than_2 = self.structure.ix[:,:i].groupby(np.arange(i).tolist()).count().mean() < 2
+                if less_than_2.any():
+                    print("Stopping at level {}, less than 2 points in node".format(i))
+                    self.structure = self.structure.ix[:,:i]
+                    break
 
 
 
