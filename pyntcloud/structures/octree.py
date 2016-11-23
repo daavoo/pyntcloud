@@ -7,7 +7,7 @@ VoxelGrid Class
 import numpy as np
 import pandas as pd
 
-class OcTree(object):
+class Octree(object):
     
     def __init__(self, points, max_level=2, bb_cuboid=True, build=True):
         self.points = points
@@ -24,6 +24,7 @@ class OcTree(object):
 
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
+        self.id = "O: {}-{}".format(max_level, bb_cuboid)
         
         if build:
             self.build()
@@ -55,7 +56,7 @@ class OcTree(object):
                     break
     
     def get_level_as_sf(self, level):
-        sf = np.arange(self.points)
+        sf = np.arange(len(self.points))
 
         i = 0
         for g in self.structure.groupby([x for x in range(level)]).apply(lambda x: x.index.values).values:
@@ -63,7 +64,6 @@ class OcTree(object):
             i+=1
 
         return sf
-
 
     def query(self, level):
         n_hood = [0] * len(self.points)
