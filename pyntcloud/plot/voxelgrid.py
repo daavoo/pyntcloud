@@ -140,8 +140,10 @@ TEMPLATE = """
 """
 
 
-def plot_voxelgrid(v_grid, cmap="Oranges", axis=False):
+def plot_voxelgrid(v_grid, cmap="Oranges", axis=False, output_name=None):
 
+    if output_name is None:
+        output_name = "plotVG.html"
     scaled_shape = v_grid.shape / min(v_grid.shape)
 
     # coordinates returned from argwhere are inversed so use [:, ::-1]
@@ -158,7 +160,7 @@ def plot_voxelgrid(v_grid, cmap="Oranges", axis=False):
     else:
         axis_size = 0
 
-    with open("plotVG.html", "w") as html:
+    with open(output_name, "w") as html:
         html.write(TEMPLATE.format( 
             camera_x=camera_position[0],
             camera_y=camera_position[1],
@@ -178,4 +180,4 @@ def plot_voxelgrid(v_grid, cmap="Oranges", axis=False):
             n_voxels=sum(v_grid.vector.reshape(-1) > 0),
             axis_size=axis_size))
 
-    return IFrame("plotVG.html",width=800, height=800)
+    return IFrame(output_name,width=800, height=800)

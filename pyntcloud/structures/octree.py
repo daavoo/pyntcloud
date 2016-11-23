@@ -13,7 +13,6 @@ class OcTree(object):
         self.points = points
         self.max_level= max_level
         self.structure = pd.DataFrame(np.zeros((self.points.shape[0], self.max_level), dtype=np.uint8))
-        
         xyzmin = points.min(0)
         xyzmax = points.max(0)
 
@@ -30,9 +29,8 @@ class OcTree(object):
             self.build()
 
     def build(self, early_stop=True):
-        
+              
         level_ptp = np.ptp([self.xyzmin, self.xyzmax], axis=0) / 2
-
         mid_points = np.zeros_like(self.points)
         mid_points[:] = (self.xyzmin + self.xyzmax) / 2
 
@@ -45,11 +43,12 @@ class OcTree(object):
                 mid_points[:,j][~bigger[:,j]] -= level_ptp[j]
 
             bigger = bigger.astype(np.uint8)
-
             self.structure.loc[:,i] = ((bigger[:,1] * 2) + bigger[:,0]) + (bigger[:,2] * (2 * 2))
 
             if early_stop and i > 1:
-                less_than_2 = self.structure.ix[:,:i].groupby(np.arange(i).tolist()).count().mean() < 2
+                columns = np.arange(i).tolist()
+                less_than_2 = self.structure.ix[:, :i].groupby(columns).count().mean() < 2
+
                 if less_than_2.any():
                     print("Stopping at level {}, less than 2 points in node".format(i))
                     self.structure = self.structure.ix[:,:i]

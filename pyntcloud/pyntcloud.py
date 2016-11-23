@@ -342,8 +342,8 @@ class PyntCloud(object):
 
 
 
-    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False ):
-
+    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None ):
+        
         try:
             colors = self.points[sf].values
         except:
@@ -363,6 +363,6 @@ class PyntCloud(object):
         else:
             xyz = self.xyz
 
-        return plot_points(xyz=xyz, colors=colors, size=size, axis=axis)
+        return plot_points(xyz=xyz, colors=colors, size=size, axis=axis, output_name=output_name)
 
     

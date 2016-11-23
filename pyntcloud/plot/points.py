@@ -134,8 +134,10 @@ body {{
 </html>
 """
 
-def plot_points(xyz, colors=None, size=0.1, axis=False):
+def plot_points(xyz, colors=None, size=0.1, axis=False, output_name=None):
 
+	if output_name is None:
+		output_name = "plot_points.html"
 	positions = xyz.reshape(-1).tolist()
 
 	camera_position = xyz.max(0) + abs(xyz.max(0))
@@ -153,7 +155,7 @@ def plot_points(xyz, colors=None, size=0.1, axis=False):
 	else:
 		axis_size = 0
 
-	with open("plot_points.html", "w") as html:
+	with open(output_name, "w") as html:
 		html.write(TEMPLATE.format(
 			camera_x=camera_position[0],
 			camera_y=camera_position[1],
@@ -166,6 +168,6 @@ def plot_points(xyz, colors=None, size=0.1, axis=False):
 			points_size=size,
 			axis_size=axis_size))
 
-	return IFrame("plot_points.html",width=800, height=800)
+	return IFrame(output_name,width=800, height=800)
 
 
