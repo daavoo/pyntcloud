@@ -7,11 +7,11 @@ import pandas as pd
 from inspect import signature
 from matplotlib import pyplot as plt
 
-from .filters import *
-from .io import *
-from .plot import *
-from .scalar_fields import *
-from .structures import *
+from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
+from .io import FORMATS_READERS, FORMATS_WRITERS
+from .plot import plot_points
+from .scalar_fields import SF_NORMALS, SF_RGB, SF_NEIGHBOURHOOD, ALL_SF
+from .structures import KDTree, VoxelGrid, Octree, Neighbourhood
 
 
 ### __repr__ method
@@ -266,6 +266,7 @@ class PyntCloud(object):
         NEED XYZ:
             - 'kdtree'
             - 'voxelgrid'
+            - 'octree'
         
         NEED KDTREE:
             - 'neighbourhood'
@@ -281,6 +282,11 @@ class PyntCloud(object):
             valid_args = {key: kwargs[key] for key in kwargs if key in signature(VoxelGrid).parameters}  
             structure = VoxelGrid(self.xyz, **valid_args)
             self.voxelgrids[structure.id] = structure
+
+        elif structure_name == 'octree':
+            valid_args = {key: kwargs[key] for key in kwargs if key in signature(Octree).parameters}  
+            structure = Octree(self.xyz, **valid_args)
+            self.octrees[structure.id] = structure
         
         elif structure_name == 'neighbourhood':
 
