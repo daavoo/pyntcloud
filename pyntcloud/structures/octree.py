@@ -53,17 +53,28 @@ class OcTree(object):
                     print("Stopping at level {}, less than 2 points in node".format(i))
                     self.structure = self.structure.ix[:,:i]
                     break
+    
+    def get_level_as_sf(self, level):
+        sf = np.arange(self.points)
+
+        i = 0
+        for g in self.structure.groupby([x for x in range(level)]).apply(lambda x: x.index.values).values:
+            sf[g] = i
+            i+=1
+
+        return sf
+
 
     def query(self, level):
-        out = [0] * len(self.points)
+        n_hood = [0] * len(self.points)
 
         for g in self.structure.groupby([x for x in range(level)]).apply(lambda x: x.index.values).values:
             for i in g:
                 copy = g.tolist()
                 copy.remove(i)
-                out[i] = copy
+                n_hood[i] = copy
 
-        return out
+        return n_hood
 
 
 
