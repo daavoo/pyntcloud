@@ -13,4 +13,4 @@ class KDTree(cKDTree):
 
     def __init__(self, points, leafsize=16):
         super().__init__(points, leafsize=leafsize)
-        self.id = "{}-{}".format("S", self.leafsize)
+        self.id = "K: {}".format( self.leafsize)

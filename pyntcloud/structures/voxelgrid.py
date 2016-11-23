@@ -68,7 +68,7 @@ class VoxelGrid(object):
         self.n_y = x_y_z[1]
         self.n_z = x_y_z[2]
         
-        self.id = "{},{},{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
+        self.id = "V: {},{},{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
         if build:
             self.build()
