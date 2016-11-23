@@ -29,7 +29,7 @@ class OcTree(object):
             self.build()
 
     def build(self, early_stop=True):
-              
+
         level_ptp = np.ptp([self.xyzmin, self.xyzmax], axis=0) / 2
         mid_points = np.zeros_like(self.points)
         mid_points[:] = (self.xyzmin + self.xyzmax) / 2
@@ -53,6 +53,19 @@ class OcTree(object):
                     print("Stopping at level {}, less than 2 points in node".format(i))
                     self.structure = self.structure.ix[:,:i]
                     break
+
+    def query(self, level):
+        out = [0] * len(self.points)
+
+        for g in self.structure.groupby([x for x in range(level)]):
+            idxs = g[1].index.values
+
+            for i in range(len(idxs)):
+                copy = idxs.tolist()
+                copy.remove(idxs[i])
+                out[idxs[i]] = copy
+                
+        return out
 
 
 
