@@ -57,14 +57,12 @@ class OcTree(object):
     def query(self, level):
         out = [0] * len(self.points)
 
-        for g in self.structure.groupby([x for x in range(level)]):
-            idxs = g[1].index.values
+        for g in self.structure.groupby([x for x in range(level)]).apply(lambda x: x.index.values).values:
+            for i in g:
+                copy = g.tolist()
+                copy.remove(i)
+                out[i] = copy
 
-            for i in range(len(idxs)):
-                copy = idxs.tolist()
-                copy.remove(idxs[i])
-                out[idxs[i]] = copy
-                
         return out
 
 
