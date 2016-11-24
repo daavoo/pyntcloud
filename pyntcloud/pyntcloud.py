@@ -89,6 +89,7 @@ class PyntCloud(object):
     @classmethod
     def from_file(cls, filename):
         """ Extracts data from file and constructs a PyntCloud with it
+        
         Parameters
         ----------
         filename : str
@@ -111,6 +112,7 @@ class PyntCloud(object):
     @classmethod
     def to_file(self, filename, **kwargs):
         """ Save PyntCloud's data to file 
+        
         Parameters
         ----------
         filename : str
@@ -158,7 +160,10 @@ class PyntCloud(object):
             - 'linearity'
             - 'curvature'
             - 'sphericity'
-            - 'verticality'       
+            - 'verticality'     
+        
+        NEED OCTREE 
+            - 'octree_level'
         """
         if sf in SF_NORMALS.keys():
             normals = self.points[["nx", "ny", "nz"]].values
@@ -190,7 +195,7 @@ class PyntCloud(object):
             else:
                 id = n_hood.id + "-{}".format(sf)
                 self.points[id] = SF_NEIGHBOURHOOD[sf](n_hood)
-
+            sf = id
 
         elif sf in SF_OCTREE.keys():
             level= kwargs["level"]
@@ -199,7 +204,7 @@ class PyntCloud(object):
                 raise ValueError("The given level ({}) is higher than octree.max_level ({})".format(level, octree.max_level))
             id = octree.id + "-{}".format(kwargs["level"])
             self.points[id] = SF_OCTREE[sf](octree, kwargs["level"])
-        
+            sf = id
 
         else:
             raise ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
@@ -217,9 +222,7 @@ class PyntCloud(object):
         
         NEED KDTREE:
             - 'neighbourhood'
-
         """
-        
         if structure_name == 'kdtree':
             valid_args = {key: kwargs[key] for key in kwargs if key in signature(KDTree).parameters}  
             structure = KDTree(self.xyz, **valid_args)
@@ -262,16 +265,11 @@ class PyntCloud(object):
             - 'SOR'
             - 'ROR'
         """
-
         if filter_name in F_NEIGHBOURHOOD.keys():
              n_hood = self.neighbourhoods[kwargs["n_hood"]]
-
              valid_args = {key: kwargs[key] for key in kwargs if key in F_NEIGHBOURHOOD[filter_name][0]} 
-
              filter, filter_parameter = F_NEIGHBOURHOOD[filter_name][1](n_hood, **valid_args)
-
              id = n_hood.id + "-{}: {}".format(filter_name, filter_parameter)
-             
              self.filters[id] = filter  
         
         elif filter_name in F_XYZ.keys():
@@ -288,7 +286,6 @@ class PyntCloud(object):
     
     def apply_filter(self, filter_name):
         return
-
 
 
     def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None ):
