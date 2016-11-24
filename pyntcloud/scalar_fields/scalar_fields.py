@@ -110,3 +110,18 @@ def verticality(n_hood):
 def octree_level(octree, level):
     return octree.get_level_as_sf(level)
 
+
+# NEED VOXELGRID
+
+def voxel_x(voxelgrid):
+    return voxelgrid.structure.voxel_x
+
+def voxel_y(voxelgrid):
+    return voxelgrid.structure.voxel_y
+
+def voxel_z(voxelgrid):
+    return voxelgrid.structure.voxel_z
+
+def voxel_n(voxelgrid):
+    return voxelgrid.structure.voxel_n
+

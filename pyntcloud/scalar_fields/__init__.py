@@ -35,9 +35,17 @@ SF_OCTREE = {
 'octree_level': octree_level
 }
 
+SF_VOXELGRID = {
+'voxel_x': voxel_x,
+'voxel_y': voxel_y,
+'voxel_z': voxel_z,
+'voxel_n': voxel_n
+}
+
 ALL_SF = "  ".join(SF_NORMALS.keys()) + "  " + \
          "  ".join(SF_RGB.keys()) + "  " + \
          "  ".join(SF_NEIGHBOURHOOD.keys()) + "  " + \
-         "  ".join(SF_OCTREE.keys())
+         "  ".join(SF_OCTREE.keys()) + "  " + \
+         "  ".join(SF_VOXELGRID.keys())
 
 

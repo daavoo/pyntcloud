@@ -55,7 +55,6 @@ class VoxelGrid(object):
             # note the +1 in num 
             if type(x_y_z[i]) is not int:
                 raise TypeError("x_y_z[{}] must be int".format(i))
-
             s, step = np.linspace(xyzmin[i], xyzmax[i], num=(x_y_z[i] + 1), retstep=True)
             segments.append(s)
             shape.append(step)
@@ -66,11 +65,10 @@ class VoxelGrid(object):
         self.n_x = x_y_z[0]
         self.n_y = x_y_z[1]
         self.n_z = x_y_z[2]
-        self.id = "V: {},{},{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
+        self.id = "V {}-{}-{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
         if build:
             self.build()
-
 
     def build(self):
         structure = np.zeros((len(self.points), 4), dtype=int)
@@ -87,8 +85,9 @@ class VoxelGrid(object):
         vector[:len(count)] = count
 
         self.vector = vector.reshape(self.n_z, self.n_y, self.n_x)
+        
+        return True
 
- 
     def plot(self, d=2, cmap="Oranges", axis=False):
 
         if d == 2:

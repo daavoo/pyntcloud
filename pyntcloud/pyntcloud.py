@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
 from .io import FORMATS_READERS, FORMATS_WRITERS
 from .plot import plot_points, DESCRIPTION
-from .scalar_fields import SF_NORMALS, SF_RGB, SF_NEIGHBOURHOOD, SF_OCTREE, ALL_SF
+from .scalar_fields import SF_NORMALS, SF_RGB, SF_NEIGHBOURHOOD, SF_OCTREE, SF_VOXELGRID, ALL_SF
 from .structures import KDTree, VoxelGrid, Octree, Neighbourhood
 
 
@@ -197,6 +197,7 @@ class PyntCloud(object):
                 self.points[id] = SF_NEIGHBOURHOOD[sf](n_hood)
             sf = id
 
+
         elif sf in SF_OCTREE.keys():
             level= kwargs["level"]
             octree = self.octrees[kwargs["octree"]]
@@ -205,6 +206,14 @@ class PyntCloud(object):
             id = octree.id + "-{}".format(kwargs["level"])
             self.points[id] = SF_OCTREE[sf](octree, kwargs["level"])
             sf = id
+
+
+        elif sf in SF_VOXELGRID.keys():
+            voxelgrid = self.voxelgrids[kwargs["voxelgrid"]]
+            id = voxelgrid.id + "-{}".format(sf)
+            self.points[id] = SF_VOXELGRID[sf](voxelgrid)
+            sf = id
+
 
         else:
             raise ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
