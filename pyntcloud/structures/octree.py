@@ -9,7 +9,7 @@ import pandas as pd
 
 class Octree(object):
     
-    def __init__(self, points, max_level=2, bb_cuboid=True, build=True):
+    def __init__(self, points, max_level=2, bb_cuboid=True, early_stop=True):
         self.points = points
         self.max_level= max_level
         self.structure = pd.DataFrame(np.zeros((self.points.shape[0], self.max_level), dtype=np.uint8))
@@ -25,11 +25,9 @@ class Octree(object):
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
         self.id = "O {}-{}".format(max_level, bb_cuboid)
-        
-        if build:
-            self.build()
 
-    def build(self, early_stop=True):
+        # BUILD
+
         level_ptp = np.ptp([self.xyzmin, self.xyzmax], axis=0) / 2
         mid_points = np.zeros_like(self.points)
         mid_points[:] = (self.xyzmin + self.xyzmax) / 2
@@ -51,7 +49,6 @@ class Octree(object):
                     self.structure = self.structure.ix[:,:i]
                     self.id = self.id.replace(str(self.max_level), str(i))
                     break
-        return True
     
     def get_level_as_sf(self, level):
         sf = np.arange(len(self.points))
@@ -62,17 +59,6 @@ class Octree(object):
             i+=1
 
         return sf
-
-    def query(self, level):
-        n_hood = [0] * len(self.points)
-
-        for g in self.structure.groupby([x for x in range(level)]).apply(lambda x: x.index.values).values:
-            for i in g:
-                copy = g.tolist()
-                copy.remove(i)
-                n_hood[i] = copy
-
-        return n_hood
 
 
 

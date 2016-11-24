@@ -18,7 +18,7 @@ SF_RGB = {
 'hsv' : (['H', 'S', 'V'], hsv)
 }
 
-SF_NEIGHBOURHOOD = {
+SF_EIGEN = {
 'eigen_values': (['e1', 'e2', 'e3'], eigen_values),
 'eigen_sum': eigen_sum,
 'omnivariance': omnivariance,

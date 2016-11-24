@@ -35,7 +35,6 @@ class VoxelGrid(object):
                     The bounding box is allowed to have dimensions of different sizes.
         """
         self.points = points
-
         xyzmin = np.min(points, axis=0) - 0.001
         xyzmax = np.max(points, axis=0) + 0.001
 
@@ -47,7 +46,6 @@ class VoxelGrid(object):
         
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
-
         segments = []
         shape = []
 
@@ -67,40 +65,34 @@ class VoxelGrid(object):
         self.n_z = x_y_z[2]
         self.id = "V {}-{}-{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
-        if build:
-            self.build()
+        # BUILD 
 
-    def build(self):
         structure = np.zeros((len(self.points), 4), dtype=int)
         structure[:,0] = np.searchsorted(self.segments[0], self.points[:,0]) - 1
         structure[:,1] = np.searchsorted(self.segments[1], self.points[:,1]) - 1
         structure[:,2] = np.searchsorted(self.segments[2], self.points[:,2]) - 1
         # i = ((y * n_x) + x) + (z * (n_x * n_y))
         structure[:,3] = ((structure[:,1] * self.n_x) + structure[:,0]) + (structure[:,2] * (self.n_x * self.n_y)) 
-        
         self.structure = pd.DataFrame(structure, columns=["voxel_x", "voxel_y", "voxel_z", "voxel_n"])
         
         vector = np.zeros(self.n_voxels)
         count = np.bincount(structure[:,3])
         vector[:len(count)] = count
+        self.feature_vector = vector.reshape(self.n_z, self.n_y, self.n_x)
 
-        self.vector = vector.reshape(self.n_z, self.n_y, self.n_x)
+    
+    def eigen_decomposition(self):
         
-        return True
-
     def plot(self, d=2, cmap="Oranges", axis=False):
 
         if d == 2:
             fig, axes= plt.subplots(int(np.ceil(self.n_z / 4)), 4, figsize=(8,8))
             plt.tight_layout()
-
             for i, ax in enumerate(axes.flat):
-                if i >= len(self.vector):
+                if i >= len(self.feature_vector):
                     break
-
-                im = ax.imshow(self.vector[i], cmap=cmap, interpolation="none")
+                im = ax.imshow(self.feature_vector[i], cmap=cmap, interpolation="none")
                 ax.set_title("Level " + str(i))
-
             fig.subplots_adjust(right=0.8)
             cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
             cbar = fig.colorbar(im, cax=cbar_ax)

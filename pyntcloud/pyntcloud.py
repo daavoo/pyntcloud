@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
 from .io import FORMATS_READERS, FORMATS_WRITERS
 from .plot import plot_points, DESCRIPTION
-from .scalar_fields import SF_NORMALS, SF_RGB, SF_NEIGHBOURHOOD, SF_OCTREE, SF_VOXELGRID, ALL_SF
+from .scalar_fields import SF_NORMALS, SF_RGB, SF_EIGEN, SF_OCTREE, SF_VOXELGRID, ALL_SF
 from .structures import KDTree, VoxelGrid, Octree, Neighbourhood
 
 
@@ -150,7 +150,7 @@ class PyntCloud(object):
             - 'hsv': [H, S, V]
             - 'relative_luminance'  
         
-        NEED NEIGHBOURHOOD
+        NEED EIGEN (OCTREE/VOXELGRID/KDTREE eigen_decomposition)
             - 'eigen_values': [{}-e1, {}-e2, {}-e3]   # {}: neighbourhood.id
             - 'eigen_sum'
             - 'omnivariance'
@@ -164,6 +164,12 @@ class PyntCloud(object):
         
         NEED OCTREE 
             - 'octree_level'
+
+        NEED VOXELGRID 
+            - 'voxel_x'
+            - 'voxel_y'
+            - 'voxel_z'
+            - 'voxel_n'
         """
         if sf in SF_NORMALS.keys():
             normals = self.points[["nx", "ny", "nz"]].values
@@ -229,8 +235,6 @@ class PyntCloud(object):
             - 'voxelgrid'
             - 'octree'
         
-        NEED KDTREE:
-            - 'neighbourhood'
         """
         if structure_name == 'kdtree':
             valid_args = {key: kwargs[key] for key in kwargs if key in signature(KDTree).parameters}  
@@ -246,16 +250,6 @@ class PyntCloud(object):
             valid_args = {key: kwargs[key] for key in kwargs if key in signature(Octree).parameters}  
             structure = Octree(self.xyz, **valid_args)
             self.octrees[structure.id] = structure
-        
-        elif structure_name == 'neighbourhood':
-            valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
-            if 'k' not in valid_args:
-                valid_args["k"] = 2
-            else:
-                # +1 because first neighbour is itself 
-                valid_args["k"] += 1
-            structure = Neighbourhood( self.kdtrees[kwargs["kdtree"]], **valid_args)
-            self.neighbourhoods[structure.id] = structure
         
         else:
             raise ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'octree', 'neighbourhood'")
