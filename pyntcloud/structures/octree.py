@@ -53,6 +53,7 @@ class Octree(object):
                 if less_than_2.any():
                     print("Stopping at level {}, less than 2 points in node".format(i))
                     self.structure = self.structure.ix[:,:i]
+                    self.id = self.id.replace(str(self.max_level), str(i))
                     break
     
     def get_level_as_sf(self, level):
