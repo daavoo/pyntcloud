@@ -55,19 +55,17 @@ class VoxelGrid(object):
             # note the +1 in num 
             if type(x_y_z[i]) is not int:
                 raise TypeError("x_y_z[{}] must be int".format(i))
+
             s, step = np.linspace(xyzmin[i], xyzmax[i], num=(x_y_z[i] + 1), retstep=True)
             segments.append(s)
             shape.append(step)
         
         self.segments = segments
-
         self.shape = shape
-
         self.n_voxels = x_y_z[0] * x_y_z[1] * x_y_z[2]
         self.n_x = x_y_z[0]
         self.n_y = x_y_z[1]
         self.n_z = x_y_z[2]
-        
         self.id = "V: {},{},{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
         if build:
@@ -75,20 +73,15 @@ class VoxelGrid(object):
 
 
     def build(self):
-
         structure = np.zeros((len(self.points), 4), dtype=int)
-
         structure[:,0] = np.searchsorted(self.segments[0], self.points[:,0]) - 1
-
         structure[:,1] = np.searchsorted(self.segments[1], self.points[:,1]) - 1
-
         structure[:,2] = np.searchsorted(self.segments[2], self.points[:,2]) - 1
-
         # i = ((y * n_x) + x) + (z * (n_x * n_y))
         structure[:,3] = ((structure[:,1] * self.n_x) + structure[:,0]) + (structure[:,2] * (self.n_x * self.n_y)) 
         
         self.structure = pd.DataFrame(structure, columns=["voxel_x", "voxel_y", "voxel_z", "voxel_n"])
-
+        
         vector = np.zeros(self.n_voxels)
         count = np.bincount(structure[:,3])
         vector[:len(count)] = count
@@ -99,14 +92,13 @@ class VoxelGrid(object):
     def plot(self, d=2, cmap="Oranges", axis=False):
 
         if d == 2:
-
             fig, axes= plt.subplots(int(np.ceil(self.n_z / 4)), 4, figsize=(8,8))
-
             plt.tight_layout()
 
-            for i,ax in enumerate(axes.flat):
+            for i, ax in enumerate(axes.flat):
                 if i >= len(self.vector):
                     break
+
                 im = ax.imshow(self.vector[i], cmap=cmap, interpolation="none")
                 ax.set_title("Level " + str(i))
 

@@ -31,8 +31,13 @@ SF_NEIGHBOURHOOD = {
 'verticality':verticality
 }
 
-ALL_SF = "  ".join(SF_NORMALS.keys()) + " " + \
-        "  ".join(SF_RGB.keys()) + " " + \
-        "  ".join(SF_NEIGHBOURHOOD.keys())
+SF_OCTREE = {
+'octree_level': octree_level
+}
+
+ALL_SF = "  ".join(SF_NORMALS.keys()) + "  " + \
+         "  ".join(SF_RGB.keys()) + "  " + \
+         "  ".join(SF_NEIGHBOURHOOD.keys()) + "  " + \
+         "  ".join(SF_OCTREE.keys())
 
 

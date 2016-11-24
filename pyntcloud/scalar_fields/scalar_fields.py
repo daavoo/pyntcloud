@@ -4,9 +4,8 @@
 import numpy as np
 
 
-####
-#### NEED NORMALS 
-####
+# NEED NORMALS 
+
 def inclination_deg(normals):
     return np.rad2deg(np.arccos(normals[:,-1]))
 
@@ -26,9 +25,8 @@ def orientation_rad(normals):
     return angle
 
 
-####
-#### NEED RGB
-####
+# NEED RGB
+
 def rgb_intensity(rgb):
     rgb_i = rgb / np.sum(rgb, axis=1, keepdims=True) 
     return rgb_i[:,0], rgb_i[:,1], rgb_i[:,2]
@@ -61,9 +59,8 @@ def hsv(rgb):
     
     return H, S, V 
 
-######################
-# NEED NEIGHBOURHOOD #
-######################
+
+# NEED NEIGHBOURHOOD
 
 def eigen_values(n_hood):
     return n_hood.eig_val1, n_hood.eig_val2, n_hood.eig_val3
@@ -108,4 +105,8 @@ def verticality(n_hood):
     return 1 - abs( evc3.dot([0,0,1]) )
 
 
+# NEED OCTREE
+
+def octree_level(octree, level):
+    return octree.get_level_as_sf(level)
 
