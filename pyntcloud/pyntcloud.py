@@ -9,55 +9,10 @@ from matplotlib import pyplot as plt
 
 from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
 from .io import FORMATS_READERS, FORMATS_WRITERS
-from .plot import plot_points
-from .scalar_fields import SF_NORMALS, SF_RGB, SF_NEIGHBOURHOOD, ALL_SF
+from .plot import plot_points, DESCRIPTION
+from .scalar_fields import SF_NORMALS, SF_RGB, SF_NEIGHBOURHOOD, SF_OCTREE, ALL_SF
 from .structures import KDTree, VoxelGrid, Octree, Neighbourhood
 
-
-### __repr__ method
-DESCRIPTION = """\
-PyntCloud
-=========\n
-{} points with {} scalar fields
-{} faces in mesh
-{} kdtrees
-{} neighbourhoods
-{} octrees
-{} voxelgrids
-{} filters\n
-Centroid: {}, {}, {}\n
-Other attributes:{}        
-"""
-
-### Constant Exceptions
-MUST_HAVE_POINTS = ValueError("There must be a 'points' key in the kwargs")
-MUST_HAVE_XYZ = ValueError("Points must have x, y and z coordinates")
-UNSUPPORTED_IN = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))
-UNSUPPORTED_OUT = ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
-UNSUPPORTED_SF = ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
-UNSUPPORTED_STRUCTURE = ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'neighbourhood'")
-UNSUPPORTED_FILTER = ValueError("Unsupported filter; supported filters are: "  + ALL_FILTERS )
-MUST_BE_DF = TypeError("Points argument is not a DataFrame")
-
-
-
-"""                                                                                                         
-,-.----.                                                                                                     
-\    /  \                                ___       ,----..     ,--,                                          
-|   :    \                             ,--.'|_    /   /   \  ,--.'|                                    ,---, 
-|   |  .\ :                   ,---,    |  | :,'  |   :     : |  | :       ,---.            ,--,      ,---.'| 
-.   :  |: |               ,-+-. /  |   :  : ' :  .   |  ;. / :  : '      '   ,'\         ,'_ /|      |   | : 
-|   |   \ :       .--,   ,--.'|'   | .;__,'  /   .   ; /--`  |  ' |     /   /   |   .--. |  | :      |   | | 
-|   : .   /     /_ ./|  |   |  ,"' | |  |   |    ;   | ;     '  | |    .   ; ,. : ,'_ /| :  . |    ,--.__| | 
-;   | |`-'   , ' , ' :  |   | /  | | :__,'| :    |   : |     |  | :    '   | |: : |  ' | |  . .   /   ,'   | 
-|   | ;     /___/ \: |  |   | |  | |   '  : |__  .   | '___  '  : |__  '   | .; : |  | ' |  | |  .   '  /  | 
-:   ' |      .  \  ' |  |   | |  |/    |  | '.'| '   ; : .'| |  | '.'| |   :    | :  | : ;  ; |  '   ; |:  | 
-:   : :       \  ;   :  |   | |--'     ;  :    ; '   | '/  : ;  :    ;  \   \  /  '  :  `--'   \ |   | '/  ' 
-|   | :        \  \  ;  |   |/         |  ,   /  |   :    /  |  ,   /    `----'   :  ,      .-./ |   :    :| 
-`---'.|         :  \  \ '---'           ---`-'    \   \ .'    ---`-'               `--`----'      \   \  /   
-  `---`          \  ' ;                            `---`                                           `----'    
-                  `--`                                                                                                                                                                                                                                                                                                                                                                    
-"""
 
 class PyntCloud(object):
     """ A Pythonic Point Cloud
@@ -66,7 +21,7 @@ class PyntCloud(object):
     def __init__(self, **kwargs):  
 
         if "points" not in kwargs:
-            raise MUST_HAVE_POINTS
+            raise ValueError("There must be a 'points' key in the kwargs")
         
         self.kdtrees = {}
         self.neighbourhoods = {}
@@ -94,13 +49,11 @@ class PyntCloud(object):
         
 
     def __repr__(self):
-
         others = []
         for name in self.__dict__:
             if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid", "xyz", "neighbourhoods", "filters"]:
                 others.append("\n\t " + name + ": " + str(type(name)))
         others = "".join(others)
-
         try:
             n_faces = len(self.mesh)
         except AttributeError:
@@ -114,8 +67,7 @@ class PyntCloud(object):
                                     len(self.voxelgrids),
                                     len(self.filters),
                                     self.centroid[0], self.centroid[1], self.centroid[2],
-                                    others                                    
-                                    )
+                                    others)
 
 
     @property
@@ -126,10 +78,10 @@ class PyntCloud(object):
     @points.setter
     def points(self, df):
         if not isinstance(df, pd.DataFrame):
-            raise MUST_BE_DF
+            raise TypeError("Points argument must be a DataFrame")
 
         elif not set(['x', 'y', 'z']).issubset(df.columns):
-            raise MUST_HAVE_XYZ
+            raise ValueError("Points must have x, y and z coordinates")
 
         self.__points = df
 
@@ -147,12 +99,11 @@ class PyntCloud(object):
         PyntCloud : object
             PyntCloud's instance, containing all elements in the file stored as
             PyntCloud's attributes
-
         """
         ext = filename.split(".")[-1].upper()
-
         if ext not in FORMATS_READERS.keys():
-            raise UNSUPPORTED_IN
+            raise ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))       
+
         else:
             return PyntCloud( **FORMATS_READERS[ext](filename) )
 
@@ -164,23 +115,18 @@ class PyntCloud(object):
         ----------
         filename : str
             Path to the file from wich the data will be readed
-
         """
-
         ext = filename.split(".")[-1].upper()
 
         if ext not in FORMATS_WRITERS.keys():
-            raise UNSUPPORTED_OUT
+            raise ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
 
         else:
             if "points" not in kwargs:
-                raise MUST_HAVE_POINTS
-
+                raise ValueError("There must be a 'points' key in the kwargs")
             required_args = [arg for arg in signature(FORMATS_WRITERS[ext]).parameters]
-
             if "kwargs" in required_args:
                 FORMATS_WRITERS[ext](filename, **kwargs)
-            
             else:
                 valid_args = {key: kwargs[key] for key in kwargs if key in required_args} 
                 FORMATS_WRITERS[ext](filename, **valid_args)
@@ -216,46 +162,47 @@ class PyntCloud(object):
         """
         if sf in SF_NORMALS.keys():
             normals = self.points[["nx", "ny", "nz"]].values
-
             if isinstance(SF_NORMALS[sf], tuple):
                 all_sf = SF_NORMALS[sf][1](normals)
-
                 for i, name in enumerate(SF_NORMALS[sf][0]):
                     self.points[name] = all_sf[i]
-
             else:
                 self.points[sf] = SF_NORMALS[sf](normals)
 
 
         elif sf in SF_RGB.keys():
             rgb = self.points[["red", "green", "blue"]].values.astype("f")
-
             if isinstance(SF_RGB[sf], tuple):
                 all_sf = SF_RGB[sf][1](normals)
-
                 for i, name in enumerate(SF_RGB[sf][0]):
                     self.points[name] = all_sf[i]
-
             else:
                 self.points[sf] = SF_RGB[sf](rgb)
 
         
         elif sf in SF_NEIGHBOURHOOD.keys():
-            n_hood = self.neighbourhoods[kwargs["n_hood"]]
-            
+            n_hood = self.neighbourhoods[kwargs["n_hood"]]          
             if isinstance(SF_NEIGHBOURHOOD[sf], tuple):
                 all_sf = SF_NEIGHBOURHOOD[sf][1](n_hood)
-
                 for i, name in enumerate(SF_NEIGHBOURHOOD[sf][0]):
                     id = n_hood.id + "-{}".format(name)
                     self.points[id] = all_sf[i]
-            
             else:
                 id = n_hood.id + "-{}".format(sf)
                 self.points[id] = SF_NEIGHBOURHOOD[sf](n_hood)
+
+
+        elif sf in SF_OCTREE.keys():
+            level= kwargs["level"]
+            octree = self.octrees[kwargs["octree"]]
+            if level > octree.max_level:
+                raise ValueError("The given level ({}) is higher than octree.max_level ({})".format(level, octree.max_level))
+            id = octree.id + "-{}".format(kwargs["level"])
+            self.points[id] = SF_OCTREE[sf](octree, kwargs["level"])
         
+
         else:
-            raise UNSUPPORTED_SF
+            raise ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
 
         return "Added: " + str(sf)
 
@@ -289,21 +236,17 @@ class PyntCloud(object):
             self.octrees[structure.id] = structure
         
         elif structure_name == 'neighbourhood':
-
             valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
-
             if 'k' not in valid_args:
                 valid_args["k"] = 2
             else:
                 # +1 because first neighbour is itself 
                 valid_args["k"] += 1
-            
             structure = Neighbourhood( self.kdtrees[kwargs["kdtree"]], **valid_args)
-
             self.neighbourhoods[structure.id] = structure
         
         else:
-            raise UNSUPPORTED_STRUCTURE
+            raise ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'octree', 'neighbourhood'")
         
         return "Added: " + str(structure_name) + " " +  structure.id 
 
@@ -337,7 +280,7 @@ class PyntCloud(object):
             self.filters["{}: {}".format(filter_name, filter_parameters)] = filter
         
         else:
-            raise UNSUPPORTED_FILTER
+            raise ValueError("Unsupported filter; supported filters are: "  + ALL_FILTERS )
 
 
         return "Added: " + str(filter_name)       
