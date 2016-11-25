@@ -116,7 +116,7 @@ class PyntCloud(object):
             PyntCloud's attributes
         """
         ext = filename.split(".")[-1].upper()
-        if ext not in FORMATS_READERS.keys():
+        if ext not in FORMATS_READERS:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_READERS)))       
 
         else:
@@ -134,17 +134,15 @@ class PyntCloud(object):
         """
         ext = filename.split(".")[-1].upper()
 
-        if ext not in FORMATS_WRITERS.keys():
+        if ext not in FORMATS_WRITERS:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_WRITERS)))
 
         else:
             if "points" not in kwargs:
                 raise ValueError("'points' must be in kwargs")
             required_args = [x for x in signature(FORMATS_WRITERS[ext]).parameters]
-
             if "kwargs" in required_args:
                 FORMATS_WRITERS[ext](filename, **kwargs)
-
             else:
                 valid_args = {x: kwargs[x] for x in kwargs if x in required_args} 
                 FORMATS_WRITERS[ext](filename, **valid_args)
@@ -155,7 +153,7 @@ class PyntCloud(object):
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
         """
-        if sf in SF_NORMALS.keys():
+        if sf in SF_NORMALS:
             normals = self.points[["nx", "ny", "nz"]].values
             if isinstance(SF_NORMALS[sf], tuple):
                 all_sf = SF_NORMALS[sf][1](normals)
@@ -164,7 +162,7 @@ class PyntCloud(object):
             else:
                 self.points[sf] = SF_NORMALS[sf](normals)
 
-        elif sf in SF_RGB.keys():
+        elif sf in SF_RGB:
             rgb = self.points[["red", "green", "blue"]].values.astype("f")
             if isinstance(SF_RGB[sf], tuple):
                 all_sf = SF_RGB[sf][1](rgb)
@@ -173,18 +171,18 @@ class PyntCloud(object):
             else:
                 self.points[sf] = SF_RGB[sf](rgb)
 
-        elif sf in SF_OCTREE.keys():
+        elif sf in SF_OCTREE:
             octree = self.octrees[kwargs["octree"]]
             level = kwargs["level"]
             name = "{}({},{})".format(sf, level, octree.id)
             self.points[name] = SF_OCTREE[sf](octree, kwargs["level"])
 
-        elif sf in SF_VOXELGRID.keys():
+        elif sf in SF_VOXELGRID:
             voxelgrid = self.voxelgrids[kwargs["voxelgrid"]]
             name = "{}({})".format(sf, voxelgrid.id)
             self.points[name] = SF_VOXELGRID[sf](voxelgrid)
 
-        elif sf in SF_KDTREE.keys():
+        elif sf in SF_KDTREE:
             kdtree = self.kdtrees[kwargs["kdtree"]]
             k = kwargs["k"]
             if isinstance(SF_KDTREE[sf], tuple):
@@ -195,6 +193,9 @@ class PyntCloud(object):
             else:
                 name = "{}({})".format(sf, kdtree.id)
                 self.points[name] = SF_KDTREE[sf](kdtree, k)
+
+        elif sf in SF_EIGENVALUES:
+            pass
 
         else:
             raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF))
@@ -215,7 +216,7 @@ class PyntCloud(object):
             'voxelgrid':(VoxelGrid, self.voxelgrids), 
             'octree':(Octree, self.octrees)
             }
-        if name in d.keys():
+        if name in d:
             valid_args = {x: kwargs[x] for x in kwargs if x in signature(d[name][0]).parameters}  
             structure = d[name][0](self.xyz, **valid_args)
             d[name][1][structure.id] = structure
@@ -237,14 +238,14 @@ class PyntCloud(object):
             - 'SOR'
             - 'ROR'
         """
-        if filter_name in F_NEIGHBOURHOOD.keys():
+        if filter_name in F_NEIGHBOURHOOD:
              n_hood = self.neighbourhoods[kwargs["n_hood"]]
              valid_args = {key: kwargs[key] for key in kwargs if key in F_NEIGHBOURHOOD[filter_name][0]} 
              filter, filter_parameter = F_NEIGHBOURHOOD[filter_name][1](n_hood, **valid_args)
              id = n_hood.id + "-{}: {}".format(filter_name, filter_parameter)
              self.filters[id] = filter  
         
-        elif filter_name in F_XYZ.keys():
+        elif filter_name in F_XYZ:
             valid_args = {x: kwargs[x] for x in kwargs if x in F_XYZ[filter_name][0]} 
             filter, filter_parameters= F_XYZ[filter_name][1](self.xyz, **valid_args)
             self.filters["{}: {}".format(filter_name, filter_parameters)] = filter
