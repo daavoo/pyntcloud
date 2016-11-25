@@ -24,7 +24,7 @@ class Octree(object):
 
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
-        self.id = "O {}-{}".format(max_level, bb_cuboid)
+        self.id = "O({},{})".format(max_level, bb_cuboid)
 
         # BUILD
 

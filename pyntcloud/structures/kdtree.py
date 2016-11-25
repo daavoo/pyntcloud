@@ -12,7 +12,7 @@ class KDTree(cKDTree):
     # around different KDTree implementations: scipy, flann, etc.
 
     def __init__(self, points, leafsize=16):
-        self.id = "K {}".format( self.leafsize)
+        self.id = "K({})".format( self.leafsize)
         super().__init__(points, leafsize=leafsize)
         
 
@@ -21,8 +21,8 @@ class KDTree(cKDTree):
         print("Querying KDTREE...")
 
         valid_args = {key: kwargs[key] for key in kwargs if key in ['k', 'eps', 'p', 'distance_upper_bound']} 
-            if 'k' not in valid_args:
-                valid_args["k"] = 2
+        if 'k' not in valid_args:
+            valid_args["k"] = 2
         d, i = kdtree.query(kdtree.data, k=k, n_jobs=-1, **valid_args)
         # discard self neighbour with [:,1:]
         distances = d[:,1:]

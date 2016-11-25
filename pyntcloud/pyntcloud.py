@@ -10,8 +10,14 @@ from matplotlib import pyplot as plt
 from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
 from .io import FORMATS_READERS, FORMATS_WRITERS
 from .plot import plot_points, DESCRIPTION
-from .scalar_fields import SF_NORMALS, SF_RGB, SF_EIGEN, SF_OCTREE, SF_VOXELGRID, ALL_SF
-from .structures import KDTree, VoxelGrid, Octree, Neighbourhood
+from .scalar_fields import ( 
+    SF_NORMALS, SF_RGB, 
+    SF_OCTREE, SF_VOXELGRID, SF_KDTREE,
+    SF_OCTREE_LEVEL, SF_VOXEL_N,
+    SF_EGIENVALUES,
+    SF_ ALL_SF
+)
+from .structures import KDTree, VoxelGrid, Octree
 
 
 class PyntCloud(object):
@@ -138,93 +144,40 @@ class PyntCloud(object):
             
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
-
-        NEED NORMALS 
-            - 'inclination_deg'
-            - 'inclination_rad'
-            - 'orientation_deg'
-            - 'orientation_rad'
-
-        NEED RGB 
-            - 'rgb_intensity': [Ri, Gi, Bi]
-            - 'hsv': [H, S, V]
-            - 'relative_luminance'  
-        
-        NEED EIGEN (OCTREE/VOXELGRID/KDTREE eigen_decomposition)
-            - 'eigen_values': [{}-e1, {}-e2, {}-e3]   # {}: neighbourhood.id
-            - 'eigen_sum'
-            - 'omnivariance'
-            - 'eigenentropy'
-            - 'anisotropy'
-            - 'planarity'
-            - 'linearity'
-            - 'curvature'
-            - 'sphericity'
-            - 'verticality'     
-        
-        NEED OCTREE 
-            - 'octree_level'
-
-        NEED VOXELGRID 
-            - 'voxel_x'
-            - 'voxel_y'
-            - 'voxel_z'
-            - 'voxel_n'
         """
         if sf in SF_NORMALS.keys():
             normals = self.points[["nx", "ny", "nz"]].values
             if isinstance(SF_NORMALS[sf], tuple):
                 all_sf = SF_NORMALS[sf][1](normals)
-                for i, name in enumerate(SF_NORMALS[sf][0]):
+                for n, name in enumerate(SF_NORMALS[sf][0]):
                     self.points[name] = all_sf[i]
             else:
                 self.points[sf] = SF_NORMALS[sf](normals)
 
-
         elif sf in SF_RGB.keys():
             rgb = self.points[["red", "green", "blue"]].values.astype("f")
             if isinstance(SF_RGB[sf], tuple):
-                all_sf = SF_RGB[sf][1](normals)
+                all_sf = SF_RGB[sf][1](rgb)
                 for i, name in enumerate(SF_RGB[sf][0]):
                     self.points[name] = all_sf[i]
             else:
                 self.points[sf] = SF_RGB[sf](rgb)
 
-        
-        elif sf in SF_NEIGHBOURHOOD.keys():
-            n_hood = self.neighbourhoods[kwargs["n_hood"]]          
-            if isinstance(SF_NEIGHBOURHOOD[sf], tuple):
-                all_sf = SF_NEIGHBOURHOOD[sf][1](n_hood)
-                for i, name in enumerate(SF_NEIGHBOURHOOD[sf][0]):
-                    id = n_hood.id + "-{}".format(name)
-                    self.points[id] = all_sf[i]
-            else:
-                id = n_hood.id + "-{}".format(sf)
-                self.points[id] = SF_NEIGHBOURHOOD[sf](n_hood)
-            sf = id
-
-
         elif sf in SF_OCTREE.keys():
-            level= kwargs["level"]
             octree = self.octrees[kwargs["octree"]]
-            if level > octree.max_level:
-                raise ValueError("The given level ({}) is higher than octree.max_level ({})".format(level, octree.max_level))
-            id = octree.id + "-{}".format(kwargs["level"])
-            self.points[id] = SF_OCTREE[sf](octree, kwargs["level"])
-            sf = id
-
+            level = kwargs["level"]
+            name = "{}({},{})".format(sf, level, octree.id)
+            self.points[name] = SF_OCTREE[sf](octree, kwargs["level"])
 
         elif sf in SF_VOXELGRID.keys():
             voxelgrid = self.voxelgrids[kwargs["voxelgrid"]]
-            id = voxelgrid.id + "-{}".format(sf)
-            self.points[id] = SF_VOXELGRID[sf](voxelgrid)
-            sf = id
-
+            name = "{}({})".format(sf, voxelgrid.id)
+            self.points[name] = SF_VOXELGRID[sf](voxelgrid)
 
         else:
-            raise ValueError("Unsupported scalar field; supported scalar fields are: "  + ALL_SF )
+            raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF ))
 
-        return "Added: " + str(sf)
+        return True
 
     
     def add_structure(self, structure_name, **kwargs):

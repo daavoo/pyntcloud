@@ -63,7 +63,7 @@ class VoxelGrid(object):
         self.n_x = x_y_z[0]
         self.n_y = x_y_z[1]
         self.n_z = x_y_z[2]
-        self.id = "V {}-{}-{}-{}".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
+        self.id = "V([{},{},{}],{})".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
         # BUILD 
 
@@ -80,8 +80,6 @@ class VoxelGrid(object):
         vector[:len(count)] = count
         self.feature_vector = vector.reshape(self.n_z, self.n_y, self.n_x)
 
-    
-    def eigen_decomposition(self):
         
     def plot(self, d=2, cmap="Oranges", axis=False):
 

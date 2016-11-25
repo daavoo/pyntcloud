@@ -18,19 +18,6 @@ SF_RGB = {
 'hsv' : (['H', 'S', 'V'], hsv)
 }
 
-SF_EIGEN = {
-'eigen_values': (['e1', 'e2', 'e3'], eigen_values),
-'eigen_sum': eigen_sum,
-'omnivariance': omnivariance,
-'eigenentropy': eigenentropy,
-'anisotropy': anisotropy,
-'planarity': planarity,
-'linearity': linearity,
-'curvature': curvature,
-'sphericity': sphericity,
-'verticality':verticality
-}
-
 SF_OCTREE = {
 'octree_level': octree_level
 }
@@ -42,10 +29,41 @@ SF_VOXELGRID = {
 'voxel_n': voxel_n
 }
 
-ALL_SF = "  ".join(SF_NORMALS.keys()) + "  " + \
-         "  ".join(SF_RGB.keys()) + "  " + \
-         "  ".join(SF_NEIGHBOURHOOD.keys()) + "  " + \
-         "  ".join(SF_OCTREE.keys()) + "  " + \
-         "  ".join(SF_VOXELGRID.keys())
+SF_KDTREE = {
+'eigen_kdtree': [e1, e2, e3],
+'eigen_full_kdtree': [e1, e2, e3, ev1, ev2, ev3]
+}
+
+SF_OCTREE_LEVEL = {
+'eigen_octree_level': [e1, e2, e3],
+'eigen_full_octree_level': [e1, e2, e3, ev1, ev2, ev3]
+}
+
+SF_VOXEL_N = {
+'eigen_voxel_n': [e1, e2, e3],
+'eigen_full_voxel_n': [e1, e2, e3, ev1, ev2, ev3]
+}
+
+SF_EIGENVALUES = {
+'eigen_sum': eigen_sum,
+'omnivariance': omnivariance,
+'eigenentropy': eigenentropy,
+'anisotropy': anisotropy,
+'planarity': planarity,
+'linearity': linearity,
+'curvature': curvature,
+'sphericity': sphericity,
+'verticality':verticality
+}
+
+ALL_SF = "{}  {}  {}  {}  {}  {}  {}".format(
+    SF_NORMALS.keys(),
+    SF_RGB.keys()),
+    SF_OCTREE.keys(),
+    SF_VOXELGRID.keys(),
+    SF_KDTREE.keys(),
+    SF_OCTREE_LEVEL.keys(),
+    SF_VOXEL_N.keys(),
+    SF_EIGENVALUES.keys())
 
 
