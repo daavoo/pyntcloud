@@ -28,7 +28,7 @@ class PyntCloud(object):
 
         if "points" not in kwargs:
             raise ValueError("There must be a 'points' key in the kwargs")
-        
+
         self.kdtrees = {}
         self.neighbourhoods = {}
         self.octrees = {}
@@ -49,19 +49,27 @@ class PyntCloud(object):
             else:
                 setattr(self, key, kwargs[key])
         
-        # store xyz to share memory along structures
+        # store raw xyz to share memory along structures
         self.xyz = self.points[["x", "y", "z"]].values
         self.centroid = np.mean(self.xyz, axis=0)
         
 
     def __repr__(self):
-        others = []
-        for name in self.__dict__:
-            if name not in ["_PyntCloud__points", "mesh", "kdtrees", "octrees", "voxelgrids", "centroid", "xyz", "neighbourhoods", "filters"]:
-                others.append("\n\t " + name + ": " + str(type(name)))
-        others = "".join(others)
+        default = [
+            "_PyntCloud__points",
+            "mesh",
+            "kdtrees",
+            "octrees",
+            "voxelgrids",
+            "centroid", 
+            "xyz", 
+            "filters"
+        ]
+        others = ["\n\t {}: {}".format(x, str(type(x))) for x in self.__dict__ if x not in default]
+
         try:
             n_faces = len(self.mesh)
+
         except AttributeError:
             n_faces = 0
 
@@ -73,7 +81,7 @@ class PyntCloud(object):
                                     len(self.voxelgrids),
                                     len(self.filters),
                                     self.centroid[0], self.centroid[1], self.centroid[2],
-                                    others)
+                                    "".join(others))
 
 
     @property
@@ -109,7 +117,7 @@ class PyntCloud(object):
         """
         ext = filename.split(".")[-1].upper()
         if ext not in FORMATS_READERS.keys():
-            raise ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_READERS.keys()))       
+            raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_READERS)))       
 
         else:
             return PyntCloud( **FORMATS_READERS[ext](filename) )
@@ -127,16 +135,18 @@ class PyntCloud(object):
         ext = filename.split(".")[-1].upper()
 
         if ext not in FORMATS_WRITERS.keys():
-            raise ValueError("Unsupported file format; supported formats are: "  + "  ".join(FORMATS_WRITERS.keys()))
+            raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_WRITERS)))
 
         else:
             if "points" not in kwargs:
-                raise ValueError("There must be a 'points' key in the kwargs")
-            required_args = [arg for arg in signature(FORMATS_WRITERS[ext]).parameters]
+                raise ValueError("'points' must be in kwargs")
+            required_args = [x for x in signature(FORMATS_WRITERS[ext]).parameters]
+
             if "kwargs" in required_args:
                 FORMATS_WRITERS[ext](filename, **kwargs)
+
             else:
-                valid_args = {key: kwargs[key] for key in kwargs if key in required_args} 
+                valid_args = {x: kwargs[x] for x in kwargs if x in required_args} 
                 FORMATS_WRITERS[ext](filename, **valid_args)
 
         return True
@@ -158,8 +168,8 @@ class PyntCloud(object):
             rgb = self.points[["red", "green", "blue"]].values.astype("f")
             if isinstance(SF_RGB[sf], tuple):
                 all_sf = SF_RGB[sf][1](rgb)
-                for i, name in enumerate(SF_RGB[sf][0]):
-                    self.points[name] = all_sf[i]
+                for n, name in enumerate(SF_RGB[sf][0]):
+                    self.points[name] = all_sf[n]
             else:
                 self.points[sf] = SF_RGB[sf](rgb)
 
@@ -174,8 +184,20 @@ class PyntCloud(object):
             name = "{}({})".format(sf, voxelgrid.id)
             self.points[name] = SF_VOXELGRID[sf](voxelgrid)
 
+        elif sf in SF_KDTREE.keys():
+            kdtree = self.kdtrees[kwargs["kdtree"]]
+            k = kwargs["k"]
+            if isinstance(SF_KDTREE[sf], tuple):
+                all_sf = SF_KDTREE[sf][1](kdtree, k)
+                for n, name in enumerate(SF_KDTREE[sf][0]):
+                    name = "{}({})".format(name, kdtree.id)
+                    self.points[name] = all_sf[n]
+            else:
+                name = "{}({})".format(sf, kdtree.id)
+                self.points[name] = SF_KDTREE[sf](kdtree, k)
+
         else:
-            raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF ))
+            raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF))
 
         return True
 
@@ -188,17 +210,20 @@ class PyntCloud(object):
             - 'voxelgrid'
             - 'octree'
         """
-        d = {'kdtree':(KDTree, self.kdtrees), 'voxelgrid':(VoxelGrid, self.voxelgrids), 'octree':(Octree, self.octrees)}
-
+        d = {
+            'kdtree':(KDTree, self.kdtrees),
+            'voxelgrid':(VoxelGrid, self.voxelgrids), 
+            'octree':(Octree, self.octrees)
+            }
         if name in d.keys():
-            valid_args = {key: kwargs[key] for key in kwargs if key in signature(d[name][0]).parameters}  
+            valid_args = {x: kwargs[x] for x in kwargs if x in signature(d[name][0]).parameters}  
             structure = d[name][0](self.xyz, **valid_args)
             d[name][1][structure.id] = structure
 
         else:
-            raise ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'octree'")
+            raise ValueError("Unsupported structure; supported structures are: {}".format(list(d)))
         
-        return "Added: " + str(name) + " " +  structure.id 
+        return True 
 
 
     def add_filter(self, filter_name, **kwargs):
@@ -220,22 +245,22 @@ class PyntCloud(object):
              self.filters[id] = filter  
         
         elif filter_name in F_XYZ.keys():
-            valid_args = {key: kwargs[key] for key in kwargs if key in F_XYZ[filter_name][0]} 
+            valid_args = {x: kwargs[x] for x in kwargs if x in F_XYZ[filter_name][0]} 
             filter, filter_parameters= F_XYZ[filter_name][1](self.xyz, **valid_args)
             self.filters["{}: {}".format(filter_name, filter_parameters)] = filter
         
         else:
-            raise ValueError("Unsupported filter; supported filters are: "  + ALL_FILTERS )
+            raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS))
 
 
-        return "Added: " + str(filter_name)       
+        return True      
     
     
     def apply_filter(self, filter_name):
         return
 
 
-    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None ):
+    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None):
         
         try:
             colors = self.points[sf].values
@@ -244,6 +269,7 @@ class PyntCloud(object):
         
         if sf == ["red", "green", "blue"] and colors is not None:
             colors = colors/255
+
         elif colors is not None:
             s_m = plt.cm.ScalarMappable(cmap=cmap)
             colors = s_m.to_rgba(colors)[:,:-1]
@@ -256,6 +282,12 @@ class PyntCloud(object):
         else:
             xyz = self.xyz
 
-        return plot_points(xyz=xyz, colors=colors, size=size, axis=axis, output_name=output_name)
+        return plot_points(
+            xyz=xyz,
+            colors=colors, 
+            size=size, 
+            axis=axis, 
+            output_name=output_name
+            )
 
     

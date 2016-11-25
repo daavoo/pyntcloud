@@ -85,13 +85,17 @@ def voxel_n(voxelgrid):
 
 # NEED KDTREE
 
-def eigen_kdtree(kdtree):
-    return kdtree.eigen_decompomposition()[:3]
+def eigen_kdtree(kdtree, k):
+    return kdtree.eigen_decomposition(k)[:3]
 
-def eigen_full_kdtree(kdtree):
-    return kdtree.eigen_decompomposition()
+def eigen_full_kdtree(kdtree, k):
+    e1, e2, e3, ev1, ev2, ev3 = kdtree.eigen_decomposition(k)
+    ev1 = ev1.tolist()
+    ev2 = ev2.tolist()
+    ev3 = ev3.tolist()
+    return e1, e2, e3, ev1, ev2, ev3
 
-    
+
 # NEED EIGENVALUES
 
 def eigen_sum(structure):

@@ -57,14 +57,14 @@ SF_EIGENVALUES = {
 }
 
 ALL_SF = "{}  {}  {}  {}  {}  {}  {}".format(
-    SF_NORMALS.keys(),
-    SF_RGB.keys(),
-    SF_OCTREE.keys(),
-    SF_VOXELGRID.keys(),
-    SF_KDTREE.keys(),
-    SF_OCTREE_LEVEL.keys(),
-    SF_VOXEL_N.keys(),
-    SF_EIGENVALUES.keys()
+    list(SF_NORMALS),
+    list(SF_RGB),
+    list(SF_OCTREE),
+    list(SF_VOXELGRID),
+    list(SF_KDTREE),
+    list(SF_OCTREE_LEVEL),
+    list(SF_VOXEL_N),
+    list(SF_EIGENVALUES)
 )
 
 
