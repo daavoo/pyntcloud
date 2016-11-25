@@ -30,18 +30,18 @@ SF_VOXELGRID = {
 }
 
 SF_KDTREE = {
-'eigen_kdtree': [e1, e2, e3],
-'eigen_full_kdtree': [e1, e2, e3, ev1, ev2, ev3]
+'eigen_kdtree': ['e1', 'e2', 'e3'],
+'eigen_full_kdtree': ['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3']
 }
 
 SF_OCTREE_LEVEL = {
-'eigen_octree_level': [e1, e2, e3],
-'eigen_full_octree_level': [e1, e2, e3, ev1, ev2, ev3]
+'eigen_octree_level': ['e1', 'e2', 'e3'],
+'eigen_full_octree_level': ['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3']
 }
 
 SF_VOXEL_N = {
-'eigen_voxel_n': [e1, e2, e3],
-'eigen_full_voxel_n': [e1, e2, e3, ev1, ev2, ev3]
+'eigen_voxel_n': ['e1', 'e2', 'e3'],
+'eigen_full_voxel_n': ['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3']
 }
 
 SF_EIGENVALUES = {
@@ -58,12 +58,13 @@ SF_EIGENVALUES = {
 
 ALL_SF = "{}  {}  {}  {}  {}  {}  {}".format(
     SF_NORMALS.keys(),
-    SF_RGB.keys()),
+    SF_RGB.keys(),
     SF_OCTREE.keys(),
     SF_VOXELGRID.keys(),
     SF_KDTREE.keys(),
     SF_OCTREE_LEVEL.keys(),
     SF_VOXEL_N.keys(),
-    SF_EIGENVALUES.keys())
+    SF_EIGENVALUES.keys()
+)
 
 

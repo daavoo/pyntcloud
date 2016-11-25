@@ -14,8 +14,8 @@ from .scalar_fields import (
     SF_NORMALS, SF_RGB, 
     SF_OCTREE, SF_VOXELGRID, SF_KDTREE,
     SF_OCTREE_LEVEL, SF_VOXEL_N,
-    SF_EGIENVALUES,
-    SF_ ALL_SF
+    SF_EIGENVALUES,
+    ALL_SF
 )
 from .structures import KDTree, VoxelGrid, Octree
 
@@ -180,34 +180,25 @@ class PyntCloud(object):
         return True
 
     
-    def add_structure(self, structure_name, **kwargs):
+    def add_structure(self, name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
 
         NEED XYZ:
             - 'kdtree'
             - 'voxelgrid'
             - 'octree'
-        
         """
-        if structure_name == 'kdtree':
-            valid_args = {key: kwargs[key] for key in kwargs if key in signature(KDTree).parameters}  
-            structure = KDTree(self.xyz, **valid_args)
-            self.kdtrees[structure.id] = structure
+        d = {'kdtree':(KDTree, self.kdtrees), 'voxelgrid':(VoxelGrid, self.voxelgrids), 'octree':(Octree, self.octrees)}
 
-        elif structure_name == 'voxelgrid':            
-            valid_args = {key: kwargs[key] for key in kwargs if key in signature(VoxelGrid).parameters}  
-            structure = VoxelGrid(self.xyz, **valid_args)
-            self.voxelgrids[structure.id] = structure
+        if name in d.keys():
+            valid_args = {key: kwargs[key] for key in kwargs if key in signature(d[name][0]).parameters}  
+            structure = d[name][0](self.xyz, **valid_args)
+            d[name][1][structure.id] = structure
 
-        elif structure_name == 'octree':
-            valid_args = {key: kwargs[key] for key in kwargs if key in signature(Octree).parameters}  
-            structure = Octree(self.xyz, **valid_args)
-            self.octrees[structure.id] = structure
-        
         else:
-            raise ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'octree', 'neighbourhood'")
+            raise ValueError("Unsupported structure; supported structures are: 'kdtree', 'voxelgrid', 'octree'")
         
-        return "Added: " + str(structure_name) + " " +  structure.id 
+        return "Added: " + str(name) + " " +  structure.id 
 
 
     def add_filter(self, filter_name, **kwargs):
