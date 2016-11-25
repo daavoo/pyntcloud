@@ -30,8 +30,8 @@ SF_VOXELGRID = {
 }
 
 SF_KDTREE = {
-'eigen_kdtree': ['e1', 'e2', 'e3'],
-'eigen_full_kdtree': ['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3']
+'eigen_kdtree': (['e1', 'e2', 'e3'], eigen_kdtree),
+'eigen_full_kdtree': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_kdtree)
 }
 
 SF_OCTREE_LEVEL = {

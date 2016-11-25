@@ -58,6 +58,40 @@ def hsv(rgb):
     return H, S, V 
 
 
+# NEED OCTREE
+
+def octree_level(octree, level):
+    if level > octree.max_level:
+        raise ValueError(
+            "The given level ({}) is higher than \
+            octree.max_level ({})".format(level, octree.max_level))
+    return octree.get_level_as_sf(level)
+
+
+# NEED VOXELGRID
+
+def voxel_x(voxelgrid):
+    return voxelgrid.structure.voxel_x
+
+def voxel_y(voxelgrid):
+    return voxelgrid.structure.voxel_y
+
+def voxel_z(voxelgrid):
+    return voxelgrid.structure.voxel_z
+
+def voxel_n(voxelgrid):
+    return voxelgrid.structure.voxel_n
+
+
+# NEED KDTREE
+
+def eigen_kdtree(kdtree):
+    return kdtree.eigen_decompomposition()[:3]
+
+def eigen_full_kdtree(kdtree):
+    return kdtree.eigen_decompomposition()
+
+    
 # NEED EIGENVALUES
 
 def eigen_sum(structure):
@@ -100,25 +134,5 @@ def verticality(structure):
     return 1 - abs( evc3.dot([0,0,1]) )
 
 
-# NEED OCTREE
 
-def octree_level(octree, level):
-    if level > octree.max_level:
-        raise ValueError("The given level ({}) is higher than octree.max_level ({})".format(level, octree.max_level))
-    return octree.get_level_as_sf(level)
-
-
-# NEED VOXELGRID
-
-def voxel_x(voxelgrid):
-    return voxelgrid.structure.voxel_x
-
-def voxel_y(voxelgrid):
-    return voxelgrid.structure.voxel_y
-
-def voxel_z(voxelgrid):
-    return voxelgrid.structure.voxel_z
-
-def voxel_n(voxelgrid):
-    return voxelgrid.structure.voxel_n
 
