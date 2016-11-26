@@ -30,7 +30,6 @@ class PyntCloud(object):
             raise ValueError("There must be a 'points' key in the kwargs")
 
         self.kdtrees = {}
-        self.neighbourhoods = {}
         self.octrees = {}
         self.voxelgrids = {}
         self.filters = {}
@@ -38,8 +37,6 @@ class PyntCloud(object):
         for key in kwargs:
             if "kdtrees" in key:
                 self.kdtrees = kwargs[key]
-            elif "neighbourhoods" in key:
-                self.neighbourhoods = kwargs[key]
             elif "octrees" in key:
                 self.octrees = kwargs[key]
             elif "voxelgrids" in key:
@@ -73,15 +70,15 @@ class PyntCloud(object):
         except AttributeError:
             n_faces = 0
 
-        return DESCRIPTION.format(  len(self.points), len(self.points.columns),
-                                    n_faces,
-                                    len(self.kdtrees),
-                                    len(self.neighbourhoods),
-                                    len(self.octrees),
-                                    len(self.voxelgrids),
-                                    len(self.filters),
-                                    self.centroid[0], self.centroid[1], self.centroid[2],
-                                    "".join(others))
+        return DESCRIPTION.format(  
+            len(self.points), len(self.points.columns),
+            n_faces,
+            len(self.kdtrees),
+            len(self.octrees),
+            len(self.voxelgrids),
+            len(self.filters),
+            self.centroid[0], self.centroid[1], self.centroid[2],
+            "".join(others))
 
 
     @property
@@ -116,11 +113,12 @@ class PyntCloud(object):
             PyntCloud's attributes
         """
         ext = filename.split(".")[-1].upper()
+        
         if ext not in FORMATS_READERS:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_READERS)))       
 
         else:
-            return PyntCloud( **FORMATS_READERS[ext](filename) )
+            return PyntCloud(**FORMATS_READERS[ext](filename))
 
 
     @classmethod
@@ -193,9 +191,12 @@ class PyntCloud(object):
             else:
                 name = "{}({})".format(sf, kdtree.id)
                 self.points[name] = SF_KDTREE[sf](kdtree, k)
-
+        
         elif sf in SF_EIGENVALUES:
-            pass
+            ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
+            eigen_values = self.points[ids].values
+            name = "{}({})".format(sf, kwargs["id"])
+            self.points[name] = SF_EIGENVALUES[sf](eigen_values)
 
         else:
             raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF))
@@ -216,6 +217,7 @@ class PyntCloud(object):
             'voxelgrid':(VoxelGrid, self.voxelgrids), 
             'octree':(Octree, self.octrees)
             }
+
         if name in d:
             valid_args = {x: kwargs[x] for x in kwargs if x in signature(d[name][0]).parameters}  
             structure = d[name][0](self.xyz, **valid_args)
@@ -265,6 +267,7 @@ class PyntCloud(object):
         
         try:
             colors = self.points[sf].values
+
         except:
             colors = None
         
@@ -280,6 +283,7 @@ class PyntCloud(object):
             xyz = self.xyz[mask]
             if colors is not None:
                 colors = colors[mask]
+
         else:
             xyz = self.xyz
 

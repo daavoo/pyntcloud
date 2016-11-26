@@ -52,8 +52,7 @@ SF_EIGENVALUES = {
 'planarity': planarity,
 'linearity': linearity,
 'curvature': curvature,
-'sphericity': sphericity,
-'verticality':verticality
+'sphericity': sphericity
 }
 
 ALL_SF = "{}  {}  {}  {}  {}  {}  {}".format(

@@ -98,44 +98,38 @@ def eigen_full_kdtree(kdtree, k):
 
 # NEED EIGENVALUES
 
-def eigen_sum(structure):
-    ev1, ev2, ev3 = structure.eig_val1, structure.eig_val2, structure.eig_val3
-    return ev1 + ev2 + ev3
+def eigen_sum(ev):
+    return ev[:,0] + ev[:,1] + ev[:,2]
 
-def omnivariance(structure):
-    ev1, ev2, ev3 = structure.eig_val1, structure.eig_val2, structure.eig_val3
-    return (ev1 * ev2 * ev3) ** (1/3)
+def omnivariance(ev):
+    return (ev[:,0] * ev[:,1] * ev[:,2]) ** (1/3)
 
-def eigenentropy(structure):
-    ev = structure.eig_val1, structure.eig_val2, structure.eig_val3
+def eigenentropy(ev):
     result = np.zeros_like(eig_val1)
     for i in range(3):
-        result += ev[i] * np.log(ev[i])
+        result += ev[:,i] * np.log(ev[:,i])
     return - result
 
-def anisotropy(structure):
-    ev1, ev3 = structure.eig_val1, structure.eig_val3
-    return (ev1 - ev3) / ev1
+def anisotropy(ev):
+    return (ev[:,0] - ev[:,2]) / ev[:,0]
 
-def planarity(structure):
-    ev1, ev2, ev3 = structure.eig_val1, structure.eig_val2, structure.eig_val3
-    return (ev2 - ev3) / ev1
+def planarity(ev):
+    return (ev[:,1] - ev[:,2]) / ev[:,0]
 
-def linearity(structure):
-    ev1, ev2, ev3 = structure.eig_val1, structure.eig_val2, structure.eig_val3
-    return (ev1 - ev2) / ev1
+def linearity(ev):
+    return (ev[:,0] - ev[:,1]) / ev[:,0]
 
-def curvature(structure):
-    ev1, ev2, ev3 = structure.eig_val1, structure.eig_val2, structure.eig_val3
-    return ev3 / (ev1 + ev2 + ev3)
+def curvature(ev):
+    return ev[:,2] / (ev[:,0] + ev[:,1] + ev[:,2])
 
-def sphericity(structure):
-    ev1, ev3 = structure.eig_val1, structure.eig_val3
-    return ev3 / ev1
+def sphericity(ev):
+    return ev[:,2] / ev[:,0] 
 
-def verticality(structure):
-    evc3 = structure.eig_vec3
-    return 1 - abs( evc3.dot([0,0,1]) )
+
+# NEED EIGEN_VECTOR
+
+def verticality(evec):
+    return 1 - abs( evec[:,2].dot([0,0,1]) )
 
 
 

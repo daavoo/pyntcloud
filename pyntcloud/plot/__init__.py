@@ -8,7 +8,6 @@ PyntCloud
 {} points with {} scalar fields
 {} faces in mesh
 {} kdtrees
-{} neighbourhoods
 {} octrees
 {} voxelgrids
 {} filters
