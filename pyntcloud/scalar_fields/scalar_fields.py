@@ -100,13 +100,14 @@ def eigen_full_kdtree(kdtree, k):
 
 def eigen_octree_level(xyz_ol, ol):
     out = np.zeros((xyz_ol.shape[0], 3))
-    for name, group in asa.groupby(ol):
+    for name, group in xyz_ol.groupby(ol):
         e, ev = np.linalg.eig(np.cov(group.values[:,:-1].T))
         idx = e.argsort()[::-1] 
         e = e[idx]
         out[group.index.values] = e
 
     return out[:,0], out[:,1], out[:,2]
+
 
 # NEED EIGENVALUES
 
