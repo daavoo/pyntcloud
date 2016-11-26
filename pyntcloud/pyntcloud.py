@@ -155,8 +155,8 @@ class PyntCloud(object):
             normals = self.points[["nx", "ny", "nz"]].values
             if isinstance(SF_NORMALS[sf], tuple):
                 all_sf = SF_NORMALS[sf][1](normals)
-                for n, name in enumerate(SF_NORMALS[sf][0]):
-                    self.points[name] = all_sf[i]
+                for n, i in enumerate(SF_NORMALS[sf][0]):
+                    self.points[i] = all_sf[i]
             else:
                 self.points[sf] = SF_NORMALS[sf](normals)
 
@@ -164,8 +164,8 @@ class PyntCloud(object):
             rgb = self.points[["red", "green", "blue"]].values.astype("f")
             if isinstance(SF_RGB[sf], tuple):
                 all_sf = SF_RGB[sf][1](rgb)
-                for n, name in enumerate(SF_RGB[sf][0]):
-                    self.points[name] = all_sf[n]
+                for n, i in enumerate(SF_RGB[sf][0]):
+                    self.points[i] = all_sf[n]
             else:
                 self.points[sf] = SF_RGB[sf](rgb)
 
@@ -185,13 +185,25 @@ class PyntCloud(object):
             k = kwargs["k"]
             if isinstance(SF_KDTREE[sf], tuple):
                 all_sf = SF_KDTREE[sf][1](kdtree, k)
-                for n, name in enumerate(SF_KDTREE[sf][0]):
-                    name = "{}({})".format(name, kdtree.id)
+                for n, i in enumerate(SF_KDTREE[sf][0]):
+                    name = "{}({})".format(i, kdtree.id)
                     self.points[name] = all_sf[n]
             else:
                 name = "{}({})".format(sf, kdtree.id)
                 self.points[name] = SF_KDTREE[sf](kdtree, k)
         
+        elif sf in SF_OCTREE_LEVEL:
+            ol = kwargs["octree_level"]
+            xyz_ol = self.points[["x", "y", "z", ol]]
+            if isinstance(SF_OCTREE_LEVEL[sf], tuple):
+                all_sf = SF_OCTREE_LEVEL[sf][1](xyz_ol, ol)
+                for n, i in enumerate(SF_OCTREE_LEVEL[sf][0]):
+                    name = "{}({})".format(i, ol)
+                    self.points[name] = all_sf[n]
+            else:
+                name = "{}({})".format(sf, ol)
+                self.points[name] = SF_OCTREE_LEVEL(xyz_ol, ol)
+
         elif sf in SF_EIGENVALUES:
             ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
             eigen_values = self.points[ids].values
