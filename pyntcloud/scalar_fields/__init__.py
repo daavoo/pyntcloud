@@ -35,7 +35,7 @@ SF_KDTREE = {
 }
 
 SF_OCTREE_LEVEL = {
-'eigen_octree_level': ['e1', 'e2', 'e3'],
+'eigen_octree_level': (['e1', 'e2', 'e3'], eigen_octree_level),
 'eigen_full_octree_level': ['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3']
 }
 
