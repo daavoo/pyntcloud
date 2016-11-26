@@ -36,12 +36,12 @@ SF_KDTREE = {
 
 SF_OCTREE_LEVEL = {
 'eigen_octree_level': (['e1', 'e2', 'e3'], eigen_octree_level),
-'eigen_full_octree_level': ['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3']
+'eigen_full_octree_level': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_octree_level)
 }
 
 SF_VOXEL_N = {
-'eigen_voxel_n': ['e1', 'e2', 'e3'],
-'eigen_full_voxel_n': ['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3']
+'eigen_voxel_n': (['e1', 'e2', 'e3'], eigen_voxel_n),
+'eigen_full_voxel_n': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_voxel_n)
 }
 
 SF_EIGENVALUES = {

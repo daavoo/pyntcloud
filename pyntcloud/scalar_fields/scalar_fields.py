@@ -99,14 +99,61 @@ def eigen_full_kdtree(kdtree, k):
 # NEED OCTREE_LEVEL 
 
 def eigen_octree_level(xyz_ol, ol):
-    out = np.zeros((xyz_ol.shape[0], 3))
-    for name, group in xyz_ol.groupby(ol):
-        e, ev = np.linalg.eig(np.cov(group.values[:,:-1].T))
+    e_out = np.zeros((xyz_ol.shape[0], 3))
+    for n, g in xyz_ol.groupby(ol):
+        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
         idx = e.argsort()[::-1] 
         e = e[idx]
-        out[group.index.values] = e
+        e_out[g.index.values] = e
 
-    return out[:,0], out[:,1], out[:,2]
+    return e_out[:,0], e_out[:,1], e_out[:,2]
+
+def eigen_full_octree_level(xyz_ol, ol):
+    e_out = np.zeros((xyz_ol.shape[0], 3))
+    ev1_out = np.zeros((xyz_ol.shape[0], 3))
+    ev2_out = np.zeros((xyz_ol.shape[0],3))
+    ev3_out = np.zeros((xyz_ol.shape[0],3))
+    for name, g in xyz_ol.groupby(ol):
+        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
+        idx = e.argsort()[::-1] 
+        e = e[idx]
+        ev = ev[:,idx]
+        e_out[g.index.values] = e
+        ev1_out[g.index.values] = ev[:,0]
+        ev2_out[g.index.values] = ev[:,1]
+        ev3_out[g.index.values] = ev[:,2]
+
+    return e_out[:,0], e_out[:,1], e_out[:,2], ev1_out.tolist(), ev2_out.tolist(), ev3_out.tolist()
+
+
+# NEED VOXEL_N 
+
+def eigen_voxel_n(xyz_vn, vn):
+    e_out = np.zeros((xyz_vn.shape[0], 3))
+    for n, g in xyz_vn.groupby(vn):
+        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
+        idx = e.argsort()[::-1] 
+        e = e[idx]
+        e_out[g.index.values] = e
+
+    return e_out[:,0], e_out[:,1], e_out[:,2]
+
+def eigen_full_voxel_n(xyz_vn, vn):
+    e_out = np.zeros((xyz_vn.shape[0], 3))
+    ev1_out = np.zeros((xyz_vn.shape[0], 3))
+    ev2_out = np.zeros((xyz_vn.shape[0],3))
+    ev3_out = np.zeros((xyz_vn.shape[0],3))
+    for name, g in xyz_vn.groupby(vn):
+        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
+        idx = e.argsort()[::-1] 
+        e = e[idx]
+        ev = ev[:,idx]
+        e_out[g.index.values] = e
+        ev1_out[g.index.values] = ev[:,0]
+        ev2_out[g.index.values] = ev[:,1]
+        ev3_out[g.index.values] = ev[:,2]
+
+    return e_out[:,0], e_out[:,1], e_out[:,2], ev1_out.tolist(), ev2_out.tolist(), ev3_out.tolist()
 
 
 # NEED EIGENVALUES
