@@ -49,11 +49,10 @@ class Octree(object):
                     self.structure = self.structure.ix[:,:i]
                     self.id = self.id.replace(str(self.max_level), str(i))
                     break
-    
+            
     def get_level_as_sf(self, level):
         sf = np.arange(len(self.points))
         i = 0
-
         for g in self.structure.groupby([x for x in range(level)]).apply(lambda x: x.index.values).values:
             sf[g] = i
             i+=1

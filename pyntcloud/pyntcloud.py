@@ -28,12 +28,10 @@ class PyntCloud(object):
 
         if "points" not in kwargs:
             raise ValueError("There must be a 'points' key in the kwargs")
-
         self.kdtrees = {}
         self.octrees = {}
         self.voxelgrids = {}
         self.filters = {}
-
         for key in kwargs:
             if "kdtrees" in key:
                 self.kdtrees = kwargs[key]
@@ -45,11 +43,9 @@ class PyntCloud(object):
                 self.filters = kwargs[key]
             else:
                 setattr(self, key, kwargs[key])
-        
         # store raw xyz to share memory along structures
         self.xyz = self.points[["x", "y", "z"]].values
         self.centroid = np.mean(self.xyz, axis=0)
-        
 
     def __repr__(self):
         default = [
@@ -63,13 +59,10 @@ class PyntCloud(object):
             "filters"
         ]
         others = ["\n\t {}: {}".format(x, str(type(x))) for x in self.__dict__ if x not in default]
-
         try:
             n_faces = len(self.mesh)
-
         except AttributeError:
             n_faces = 0
-
         return DESCRIPTION.format(  
             len(self.points), len(self.points.columns),
             n_faces,
@@ -80,32 +73,25 @@ class PyntCloud(object):
             self.centroid[0], self.centroid[1], self.centroid[2],
             "".join(others))
 
-
     @property
     def points(self):
         return self.__points
-
     
     @points.setter
     def points(self, df):
         if not isinstance(df, pd.DataFrame):
             raise TypeError("Points argument must be a DataFrame")
-
         elif not set(['x', 'y', 'z']).issubset(df.columns):
             raise ValueError("Points must have x, y and z coordinates")
-
         self.__points = df
-
              
     @classmethod
     def from_file(cls, filename):
         """ Extracts data from file and constructs a PyntCloud with it
-        
         Parameters
         ----------
         filename : str
             Path to the file from wich the data will be readed
-
         Returns
         -------
         PyntCloud : object
@@ -113,28 +99,22 @@ class PyntCloud(object):
             PyntCloud's attributes
         """
         ext = filename.split(".")[-1].upper()
-        
         if ext not in FORMATS_READERS:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_READERS)))       
-
         else:
             return PyntCloud(**FORMATS_READERS[ext](filename))
-
 
     @classmethod
     def to_file(self, filename, **kwargs):
         """ Save PyntCloud's data to file 
-        
         Parameters
         ----------
         filename : str
             Path to the file from wich the data will be readed
         """
         ext = filename.split(".")[-1].upper()
-
         if ext not in FORMATS_WRITERS:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_WRITERS)))
-
         else:
             if "points" not in kwargs:
                 raise ValueError("'points' must be in kwargs")
@@ -144,10 +124,8 @@ class PyntCloud(object):
             else:
                 valid_args = {x: kwargs[x] for x in kwargs if x in required_args} 
                 FORMATS_WRITERS[ext](filename, **valid_args)
-
         return True
-
-            
+        
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
         """
@@ -230,7 +208,6 @@ class PyntCloud(object):
     
     def add_structure(self, name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
-
         NEED XYZ:
             - 'kdtree'
             - 'voxelgrid'
@@ -241,28 +218,16 @@ class PyntCloud(object):
             'voxelgrid':(VoxelGrid, self.voxelgrids), 
             'octree':(Octree, self.octrees)
             }
-
         if name in d:
             valid_args = {x: kwargs[x] for x in kwargs if x in signature(d[name][0]).parameters}  
             structure = d[name][0](self.xyz, **valid_args)
             d[name][1][structure.id] = structure
-
         else:
             raise ValueError("Unsupported structure; supported structures are: {}".format(list(d)))
-        
         return True 
-
 
     def add_filter(self, filter_name, **kwargs):
         """ Build a filter and add it to the corresponding PyntCloud's attribute
-
-        NEED XYZ:
-            - 'BB'
-            - 'random'
-
-        NEED NEIGHBOURHOOD:
-            - 'SOR'
-            - 'ROR'
         """
         if filter_name in F_NEIGHBOURHOOD:
              n_hood = self.neighbourhoods[kwargs["n_hood"]]
@@ -270,7 +235,7 @@ class PyntCloud(object):
              filter, filter_parameter = F_NEIGHBOURHOOD[filter_name][1](n_hood, **valid_args)
              id = n_hood.id + "-{}: {}".format(filter_name, filter_parameter)
              self.filters[id] = filter  
-        
+
         elif filter_name in F_XYZ:
             valid_args = {x: kwargs[x] for x in kwargs if x in F_XYZ[filter_name][0]} 
             filter, filter_parameters= F_XYZ[filter_name][1](self.xyz, **valid_args)
@@ -279,38 +244,29 @@ class PyntCloud(object):
         else:
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS))
 
-
         return True      
-    
     
     def apply_filter(self, filter_name):
         return
 
-
     def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None):
-        
         try:
             colors = self.points[sf].values
-
         except:
             colors = None
-        
         if sf == ["red", "green", "blue"] and colors is not None:
             colors = colors/255
-
         elif colors is not None:
             s_m = plt.cm.ScalarMappable(cmap=cmap)
             colors = s_m.to_rgba(colors)[:,:-1]
-        
         if filter is not None:
             mask = self.filters[filter]
             xyz = self.xyz[mask]
             if colors is not None:
                 colors = colors[mask]
-
         else:
             xyz = self.xyz
-
+            
         return plot_points(
             xyz=xyz,
             colors=colors, 
