@@ -204,6 +204,18 @@ class PyntCloud(object):
                 name = "{}({})".format(sf, ol)
                 self.points[name] = SF_OCTREE_LEVEL(xyz_ol, ol)
 
+        elif sf in SF_VOXEL_N:
+            vn = kwargs["voxel_n"]
+            xyz_vn = self.points[["x", "y", "z", vn]]
+            if isinstance(SF_VOXEL_N[sf], tuple):
+                all_sf = SF_VOXEL_N[sf][1](xyz_vn, vn)
+                for n, i in enumerate(SF_VOXEL_N[sf][0]):
+                    name = "{}({})".format(i, vn)
+                    self.points[name] = all_sf[n]
+            else:
+                name = "{}({})".format(sf, vn)
+                self.points[name] = SF_OCTREE_LEVEL(xyz_vn, vn)
+
         elif sf in SF_EIGENVALUES:
             ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
             eigen_values = self.points[ids].values
