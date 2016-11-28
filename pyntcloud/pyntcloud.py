@@ -25,7 +25,6 @@ class PyntCloud(object):
     """
     
     def __init__(self, **kwargs):  
-
         if "points" not in kwargs:
             raise ValueError("There must be a 'points' key in the kwargs")
         self.kdtrees = {}
@@ -43,7 +42,7 @@ class PyntCloud(object):
                 self.filters = kwargs[key]
             else:
                 setattr(self, key, kwargs[key])
-        # store raw xyz to share memory along structures
+        # store raw values to share memory along structures
         self.xyz = self.points[["x", "y", "z"]].values
         self.centroid = np.mean(self.xyz, axis=0)
 
@@ -205,13 +204,8 @@ class PyntCloud(object):
 
         return True
 
-    
     def add_structure(self, name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
-        NEED XYZ:
-            - 'kdtree'
-            - 'voxelgrid'
-            - 'octree'
         """
         d = {
             'kdtree':(KDTree, self.kdtrees),
@@ -266,7 +260,7 @@ class PyntCloud(object):
                 colors = colors[mask]
         else:
             xyz = self.xyz
-            
+
         return plot_points(
             xyz=xyz,
             colors=colors, 

@@ -17,9 +17,10 @@ class KDTree(cKDTree):
         super().__init__(points, leafsize=leafsize)
         
 
-    def eigen_decomposition(self, k):
-        print("Querying KDTREE...")
-        d, i = self.query(self.data, k=k, n_jobs=-1)
+    def eigen_decomposition(self, i=None, k):
+        if i is None:
+            print("Querying KDTREE...")
+            d, i = self.query(self.data, k=k, n_jobs=-1)
         print("Computing eigen decomposition...")
         # discard self neighbour with [:,1:]
         neighbours = self.data[i[:,1:]]
