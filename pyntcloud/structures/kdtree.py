@@ -17,7 +17,7 @@ class KDTree(cKDTree):
         super().__init__(points, leafsize=leafsize)
         
 
-    def eigen_decomposition(self, i=None, k):
+    def eigen_decomposition(self, k, i=None):
         if i is None:
             print("Querying KDTREE...")
             d, i = self.query(self.data, k=k, n_jobs=-1)
