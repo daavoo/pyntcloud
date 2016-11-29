@@ -33,9 +33,10 @@ class Octree(object):
             self.sizes[i] = level_ptp
             level_ptp /= 2
             bigger = self.points > mid_points
-            mid_points = np.where(bigger, mid_points + level_ptp, mid_points - level_ptp)
-            bigger = bigger.astype(np.uint8)
-            self.structure.loc[:,i] = ((bigger[:,1] * 2) + bigger[:,0]) + (bigger[:,2] * (2 * 2))        
+            copy = bigger.astype(np.uint8)
+            self.structure.loc[:,i] = ((copy[:,1] * 2) + copy[:,0]) + (copy[:,2] * (2 * 2))
+            if i != self.max_level - 1:
+                mid_points = np.where(bigger, mid_points + level_ptp, mid_points - level_ptp)       
 
     def get_level_as_sf(self, level):
         sf = np.arange(len(self.points))
