@@ -71,16 +71,16 @@ def octree_level(octree, level):
 # NEED VOXELGRID
 
 def voxel_x(voxelgrid):
-    return voxelgrid.structure.voxel_x
+    return voxelgrid.structure[:,0]
 
 def voxel_y(voxelgrid):
-    return voxelgrid.structure.voxel_y
+    return voxelgrid.structure[:,1]
 
 def voxel_z(voxelgrid):
-    return voxelgrid.structure.voxel_z
+    return voxelgrid.structure[:,2]
 
 def voxel_n(voxelgrid):
-    return voxelgrid.structure.voxel_n
+    return voxelgrid.structure[:,3]
 
 
 # NEED KDTREE
