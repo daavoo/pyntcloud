@@ -65,24 +65,31 @@ class VoxelGrid(object):
         self.n_z = x_y_z[2]
         self.id = "V([{},{},{}],{})".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
 
-        # BUILD 
+        self.build()
+        self.get_feature_vector()
 
+    def build(self):
         structure = np.zeros((len(self.points), 4), dtype=int)
         structure[:,0] = np.searchsorted(self.segments[0], self.points[:,0]) - 1
         structure[:,1] = np.searchsorted(self.segments[1], self.points[:,1]) - 1
         structure[:,2] = np.searchsorted(self.segments[2], self.points[:,2]) - 1
         # i = ((y * n_x) + x) + (z * (n_x * n_y))
         structure[:,3] = ((structure[:,1] * self.n_x) + structure[:,0]) + (structure[:,2] * (self.n_x * self.n_y)) 
-        self.structure = pd.DataFrame(structure, columns=["voxel_x", "voxel_y", "voxel_z", "voxel_n"])
-        
+        self.structure = structure
+
+    def get_feature_vector(self):
         vector = np.zeros(self.n_voxels)
-        count = np.bincount(structure[:,3])
+        count = np.bincount(self.structure[:,3])
         vector[:len(count)] = count
         self.feature_vector = vector.reshape(self.n_z, self.n_y, self.n_x)
 
-        
-    def plot(self, d=2, cmap="Oranges", axis=False):
+    def get_centroids(self):
+        st = pd.DataFrame(self.structure[:,3], columns=["voxel_n"])
+        for n, i in enumerate(["x", "y", "z"]):
+            st[i] = self.points[:, n]
+        return st.groupby("voxel_n").mean().values
 
+    def plot(self, d=2, cmap="Oranges", axis=False):
         if d == 2:
             fig, axes= plt.subplots(int(np.ceil(self.n_z / 4)), 4, figsize=(8,8))
             plt.tight_layout()
@@ -95,7 +102,6 @@ class VoxelGrid(object):
             cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
             cbar = fig.colorbar(im, cax=cbar_ax)
             cbar.set_label('NUMBER OF POINTS IN VOXEL')
-
         elif d == 3:
             return plot_voxelgrid(self, cmap=cmap, axis=axis)
 
