@@ -39,7 +39,13 @@ class Octree(object):
             if i != self.max_level - 1:
                 mid_points = np.where(bigger, mid_points + level_ptp, mid_points - level_ptp)
                 n += 3
-
+    
+    def get_centroids(self, level):
+        st = pd.DataFrame(np.packbits(self.structure[:,:level*3], axis=1))
+        for n, i in enumerate(["x", "y", "z"]):
+            st[i] = self.points[:, n]
+        return st.groupby([x for x in st.columns if x not in ["x", "y", "z"]]).mean().values
+        
     def get_level_as_sf(self, level):
         sf = np.arange(len(self.points))
         st = pd.DataFrame(np.packbits(self.structure[:,:level*3], axis=1))
