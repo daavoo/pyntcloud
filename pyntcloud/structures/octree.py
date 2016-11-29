@@ -7,8 +7,7 @@ VoxelGrid Class
 import numpy as np
 import pandas as pd
 
-class Octree(object):
-    
+
 class Octree(object):
     
     def __init__(self, points, max_level=2):
