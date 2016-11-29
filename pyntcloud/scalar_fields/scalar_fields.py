@@ -67,6 +67,12 @@ def octree_level(octree, level):
             octree.max_level ({})".format(level, octree.max_level))
     return octree.get_level_as_sf(level)
 
+def eigen_octree(octree, level):
+    return octree.eigen_decomposition(level)[:3]
+
+def eigen_full_octree(xyz_ol, ol):
+    return octree.eigen_decomposition(level)
+
 
 # NEED VOXELGRID
 
@@ -82,6 +88,12 @@ def voxel_z(voxelgrid):
 def voxel_n(voxelgrid):
     return voxelgrid.structure[:,3]
 
+def eigen_voxelgrid(voxelgrid):
+    return voxelgrid.eigen_decomposition()[:3]
+
+def eigen_full_voxelgrid(xyz_vn, vn):
+    return voxelgrid.eigen_decomposition()  
+    
 
 # NEED KDTREE
 
@@ -94,66 +106,6 @@ def eigen_full_kdtree(kdtree, k):
     ev2 = ev2.tolist()
     ev3 = ev3.tolist()
     return e1, e2, e3, ev1, ev2, ev3
-
-
-# NEED OCTREE_LEVEL 
-
-def eigen_octree_level(xyz_ol, ol):
-    e_out = np.zeros((xyz_ol.shape[0], 3))
-    for n, g in xyz_ol.groupby(ol):
-        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
-        idx = e.argsort()[::-1] 
-        e = e[idx]
-        e_out[g.index.values] = e
-
-    return e_out[:,0], e_out[:,1], e_out[:,2]
-
-def eigen_full_octree_level(xyz_ol, ol):
-    e_out = np.zeros((xyz_ol.shape[0], 3))
-    ev1_out = np.zeros((xyz_ol.shape[0], 3))
-    ev2_out = np.zeros((xyz_ol.shape[0],3))
-    ev3_out = np.zeros((xyz_ol.shape[0],3))
-    for name, g in xyz_ol.groupby(ol):
-        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
-        idx = e.argsort()[::-1] 
-        e = e[idx]
-        ev = ev[:,idx]
-        e_out[g.index.values] = e
-        ev1_out[g.index.values] = ev[:,0]
-        ev2_out[g.index.values] = ev[:,1]
-        ev3_out[g.index.values] = ev[:,2]
-
-    return e_out[:,0], e_out[:,1], e_out[:,2], ev1_out.tolist(), ev2_out.tolist(), ev3_out.tolist()
-
-
-# NEED VOXEL_N 
-
-def eigen_voxel_n(xyz_vn, vn):
-    e_out = np.zeros((xyz_vn.shape[0], 3))
-    for n, g in xyz_vn.groupby(vn):
-        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
-        idx = e.argsort()[::-1] 
-        e = e[idx]
-        e_out[g.index.values] = e
-
-    return e_out[:,0], e_out[:,1], e_out[:,2]
-
-def eigen_full_voxel_n(xyz_vn, vn):
-    e_out = np.zeros((xyz_vn.shape[0], 3))
-    ev1_out = np.zeros((xyz_vn.shape[0], 3))
-    ev2_out = np.zeros((xyz_vn.shape[0],3))
-    ev3_out = np.zeros((xyz_vn.shape[0],3))
-    for name, g in xyz_vn.groupby(vn):
-        e, ev = np.linalg.eig(np.cov(g.values[:,:-1].T))
-        idx = e.argsort()[::-1] 
-        e = e[idx]
-        ev = ev[:,idx]
-        e_out[g.index.values] = e
-        ev1_out[g.index.values] = ev[:,0]
-        ev2_out[g.index.values] = ev[:,1]
-        ev3_out[g.index.values] = ev[:,2]
-
-    return e_out[:,0], e_out[:,1], e_out[:,2], ev1_out.tolist(), ev2_out.tolist(), ev3_out.tolist()
 
 
 # NEED EIGENVALUES
