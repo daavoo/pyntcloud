@@ -30,25 +30,32 @@ class Octree(object):
         level_ptp = max(self.xyzmax-self.xyzmin) / 2
         mid_points = np.zeros_like(self.points)
         mid_points[:] = (self.xyzmin + self.xyzmax) / 2
+
         for i in range(self.max_level):
             self.sizes[i] = level_ptp
             level_ptp /= 2
             bigger = self.points > mid_points
+
             if i != self.max_level - 1:
                 mid_points = np.where(bigger, mid_points + level_ptp, mid_points - level_ptp)
+
             bigger = bigger.astype(np.uint8)
             self.structure.loc[:,i] = ((bigger[:,1] * 2) + bigger[:,0]) + (bigger[:,2] * (2 * 2))
     
     def get_centroids(self, level):
         st = self.structure.loc[:, range(level)]
+
         for n, i in enumerate(["x", "y", "z"]):
             st[i] = self.points[:, n]
+
         return st.groupby([x for x in range(level)], sort=False).mean().values
         
     def get_level_as_sf(self, level):
         sf = np.zeros((self.points.shape[0], level), dtype=str)
+        
         for k, v in self.structure.groupby([x for x in range(level)]).indices.items():
             sf[v] = k
+
         return [int("".join(sf[i])) for i in range(len(sf))]
 
     def eigen_decomposition(self, level):
@@ -67,6 +74,7 @@ class Octree(object):
         prev_level = st.groupby([x for x in range(level-1)], sort=False)
         min_level = prev_level
         min_i = 1
+        # find the minimum level where there is no group with less than 3
         while min_level.size().min() < 3:
             min_i += 1
             min_level = st.groupby([x for x in range(level-min_i)])
