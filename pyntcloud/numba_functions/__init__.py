@@ -1,5 +1,0 @@
-
-"""
-HAKUNA MATATA
-"""
-

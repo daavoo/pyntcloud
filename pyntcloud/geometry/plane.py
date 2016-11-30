@@ -1,17 +1,9 @@
 #  HAKUNA MATATA
 
-"""
-Vector functions
-
-"""
 
 import numpy as np
-import numba as nb
-from .vector import normalize, cross, norm_all
-from ..numba_functions.array import array_minus_vector, scalars_dot_vector
-from ..statistics.pca import PCA
 
-@nb.jit(nopython=True)  
+
 def plane_def_by(three_points, equation=False):
     """ Return the the plane defined by 3 points
        
@@ -95,7 +87,7 @@ def project_on_plane(points, plane_point, plane_normal, return_distances=False):
         The x,y,z coordinates corresponding to the points projected on the plane.
         
     """
-    
+
     #: just in case
     plane_normal = normalize(plane_normal)
         
