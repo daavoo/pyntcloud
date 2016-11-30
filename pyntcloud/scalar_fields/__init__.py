@@ -19,29 +19,23 @@ SF_RGB = {
 }
 
 SF_OCTREE = {
-'octree_level': octree_level
+'octree_level': octree_level,
+'eigen_octree': (['e1', 'e2', 'e3'], eigen_octree),
+'eigen_full_octree': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_octree)
 }
 
 SF_VOXELGRID = {
 'voxel_x': voxel_x,
 'voxel_y': voxel_y,
 'voxel_z': voxel_z,
-'voxel_n': voxel_n
+'voxel_n': voxel_n,
+'eigen_voxelgrid': (['e1', 'e2', 'e3'], eigen_voxelgrid),
+'eigen_full_voxelgrid': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_voxelgrid)
 }
 
 SF_KDTREE = {
 'eigen_kdtree': (['e1', 'e2', 'e3'], eigen_kdtree),
 'eigen_full_kdtree': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_kdtree)
-}
-
-SF_OCTREE_LEVEL = {
-'eigen_octree_level': (['e1', 'e2', 'e3'], eigen_octree_level),
-'eigen_full_octree_level': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_octree_level)
-}
-
-SF_VOXEL_N = {
-'eigen_voxel_n': (['e1', 'e2', 'e3'], eigen_voxel_n),
-'eigen_full_voxel_n': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_voxel_n)
 }
 
 SF_EIGENVALUES = {
@@ -55,14 +49,12 @@ SF_EIGENVALUES = {
 'sphericity': sphericity
 }
 
-ALL_SF = "{}  {}  {}  {}  {}  {}  {}".format(
+ALL_SF = "{}  {}  {}  {}  {}  {}".format(
     list(SF_NORMALS),
     list(SF_RGB),
     list(SF_OCTREE),
     list(SF_VOXELGRID),
     list(SF_KDTREE),
-    list(SF_OCTREE_LEVEL),
-    list(SF_VOXEL_N),
     list(SF_EIGENVALUES)
 )
 
