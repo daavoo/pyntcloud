@@ -13,7 +13,6 @@ from .plot import plot_points, DESCRIPTION
 from .scalar_fields import ( 
     SF_NORMALS, SF_RGB, 
     SF_OCTREE, SF_VOXELGRID, SF_KDTREE,
-    SF_OCTREE_LEVEL, SF_VOXEL_N,
     SF_EIGENVALUES,
     ALL_SF
 )
@@ -149,13 +148,25 @@ class PyntCloud(object):
         elif sf in SF_OCTREE:
             octree = self.octrees[kwargs["octree"]]
             level = kwargs["level"]
-            name = "{}({},{})".format(sf, level, octree.id)
-            self.points[name] = SF_OCTREE[sf](octree, kwargs["level"])
+            if isinstance(SF_OCTREE[sf], tuple):
+                all_sf = SF_OCTREE[sf][1](octree, level)
+                for n, i in enumerate(SF_OCTREE[sf][0]):
+                    name = "{}({},{})".format(i, level, octree.id)
+                    self.points[name] = all_sf[n]
+            else:
+                name = "{}({},{})".format(sf, level, octree.id)
+                self.points[name] = SF_OCTREE[sf](octree, kwargs["level"])
 
         elif sf in SF_VOXELGRID:
             voxelgrid = self.voxelgrids[kwargs["voxelgrid"]]
-            name = "{}({})".format(sf, voxelgrid.id)
-            self.points[name] = SF_VOXELGRID[sf](voxelgrid)
+            if isinstance(SF_VOXELGRID[sf], tuple):
+                all_sf = SF_VOXELGRID[sf][1](voxelgrid)
+                for n, i in enumerate(SF_VOXELGRID[sf][0]):
+                    name = "{}({})".format(i, voxelgrid.id)
+                    self.points[name] = all_sf[n]
+            else:
+                name = "{}({})".format(sf, voxelgrid.id)
+                self.points[name] = SF_VOXELGRID[sf](voxelgrid)
 
         elif sf in SF_KDTREE:
             kdtree = self.kdtrees[kwargs["kdtree"]]
@@ -168,30 +179,6 @@ class PyntCloud(object):
             else:
                 name = "{}({})".format(sf, kdtree.id)
                 self.points[name] = SF_KDTREE[sf](kdtree, k)
-        
-        elif sf in SF_OCTREE_LEVEL:
-            ol = kwargs["octree_level"]
-            xyz_ol = self.points[["x", "y", "z", ol]]
-            if isinstance(SF_OCTREE_LEVEL[sf], tuple):
-                all_sf = SF_OCTREE_LEVEL[sf][1](xyz_ol, ol)
-                for n, i in enumerate(SF_OCTREE_LEVEL[sf][0]):
-                    name = "{}({})".format(i, ol)
-                    self.points[name] = all_sf[n]
-            else:
-                name = "{}({})".format(sf, ol)
-                self.points[name] = SF_OCTREE_LEVEL(xyz_ol, ol)
-
-        elif sf in SF_VOXEL_N:
-            vn = kwargs["voxel_n"]
-            xyz_vn = self.points[["x", "y", "z", vn]]
-            if isinstance(SF_VOXEL_N[sf], tuple):
-                all_sf = SF_VOXEL_N[sf][1](xyz_vn, vn)
-                for n, i in enumerate(SF_VOXEL_N[sf][0]):
-                    name = "{}({})".format(i, vn)
-                    self.points[name] = all_sf[n]
-            else:
-                name = "{}({})".format(sf, vn)
-                self.points[name] = SF_OCTREE_LEVEL(xyz_vn, vn)
 
         elif sf in SF_EIGENVALUES:
             ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
