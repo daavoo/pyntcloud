@@ -11,50 +11,58 @@ class Sphere():
         self.k = 2 if normals else 4
     
     def from_four_points(self, points):
-        # Find the Minors
         X = np.zeros((4,4))
+
+        # Get the Minors
 
         for i in range(4):
             X[i,0] = points[i,0]
             X[i,1] = points[i,1]
             X[i,2] = points[i,2]
             X[i,3] = 1
-        M11 = np.linalg.det(X)
+        m11 = np.linalg.det(X)
 
         for i in range(4):
             X[i,0] = np.dot(points[i], points[i])
             X[i,1] = points[i,1]
             X[i,2] = points[i,2]
             X[i,3] = 1
-        M12 = np.linalg.det(X)
+        m12 = np.linalg.det(X)
 
         for i in range(4):
             X[i,0] = np.dot(points[i], points[i])
             X[i,1] = points[i,0]
             X[i,2] = points[i,2]
             X[i,3] = 1
-        M13 = np.linalg.det(X)
+        m13 = np.linalg.det(X)
 
         for i in range(4):
             X[i,0] = np.dot(points[i], points[i])
             X[i,1] = points[i,0]
             X[i,2] = points[i,1]
             X[i,3] = 1
-        M14 = np.linalg.det(X)
+        m14 = np.linalg.det(X)
 
         for i in range(4):
             X[i,0] = np.dot(points[i], points[i])
             X[i,1] = points[i,0]
             X[i,2] = points[i,1]
             X[i,3] = points[i,2]
-        M15 = np.linalg.det(X)
+        m15 = np.linalg.det(X)
         
-        
-    
+        cx = 0.5 * (m12 / m11)
+        cy = -0.5 * (m13 / m11)
+        cz = 0.5 * (m14 / m11)
+
+        self.center = np.array([cx, cy, cz])
+        self.radius = sqrt( np.dot(center, center) - (m15 / m11) )
+
+
     # RANSAC METHODS
 
     def fit(self, points):
-        return
+        if self.k == 4:
+            self.from_four_points(points)
 
     def get_error(self, points):
         return
