@@ -35,7 +35,7 @@ class Plane():
         return distances, projections
         
     def fit(self, points):
-        return self.from_three_points(points)
+        self.from_three_points(points)
     
     def get_error(self, points):
         return self.get_projections(points, only_distances=True)     
