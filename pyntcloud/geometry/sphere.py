@@ -12,3 +12,6 @@ class Sphere():
     
     def from_four_points(self, points):
         pass
+
+    def are_invalid(self):
+        return
