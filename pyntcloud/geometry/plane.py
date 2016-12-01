@@ -1,8 +1,6 @@
 #  HAKUNA MATATA
 
-
 import numpy as np
-
 
 class Plane():
 
