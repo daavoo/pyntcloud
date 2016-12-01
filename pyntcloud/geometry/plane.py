@@ -9,6 +9,8 @@ class Plane():
     def __init__(self, point=None, normal=None):
         self.point = point
         self.normal= normal
+        # for ransac
+        self.k = 3
     
     def from_three_points(self, points):
         normal = np.cross(points[1] - points[0], points[2] - points[0])
