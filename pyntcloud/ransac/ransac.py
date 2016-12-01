@@ -17,6 +17,8 @@ def ransac( points, model, filter=None, max_iterations=100,
     n_best_inliers = 0        
     for i in range(max_iterations):
         k_points = points[np.random.randint(len(points), size=model.k)]
+        if model.are_invalid(k_points):
+            continue
         model.fit(k_points)
         individual_error = model.get_error(points)
         inliers = individual_error <= treshold
