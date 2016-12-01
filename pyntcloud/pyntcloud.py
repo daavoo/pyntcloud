@@ -100,9 +100,8 @@ class PyntCloud(object):
         if ext not in FORMATS_READERS:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_READERS)))       
         else:
-            return PyntCloud(**FORMATS_READERS[ext](filename))
+            return cls(**FORMATS_READERS[ext](filename))
 
-    @classmethod
     def to_file(self, filename, **kwargs):
         """ Save PyntCloud's data to file 
         Parameters
