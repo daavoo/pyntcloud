@@ -28,7 +28,7 @@ class Plane():
     
     def get_projections(self, points, only_distances=False):
         vectors = points - self.point
-        distances = np.dot(vectors, self.normal)
+        distances = np.abs(np.dot(vectors, self.normal))
         if only_distances:
             return distances
         projections = points - (distances[:,None] * self.normal)
