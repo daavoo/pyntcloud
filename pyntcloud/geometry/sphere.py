@@ -59,13 +59,14 @@ class Sphere():
         self.center = np.array([cx, cy, cz])
         self.radius = np.sqrt( np.dot(center, center) - (m15 / m11) )
 
-    def get_projections(self, points, only_distances=True):
+    def get_projections(self, points, only_distances=False):
         vectors = points - self.center
         lengths = np.linalg.norm(vectors)
         distances = np.abs(lengths - self.radius)
         if only_distances:
-            return distances    
-        projections = ((self.radius / lengths) * vectors) + self.center
+            return distances   
+        scales = self.radius / lengths
+        projections = (scales[:,None] * vectors) + self.center
         return distances, projections
 
     # RANSAC METHODS
@@ -75,7 +76,7 @@ class Sphere():
             self.from_four_points(points)
 
     def get_error(self, points):
-        
+        return self.get_projections(points, only_distances=True)
 
     def are_valid(self, points):
 
