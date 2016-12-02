@@ -57,11 +57,11 @@ class Sphere():
         cz = 0.5 * (m14 / m11)
 
         self.center = np.array([cx, cy, cz])
-        self.radius = np.sqrt( np.dot(center, center) - (m15 / m11) )
+        self.radius = np.sqrt( np.dot(self.center, self.center) - (m15 / m11) )
 
     def get_projections(self, points, only_distances=False):
         vectors = points - self.center
-        lengths = np.linalg.norm(vectors)
+        lengths = np.linalg.norm(vectors, axis=1)
         distances = np.abs(lengths - self.radius)
         if only_distances:
             return distances   
@@ -78,11 +78,7 @@ class Sphere():
     def get_error(self, points):
         return self.get_projections(points, only_distances=True)
 
-    def are_valid(self, points):
-
-        if np.cross(points[1] - points[0], points[2] - points[0]) == 0:
-            return False
-    
+    def are_valid(self, points):    
         x = np.ones((4,4))
         x [:-1,:] = points.T
         if np.linalg.det(x) == 0:
