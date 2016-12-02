@@ -11,6 +11,8 @@ class Sphere():
         self.k = 2 if normals else 4
     
     def from_four_points(self, points):
+        # adapted from http://www.abecedarical.com/zenosamples/zs_sphere4pts.html
+
         X = np.zeros((4,4))
 
         # Get the Minors
@@ -55,8 +57,14 @@ class Sphere():
         cz = 0.5 * (m14 / m11)
 
         self.center = np.array([cx, cy, cz])
-        self.radius = sqrt( np.dot(center, center) - (m15 / m11) )
+        self.radius = np.sqrt( np.dot(center, center) - (m15 / m11) )
 
+    def get_projections(self, points, only_distances=True):
+        vectors = points - self.center
+        norms = np.linalg.norm(vectors)
+        distances = np.abs(norms - self.radius)
+        if only_distances:
+            return distances        
 
     # RANSAC METHODS
 
@@ -65,7 +73,7 @@ class Sphere():
             self.from_four_points(points)
 
     def get_error(self, points):
-        return
+        
 
     def are_valid(self, points):
 
