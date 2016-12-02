@@ -14,13 +14,13 @@ class Plane():
         self.k = 3
     
 
-    def from_three_points(cls, points):
+    def from_three_points(self, points):
         normal = np.cross(points[1] - points[0], points[2] - points[0])
         self.point = points[0]
         self.normal = normal / np.linalg.norm(normal)
 
 
-    def from_equation(cls, a, b, c, d):
+    def from_equation(self, a, b, c, d):
         normal = np.array([a,b,c])
         point = np.array([-d / a, -d / b, -d / c])
         self.point = point
