@@ -61,10 +61,12 @@ class Sphere():
 
     def get_projections(self, points, only_distances=True):
         vectors = points - self.center
-        norms = np.linalg.norm(vectors)
-        distances = np.abs(norms - self.radius)
+        lengths = np.linalg.norm(vectors)
+        distances = np.abs(lengths - self.radius)
         if only_distances:
-            return distances        
+            return distances    
+        projections = ((self.radius / lengths) * vectors) + self.center
+        return distances, projections
 
     # RANSAC METHODS
 
