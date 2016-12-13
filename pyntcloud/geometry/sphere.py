@@ -9,6 +9,7 @@ class Sphere():
         self.radius= radius
         # for ransac
         self.k = 2 if normals else 4
+        self.name = "sphere"
     
     def from_four_points(self, points):
         # adapted from http://www.abecedarical.com/zenosamples/zs_sphere4pts.html

@@ -12,6 +12,7 @@ class Plane():
             self.normal = normal
         # for ransac
         self.k = 3
+        self.name = "plane"
     
 
     def from_three_points(self, points):
