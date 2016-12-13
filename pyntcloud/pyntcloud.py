@@ -11,6 +11,7 @@ from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
 from .io import FROM, TO
 from .plot import plot_points, DESCRIPTION
 from .scalar_fields import ( 
+    RANSAC,
     SF_NORMALS, SF_RGB, 
     SF_OCTREE, SF_VOXELGRID, SF_KDTREE,
     SF_EIGENVALUES,

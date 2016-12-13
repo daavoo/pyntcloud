@@ -2,7 +2,13 @@
 
 
 import numpy as np
+from ..ransac import ransac
 
+
+# RANSAC
+
+def sf_ransac(points, model, **kwargs):
+    return ransac(points, model, **kwargs)
 
 # NEED NORMALS 
 
