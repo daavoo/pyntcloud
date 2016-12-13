@@ -9,7 +9,7 @@ from .obj import read_obj, write_obj
 from .pcd import read_pcd, write_pcd
 from .ply import read_ply, write_ply
 
-FORMATS_READERS = {
+FROM = {
 "MAT": read_mat,
 "NPZ": read_npz,
 "OBJ": read_obj,
@@ -17,7 +17,7 @@ FORMATS_READERS = {
 "PLY": read_ply
 }
 
-FORMATS_WRITERS = {
+TO = {
 "NPZ": write_npz,
 "OBJ": write_obj,
 "PCD": write_pcd,

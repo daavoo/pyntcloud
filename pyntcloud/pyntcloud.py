@@ -8,7 +8,7 @@ from inspect import signature
 from matplotlib import pyplot as plt
 
 from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
-from .io import FORMATS_READERS, FORMATS_WRITERS
+from .io import FROM, TO
 from .plot import plot_points, DESCRIPTION
 from .scalar_fields import ( 
     SF_NORMALS, SF_RGB, 
@@ -97,10 +97,10 @@ class PyntCloud(object):
             PyntCloud's attributes
         """
         ext = filename.split(".")[-1].upper()
-        if ext not in FORMATS_READERS:
-            raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_READERS)))       
+        if ext not in FROM:
+            raise ValueError("Unsupported file format; supported formats are: {}".format(list(FROM)))       
         else:
-            return cls(**FORMATS_READERS[ext](filename))
+            return cls(**FROM[ext](filename))
 
     def to_file(self, filename, **kwargs):
         """ Save PyntCloud's data to file 
@@ -110,17 +110,17 @@ class PyntCloud(object):
             Path to the file from wich the data will be readed
         """
         ext = filename.split(".")[-1].upper()
-        if ext not in FORMATS_WRITERS:
-            raise ValueError("Unsupported file format; supported formats are: {}".format(list(FORMATS_WRITERS)))
+        if ext not in TO:
+            raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
         else:
             if "points" not in kwargs:
                 raise ValueError("'points' must be in kwargs")
-            required_args = [x for x in signature(FORMATS_WRITERS[ext]).parameters]
+            required_args = [x for x in signature(TO[ext]).parameters]
             if "kwargs" in required_args:
-                FORMATS_WRITERS[ext](filename, **kwargs)
+                TO[ext](filename, **kwargs)
             else:
                 valid_args = {x: kwargs[x] for x in kwargs if x in required_args} 
-                FORMATS_WRITERS[ext](filename, **valid_args)
+                TO[ext](filename, **valid_args)
         return True
         
     def add_scalar_field(self, sf, **kwargs):
