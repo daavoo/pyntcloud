@@ -11,7 +11,7 @@ from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
 from .io import FROM, TO
 from .plot import plot_points, DESCRIPTION
 from .scalar_fields import ( 
-    RANSAC,
+    SF_RANSAC,
     SF_NORMALS, SF_RGB, 
     SF_OCTREE, SF_VOXELGRID, SF_KDTREE,
     SF_EIGENVALUES,
@@ -127,6 +127,12 @@ class PyntCloud(object):
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
         """
+        if sf in SF_RANSAC:
+            points = self.xyz
+            model = kwargs["model"]
+            pass
+            self.points[sf] = SF_NORMALS[sf](normals)
+        
         if sf in SF_NORMALS:
             normals = self.points[["nx", "ny", "nz"]].values
             if isinstance(SF_NORMALS[sf], tuple):

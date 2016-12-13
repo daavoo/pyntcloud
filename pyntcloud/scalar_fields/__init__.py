@@ -5,8 +5,8 @@ HAKUNA MATATA
 
 from .scalar_fields import *
 
-RANSAC = {
-'ransac': sf_ransac
+SF_RANSAC = {
+'sf_ransac': sf_ransac
 }
 
 SF_NORMALS = {
@@ -53,7 +53,8 @@ SF_EIGENVALUES = {
 'sphericity': sphericity
 }
 
-ALL_SF = "".join([" {}"] * 6).format(
+ALL_SF = "".join([" {}"] * 7).format(
+    list(SF_RANSAC),
     list(SF_NORMALS),
     list(SF_RGB),
     list(SF_OCTREE),
