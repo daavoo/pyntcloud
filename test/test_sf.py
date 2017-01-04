@@ -1,4 +1,6 @@
 import os
+import pytest
+
 from numpy import pi as PI
 
 from pyntcloud import PyntCloud
@@ -88,4 +90,12 @@ def test_hsv():
 
 def test_octree():
     cloud.add_structure("octree")
-    
+
+    with pytest.raises(ValueError):
+        cloud.add_scalar_field("octree_level", octree="O(2)", level=3)
+
+    cloud.add_scalar_field("octree_level", octree="O(2)", level=2)
+
+    assert min(cloud.points["octree_level(2,O(2))"]) == 0
+    assert max(cloud.points["octree_level(2,O(2))"]) == 77
+
