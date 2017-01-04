@@ -88,7 +88,7 @@ def test_hsv():
     cloud.points.drop(["H", "S", "V"], 1, inplace=True)
 
 
-def test_octree():
+def test_octree_level():
     cloud.add_structure("octree")
 
     with pytest.raises(ValueError):
