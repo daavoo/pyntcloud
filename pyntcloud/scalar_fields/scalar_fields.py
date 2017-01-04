@@ -76,7 +76,7 @@ def octree_level(octree, level):
 def eigen_octree(octree, level):
     return octree.eigen_decomposition(level)[:3]
 
-def eigen_full_octree(xyz_ol, ol):
+def eigen_full_octree(octree, level):
     return octree.eigen_decomposition(level)
 
 
