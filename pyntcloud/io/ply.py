@@ -40,7 +40,6 @@ def read_ply(filename):
         Elements as pandas DataFrames; comments and ob_info as list of string
     """
 
-### OPEN PLY FILE ###########################################################
     with open(filename, 'rb') as ply:
         if b'ply' not in ply.readline():
             raise ValueError('The file does not start whith the word ply')
@@ -116,11 +115,8 @@ def read_ply(filename):
         # for bin
         end_header = ply.tell()
 
-### CLOSE PLY FILE ###########################################################
-
     data = {'comments': comments, 'obj_info': obj_info}
 
-    # text file
     if fmt == 'ascii':
         top = 0
         bottom = 0
@@ -134,7 +130,6 @@ def read_ply(filename):
             data[names[i]] = pd.DataFrame(np.genfromtxt(filename,
                             skip_header=top, skip_footer=bottom, dtype=dtypes[i]))
 
-    # binary file
     else:
         with open(filename, 'rb') as ply:
             ply.seek(end_header)
@@ -197,8 +192,6 @@ def write_ply(filename, points=None, mesh=None, comments=None, obj_info=None,
         for line in header:
             ply.write("%s\n" % line)
 
-    # close the file in text mode
-
     if as_text:
         if points is not None:
             points.to_csv(filename, sep=" ", index=False, header=False, mode='a',
@@ -210,7 +203,7 @@ def write_ply(filename, points=None, mesh=None, comments=None, obj_info=None,
             kwargs[key].to_csv(filename, sep=" ", index=False, header=False, mode='a',
                                                                 encoding='ascii')
     else:
-        # open in binary and append to use tofile
+        # open in binary/append to use tofile
         with open(filename, 'ab') as ply:
             if points is not None:
                 points.to_records(index=False).tofile(ply)
