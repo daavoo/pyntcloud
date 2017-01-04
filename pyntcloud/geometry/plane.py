@@ -6,20 +6,17 @@ class Plane():
 
     def __init__(self, point=None, normal=None):
         self.point = point 
+        self.normal = normal
         if normal is not None:
-            self.normal= normal / np.linalg.norm(normal)
-        else:
-            self.normal = normal
+            self.normal /= np.linalg.norm(normal)
+        self.name = "plane"
         # for ransac
         self.k = 3
-        self.name = "plane"
     
-
     def from_three_points(self, points):
         normal = np.cross(points[1] - points[0], points[2] - points[0])
         self.point = points[0]
         self.normal = normal / np.linalg.norm(normal)
-
 
     def from_equation(self, a, b, c, d):
         normal = np.array([a,b,c])
