@@ -6,7 +6,8 @@ HAKUNA MATATA
 from .scalar_fields import *
 
 SF_RANSAC = {
-'sf_ransac': sf_ransac
+'is_plane': is_plane,
+'is_sphere': is_sphere
 }
 
 SF_NORMALS = {

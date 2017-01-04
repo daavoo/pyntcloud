@@ -127,13 +127,12 @@ class PyntCloud(object):
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
         """
+        # Change this to create multiple scalar fields one for each model???
         if sf in SF_RANSAC:
             points = self.xyz
-            model = kwargs["model"]
-            name = "is_{}".format(model.name)
-            self.points[sf] = SF_RANSAC[sf](points, model)
+            self.points[sf] = SF_RANSAC[sf](points)
         
-        if sf in SF_NORMALS:
+        elif sf in SF_NORMALS:
             normals = self.points[["nx", "ny", "nz"]].values
             if isinstance(SF_NORMALS[sf], tuple):
                 all_sf = SF_NORMALS[sf][1](normals)

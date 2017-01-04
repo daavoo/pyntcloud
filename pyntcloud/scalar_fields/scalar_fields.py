@@ -3,12 +3,15 @@
 
 import numpy as np
 from ..ransac import ransac
-
+from ..geometry import Plane, Sphere
 
 # RANSAC
 
-def sf_ransac(points, model):
-    return ransac(points, model)
+def is_plane(points):
+    return ransac(points, Plane())
+
+def is_sphere(points):
+    return ransac(points, Sphere())
 
 # NEED NORMALS 
 
