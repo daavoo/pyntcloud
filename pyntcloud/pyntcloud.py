@@ -211,6 +211,7 @@ class PyntCloud(object):
             d[name][1][structure.id] = structure
         else:
             raise ValueError("Unsupported structure; supported structures are: {}".format(list(d)))
+        print("{} added".format(structure.id))
         return True 
 
     def add_filter(self, filter_name, **kwargs):

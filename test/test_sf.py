@@ -84,3 +84,8 @@ def test_hsv():
     assert max(cloud.points["V"]) <= 100
 
     cloud.points.drop(["H", "S", "V"], 1, inplace=True)
+
+
+def test_octree():
+    cloud.add_structure("octree")
+    
