@@ -130,8 +130,8 @@ class PyntCloud(object):
         if sf in SF_RANSAC:
             points = self.xyz
             model = kwargs["model"]
-            pass
-            self.points[sf] = SF_NORMALS[sf](normals)
+            name = "is_{}".format(model.name)
+            self.points[sf] = SF_RANSAC[sf](points, model)
         
         if sf in SF_NORMALS:
             normals = self.points[["nx", "ny", "nz"]].values

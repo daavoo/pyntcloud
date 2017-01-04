@@ -7,8 +7,8 @@ from ..ransac import ransac
 
 # RANSAC
 
-def sf_ransac(points, model, **kwargs):
-    return ransac(points, model, **kwargs)
+def sf_ransac(points, model):
+    return ransac(points, model)
 
 # NEED NORMALS 
 
