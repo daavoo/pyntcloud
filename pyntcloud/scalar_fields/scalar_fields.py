@@ -116,6 +116,21 @@ def eigen_full_kdtree(kdtree, k):
     ev3 = ev3.tolist()
     return e1, e2, e3, ev1, ev2, ev3
 
+def normals_kdtree(kdtree, k):
+    # kdtree.eigen_decomposition adapted to avoid unnecesary computations
+    d, i = kdtree.query(kdtree.data, k=k, n_jobs=-1)
+    neighbours = kdtree.data[i[:,1:]]
+    diffs = neighbours - neighbours.mean(1,keepdims=True)
+    cov_3D = np.einsum('ijk,ijl->ikl', diffs, diffs) / neighbours.shape[1]
+    eigenvalues, eigenvectors = np.linalg.eig(cov_3D)
+    sort = eigenvalues.argsort()
+    # range from 0-shape[0] to allow indexing along axis 1 and 2
+    idx_trick = range(eigenvalues.shape[0])
+    unoriented_normals = eigenvectors[idx_trick, :, sort[:,0]] 
+
+    # TODO orient normals
+
+
 
 # NEED EIGENVALUES
 
