@@ -7,6 +7,7 @@ from scipy.stats import zscore
 ######################
 # NEED NEIGHBOURHOOD #
 ######################
+
 def radious_outlier_removal(n_hood, r):
     """ Compute a Radious Outlier Removal filter using the Neighbourhood.
     
@@ -83,7 +84,8 @@ def statistical_outlier_removal(n_hood, z_max):
 # NEED XYZ #
 ############
 
-def bounding_box(points, min_x=-np.inf, max_x=np.inf, min_y=-np.inf, max_y=np.inf, min_z=-np.inf, max_z=np.inf):
+def bounding_box(points, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
+                        max_y=np.inf, min_z=-np.inf, max_z=np.inf):
     """ Compute a Pass Through filter on the given points
     
     Parameters

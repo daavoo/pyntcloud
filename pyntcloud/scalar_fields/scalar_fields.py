@@ -131,7 +131,6 @@ def normals_kdtree(kdtree, k):
     # TODO orient normals
 
 
-
 # NEED EIGENVALUES
 
 def eigen_sum(ev):
