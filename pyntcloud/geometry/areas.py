@@ -5,10 +5,12 @@ Areas
 
 """
 import numpy as np
-from .vector import cross, normalize
-from .plane import plane_def_by, project_on_plane
 
-       
+
+def triangle_area(triangle):
+    return 0.5 * np.linalg.norm(np.cross(triangle[1] - triangle[0],
+                                         triangle[2] - triangle[0]))
+
 def coplanar_area(points, plane_normal=None):
     """ Area of the coplanar polygon formed by the given points.
     
@@ -26,7 +28,7 @@ def coplanar_area(points, plane_normal=None):
     -------
     area : float
         The area of the polygon formed by the given coplanar points.
-    
+        
     """
     
     if not plane_normal:
