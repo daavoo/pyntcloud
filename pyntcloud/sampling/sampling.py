@@ -11,7 +11,7 @@ def random_sampling(points, n):
 def mesh_sampling(triangles, n):
     
     random_idx = np.random.randint(0, triangles.shape[0], size=n)
-    new_points = np.zeros((triangles.shape[0], triangles.shape[1]))
+    new_points = np.zeros((n, triangles.shape[1]))
 
     for i in range(len(random_idx)):
         A, B, C = triangles[random_idx[i]]
