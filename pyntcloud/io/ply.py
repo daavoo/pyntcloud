@@ -66,48 +66,35 @@ def read_ply(filename):
         
         while b'end_header' not in line and line != b'':
             line = ply.readline()
-
             if b'comment' in line:
-  
                 comments.append(line.decode())
-
             elif b'obj_info' in line:
                 obj_info.append(line.decode())
-    
             elif b'element' in line:
                 n += 1
                 line = line.split()
-                
                 name = line[1].decode()
                 if name == "vertex":
                     name = "points"
                 elif name == "face":
                     name = "mesh"
                 size = int(line[2])
-                
                 names.append(name)
                 sizes.append(size)
-    
             elif b'property' in line:
                 line = line.split()
-    
                 # element mesh
                 if b'list' in line:
                     mesh_names = ['n_points', 'v1', 'v2', 'v3']
-                    
                     # the first number has different dtype than the list
                     dtypes[n].append((mesh_names[0], ext + ply_dtypes[line[2]]))
-                    
                     # rest of the numbers have the same dtype
                     dt = ext + ply_dtypes[line[3]]
-                    
                     for j in range(1, 4):
                         dtypes[n].append((mesh_names[j], dt))
-    
                 # regular elements
                 else:
                     dtypes[n].append((line[2].decode(), ext + ply_dtypes[line[1]]))
-                
             count += 1
         
         # for ascii
