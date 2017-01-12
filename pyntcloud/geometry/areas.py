@@ -18,8 +18,8 @@ def triangle_area_multi(v1, v2, v3):
     such as v1[i], v2[i], v3[i] represent the ith triangle
     """
     return 0.5 * np.linalg.norm(np.cross(v2 - v1,
-                                         v3 - v1))
-                                         
+                                         v3 - v1), axis=1)
+
 def coplanar_area(points, plane_normal=None):
     """ Area of the coplanar polygon formed by the given points.
     
