@@ -1,29 +1,31 @@
 #  HAKUNA MATATA
 
 import numpy as np
-
+from ..geometry.areas import triangle_area_multi
 
 def random_sampling(points, n):
 
     return points[np.random.randint(0, points.shape[0], size=n)]
 
 
-def mesh_sampling(triangles, n):  
-    areas = np.array([triangle_area(x) for x in triangles])
-    # bigger triangles -> more probability to be selected
+def mesh_sampling(v1, v2, v3, n):
+    
+    areas = triangle_area_multi(v1, v2, v3)
     probabilities = areas / np.sum(areas)
-
     random_idx = np.random.choice(np.arange(len(areas)), size=n, p=probabilities)
-    new_points = np.zeros((n, triangles.shape[1]))
-
-    for i in range(len(random_idx)):
-        A, B, C = triangles[random_idx[i]]
-        u, v = np.random.rand(2)
-
-        if u + v > 1:
-            u = 1 - u
-            v = 1 - v
-
-        new_points[i] = (A * u) + (B * v) + ((1 - (u+v)) * C)
-        
-    return new_points
+    
+    v1 = v1[random_idx]
+    v2 = v2[random_idx]
+    v3 = v3[random_idx]
+    
+    # (n, 1) the 1 is for broadcasting
+    u = np.random.rand(n, 1)
+    v = np.random.rand(n, 1)
+    is_a_problem = u + v > 1
+    
+    u[is_a_problem] = 1 - u[is_a_problem]
+    v[is_a_problem] = 1 - v[is_a_problem]
+    
+    result = (v1 * u) + (v2 * v) + ((1 - (u + v)) * v3)
+    
+    return result
