@@ -55,10 +55,8 @@ def test_read_ply_ascii():
 def test_write_ply():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    data.to_file(data_path + 'writed_ascii.ply', points=data.points, mesh=data.mesh,
-                        comments=data.comments, obj_info=data.obj_info, as_text=True)  
-    data.to_file(data_path + 'writed_bin.ply', points=data.points, mesh=data.mesh,
-                        comments=data.comments, obj_info=data.obj_info, as_text=False) 
+    data.to_file(data_path + 'writed_ascii.ply', as_text=True)  
+    data.to_file(data_path + 'writed_bin.ply', internal=["points", "mesh", "comments", "obj_info"], as_text=False) 
               
     writed_ply_ascii = PyntCloud.from_file(data_path + 'writed_ascii.ply')
     writed_ply_bin = PyntCloud.from_file(data_path + 'writed_bin.ply')
@@ -83,8 +81,7 @@ def test_read_npz():
 def test_write_npz():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
 
-    data.to_file(data_path + 'writed_npz.npz', points=data.points, mesh=data.mesh,
-              comments=data.comments, obj_info=data.obj_info)  
+    data.to_file(data_path + 'writed_npz.npz', internal=["points", "mesh", "comments", "obj_info"])  
 
     writed_npz = PyntCloud.from_file(data_path + 'writed_npz.npz')
 
@@ -103,8 +100,7 @@ def test_read_obj():
 def test_write_obj():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    data.to_file(data_path + 'writed.obj', points=data.points, mesh=data.mesh,
-              comments=data.comments, obj_info=data.obj_info)  
+    data.to_file(data_path + 'writed.obj', internal=["points", "mesh", "comments", "obj_info"])  
 
     writed_obj = PyntCloud.from_file(data_path + 'writed.obj')
     
@@ -123,7 +119,7 @@ def test_read_pcd():
 def test_write_pcd():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    data.to_file(data_path + 'writed.pcd', points=data.points, comments=data.comments)  
+    data.to_file(data_path + 'writed.pcd', internal=["points", "mesh", "comments", "obj_info"])  
 
     writed_pcd = PyntCloud.from_file(data_path + 'writed.pcd')
     
