@@ -103,7 +103,7 @@ class PyntCloud(object):
         else:
             return cls(**FROM[ext](filename))
 
-    def to_file(self, filename, **kwargs):
+    def to_file(self, filename, internal=["points"], **kwargs):
         """ Save PyntCloud's data to file 
         Parameters
         ----------
@@ -113,15 +113,16 @@ class PyntCloud(object):
         ext = filename.split(".")[-1].upper()
         if ext not in TO:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
+        
+        required_args = [x for x in signature(TO[ext]).parameters]
+        if "kwargs" in required_args:
+            internal_dict = {x :getattr(self, x) for x in internal}
+            TO[ext](filename,**internal_dict, **kwargs)
         else:
-            if "points" not in kwargs:
-                raise ValueError("'points' must be in kwargs")
-            required_args = [x for x in signature(TO[ext]).parameters]
-            if "kwargs" in required_args:
-                TO[ext](filename, **kwargs)
-            else:
-                valid_args = {x: kwargs[x] for x in kwargs if x in required_args} 
-                TO[ext](filename, **valid_args)
+            internal_dict = {x :getattr(self, x) for x in internal if x in required_args}
+            valid_args = {x: kwargs[x] for x in kwargs if x in required_args} 
+            TO[ext](filename, **internal_dict, **valid_args)
+
         return True
         
     def add_scalar_field(self, sf, **kwargs):
