@@ -51,29 +51,3 @@ def read_mat(filename):
             del mat["mesh_dtypes"]
             
     return mat
-
-
-def write_mat(filename,  **kwargs):
-    
-    """
-
-    Parameters
-    ----------
-    filename: str
-        The created file will be named with this
-
-    kwargs: Elements of the pyntcloud to be saved
-
-    Returns
-    -------
-    boolean
-        True if no problems
-
-    """
-    for k in kwargs:
-        if isinstance(kwargs[k], pd.DataFrame):
-            kwargs[k] = kwargs[k].to_records(index=False)
-    
-    np.savez_compressed(filename, **kwargs)
-    
-    return True

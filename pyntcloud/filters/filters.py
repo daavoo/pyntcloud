@@ -118,12 +118,5 @@ def bounding_box(points, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
     parameters = ",".join([str(x) for x in [min_x, min_y, min_z, max_x, max_y, max_z]])
     return bb_filter, parameters
 
-def random(points, size):
-
-    filter = np.ones(points.shape[0], dtype=bool)
-
-    filter[np.random.choice(points.shape[0], size=size)] = 0
-
-    return filter, size
 
 
