@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from ..plot import plot_voxelgrid
+from ..geometry.utils import cartesian
 
 
 class VoxelGrid(object):
@@ -35,8 +36,8 @@ class VoxelGrid(object):
                     The bounding box is allowed to have dimensions of different sizes.
         """
         self.points = points
-        xyzmin = np.min(points, axis=0) - 0.001
-        xyzmax = np.max(points, axis=0) + 0.001
+        xyzmin = np.min(points, axis=0)
+        xyzmax = np.max(points, axis=0)
 
         if bb_cuboid:
             #: adjust to obtain a  minimum bounding box with all sides of equal lenght 
@@ -65,42 +66,54 @@ class VoxelGrid(object):
         self.n_z = x_y_z[2]
         self.id = "V([{},{},{}],{})".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
         self.build()
-        self.get_feature_vector()
 
     def build(self):
-        structure = np.zeros((len(self.points), 4), dtype=int)
-        structure[:,0] = np.searchsorted(self.segments[0], self.points[:,0]) - 1
-        structure[:,1] = np.searchsorted(self.segments[1], self.points[:,1]) - 1
-        structure[:,2] = np.searchsorted(self.segments[2], self.points[:,2]) - 1
-        # i = ((y * n_x) + x) + (z * (n_x * n_y))
-        structure[:,3] = ((structure[:,1] * self.n_x) + structure[:,0]) + (structure[:,2] * (self.n_x * self.n_y)) 
-        self.structure = structure
+        # find where each point lies in corresponding segmented axis
+        # -1 so index are 0-based; clip for edge cases
+        self.voxel_x = np.clip(np.searchsorted(segments[0], points[:,0]) - 1, 0, x_y_z[0])
+        self.voxel_y = np.clip(np.searchsorted(segments[1], points[:,1]) - 1, 0, x_y_z[1])
+        self.voxel_z = np.clip(np.searchsorted(segments[2], points[:,2]) - 1, 0, x_y_z[2]) 
+        self.voxel_n = np.ravel_multi_index([x,y,z], [self.n_x, self.n_y, self.n_z])
 
-    def get_feature_vector(self):
-        vector = np.zeros(self.n_voxels)
-        count = np.bincount(self.structure[:,3])
-        vector[:len(count)] = count
-        self.feature_vector = vector.reshape(self.n_z, self.n_y, self.n_x)
+        # compute center of each voxel
+        midsegments = [(segments[i][1:] + segments[i][:-1]) / 2 for i in range(3)]
+        self.voxel_centers = cartesian(midsegments)
 
-    def get_centroids(self):
-        st = pd.DataFrame(self.structure[:,3], columns=["voxel_n"])
-        for n, i in enumerate(["x", "y", "z"]):
-            st[i] = self.points[:, n]
-        return st.groupby("voxel_n").mean().values
+    def get_feature_vector(self, mode="binary"):
 
-    def plot(self, d=2, cmap="Oranges", axis=False):
+        if mode == "binary":
+            vector = np.zeros(self.n_x * self.n_y * self.n_z)
+            vector[np.unique(self.voxel_n)] = 1
+            return vector.reshape((self.n_x, self.ny, self.nz))
+
+        elif mode == "density":
+            vector = np.zeros(self.n_x * self.n_y * self.n_z)
+            count = np.bincount(self.voxel_n)
+            vector[:len(count)] = count
+            vector /= len(self.voxel_n)
+            return vector.reshape((self.n_x, self.ny, self.nz))
+
+        elif mode == "TDF":
+            truncation = np.linalg.norm(self.shape)
+            vector = cdist(self.voxel_centers, self.points).min(1)
+            return vector.reshape((self.n_x, self.ny, self.nz))
+
+    def plot_feature_vector(self, mode="binary", d=2, cmap="Oranges"):
+        feature_vector = self.get_feature_vector(mode)
+        
         if d == 2:
             fig, axes= plt.subplots(int(np.ceil(self.n_z / 4)), 4, figsize=(8,8))
             plt.tight_layout()
             for i, ax in enumerate(axes.flat):
-                if i >= len(self.feature_vector):
+                if i >= len(feature_vector):
                     break
-                im = ax.imshow(self.feature_vector[i], cmap=cmap, interpolation="none")
+                im = ax.imshow(feature_vector[i], cmap=cmap, interpolation="none")
                 ax.set_title("Level " + str(i))
             fig.subplots_adjust(right=0.8)
             cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
             cbar = fig.colorbar(im, cax=cbar_ax)
-            cbar.set_label('NUMBER OF POINTS IN VOXEL')
+            cbar.set_label(mode.upper())
+            
         elif d == 3:
-            return plot_voxelgrid(self, cmap=cmap, axis=axis)
+            return plot_voxelgrid(self, cmap=cmap)
 
