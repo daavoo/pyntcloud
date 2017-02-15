@@ -28,7 +28,7 @@ def read_off(filename):
                              skiprows=count, skip_footer=n_faces,
                              names=["x", "y", "z"])
         
-        data["faces"] = pd.read_csv(filename, sep=" ", header=None, engine="python",
+        data["mesh"] = pd.read_csv(filename, sep=" ", header=None, engine="python",
                             skiprows=(count + n_points), usecols=[1,2,3],
                             names=["v1", "v2", "v3"])
         return data
