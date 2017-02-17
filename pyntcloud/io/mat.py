@@ -18,23 +18,19 @@ def read_mat(filename, points_name="points", mesh_name="mesh",
     data: dict
         If possible, elements as pandas DataFrames else input format
     """
-    
-    data = loadmat(filename)
 
+    data = {}
+
+    mat = loadmat(filename)
+
+    if points_columns in mat:
+        columns = [mat[points_columns][i].strip() for i in range(len(mat[points_columns]))]
+        data["points"] = pd.DataFrame(mat[points_name], columns=columns)            
     
-    if points_columns in data:
-        columns = [data[points_columns][i].strip() for i in range(len(data[points_columns]))]
-        del data[points_columns]
-        
-        data[points_name] = pd.DataFrame(data[points_name], columns=columns)            
-    
-    if mesh_name in data:
+    if mesh_name in mat:
         columns = None
-
-        if mesh_columns in data:
-            columns= [data[mesh_columns][i].strip() for i in range(len(data[mesh_columns]))]
-            del data[mesh_columns]
-        
-        data[mesh_name] = pd.DataFrame(data[mesh_name], columns=columns)
+        if mesh_columns in mat:
+            columns= [mat[mesh_columns][i].strip() for i in range(len(mat[mesh_columns]))]
+        data["mesh"] = pd.DataFrame(mat[mesh_name], columns=columns)
             
     return data
