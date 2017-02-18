@@ -81,7 +81,7 @@ def test_read_npz():
 def test_write_npz():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
 
-    data.to_file(data_path + 'writed_npz.npz', internal=["points", "mesh", "comments", "obj_info"])  
+    data.to_file(data_path + 'writed_npz.npz', internal=["points", "mesh"])  
 
     writed_npz = PyntCloud.from_file(data_path + 'writed_npz.npz')
 
@@ -100,7 +100,7 @@ def test_read_obj():
 def test_write_obj():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    data.to_file(data_path + 'writed.obj', internal=["points", "mesh", "comments", "obj_info"])  
+    data.to_file(data_path + 'writed.obj', internal=["points", "mesh"])  
 
     writed_obj = PyntCloud.from_file(data_path + 'writed.obj')
     
@@ -119,7 +119,7 @@ def test_read_pcd():
 def test_write_pcd():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    data.to_file(data_path + 'writed.pcd', internal=["points", "mesh", "comments", "obj_info"])  
+    data.to_file(data_path + 'writed.pcd', internal=["points", "mesh"])  
 
     writed_pcd = PyntCloud.from_file(data_path + 'writed.pcd')
     
