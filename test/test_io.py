@@ -55,8 +55,8 @@ def test_read_ply_ascii():
 def test_write_ply():
     data = PyntCloud.from_file(data_path + '_bin.ply')    
     
-    data.to_file(data_path + 'writed_ascii.ply', as_text=True)  
-    data.to_file(data_path + 'writed_bin.ply', internal=["points", "mesh", "comments", "obj_info"], as_text=False) 
+    data.to_file(data_path + 'writed_ascii.ply', internal=["points", "mesh"], as_text=True)  
+    data.to_file(data_path + 'writed_bin.ply', internal=["points", "mesh"], as_text=False) 
               
     writed_ply_ascii = PyntCloud.from_file(data_path + 'writed_ascii.ply')
     writed_ply_bin = PyntCloud.from_file(data_path + 'writed_bin.ply')

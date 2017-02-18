@@ -163,6 +163,9 @@ def write_ply(filename, points=None, mesh=None, as_text=False):
         if points is not None:
             header.extend(describe_element('vertex', points))
         if mesh is not None:
+            mesh = mesh.copy()
+            mesh.insert(loc=0, column="n_points", value=3)
+            mesh["n_points"] = mesh["n_points"].astype("u1")
             header.extend(describe_element('face', mesh))
 
         header.append('end_header')
