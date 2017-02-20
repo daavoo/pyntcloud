@@ -4,11 +4,9 @@ import numpy as np
 from scipy.stats import zscore
 
 
-######################
-# NEED NEIGHBOURHOOD #
-######################
+# NEED KDTREE 
 
-def radious_outlier_removal(n_hood, r):
+def radious_outlier_removal(kdtree, points, k, r):
     """ Compute a Radious Outlier Removal filter using the Neighbourhood.
     
     Parameters
@@ -35,13 +33,15 @@ def radious_outlier_removal(n_hood, r):
     the desired result.
             
     A LOWER 'r' value will result in a HIGHER number of points trimmed.
+
     """
 
-    ror_filter = np.all(n_hood.distances > r, axis=1)
+    distances, inidices = kdtree.query(points, k=k, n_jobs=-1)
+    ror_filter = np.all(distances > r, axis=1)
 
-    return ror_filter, r
+    return ror_filter
 
-def statistical_outlier_removal(n_hood, z_max):
+def statistical_outlier_removal(kdtree, points, k, z_max):
     """ Compute a Statistical Outlier Removal filter using the Neighbourhood.
 
     Parameters
@@ -71,18 +71,16 @@ def statistical_outlier_removal(n_hood, z_max):
     the filter to the desired result.
     
     A LOWER 'z_max' value will result in a HIGHER number of points trimmed.
+
     """
 
-    z_distances = zscore(np.mean(n_hood.distances, axis=1), ddof=1)
-
+    distances, inidices = kdtree.query(points, k=k, n_jobs=-1)
+    z_distances = zscore(np.mean(distances, axis=1), ddof=1)
     sor_filter = abs(z_distances) < z_max
 
-    return sor_filter, z_max
+    return sor_filter
 
-
-############
-# NEED XYZ #
-############
+# NEED XYZ 
 
 def bounding_box(points, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
                         max_y=np.inf, min_z=-np.inf, max_z=np.inf):

@@ -87,6 +87,7 @@ class PyntCloud(object):
     @classmethod
     def from_file(cls, filename):
         """ Extracts data from file and constructs a PyntCloud with it
+        
         Parameters
         ----------
         filename : str
@@ -199,21 +200,21 @@ class PyntCloud(object):
     def add_structure(self, name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
         """
-        d = {
+        structures = {
             'kdtree':(KDTree, self.kdtrees),
             'voxelgrid':(VoxelGrid, self.voxelgrids), 
             'octree':(Octree, self.octrees)
             }
-        if name in d:
+        if name in structures:
             valid_args = {x: kwargs[x] for x in kwargs if x in signature(d[name][0]).parameters}  
-            structure = d[name][0](self.xyz, **valid_args)
-            d[name][1][structure.id] = structure
+            structure = structures[name][0](self.xyz, **valid_args)
+            structures[name][1][structure.id] = structure
         else:
             raise ValueError("Unsupported structure; supported structures are: {}".format(list(d)))
         print("{} added".format(structure.id))
         return True 
 
-    def add_filter(self, filter_name, **kwargs):
+    def get_filter(self, filter_name, **kwargs):
         """ Build a filter and add it to the corresponding PyntCloud's attribute
         """
         if filter_name in F_NEIGHBOURHOOD:
@@ -232,9 +233,6 @@ class PyntCloud(object):
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS))
 
         return True      
-    
-    def apply_filter(self, filter_name):
-        return
 
     def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None):
         try:
