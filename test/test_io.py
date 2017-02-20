@@ -108,26 +108,6 @@ def test_write_obj():
     
     os.remove(data_path + 'writed.obj')
 
-
-def test_read_pcd():
-    pcd = PyntCloud.from_file(data_path + '.pcd')
-    
-    assert_points_xyz(pcd)
-    assert_points_color(pcd)
-
-
-def test_write_pcd():
-    data = PyntCloud.from_file(data_path + '_bin.ply')    
-    
-    data.to_file(data_path + 'writed.pcd', internal=["points", "mesh"])  
-
-    writed_pcd = PyntCloud.from_file(data_path + 'writed.pcd')
-    
-    assert all(data.points[["x", "y", "z", "red", "green", "blue"]] == writed_pcd.points)
-    
-    os.remove(data_path + 'writed.pcd')
-
-
 def test_read_mat():
     mat = PyntCloud.from_file(data_path + '.mat')
     
