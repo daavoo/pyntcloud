@@ -118,14 +118,10 @@ class PyntCloud(object):
         ext = filename.split(".")[-1].upper()
         if ext not in TO:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
-        
         kwargs["filename"] = filename
-
         for x in internal:
             kwargs[x] = getattr(self, x)
-
         valid_args =  crosscheck_kwargs_function(kwargs, TO[ext])
-
         TO[ext](**valid_args)
 
         return True
@@ -143,8 +139,10 @@ class PyntCloud(object):
                 all_sf = SF_NORMALS[sf][1](normals)
                 for n, i in enumerate(SF_NORMALS[sf][0]):
                     self.points[i] = all_sf[i]
+                    print("{} added".format(i))
             else:
                 self.points[sf] = SF_NORMALS[sf](normals)
+                print("{} added".format(sf))
 
         elif sf in SF_RGB:
             rgb = self.points[["red", "green", "blue"]].values.astype("f")
@@ -152,8 +150,10 @@ class PyntCloud(object):
                 all_sf = SF_RGB[sf][1](rgb)
                 for n, i in enumerate(SF_RGB[sf][0]):
                     self.points[i] = all_sf[n]
+                    print("{} added".format(i))
             else:
                 self.points[sf] = SF_RGB[sf](rgb)
+                print("{} added".format(sf))
 
         elif sf in SF_OCTREE:
             octree = self.octrees[kwargs["octree"]]
@@ -163,9 +163,11 @@ class PyntCloud(object):
                 for n, i in enumerate(SF_OCTREE[sf][0]):
                     name = "{}({},{})".format(i, level, octree.id)
                     self.points[name] = all_sf[n]
+                    print("{} added".format(name))
             else:
                 name = "{}({},{})".format(sf, level, octree.id)
                 self.points[name] = SF_OCTREE[sf](octree, kwargs["level"])
+                print("{} added".format(name))
 
         elif sf in SF_VOXELGRID:
             voxelgrid = self.voxelgrids[kwargs["voxelgrid"]]
@@ -174,9 +176,11 @@ class PyntCloud(object):
                 for n, i in enumerate(SF_VOXELGRID[sf][0]):
                     name = "{}({})".format(i, voxelgrid.id)
                     self.points[name] = all_sf[n]
+                    print("{} added".format(name))
             else:
                 name = "{}({})".format(sf, voxelgrid.id)
                 self.points[name] = SF_VOXELGRID[sf](voxelgrid)
+                print("{} added".format(name))
 
         elif sf in SF_KDTREE:
             kdtree = self.kdtrees[kwargs["kdtree"]]
@@ -186,15 +190,18 @@ class PyntCloud(object):
                 for n, i in enumerate(SF_KDTREE[sf][0]):
                     name = "{}({})".format(i, kdtree.id)
                     self.points[name] = all_sf[n]
+                    print("{} added".format(name))
             else:
                 name = "{}({})".format(sf, kdtree.id)
                 self.points[name] = SF_KDTREE[sf](kdtree, k)
+                print("{} added".format(name))
 
         elif sf in SF_EIGENVALUES:
             ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
             eigen_values = self.points[ids].values
             name = "{}({})".format(sf, kwargs["id"])
             self.points[name] = SF_EIGENVALUES[sf](eigen_values)
+            print("{} added".format(name))
 
         else:
             raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF))
@@ -223,14 +230,17 @@ class PyntCloud(object):
         """
         if name in F_KDTREE:
             kwargs["points"] = self.xyz
+            kwargs["kdtree"] = self.kdtrees[kwargs["kdtree"]]
             valid_args = crosscheck_kwargs_function(kwargs, F_KDTREE[name])
-            valid_args["kdtree"] = self.kdtrees[valid_args["kdtree"]]
             return F_KDTREE[name](**valid_args)
-             
-        else:
-            raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS))
+        
+        elif name in F_XYZ:
+            kwargs["points"] = self.xyz
+            valid_args = crosscheck_kwargs_function(kwargs, F_XYZ[name])
+            return F_XYZ[name](**valid_args)
 
-        return True      
+        else:
+            raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS)) 
 
     def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None):
         try:
