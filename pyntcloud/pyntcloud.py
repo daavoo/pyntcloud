@@ -4,10 +4,9 @@
 import numpy as np
 import pandas as pd
 
-from inspect import signature
 from matplotlib import pyplot as plt
 
-from .filters import F_NEIGHBOURHOOD, F_XYZ, ALL_FILTERS
+from .filters import F_KDTREE
 from .io import FROM, TO
 from .plot import plot_points, DESCRIPTION
 from .scalar_fields import ( 
@@ -18,6 +17,7 @@ from .scalar_fields import (
     ALL_SF
 )
 from .structures import KDTree, VoxelGrid, Octree
+from .utils.misc import crosscheck_kwargs_function
 
 
 class PyntCloud(object):
@@ -214,20 +214,15 @@ class PyntCloud(object):
         print("{} added".format(structure.id))
         return True 
 
-    def get_filter(self, filter_name, **kwargs):
+    def get_filter(self, name, **kwargs):
         """ Build a filter and add it to the corresponding PyntCloud's attribute
         """
-        if filter_name in F_NEIGHBOURHOOD:
-             n_hood = self.neighbourhoods[kwargs["n_hood"]]
-             valid_args = {key: kwargs[key] for key in kwargs if key in F_NEIGHBOURHOOD[filter_name][0]} 
-             filter, filter_parameter = F_NEIGHBOURHOOD[filter_name][1](n_hood, **valid_args)
-             id = n_hood.id + "-{}: {}".format(filter_name, filter_parameter)
-             self.filters[id] = filter  
-
-        elif filter_name in F_XYZ:
-            valid_args = {x: kwargs[x] for x in kwargs if x in F_XYZ[filter_name][0]} 
-            filter, filter_parameters= F_XYZ[filter_name][1](self.xyz, **valid_args)
-            self.filters["{}: {}".format(filter_name, filter_parameters)] = filter
+        if name in F_KDTREE:
+            valid_args = crosscheck_kwargs_function(kwargs, F_KDTREE[name])
+            valid_args["kdtree"] = self.kdtrees[args["kdtree"]]
+            valid_args["points"] = self.xyz
+            return F_KDTREE[name](**valid_args)
+             
         
         else:
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS))
@@ -259,5 +254,6 @@ class PyntCloud(object):
             axis=axis, 
             output_name=output_name
             )
+
 
     
