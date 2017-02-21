@@ -119,14 +119,14 @@ class PyntCloud(object):
         if ext not in TO:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
         
-        required_args = [x for x in signature(TO[ext]).parameters]
-        if "kwargs" in required_args:
-            internal_dict = {x :getattr(self, x) for x in internal}
-            TO[ext](filename,**internal_dict, **kwargs)
-        else:
-            internal_dict = {x :getattr(self, x) for x in internal if x in required_args}
-            valid_args = {x: kwargs[x] for x in kwargs if x in required_args} 
-            TO[ext](filename, **internal_dict, **valid_args)
+        kwargs["filename"] = filename
+
+        for x in internal:
+            kwargs[x] = getattr(self, x)
+
+        valid_args =  crosscheck_kwargs_function(kwargs, TO[ext])
+
+        TO[ext](**valid_args)
 
         return True
         

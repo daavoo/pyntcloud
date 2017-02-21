@@ -3,6 +3,8 @@ from inspect import signature, Parameter
 def crosscheck_kwargs_function(kwargs, function):
     f_positional = []
     f_kwargs = []
+    accepts_args = False
+    accept_kwargs = False
     for x, p in signature(function).parameters.items():
         if p.default == Parameter.empty:
             if p.kind == Parameter.VAR_POSITIONAL:
@@ -17,11 +19,7 @@ def crosscheck_kwargs_function(kwargs, function):
     return_kwargs = {}
 
     for x in f_positional:
-        try:
-            return_kwargs[x] = kwargs[x]
-        except KeyError:
-            print("Missing positional argument: {}".format(x))
-            return
+        return_kwargs[x] = kwargs[x]
         del kwargs[x]
 
     for x in f_kwargs:
