@@ -5,9 +5,8 @@ from numpy import pi as PI
 
 from pyntcloud import PyntCloud
 
-# just in case test are being runned from other directory
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
-cloud = PyntCloud.from_file('../docs/data/test/test_bin.ply')
+cloud = PyntCloud.from_file('data/sf/xyz_rgb_nxnynz.npz')
 
 
 def test_inclination_deg():
