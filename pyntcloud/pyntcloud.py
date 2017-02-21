@@ -6,7 +6,11 @@ import pandas as pd
 
 from matplotlib import pyplot as plt
 
-from .filters import F_KDTREE
+from .filters import (
+    F_KDTREE,
+    F_XYZ,
+    ALL_FILTERS
+)
 from .io import FROM, TO
 from .plot import plot_points, DESCRIPTION
 from .scalar_fields import ( 
@@ -63,7 +67,7 @@ class PyntCloud(object):
         except AttributeError:
             n_faces = 0
         return DESCRIPTION.format(  
-            len(self.points), len(self.points.columns - 3),
+            len(self.points), len(self.points.columns) - 3,
             n_faces,
             len(self.kdtrees),
             len(self.octrees),
@@ -218,9 +222,9 @@ class PyntCloud(object):
         """ Compute filter over PyntCloud's points and return it
         """
         if name in F_KDTREE:
+            kwargs["points"] = self.xyz
             valid_args = crosscheck_kwargs_function(kwargs, F_KDTREE[name])
-            valid_args["kdtree"] = self.kdtrees[args["kdtree"]]
-            valid_args["points"] = self.xyz
+            valid_args["kdtree"] = self.kdtrees[valid_args["kdtree"]]
             return F_KDTREE[name](**valid_args)
              
         else:

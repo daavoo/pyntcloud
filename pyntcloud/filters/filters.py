@@ -84,7 +84,7 @@ def statistical_outlier_removal(kdtree, points, k, z_max):
 
 def bounding_box(points, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
                         max_y=np.inf, min_z=-np.inf, max_z=np.inf):
-    """ Compute a Pass Through filter on the given points
+    """ Compute a bounding_box filter on the given points
     
     Parameters
     ----------                        
@@ -113,8 +113,7 @@ def bounding_box(points, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
     
     bb_filter = np.logical_and(bound_x, bound_y, bound_z)
     
-    parameters = ",".join([str(x) for x in [min_x, min_y, min_z, max_x, max_y, max_z]])
-    return bb_filter, parameters
+    return bb_filter
 
 
 
