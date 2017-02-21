@@ -61,8 +61,9 @@ def hsv(rgb):
     idx = rgb[:,2] == MAX
     H[idx] = (60 * (rgb[idx, 0] - rgb[idx, 1]) / MAX_MIN[idx]) + 240
     
-    S = np.where(MAX == 0, 0, 1 - (MIN/MAX))
-    V = MAX/255 * 100 
+    H = np.nan_to_num(H)
+    S = np.nan_to_num(np.where(MAX == 0, 0, 1 - (MIN/MAX)))
+    V = np.nan_to_num(MAX/255 * 100) 
     
     return H, S, V 
 
