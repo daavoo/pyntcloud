@@ -63,7 +63,7 @@ class PyntCloud(object):
         except AttributeError:
             n_faces = 0
         return DESCRIPTION.format(  
-            len(self.points), len(self.points.columns),
+            len(self.points), len(self.points.columns - 3),
             n_faces,
             len(self.kdtrees),
             len(self.octrees),
@@ -215,7 +215,7 @@ class PyntCloud(object):
         return True 
 
     def get_filter(self, name, **kwargs):
-        """ Build a filter and add it to the corresponding PyntCloud's attribute
+        """ Compute filter over PyntCloud's points and return it
         """
         if name in F_KDTREE:
             valid_args = crosscheck_kwargs_function(kwargs, F_KDTREE[name])
@@ -223,7 +223,6 @@ class PyntCloud(object):
             valid_args["points"] = self.xyz
             return F_KDTREE[name](**valid_args)
              
-        
         else:
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS))
 
