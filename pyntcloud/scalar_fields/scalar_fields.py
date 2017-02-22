@@ -87,16 +87,16 @@ def eigen_full_octree(octree, level):
 # NEED VOXELGRID
 
 def voxel_x(voxelgrid):
-    return [voxelgrid.structure[:,0]]
+    return [voxelgrid.voxel_x]
 
 def voxel_y(voxelgrid):
-    return [voxelgrid.structure[:,1]]
+    return [voxelgrid.voxel_y]
 
 def voxel_z(voxelgrid):
-    return [voxelgrid.structure[:,2]]
+    return [voxelgrid.voxel_z]
 
 def voxel_n(voxelgrid):
-    return [voxelgrid.structure[:,3]]
+    return [voxelgrid.voxel_n]
 
 def eigen_voxelgrid(voxelgrid):
     return voxelgrid.eigen_decomposition()[:3]
