@@ -70,9 +70,9 @@ class VoxelGrid(object):
     def build(self):
         # find where each point lies in corresponding segmented axis
         # -1 so index are 0-based; clip for edge cases
-        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0, x_y_z[0])
-        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:,1]) - 1, 0, x_y_z[1])
-        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:,2]) - 1, 0, x_y_z[2]) 
+        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0, self.n_x)
+        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:,1]) - 1, 0, self.n_y)
+        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:,2]) - 1, 0, self.n_z) 
         self.voxel_n = np.ravel_multi_index([x,y,z], [self.n_x, self.n_y, self.n_z])
 
         # compute center of each voxel
