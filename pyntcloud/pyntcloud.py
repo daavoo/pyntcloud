@@ -196,13 +196,13 @@ class PyntCloud(object):
     def add_structure(self, name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
         """
+        kwargs["points"] = self.xyz
         structures = {
             'kdtree':(KDTree, self.kdtrees),
             'voxelgrid':(VoxelGrid, self.voxelgrids), 
             'octree':(Octree, self.octrees)
             }
         if name in structures:
-            kwargs["points"] = self.xyz
             valid_kwargs = crosscheck_kwargs_function(kwargs, structures[name][0])  
             structure = structures[name][0](**valid_kwargs)
             structures[name][1][structure.id] = structure
@@ -214,16 +214,15 @@ class PyntCloud(object):
     def get_filter(self, name, **kwargs):
         """ Compute filter over PyntCloud's points and return it
         """
-        if name in F_KDTREE:
-            kwargs["points"] = self.xyz
+        kwargs["points"] = self.xyz
+        if name in F_XYZ:
+            valid_args = crosscheck_kwargs_function(kwargs, F_XYZ[name])
+            return F_XYZ[name](**valid_args)
+
+        elif name in F_KDTREE:
             kwargs["kdtree"] = self.kdtrees[kwargs["kdtree"]]
             valid_args = crosscheck_kwargs_function(kwargs, F_KDTREE[name])
             return F_KDTREE[name](**valid_args)
-        
-        elif name in F_XYZ:
-            kwargs["points"] = self.xyz
-            valid_args = crosscheck_kwargs_function(kwargs, F_XYZ[name])
-            return F_XYZ[name](**valid_args)
 
         else:
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS)) 
@@ -253,6 +252,7 @@ class PyntCloud(object):
             axis=axis, 
             output_name=output_name
             )
+            
     def _clean_all_structures(self):
         self.kdtrees = {}
         self.voxelgrids = {}
