@@ -10,7 +10,6 @@ PyntCloud
 {} kdtrees
 {} octrees
 {} voxelgrids
-{} filters
 Centroid: {}, {}, {}
 Other attributes:{}        
 """

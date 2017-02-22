@@ -31,10 +31,8 @@ class PyntCloud(object):
     def __init__(self, **kwargs):  
         if "points" not in kwargs:
             raise ValueError("There must be a 'points' key in the kwargs")
-        self.kdtrees = {}
-        self.octrees = {}
-        self.voxelgrids = {}
-        self.filters = {}
+        self.points = kwargs["points"]
+        del kwargs["points"]
         for key in kwargs:
             if "kdtrees" in key:
                 self.kdtrees = kwargs[key]
@@ -42,8 +40,6 @@ class PyntCloud(object):
                 self.octrees = kwargs[key]
             elif "voxelgrids" in key:
                 self.voxelgrids = kwargs[key]
-            elif "filters" in key:
-                self.filters = kwargs[key]
             else:
                 setattr(self, key, kwargs[key])
         # store raw values to share memory along structures
@@ -72,7 +68,6 @@ class PyntCloud(object):
             len(self.kdtrees),
             len(self.octrees),
             len(self.voxelgrids),
-            len(self.filters),
             self.centroid[0], self.centroid[1], self.centroid[2],
             "".join(others))
 
@@ -86,6 +81,7 @@ class PyntCloud(object):
             raise TypeError("Points argument must be a DataFrame")
         elif not set(['x', 'y', 'z']).issubset(df.columns):
             raise ValueError("Points must have x, y and z coordinates")
+        self._clean_all_structures()
         self.__points = df
              
     @classmethod
@@ -206,11 +202,12 @@ class PyntCloud(object):
             'octree':(Octree, self.octrees)
             }
         if name in structures:
-            valid_args = {x: kwargs[x] for x in kwargs if x in signature(d[name][0]).parameters}  
-            structure = structures[name][0](self.xyz, **valid_args)
+            kwargs["points"] = self.xyz
+            valid_kwargs = crosscheck_kwargs_function(kwargs, structures[name][0])  
+            structure = structures[name][0](**valid_kwargs)
             structures[name][1][structure.id] = structure
         else:
-            raise ValueError("Unsupported structure; supported structures are: {}".format(list(d)))
+            raise ValueError("Unsupported structure; supported structures are: {}".format(list(structures)))
         print("{} added".format(structure.id))
         return True 
 
@@ -256,6 +253,10 @@ class PyntCloud(object):
             axis=axis, 
             output_name=output_name
             )
+    def _clean_all_structures(self):
+        self.kdtrees = {}
+        self.voxelgrids = {}
+        self.octrees = {}
 
 
     
