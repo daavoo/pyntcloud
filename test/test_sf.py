@@ -87,14 +87,58 @@ def test_hsv():
     cloud.points.drop(["H", "S", "V"], 1, inplace=True)
 
 
-def test_octree_level():
+def test_octree_sf():
+
+    with pytest.raises(KeyError):
+        # missing structure
+        cloud.add_scalar_field("octree_level")
+
     cloud.add_structure("octree")
+    octree_id = "O(2)"
+    
+    with pytest.raises(KeyError):
+        # wrong id
+        cloud.add_scalar_field("octree_level", octree="O(3)", level=3)
 
+    # octree_level
+    sf_id = "octree_level(2,O(2))"
     with pytest.raises(ValueError):
-        cloud.add_scalar_field("octree_level", octree="O(2)", level=3)
+        cloud.add_scalar_field("octree_level", octree=octree_id, level=3)
 
-    cloud.add_scalar_field("octree_level", octree="O(2)", level=2)
+    cloud.add_scalar_field("octree_level", octree=octree_id, level=2)
+    
+    assert min(cloud.points[sf_id]) >= 0
+    assert max(cloud.points[sf_id]) <= 77
 
-    assert min(cloud.points["octree_level(2,O(2))"]) == 0
-    assert max(cloud.points["octree_level(2,O(2))"]) == 77
+    cloud.points.drop(sf_id, 1, inplace=True)
+
+    # eigen_octree
+
+
+def test_voxelgrid_sf():
+
+    with pytest.raises(KeyError):
+        # missing structure
+        cloud.add_scalar_field("voxel_x")
+
+    cloud.add_structure("voxelgrid", x_y_z=[2,2,2])
+    vg_id = "V([2,2,2],True)"
+
+    with pytest.raises(KeyError):
+        # wrong id
+        cloud.add_scalar_field("voxel_x", voxelgrid="V([1,1,1],True)")
+    
+    for sf in {"voxel_x", "voxel_y", "voxel_z"}:
+        cloud.add_scalar_field(sf, voxelgrid=vg_id)
+        sf_id = "{}({})".format(sf, vg_id)
+        assert min(cloud.points[sf_id]) >= 0
+        assert max(cloud.points[sf_id]) <= 1
+        cloud.points.drop(sf_id, 1, inplace=True)
+
+    cloud.add_scalar_field("voxel_n", voxelgrid=vg_id)
+    sf_id = "voxel_n({})".format(vg_id)
+    assert min(cloud.points[sf_id]) >= 0
+    assert max(cloud.points[sf_id]) <= 7
+    cloud.points.drop(sf_id, 1, inplace=True)
+        
 

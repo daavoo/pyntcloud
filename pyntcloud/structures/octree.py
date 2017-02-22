@@ -68,6 +68,7 @@ class Octree(object):
         ev1_out = np.zeros((st.shape[0], 3))
         ev2_out = np.zeros((st.shape[0],3))
         ev3_out = np.zeros((st.shape[0],3))
+        
         this_level = st.groupby([x for x in range(level)], sort=False)
 
         # to use when groups in current level have less than 3 points
@@ -80,7 +81,6 @@ class Octree(object):
             min_level = st.groupby([x for x in range(level-min_i)])
 
         for n, g in this_level:
-
             if g.shape[0] < 3:
                 g = prev_level.get_group(n[:-1])
                 if g.shape[0] < 3:
