@@ -8,30 +8,30 @@ from ..geometry import Plane, Sphere
 # RANSAC
 
 def is_plane(points):
-    return ransac(points, Plane())
+    return [ransac(points, Plane())]
 
 def is_sphere(points):
-    return ransac(points, Sphere())
+    return [ransac(points, Sphere())]
 
 # NEED NORMALS 
 
 def inclination_deg(normals):
-    return np.rad2deg(np.arccos(normals[:,-1]))
+    return [np.rad2deg(np.arccos(normals[:,-1]))]
 
 def inclination_rad(normals):
-    return np.arccos(normals[:,-1])
+    return [np.arccos(normals[:,-1])]
 
 def orientation_deg(normals):
     angle = np.arctan2(normals[:,0], normals[:,1])
     # convert (-180 , 180) to (0 , 360)
     angle = np.where(angle <0, angle + (2*np.pi), angle)
-    return np.rad2deg(angle)
+    return [np.rad2deg(angle)]
 
 def orientation_rad(normals):
     angle = np.arctan2(normals[:,0], normals[:,1])
     # convert (-PI , PI) to (0 , 2*PI)
     angle = np.where(angle <0, angle + (2*np.pi), angle)
-    return angle
+    return [angle]
 
 
 # NEED RGB
@@ -42,7 +42,7 @@ def rgb_intensity(rgb):
 
 def relative_luminance(rgb):
     # relative luminance coeficients from Wikipedia
-    return np.einsum('ij, j', rgb, np.array([0.2125, 0.7154, 0.0721]))
+    return [np.einsum('ij, j', rgb, np.array([0.2125, 0.7154, 0.0721]))]
 
 def hsv(rgb):
     MAX = np.max(rgb, -1)
@@ -75,7 +75,7 @@ def octree_level(octree, level):
         raise ValueError(
             "The given level ({}) is higher than \
             octree.max_level ({})".format(level, octree.max_level))
-    return octree.get_level_as_sf(level)
+    return [octree.get_level_as_sf(level)]
 
 def eigen_octree(octree, level):
     return octree.eigen_decomposition(level)[:3]
@@ -87,21 +87,21 @@ def eigen_full_octree(octree, level):
 # NEED VOXELGRID
 
 def voxel_x(voxelgrid):
-    return voxelgrid.structure[:,0]
+    return [voxelgrid.structure[:,0]]
 
 def voxel_y(voxelgrid):
-    return voxelgrid.structure[:,1]
+    return [voxelgrid.structure[:,1]]
 
 def voxel_z(voxelgrid):
-    return voxelgrid.structure[:,2]
+    return [voxelgrid.structure[:,2]]
 
 def voxel_n(voxelgrid):
-    return voxelgrid.structure[:,3]
+    return [voxelgrid.structure[:,3]]
 
 def eigen_voxelgrid(voxelgrid):
     return voxelgrid.eigen_decomposition()[:3]
 
-def eigen_full_voxelgrid(xyz_vn, vn):
+def eigen_full_voxelgrid(voxelgrid):
     return voxelgrid.eigen_decomposition()  
     
 
@@ -131,41 +131,41 @@ def normals_kdtree(kdtree, k):
 
     # TODO orient normals
 
-
+    return unoriented_normals
 # NEED EIGENVALUES
 
 def eigen_sum(ev):
-    return ev[:,0] + ev[:,1] + ev[:,2]
+    return [ev[:,0] + ev[:,1] + ev[:,2]]
 
 def omnivariance(ev):
-    return (ev[:,0] * ev[:,1] * ev[:,2]) ** (1/3)
+    return [(ev[:,0] * ev[:,1] * ev[:,2]) ** (1/3)]
 
 def eigenentropy(ev):
-    result = np.zeros_like(eig_val1)
+    result = np.zeros(ev.shape[0])
     for i in range(3):
         result += ev[:,i] * np.log(ev[:,i])
-    return - result
+    return [-result]
 
 def anisotropy(ev):
-    return (ev[:,0] - ev[:,2]) / ev[:,0]
+    return [(ev[:,0] - ev[:,2]) / ev[:,0]]
 
 def planarity(ev):
-    return (ev[:,1] - ev[:,2]) / ev[:,0]
+    return [(ev[:,1] - ev[:,2]) / ev[:,0]]
 
 def linearity(ev):
-    return (ev[:,0] - ev[:,1]) / ev[:,0]
+    return [(ev[:,0] - ev[:,1]) / ev[:,0]]
 
 def curvature(ev):
-    return ev[:,2] / (ev[:,0] + ev[:,1] + ev[:,2])
+    return [ev[:,2] / (ev[:,0] + ev[:,1] + ev[:,2])]
 
 def sphericity(ev):
-    return ev[:,2] / ev[:,0] 
+    return [ev[:,2] / ev[:,0]]
 
 
 # NEED EIGEN_VECTOR
 
 def verticality(evec):
-    return 1 - abs( evec[:,2].dot([0,0,1]) )
+    return [1 - abs( evec[:,2].dot([0,0,1]))]
 
 
 
