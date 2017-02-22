@@ -115,6 +115,7 @@ class PyntCloud(object):
         filename : str
             Path to the file from wich the data will be readed
         """
+        
         ext = filename.split(".")[-1].upper()
         if ext not in TO:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
@@ -129,79 +130,67 @@ class PyntCloud(object):
     def add_scalar_field(self, sf, **kwargs):
         """ Add one or multiple scalar fields to PyntCloud.points
         """
+                
         if sf in SF_RANSAC:
-            points = self.xyz
-            self.points[sf] = SF_RANSAC[sf](points)
+            kwargs["points"] = self.xyz
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RANSAC[sf][1])
+            all_sf = SF_RANSAC[sf][1](**valid_kwargs)
+            for n, i in enumerate(SF_RANSAC[sf][0]):
+                self.points[i] = all_sf[n]
+                print("{} added".format(i))
         
         elif sf in SF_NORMALS:
-            normals = self.points[["nx", "ny", "nz"]].values
-            if isinstance(SF_NORMALS[sf], tuple):
-                all_sf = SF_NORMALS[sf][1](normals)
-                for n, i in enumerate(SF_NORMALS[sf][0]):
-                    self.points[i] = all_sf[i]
-                    print("{} added".format(i))
-            else:
-                self.points[sf] = SF_NORMALS[sf](normals)
-                print("{} added".format(sf))
+            kwargs["normals"] = self.points[["nx", "ny", "nz"]].values
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_NORMALS[sf][1])
+            all_sf = SF_NORMALS[sf][1](**valid_kwargs)
+            for n, i in enumerate(SF_NORMALS[sf][0]):
+                self.points[i] = all_sf[n]
+                print("{} added".format(i))
 
         elif sf in SF_RGB:
-            rgb = self.points[["red", "green", "blue"]].values.astype("f")
-            if isinstance(SF_RGB[sf], tuple):
-                all_sf = SF_RGB[sf][1](rgb)
-                for n, i in enumerate(SF_RGB[sf][0]):
-                    self.points[i] = all_sf[n]
-                    print("{} added".format(i))
-            else:
-                self.points[sf] = SF_RGB[sf](rgb)
-                print("{} added".format(sf))
+            kwargs["rgb"] = self.points[["red", "green", "blue"]].values.astype("f")
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RGB[sf][1])
+            all_sf = SF_RGB[sf][1](**valid_kwargs)
+            for n, i in enumerate(SF_RGB[sf][0]):
+                self.points[i] = all_sf[n]
+                print("{} added".format(i))
 
         elif sf in SF_OCTREE:
-            octree = self.octrees[kwargs["octree"]]
-            level = kwargs["level"]
-            if isinstance(SF_OCTREE[sf], tuple):
-                all_sf = SF_OCTREE[sf][1](octree, level)
-                for n, i in enumerate(SF_OCTREE[sf][0]):
-                    name = "{}({},{})".format(i, level, octree.id)
-                    self.points[name] = all_sf[n]
-                    print("{} added".format(name))
-            else:
-                name = "{}({},{})".format(sf, level, octree.id)
-                self.points[name] = SF_OCTREE[sf](octree, kwargs["level"])
+            kwargs["octree"] = self.octrees[kwargs["octree"]]
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_OCTREE[sf][1])
+            all_sf = SF_OCTREE[sf][1](**valid_kwargs)
+            for n, i in enumerate(SF_OCTREE[sf][0]):
+                name = "{}({},{})".format(i, valid_kwargs["level"], valid_kwargs["octree"].id)
+                self.points[name] = all_sf[n]
                 print("{} added".format(name))
 
         elif sf in SF_VOXELGRID:
-            voxelgrid = self.voxelgrids[kwargs["voxelgrid"]]
-            if isinstance(SF_VOXELGRID[sf], tuple):
-                all_sf = SF_VOXELGRID[sf][1](voxelgrid)
-                for n, i in enumerate(SF_VOXELGRID[sf][0]):
-                    name = "{}({})".format(i, voxelgrid.id)
-                    self.points[name] = all_sf[n]
-                    print("{} added".format(name))
-            else:
-                name = "{}({})".format(sf, voxelgrid.id)
-                self.points[name] = SF_VOXELGRID[sf](voxelgrid)
+            kwargs["voxelgrid"] = self.voxelgrids[kwargs["voxelgrid"]]
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_VOXELGRID[sf][1])
+            all_sf = SF_VOXELGRID[sf][1](**valid_kwargs)
+            for n, i in enumerate(SF_VOXELGRID[sf][0]):
+                name = "{}({})".format(i, valid_kwargs["voxelgrid"].id)
+                self.points[name] = all_sf[n]
                 print("{} added".format(name))
 
         elif sf in SF_KDTREE:
-            kdtree = self.kdtrees[kwargs["kdtree"]]
-            k = kwargs["k"]
-            if isinstance(SF_KDTREE[sf], tuple):
-                all_sf = SF_KDTREE[sf][1](kdtree, k)
-                for n, i in enumerate(SF_KDTREE[sf][0]):
-                    name = "{}({})".format(i, kdtree.id)
-                    self.points[name] = all_sf[n]
-                    print("{} added".format(name))
-            else:
-                name = "{}({})".format(sf, kdtree.id)
-                self.points[name] = SF_KDTREE[sf](kdtree, k)
+            kwargs["kdtree"] = self.kdtrees[kwargs["kdtree"]]
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_KDTREE[sf][1])
+            all_sf = SF_KDTREE[sf][1](**valid_kwargs)
+            for n, i in enumerate(SF_KDTREE[sf][0]):
+                name = "{}({})".format(i, valid_kwargs["kdtree"].id)
+                self.points[name] = all_sf[n]
                 print("{} added".format(name))
 
         elif sf in SF_EIGENVALUES:
             ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
-            eigen_values = self.points[ids].values
-            name = "{}({})".format(sf, kwargs["id"])
-            self.points[name] = SF_EIGENVALUES[sf](eigen_values)
-            print("{} added".format(name))
+            kwargs["eigen_values"] = self.points[ids].values
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_EIGENVALUES[sf][1])
+            all_sf = SF_EIGENVALUES[sf][1](**valid_kwargs)
+            for n, i in enumerate(SF_KDTREE[sf][0]):
+                name = "{}({})".format(i, kwargs["id"])
+                self.points[name] = all_sf[n]
+                print("{} added".format(name))
 
         else:
             raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF))
