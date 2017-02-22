@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from ..plot import plot_voxelgrid
-from ..geometry.utils import cartesian
+from ..utils.array import cartesian
 
 
 class VoxelGrid(object):
@@ -73,7 +73,7 @@ class VoxelGrid(object):
         self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0, self.n_x)
         self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:,1]) - 1, 0, self.n_y)
         self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:,2]) - 1, 0, self.n_z) 
-        self.voxel_n = np.ravel_multi_index([x,y,z], [self.n_x, self.n_y, self.n_z])
+        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z], [self.n_x, self.n_y, self.n_z])
 
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]

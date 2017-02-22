@@ -16,19 +16,20 @@ def crosscheck_kwargs_function(kwargs, function):
         else:
             f_kwargs.append(x)
     
-    return_kwargs = {}
+    valid_kwargs = {}
 
     for x in f_positional:
-        return_kwargs[x] = kwargs[x]
+        valid_kwargs[x] = kwargs[x]
         del kwargs[x]
 
     for x in f_kwargs:
         if x in kwargs:
-            return_kwargs[x] = kwargs[x]
+            valid_kwargs[x] = kwargs[x]
             del kwargs[x]
 
     if accept_kwargs:
         for x in kwargs:
-            return_kwargs[x] = kwargs[x]
+            valid_kwargs[x] = kwargs[x]
 
-    return return_kwargs
+    return valid_kwargs
+    

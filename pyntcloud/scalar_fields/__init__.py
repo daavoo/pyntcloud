@@ -59,10 +59,10 @@ SF_OCTREE = {
 }
 
 SF_VOXELGRID = {
-    'voxel_x': voxel_x,
-    'voxel_y': voxel_y,
-    'voxel_z': voxel_z,
-    'voxel_n': voxel_n,
+    'voxel_x': (['voxel_x'], voxel_x),
+    'voxel_y': (['voxel_y'], voxel_y),
+    'voxel_z': (['voxel_z'], voxel_z),
+    'voxel_n': (['voxel_n'], voxel_n),
     'eigen_voxelgrid': (['e1', 'e2', 'e3'], eigen_voxelgrid),
     'eigen_full_voxelgrid': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_voxelgrid)
 }
@@ -73,14 +73,14 @@ SF_KDTREE = {
 }
 
 SF_EIGENVALUES = {
-    'eigen_sum': eigen_sum,
-    'omnivariance': omnivariance,
-    'eigenentropy': eigenentropy,
-    'anisotropy': anisotropy,
-    'planarity': planarity,
-    'linearity': linearity,
-    'curvature': curvature,
-    'sphericity': sphericity
+    'eigen_sum': (['eigen_sum'], eigen_sum),
+    'omnivariance': (['omnivariance'], omnivariance),
+    'eigenentropy': (['eigenentropy'], eigenentropy),
+    'anisotropy': (['anisotropy'], anisotropy),
+    'planarity': (['planarity'] , planarity),
+    'linearity': (['linearity'], linearity),
+    'curvature': (['curvature'], curvature),
+    'sphericity': (['sphericity'], sphericity)
 }
 
 ALL_SF = "".join([" {}"] * 7).format(
