@@ -1,3 +1,5 @@
+import numpy as np
+
 def cartesian(arrays, out=None):
     """Generate a cartesian product of input arrays.
 
