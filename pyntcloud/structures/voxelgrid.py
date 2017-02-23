@@ -23,7 +23,7 @@ class VoxelGrid(object):
                 dimension represents the x, y and z coordinates of each point.
         
         x_y_z:  list
-                The segments in wich each axis will be divided.
+                The number of segments in wich each axis will be divided.
                 x_y_z[0]: x axis 
                 x_y_z[1]: y axis 
                 x_y_z[2]: z axis

@@ -215,6 +215,7 @@ class PyntCloud(object):
         """ Compute filter over PyntCloud's points and return it
         """
         kwargs["points"] = self.xyz
+        
         if name in F_XYZ:
             valid_args = crosscheck_kwargs_function(kwargs, F_XYZ[name])
             return F_XYZ[name](**valid_args)
