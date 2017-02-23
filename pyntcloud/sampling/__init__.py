@@ -12,3 +12,16 @@ SAMPLE_POINTS = {
 SAMPLE_MESH = {
     'mesh_sampling': random_sampling
 } 
+
+ALL_SAMPLING = \
+"""
+REQUIRE POINTS
+--------------
+{}
+REQUIRE MESH 
+------------
+{}
+""".format(
+    *SAMPLE_POINTS,
+    *SAMPLE_MESH
+)

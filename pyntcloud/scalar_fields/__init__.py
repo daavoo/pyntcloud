@@ -83,6 +83,7 @@ SF_EIGENVALUES = {
     'sphericity': (['sphericity'], sphericity)
 }
 
+ALL_SF = \
 """
 ONLY POINTS
 --------------
