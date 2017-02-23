@@ -83,14 +83,64 @@ SF_EIGENVALUES = {
     'sphericity': (['sphericity'], sphericity)
 }
 
-ALL_SF = "".join([" {}"] * 7).format(
-    list(SF_RANSAC),
-    list(SF_NORMALS),
-    list(SF_RGB),
-    list(SF_OCTREE),
-    list(SF_VOXELGRID),
-    list(SF_KDTREE),
-    list(SF_EIGENVALUES)
+"""
+ONLY POINTS
+--------------
+{}
+{}
+
+REQUIRE NORMALS 
+---------------
+{}
+{}
+{}
+{}
+
+REQUIRE RGB 
+-----------
+{}
+{}
+{}
+
+REQUIRE OCTREE 
+--------------
+{}
+{}
+{}
+
+REQUIRE VOXELGRID 
+-----------------
+{}
+{}
+{}
+{}
+{}
+{}
+
+REQUIRE KDTREE 
+--------------
+{}
+{}
+
+REQUIRE EIGENVALUES
+-------------------
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+""".format(
+    *SF_RANSAC,
+    *SF_NORMALS,
+    *SF_RGB,
+    *SF_OCTREE,
+    *SF_VOXELGRID,
+    *SF_KDTREE,
+    *SF_EIGENVALUES
 )
+
 
 
