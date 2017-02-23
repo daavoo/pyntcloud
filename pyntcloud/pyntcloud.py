@@ -13,6 +13,11 @@ from .filters import (
 )
 from .io import FROM, TO
 from .plot import plot_points, DESCRIPTION
+from .sampling import (
+    SAMPLE_POINTS,
+    SAMPLE_MESH,
+    ALL_SAMPLING
+)
 from .scalar_fields import ( 
     SF_RANSAC,
     SF_NORMALS, SF_RGB, 
@@ -193,7 +198,7 @@ class PyntCloud(object):
                 print("{} added".format(name))
 
         else:
-            raise ValueError("Unsupported scalar field; supported scalar fields are: {}".format(ALL_SF))
+            raise ValueError("Unsupported scalar field; supported scalar fields are:\n{}".format(ALL_SF))
 
         return True
 
@@ -231,6 +236,21 @@ class PyntCloud(object):
 
         else:
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS)) 
+    
+    def get_sample(self, name, **kwargs):
+
+        if name in SAMPLE_POINTS:
+            kwargs["points"] = self.xyz
+            valid_args = crosscheck_kwargs_function(kwargs, SAMPLE_POINTS[name])
+            return SAMPLE_POINTS[name](**valid_args)
+        
+        elif name in SAMPLE_MESH:
+            kwargs["v1"], kwargs["v2"], kwargs["v3"] = self.get_mesh_vertices()
+            valid_args = crosscheck_kwargs_function(kwargs, SAMPLE_MESH[name])
+            return SAMPLE_MESH[name](**valid_args)
+        
+        else:
+            raise ValueError("Unsupported sample mode; supported modes are: {}")
 
     def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None):
         try:
@@ -263,7 +283,7 @@ class PyntCloud(object):
         v1 = self.xyz[[self.mesh["v1"]]]
         v2 = self.xyz[[self.mesh["v2"]]]
         v3 = self.xyz[[self.mesh["v3"]]]
-        
+
         return v1, v2, v3
 
     def _clean_all_structures(self):
