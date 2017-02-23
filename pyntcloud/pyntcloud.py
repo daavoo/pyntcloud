@@ -1,10 +1,7 @@
 #  HAKUNA MATATA
 
 
-import numpy as np
-import pandas as pd
-
-from matplotlib import pyplot as plt
+from pandas import DataFrame
 
 from .filters import (
     F_KDTREE,
@@ -47,7 +44,7 @@ class PyntCloud(object):
                 setattr(self, key, kwargs[key])
         # store raw values to share memory along structures
         self.xyz = self.points[["x", "y", "z"]].values
-        self.centroid = np.mean(self.xyz, axis=0)
+        self.centroid = self.xyz.mean(0)
 
     def __repr__(self):
         default = [
@@ -82,7 +79,7 @@ class PyntCloud(object):
     
     @points.setter
     def points(self, df):
-        if not isinstance(df, pd.DataFrame):
+        if not isinstance(df, DataFrame):
             raise TypeError("Points argument must be a DataFrame")
         elif not set(['x', 'y', 'z']).issubset(df.columns):
             raise ValueError("Points must have x, y and z coordinates")
@@ -247,32 +244,6 @@ class PyntCloud(object):
         
         else:
             raise ValueError("Unsupported sample mode; supported modes are: {}")
-
-    def plot(self, sf=["red", "green", "blue"], cmap="hsv", filter=None, size=0.1, axis=False, output_name=None):
-        try:
-            colors = self.points[sf].values
-        except:
-            colors = None
-        if sf == ["red", "green", "blue"] and colors is not None:
-            colors = colors/255
-        elif colors is not None:
-            s_m = plt.cm.ScalarMappable(cmap=cmap)
-            colors = s_m.to_rgba(colors)[:,:-1]
-        if filter is not None:
-            mask = self.filters[filter]
-            xyz = self.xyz[mask]
-            if colors is not None:
-                colors = colors[mask]
-        else:
-            xyz = self.xyz
-
-        return plot_points(
-            xyz=xyz,
-            colors=colors, 
-            size=size, 
-            axis=axis, 
-            output_name=output_name
-            )
     
     def get_mesh_vertices(self):
 
