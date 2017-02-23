@@ -18,6 +18,7 @@ ALL_SAMPLING = \
 REQUIRE POINTS
 --------------
 {}
+
 REQUIRE MESH 
 ------------
 {}
