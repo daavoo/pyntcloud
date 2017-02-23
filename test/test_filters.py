@@ -33,6 +33,7 @@ def test_kdtree_filters():
 
 def test_xyz_filters():
 
+    bound = {
         "min_x": 0.4,
         "max_x": 0.6,
         "min_y": 0.4,

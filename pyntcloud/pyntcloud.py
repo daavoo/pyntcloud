@@ -42,6 +42,8 @@ class PyntCloud(object):
                 self.voxelgrids = kwargs[key]
             else:
                 setattr(self, key, kwargs[key])
+        if not hasattr(self, "mesh"):
+            self.mesh = None
         # store raw values to share memory along structures
         self.xyz = self.points[["x", "y", "z"]].values
         self.centroid = np.mean(self.xyz, axis=0)
@@ -58,10 +60,12 @@ class PyntCloud(object):
             "filters"
         ]
         others = ["\n\t {}: {}".format(x, str(type(x))) for x in self.__dict__ if x not in default]
-        try:
-            n_faces = len(self.mesh)
-        except AttributeError:
+        
+        if self.mesh is None:
             n_faces = 0
+        else:
+            n_faces = len(self.mesh)
+            
         return DESCRIPTION.format(  
             len(self.points), len(self.points.columns) - 3,
             n_faces,
@@ -253,7 +257,15 @@ class PyntCloud(object):
             axis=axis, 
             output_name=output_name
             )
-            
+    
+    def get_mesh_vertices(self):
+
+        v1 = self.xyz[[self.mesh["v1"]]]
+        v2 = self.xyz[[self.mesh["v2"]]]
+        v3 = self.xyz[[self.mesh["v3"]]]
+        
+        return v1, v2, v3
+
     def _clean_all_structures(self):
         self.kdtrees = {}
         self.voxelgrids = {}
