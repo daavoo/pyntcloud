@@ -36,8 +36,8 @@ def radious_outlier_removal(kdtree, points, k, r):
 
     """
 
-    distances, inidices = kdtree.query(points, k=k, n_jobs=-1)
-    ror_filter = np.all(distances > r, axis=1)
+    distances = kdtree.query(points, k=k, n_jobs=-1)[0]
+    ror_filter = np.all(distances < r, axis=1)
 
     return ror_filter
 
