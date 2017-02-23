@@ -30,3 +30,15 @@ def test_kdtree_filters():
     f = cloud.get_filter("SOR", kdtree="K(16)", k=2, z_max=0.5)
 
     assert f.argmin() == 3
+
+def test_xyz_filters():
+
+        "min_x": 0.4,
+        "max_x": 0.6,
+        "min_y": 0.4,
+        "max_y": 0.6
+    }
+
+    f = cloud.get_filter("BBOX", **bound)
+
+    assert f.argmax() == 3
