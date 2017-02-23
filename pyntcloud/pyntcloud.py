@@ -33,11 +33,9 @@ class PyntCloud(object):
     """ A Pythonic Point Cloud
     """
     
-    def __init__(self, **kwargs):  
-        if "points" not in kwargs:
-            raise ValueError("There must be a 'points' key in the kwargs")
-        self.points = kwargs["points"]
-        del kwargs["points"]
+    def __init__(self, points, **kwargs):  
+        self.points = points
+        self.mesh = None
         for key in kwargs:
             if "kdtrees" in key:
                 self.kdtrees = kwargs[key]
@@ -47,8 +45,6 @@ class PyntCloud(object):
                 self.voxelgrids = kwargs[key]
             else:
                 setattr(self, key, kwargs[key])
-        if not hasattr(self, "mesh"):
-            self.mesh = None
         # store raw values to share memory along structures
         self.xyz = self.points[["x", "y", "z"]].values
         self.centroid = np.mean(self.xyz, axis=0)
