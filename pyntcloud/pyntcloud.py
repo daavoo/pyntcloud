@@ -210,8 +210,8 @@ class PyntCloud(object):
             structures[name][1][structure.id] = structure
         else:
             raise ValueError("Unsupported structure; supported structures are: {}".format(list(structures)))
-        print("{} added".format(structure.id))
-        return True 
+            
+        return structure.id 
 
     def get_filter(self, name, **kwargs):
         """ Compute filter over PyntCloud's points and return it
