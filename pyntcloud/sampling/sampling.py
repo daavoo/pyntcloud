@@ -1,6 +1,7 @@
 #  HAKUNA MATATA
 
 import numpy as np
+import pandas as pd
 from ..geometry.areas import triangle_area_multi
 
 
@@ -33,3 +34,9 @@ def mesh_sampling(v1, v2, v3, n):
 
 def voxelgrid_centers(voxelgrid):
     return voxelgrid.voxel_centers[np.unique(voxelgrid.voxel_n)]
+
+def voxelgrid_centroids(voxelgrid):
+    df = pd.DataFrame(voxelgrid.points, columns=["x", "y", "z"])
+    df["voxel_n"] = voxelgrid.voxel_n
+    return df.groupby("voxel_n").mean().values
+
