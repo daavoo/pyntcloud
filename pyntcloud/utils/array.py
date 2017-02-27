@@ -47,3 +47,9 @@ def cartesian(arrays, out=None):
         out[:, n] = arrays[n][ix[:, n]]
         
     return out
+
+def point_in_array_2D(point, array_2D):
+    point = np.array(point, dtype=array_2D.dtype)
+    for other_point in array_2D:
+        if np.all(point == other_point):
+            return True
