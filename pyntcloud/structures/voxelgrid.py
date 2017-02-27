@@ -13,7 +13,7 @@ from ..utils.array import cartesian
 
 class VoxelGrid(object):
     
-    def __init__(self, points, x_y_z=[1, 1, 1], bb_cuboid=True, build=True):
+    def __init__(self, points, x_y_z=[2, 2, 2], bb_cuboid=True):
         """
         Parameters
         ----------         
