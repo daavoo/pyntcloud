@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 from ..geometry.areas import triangle_area_multi
+from scipy.spatial.distance import cdist
 
 
 def random_sampling(points, n):
@@ -40,3 +41,7 @@ def voxelgrid_centroids(voxelgrid):
     df["voxel_n"] = voxelgrid.voxel_n
     return df.groupby("voxel_n").mean().values
 
+def voxelgrid_nearest(voxelgrid):
+    nonzero_centers = voxelgrid.voxel_centers[np.unique(voxelgrid.voxel_n)]
+    nearest_indices = cdist(nonzero_centers, voxelgrid.points).argmin(1)
+    return voxelgrid.points[nearest_indices]

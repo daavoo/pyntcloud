@@ -15,7 +15,8 @@ SAMPLE_MESH = {
 
 SAMPLE_VOXELGRID = {
     'voxelgrid_centers': voxelgrid_centers,
-    'voxelgrid_centroids': voxelgrid_centroids
+    'voxelgrid_centroids': voxelgrid_centroids,
+    'voxelgrid_nearest': voxelgrid_nearest
 }
 
 ALL_SAMPLING = \
@@ -32,7 +33,6 @@ REQUIRE VOXLEGRID
 ------------
 {}
 {}
-
 """.format(
     *SAMPLE_POINTS,
     *SAMPLE_MESH,

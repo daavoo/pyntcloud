@@ -24,4 +24,8 @@ def test_voxelgrid_sampling():
     sample = cloud.get_sample("voxelgrid_centroids", voxelgrid=vg_id)
     
     assert point_in_array_2D([0.2, 0.2, 0.2], sample)
+
+    sample = cloud.get_sample("voxelgrid_nearest", voxelgrid=vg_id)
+    
+    assert point_in_array_2D([0.9, 0.9, 0.9], sample)
     
