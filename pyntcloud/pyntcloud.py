@@ -178,17 +178,17 @@ class PyntCloud(object):
             all_sf = SF_KDTREE[sf][1](**valid_kwargs)
             for n, i in enumerate(SF_KDTREE[sf][0]):
                 name = "{}({})".format(i, valid_kwargs["kdtree"].id)
-                self.points[name] = all_sf[n]
+                self.points[name] = all_sf[n].astype("f")
                 print("{} added".format(name))
 
         elif sf in SF_EIGENVALUES:
             ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
-            kwargs["eigen_values"] = self.points[ids].values
+            kwargs["ev"] = self.points[ids].values
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_EIGENVALUES[sf][1])
             all_sf = SF_EIGENVALUES[sf][1](**valid_kwargs)
-            for n, i in enumerate(SF_KDTREE[sf][0]):
+            for n, i in enumerate(SF_EIGENVALUES[sf][0]):
                 name = "{}({})".format(i, kwargs["id"])
-                self.points[name] = all_sf[n]
+                self.points[name] = all_sf[n].astype("f")
                 print("{} added".format(name))
 
         else:
