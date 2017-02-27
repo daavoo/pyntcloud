@@ -7,6 +7,8 @@ VoxelGrid Class
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from scipy.spatial import cKDTree
+
 from ..plot import plot_voxelgrid
 from ..utils.array import cartesian
 
@@ -95,8 +97,9 @@ class VoxelGrid(object):
 
         elif mode == "TDF":
             truncation = np.linalg.norm(self.shape)
-            vector = cdist(self.voxel_centers, self.points).min(1)
-            return vector.reshape((self.n_x, self.ny, self.nz))
+            kdt = cKDTree(self.points)
+            d, i =  kdt.query(self.voxel_centers, n_jobs=-1)
+            return d.reshape((self.n_x, self.ny, self.nz))
 
     def plot_feature_vector(self, mode="binary", d=2, cmap="Oranges"):
         feature_vector = self.get_feature_vector(mode)

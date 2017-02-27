@@ -2,8 +2,10 @@
 
 import numpy as np
 import pandas as pd
-from ..geometry.areas import triangle_area_multi
 from scipy.spatial import cKDTree
+
+from ..geometry.areas import triangle_area_multi
+
 
 
 def random_sampling(points, n):
