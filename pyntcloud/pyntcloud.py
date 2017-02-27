@@ -13,6 +13,7 @@ from .plot import plot_points, DESCRIPTION
 from .sampling import (
     SAMPLE_POINTS,
     SAMPLE_MESH,
+    SAMPLE_VOXELGRID,
     ALL_SAMPLING
 )
 from .scalar_fields import ( 
@@ -241,6 +242,11 @@ class PyntCloud(object):
             kwargs["v1"], kwargs["v2"], kwargs["v3"] = self.get_mesh_vertices()
             valid_args = crosscheck_kwargs_function(kwargs, SAMPLE_MESH[name])
             return SAMPLE_MESH[name](**valid_args)
+        
+        elif name in SAMPLE_VOXELGRID:
+            kwargs["voxelgrid"] = self.voxelgrids[kwargs["voxelgrid"]]
+            valid_args = crosscheck_kwargs_function(kwargs, SAMPLE_VOXELGRID[name])
+            return SAMPLE_VOXELGRID[name](**valid_args)
         
         else:
             raise ValueError("Unsupported sample mode; supported modes are: {}")

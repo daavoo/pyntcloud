@@ -13,6 +13,10 @@ SAMPLE_MESH = {
     'mesh_sampling': random_sampling
 } 
 
+SAMPLE_VOXELGRID = {
+    'voxelgrid_centers': voxelgrid_centers
+}
+
 ALL_SAMPLING = \
 """
 REQUIRE POINTS
@@ -22,7 +26,13 @@ REQUIRE POINTS
 REQUIRE MESH 
 ------------
 {}
+
+REQUIRE VOXLEGRID 
+------------
+{}
+
 """.format(
     *SAMPLE_POINTS,
-    *SAMPLE_MESH
+    *SAMPLE_MESH,
+    *SAMPLE_VOXELGRID
 )

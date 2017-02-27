@@ -3,6 +3,7 @@
 import numpy as np
 from ..geometry.areas import triangle_area_multi
 
+
 def random_sampling(points, n):
 
     return points[np.random.randint(0, points.shape[0], size=n)]
@@ -29,3 +30,6 @@ def mesh_sampling(v1, v2, v3, n):
     result = (v1 * u) + (v2 * v) + ((1 - (u + v)) * v3)
     
     return result
+
+def voxelgrid_centers(voxelgrid):
+    return voxelgrid.voxel_centers[np.unique(voxelgrid.voxel_n)]
