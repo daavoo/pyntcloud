@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 from ..geometry.areas import triangle_area_multi
-from scipy.spatial.distance import cdist
+from scipy.spatial import cKDTree
 
 
 def random_sampling(points, n):
@@ -43,5 +43,6 @@ def voxelgrid_centroids(voxelgrid):
 
 def voxelgrid_nearest(voxelgrid):
     nonzero_centers = voxelgrid.voxel_centers[np.unique(voxelgrid.voxel_n)]
-    nearest_indices = cdist(nonzero_centers, voxelgrid.points).argmin(1)
+    kdt = cKDTree(voxelgrid.points)
+    dist, nearest_indices =  kdt.query(nonzero_centers, n_jobs=-1)
     return voxelgrid.points[nearest_indices]
