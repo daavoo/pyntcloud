@@ -16,12 +16,14 @@ class KDTree(cKDTree):
         self.id = "K({})".format(leafsize)
         super().__init__(points, leafsize=leafsize)
         
+    def eigen_decomposition(self, k=5, indices=None, return_eigenvectors=False):
         """ Compute the eigen decomposition of each point's neighbourhood
 
         Parameters
         ----------
 
         k: int
+            Default: 5
             The number of neighbours that will be used to query the kdtree.
         indices: ndarray
             Default: None
