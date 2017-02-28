@@ -21,7 +21,6 @@ class KDTree(cKDTree):
 
         Parameters
         ----------
-
         k: int
             Default: 5
             The number of neighbours that will be used to query the kdtree.

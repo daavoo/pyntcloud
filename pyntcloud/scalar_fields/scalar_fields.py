@@ -108,10 +108,10 @@ def eigen_full_voxelgrid(voxelgrid):
 # NEED KDTREE
 
 def eigen_kdtree(kdtree, k):
-    return kdtree.eigen_decomposition(k)[:3]
+    return kdtree.eigen_decomposition(k)
 
 def eigen_full_kdtree(kdtree, k):
-    e1, e2, e3, ev1, ev2, ev3 = kdtree.eigen_decomposition(k)
+    e1, e2, e3, ev1, ev2, ev3 = kdtree.eigen_decomposition(k, return_eigenvectors=True)
     ev1 = ev1.tolist()
     ev2 = ev2.tolist()
     ev3 = ev3.tolist()
