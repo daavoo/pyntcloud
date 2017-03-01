@@ -41,7 +41,7 @@ REQUIRE VOXLEGRID
 {}
 {}
 """.format(
-    *SAMPLE_POINTS,
-    *SAMPLE_MESH,
-    *SAMPLE_VOXELGRID
+    *S_POINTS,
+    *S_MESH,
+    *S_VOXELGRID
 )

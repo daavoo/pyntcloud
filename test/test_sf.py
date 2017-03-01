@@ -5,7 +5,6 @@ from numpy import pi as PI
 
 from pyntcloud import PyntCloud
 
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
 cloud = PyntCloud.from_file('data/sf/xyz_rgb_nxnynz.npz')
 
 
@@ -85,34 +84,6 @@ def test_hsv():
     assert max(cloud.points["V"]) <= 100
 
     cloud.points.drop(["H", "S", "V"], 1, inplace=True)
-
-
-def test_octree_sf():
-
-    with pytest.raises(KeyError):
-        # missing structure
-        cloud.add_scalar_field("octree_level")
-
-    cloud.add_structure("octree")
-    octree_id = "O(2)"
-    
-    with pytest.raises(KeyError):
-        # wrong id
-        cloud.add_scalar_field("octree_level", octree="O(3)", level=3)
-
-    # octree_level
-    sf_id = "octree_level(2,O(2))"
-    with pytest.raises(ValueError):
-        cloud.add_scalar_field("octree_level", octree=octree_id, level=3)
-
-    cloud.add_scalar_field("octree_level", octree=octree_id, level=2)
-    
-    assert min(cloud.points[sf_id]) >= 0
-    assert max(cloud.points[sf_id]) <= 77
-
-    cloud.points.drop(sf_id, 1, inplace=True)
-
-    # eigen_octree
 
 
 def test_voxelgrid_sf():

@@ -3,34 +3,47 @@
 HAKUNA MATATA
 """
 
-from .scalar_fields import (
-    is_plane,
-    is_sphere,
+from .sf_eigenvalues import (
+    anisotropy,
+    curvature,
+    eigenentropy,
+    eigen_sum,
+    linearity,
+    omnivariance,
+    planarity,    
+    sphericity
+)
+from .sf_normals import (
     inclination_deg,
     inclination_rad,
     orientation_deg,
-    orientation_rad,
-    rgb_intensity,
-    relative_luminance,
+    orientation_rad
+)
+from .sf_rgb import (
     hsv,
-    octree_level,
+    relative_luminance,
+    rgb_intensity
+)
+from .sf_voxelgrid import (
+    voxel_n,
     voxel_x,
     voxel_y,
-    voxel_z,
-    voxel_n,
-    eigen_sum,
-    omnivariance,
-    eigenentropy,
-    anisotropy,
-    planarity,
-    linearity,
-    curvature,
-    sphericity
+    voxel_z
+)
+from .sf_xyz import (
+    is_plane,
+    is_sphere
 )
 
-SF_RANSAC = {
-    'is_plane': (["is_plane"], is_plane),
-    'is_sphere': (["is_sphere"], is_sphere)
+SF_EIGENVALUES = {
+    'anisotropy': (['anisotropy'], anisotropy),
+    'curvature': (['curvature'], curvature),
+    'eigenentropy': (['eigenentropy'], eigenentropy),
+    'eigen_sum': (['eigen_sum'], eigen_sum),
+    'linearity': (['linearity'], linearity),
+    'omnivariance': (['omnivariance'], omnivariance),    
+    'planarity': (['planarity'] , planarity),  
+    'sphericity': (['sphericity'], sphericity)
 }
 
 SF_NORMALS = {
@@ -41,37 +54,33 @@ SF_NORMALS = {
 }
 
 SF_RGB = {
-    'rgb_intensity' : (['Ri', 'Gi', 'Bi'], rgb_intensity),
+    'hsv' : (['H', 'S', 'V'], hsv),
     'relative_luminance': (["relative_luminance"], relative_luminance),
-    'hsv' : (['H', 'S', 'V'], hsv)
-}
-
-SF_OCTREE = {
-    'octree_level': (['octree_level'], octree_level)
+    'rgb_intensity' : (['Ri', 'Gi', 'Bi'], rgb_intensity)    
 }
 
 SF_VOXELGRID = {
+    'voxel_n': (['voxel_n'], voxel_n),
     'voxel_x': (['voxel_x'], voxel_x),
     'voxel_y': (['voxel_y'], voxel_y),
-    'voxel_z': (['voxel_z'], voxel_z),
-    'voxel_n': (['voxel_n'], voxel_n)
+    'voxel_z': (['voxel_z'], voxel_z)
 }
 
-SF_EIGENVALUES = {
-    'eigen_sum': (['eigen_sum'], eigen_sum),
-    'omnivariance': (['omnivariance'], omnivariance),
-    'eigenentropy': (['eigenentropy'], eigenentropy),
-    'anisotropy': (['anisotropy'], anisotropy),
-    'planarity': (['planarity'] , planarity),
-    'linearity': (['linearity'], linearity),
-    'curvature': (['curvature'], curvature),
-    'sphericity': (['sphericity'], sphericity)
+SF_XYZ = {
+    'is_plane': (["is_plane"], is_plane),
+    'is_sphere': (["is_sphere"], is_sphere)
 }
 
 ALL_SF = \
 """
-ONLY POINTS
---------------
+REQUIRE EIGENVALUES
+-------------------
+{}
+{}
+{}
+{}
+{}
+{}
 {}
 {}
 
@@ -88,10 +97,6 @@ REQUIRE RGB
 {}
 {}
 
-REQUIRE OCTREE 
---------------
-{}
-
 REQUIRE VOXELGRID 
 -----------------
 {}
@@ -99,23 +104,17 @@ REQUIRE VOXELGRID
 {}
 {}
 
-REQUIRE EIGENVALUES
--------------------
+REQUIRE XYZ
+--------------
 {}
 {}
-{}
-{}
-{}
-{}
-{}
-{}
+
 """.format(
-    *SF_RANSAC,
+    *SF_EIGENVALUES,
     *SF_NORMALS,
     *SF_RGB,
-    *SF_OCTREE,
     *SF_VOXELGRID,
-    *SF_EIGENVALUES
+    *SF_XYZ    
 )
 
 
