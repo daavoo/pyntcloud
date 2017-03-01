@@ -228,7 +228,8 @@ class PyntCloud(object):
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS)) 
     
     def get_sample(self, name, **kwargs):
-
+        """ Returns sampled points using provided method
+        """
         if name in SAMPLE_POINTS:
             kwargs["points"] = self.xyz
             valid_args = crosscheck_kwargs_function(kwargs, SAMPLE_POINTS[name])
@@ -245,10 +246,11 @@ class PyntCloud(object):
             return SAMPLE_VOXELGRID[name](**valid_args)
         
         else:
-            raise ValueError("Unsupported sample mode; supported modes are: {}")
+            raise ValueError("Unsupported sample mode; supported modes are: {}".format(ALL_SAMPLING))
     
     def get_mesh_vertices(self):
-
+        """
+        """
         v1 = self.xyz[[self.mesh["v1"]]]
         v2 = self.xyz[[self.mesh["v2"]]]
         v3 = self.xyz[[self.mesh["v3"]]]
@@ -256,6 +258,7 @@ class PyntCloud(object):
         return v1, v2, v3
 
     def _clean_all_structures(self):
+        self.mesh = None
         self.kdtrees = {}
         self.voxelgrids = {}
         self.octrees = {}
