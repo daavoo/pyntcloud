@@ -14,16 +14,10 @@ from .scalar_fields import (
     relative_luminance,
     hsv,
     octree_level,
-    eigen_octree,
-    eigen_full_octree,
     voxel_x,
     voxel_y,
     voxel_z,
     voxel_n,
-    eigen_voxelgrid,
-    eigen_full_voxelgrid,
-    eigen_kdtree,
-    eigen_full_kdtree,
     eigen_sum,
     omnivariance,
     eigenentropy,
@@ -53,23 +47,14 @@ SF_RGB = {
 }
 
 SF_OCTREE = {
-    'octree_level': (['octree_level'], octree_level),
-    'eigen_octree': (['e1', 'e2', 'e3'], eigen_octree),
-    'eigen_full_octree': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_octree)
+    'octree_level': (['octree_level'], octree_level)
 }
 
 SF_VOXELGRID = {
     'voxel_x': (['voxel_x'], voxel_x),
     'voxel_y': (['voxel_y'], voxel_y),
     'voxel_z': (['voxel_z'], voxel_z),
-    'voxel_n': (['voxel_n'], voxel_n),
-    'eigen_voxelgrid': (['e1', 'e2', 'e3'], eigen_voxelgrid),
-    'eigen_full_voxelgrid': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_voxelgrid)
-}
-
-SF_KDTREE = {
-    'eigen_kdtree': (['e1', 'e2', 'e3'], eigen_kdtree),
-    'eigen_full_kdtree': (['e1', 'e2', 'e3', 'ev1', 'ev2', 'ev3'], eigen_full_kdtree)
+    'voxel_n': (['voxel_n'], voxel_n)
 }
 
 SF_EIGENVALUES = {
@@ -106,20 +91,11 @@ REQUIRE RGB
 REQUIRE OCTREE 
 --------------
 {}
-{}
-{}
 
 REQUIRE VOXELGRID 
 -----------------
 {}
 {}
-{}
-{}
-{}
-{}
-
-REQUIRE KDTREE 
---------------
 {}
 {}
 
@@ -139,7 +115,6 @@ REQUIRE EIGENVALUES
     *SF_RGB,
     *SF_OCTREE,
     *SF_VOXELGRID,
-    *SF_KDTREE,
     *SF_EIGENVALUES
 )
 

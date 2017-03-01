@@ -31,6 +31,7 @@ def test_kdtree_filters():
 
     assert f.argmin() == 3
 
+
 def test_xyz_filters():
 
     bound = {

@@ -77,13 +77,6 @@ def octree_level(octree, level):
             octree.max_level ({})".format(level, octree.max_level))
     return [octree.get_level_as_sf(level)]
 
-def eigen_octree(octree, level):
-    return octree.eigen_decomposition(level)[:3]
-
-def eigen_full_octree(octree, level):
-    return octree.eigen_decomposition(level)
-
-
 # NEED VOXELGRID
 
 def voxel_x(voxelgrid):
@@ -96,14 +89,7 @@ def voxel_z(voxelgrid):
     return [voxelgrid.voxel_z]
 
 def voxel_n(voxelgrid):
-    return [voxelgrid.voxel_n]
-
-def eigen_voxelgrid(voxelgrid):
-    return voxelgrid.eigen_decomposition()[:3]
-
-def eigen_full_voxelgrid(voxelgrid):
-    return voxelgrid.eigen_decomposition()  
-    
+    return [voxelgrid.voxel_n]    
 
 # NEED KDTREE
 
