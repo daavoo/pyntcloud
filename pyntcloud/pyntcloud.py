@@ -19,7 +19,7 @@ from .sampling import (
 from .scalar_fields import ( 
     SF_RANSAC,
     SF_NORMALS, SF_RGB, 
-    SF_OCTREE, SF_VOXELGRID, SF_KDTREE,
+    SF_OCTREE, SF_VOXELGRID,
     SF_EIGENVALUES,
     ALL_SF
 )
@@ -134,67 +134,63 @@ class PyntCloud(object):
             kwargs["points"] = self.xyz
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RANSAC[sf][1])
             all_sf = SF_RANSAC[sf][1](**valid_kwargs)
+            sf_added = []
             for n, i in enumerate(SF_RANSAC[sf][0]):
                 self.points[i] = all_sf[n]
-                print("{} added".format(i))
+                sf_added.append(i)
         
         elif sf in SF_NORMALS:
             kwargs["normals"] = self.points[["nx", "ny", "nz"]].values
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_NORMALS[sf][1])
             all_sf = SF_NORMALS[sf][1](**valid_kwargs)
+            sf_added = []
             for n, i in enumerate(SF_NORMALS[sf][0]):
                 self.points[i] = all_sf[n]
-                print("{} added".format(i))
+                sf_added.append(i)
 
         elif sf in SF_RGB:
             kwargs["rgb"] = self.points[["red", "green", "blue"]].values.astype("f")
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RGB[sf][1])
             all_sf = SF_RGB[sf][1](**valid_kwargs)
+            sf_added = []
             for n, i in enumerate(SF_RGB[sf][0]):
                 self.points[i] = all_sf[n]
-                print("{} added".format(i))
+                sf_added.append(i)
 
         elif sf in SF_OCTREE:
             kwargs["octree"] = self.octrees[kwargs["octree"]]
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_OCTREE[sf][1])
             all_sf = SF_OCTREE[sf][1](**valid_kwargs)
+            sf_added = []
             for n, i in enumerate(SF_OCTREE[sf][0]):
                 name = "{}({},{})".format(i, valid_kwargs["level"], valid_kwargs["octree"].id)
                 self.points[name] = all_sf[n]
-                print("{} added".format(name))
+                sf_added.append(name)
 
         elif sf in SF_VOXELGRID:
             kwargs["voxelgrid"] = self.voxelgrids[kwargs["voxelgrid"]]
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_VOXELGRID[sf][1])
             all_sf = SF_VOXELGRID[sf][1](**valid_kwargs)
+            sf_added = []
             for n, i in enumerate(SF_VOXELGRID[sf][0]):
                 name = "{}({})".format(i, valid_kwargs["voxelgrid"].id)
                 self.points[name] = all_sf[n]
-                print("{} added".format(name))
-
-        elif sf in SF_KDTREE:
-            kwargs["kdtree"] = self.kdtrees[kwargs["kdtree"]]
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_KDTREE[sf][1])
-            all_sf = SF_KDTREE[sf][1](**valid_kwargs)
-            for n, i in enumerate(SF_KDTREE[sf][0]):
-                name = "{}({})".format(i, valid_kwargs["kdtree"].id)
-                self.points[name] = all_sf[n].astype("f")
-                print("{} added".format(name))
+                sf_added.append(name)
 
         elif sf in SF_EIGENVALUES:
-            ids = ["e{}({})".format(i, kwargs["id"]) for i in range(1,4)]
-            kwargs["ev"] = self.points[ids].values
+            kwargs["ev"] = self.points[kwargs["ev"]].values
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_EIGENVALUES[sf][1])
             all_sf = SF_EIGENVALUES[sf][1](**valid_kwargs)
+            sf_added = []
             for n, i in enumerate(SF_EIGENVALUES[sf][0]):
                 name = "{}({})".format(i, kwargs["id"])
                 self.points[name] = all_sf[n].astype("f")
-                print("{} added".format(name))
+                sf_added.append(name)
 
         else:
             raise ValueError("Unsupported scalar field; supported scalar fields are:\n{}".format(ALL_SF))
 
-        return True
+        return sf_added
 
     def add_structure(self, name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
