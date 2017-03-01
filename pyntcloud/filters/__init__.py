@@ -3,7 +3,12 @@
 HAKUNA MATATA
 """
 
-from .filters import *
+from .f_kdtree import (
+        statistical_outlier_removal,
+        radious_outlier_removal
+)
+
+from .f_xyz import bounding_box
 
 F_XYZ = {
         "BBOX": bounding_box
@@ -22,6 +27,7 @@ REQUIRE POINTS
 
 REQUIRE KDTREE 
 --------------
+{}
 {}
 """.format(
     *F_XYZ,
