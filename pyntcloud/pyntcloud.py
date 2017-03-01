@@ -21,8 +21,7 @@ from .scalar_fields import (
     SF_NORMALS,
     SF_RGB, 
     SF_VOXELGRID,
-    SF_XYZ,    
-    ALL_SF
+    SF_XYZ
 )
 from .structures import KDTree, VoxelGrid, Octree
 from .utils.misc import crosscheck_kwargs_function
@@ -96,11 +95,11 @@ class PyntCloud(object):
         ----------
         filename : str
             Path to the file from wich the data will be readed
+
         Returns
         -------
         PyntCloud : object
-            PyntCloud's instance, containing all elements in the file stored as
-            PyntCloud's attributes
+            PyntCloud's instance, containing all valid elements in the file.
         """
         ext = filename.split(".")[-1].upper()
         if ext not in FROM:
@@ -110,10 +109,13 @@ class PyntCloud(object):
 
     def to_file(self, filename, internal=["points"], **kwargs):
         """ Save PyntCloud's data to file 
+
         Parameters
         ----------
         filename : str
             Path to the file from wich the data will be readed
+            
+        internals : list of str
         """
         
         ext = filename.split(".")[-1].upper()
@@ -126,58 +128,129 @@ class PyntCloud(object):
 
         TO[ext](**valid_args)
         
-    def add_scalar_field(self, sf, **kwargs):
-        """ Add one or multiple scalar fields to PyntCloud.points
+    def add_scalar_field(self, name, **kwargs):
+        """ Add one or multiple columns to PyntCloud.points
+
+        Parameters
+        ----------
+        name : str
+            One of the avaliable names in ALL_SF
+        kwargs 
+            Avaliable kwargs vary for each name.
+        
+        Returns
+        -------
+        sf_added : list of str
+            The name of each of the columns (scalar fields) added.
+            Usefull for chaining operations that require string names.
+        
+        Notes
+        -----
+        Avaliable scalar fields are:
+
+        - REQUIRE EIGENVALUES
+
+            KWARGS : "ev"
+                Column names of the eigen values.
+
+            AVALIABLE :
+                sphericity
+                anisotropy
+                linearity
+                omnivariance
+                eigenentropy
+                planarity
+                eigen_sum
+                curvature
+
+        - REQUIRE NORMALS 
+
+            KWARGS : None
+
+            AVALIABLE :
+                orientation_deg
+                orientation_rad
+                inclination_rad
+                inclination_deg
+
+        - REQUIRE RGB 
+
+            KWARGS : None
+
+            AVALIABLE :
+                hsv
+                relative_luminance
+                rgb_intensity
+
+        - REQUIRE VOXELGRID 
+
+            KWARGS : "voxelgrid"
+                VoxelGrid.id 
+                Tip: store in variable the return of self.add_structure("voxelgrid").
+
+            AVALIABLE :
+                voxel_y
+                voxel_x
+                voxel_n
+                voxel_z
+
+        - REQUIRE XYZ
+
+            KWARGS : None
+
+            AVALIABLE :
+                is_plane
+                is_sphere
         """
-        if sf in SF_EIGENVALUES:
+        if name in SF_EIGENVALUES:
             kwargs["ev"] = self.points[kwargs["ev"]].values
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_EIGENVALUES[sf][1])
-            all_sf = SF_EIGENVALUES[sf][1](**valid_kwargs)
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_EIGENVALUES[name][1])
+            all_sf = SF_EIGENVALUES[name][1](**valid_kwargs)
             sf_added = []
-            for n, i in enumerate(SF_EIGENVALUES[sf][0]):
+            for n, i in enumerate(SF_EIGENVALUES[name][0]):
                 name = "{}({})".format(i, kwargs["id"])
                 self.points[name] = all_sf[n].astype("f")
                 sf_added.append(name)
         
-        elif sf in SF_NORMALS:
+        elif name in SF_NORMALS:
             kwargs["normals"] = self.points[["nx", "ny", "nz"]].values
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_NORMALS[sf][1])
-            all_sf = SF_NORMALS[sf][1](**valid_kwargs)
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_NORMALS[name][1])
+            all_sf = SF_NORMALS[name][1](**valid_kwargs)
             sf_added = []
-            for n, i in enumerate(SF_NORMALS[sf][0]):
+            for n, i in enumerate(SF_NORMALS[name][0]):
                 self.points[i] = all_sf[n]
                 sf_added.append(i)
 
-        elif sf in SF_RGB:
+        elif name in SF_RGB:
             kwargs["rgb"] = self.points[["red", "green", "blue"]].values.astype("f")
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RGB[sf][1])
-            all_sf = SF_RGB[sf][1](**valid_kwargs)
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RGB[name][1])
+            all_sf = SF_RGB[name][1](**valid_kwargs)
             sf_added = []
-            for n, i in enumerate(SF_RGB[sf][0]):
+            for n, i in enumerate(SF_RGB[name][0]):
                 self.points[i] = all_sf[n]
                 sf_added.append(i)
 
-        elif sf in SF_VOXELGRID:
+        elif name in SF_VOXELGRID:
             kwargs["voxelgrid"] = self.voxelgrids[kwargs["voxelgrid"]]
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_VOXELGRID[sf][1])
-            all_sf = SF_VOXELGRID[sf][1](**valid_kwargs)
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_VOXELGRID[name][1])
+            all_sf = SF_VOXELGRID[name][1](**valid_kwargs)
             sf_added = []
-            for n, i in enumerate(SF_VOXELGRID[sf][0]):
+            for n, i in enumerate(SF_VOXELGRID[name][0]):
                 name = "{}({})".format(i, valid_kwargs["voxelgrid"].id)
                 self.points[name] = all_sf[n]
                 sf_added.append(name)
         
-        elif sf in SF_XYZ:
+        elif name in SF_XYZ:
             kwargs["points"] = self.xyz
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RANSAC[sf][1])
-            all_sf = SF_RANSAC[sf][1](**valid_kwargs)
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_XYZ[name][1])
+            all_sf = SF_XYZ[name][1](**valid_kwargs)
             sf_added = []
-            for n, i in enumerate(SF_RANSAC[sf][0]):
+            for n, i in enumerate(SF_XYZ[name][0]):
                 self.points[i] = all_sf[n]
                 sf_added.append(i)
 
         else:
-            raise ValueError("Unsupported scalar field; supported scalar fields are:\n{}".format(ALL_SF))
+            raise ValueError("Unsupported scalar field. Check docstring")
 
         return sf_added
 
@@ -217,7 +290,7 @@ class PyntCloud(object):
             raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS)) 
     
     def get_sample(self, name, **kwargs):
-        """ Returns sampled points using provided method
+        """ Returns arbitrary number of points sampled by selected method
         """
         if name in S_POINTS:
             kwargs["points"] = self.xyz
@@ -237,9 +310,48 @@ class PyntCloud(object):
         else:
             raise ValueError("Unsupported sample mode; supported modes are: {}".format(ALL_SAMPLING))
     
+    def get_neighbourhood(self, k=None, r=None, kdtree=None):
+        """ For each point finds the indices that compose it's neighbourhood.
+
+        Parameters
+        ----------
+        k : int, Default None
+            For "K-nearest neighbor" search.
+            Number of nearest neighbors that will be used to build the neighbourhood.
+        r : float, Default None
+            For "Fixed-radius near neighbors" search.
+            Radius of the sphere that will be used to build the neighbourhood.
+        kdtree : .structures.kdtree.KDTree, Default None
+            Pre-computed instance of KDTree for "K-nearest neighbor" search.
+            If kdtree is None and k is not None:
+                The KDTree will be computed as part of the process.
+            Else:
+                kdtree kwarg will be ignored.
+
+        Returns
+        -------
+        neighbourhood : array-like
+            (N, k) ndarray if k is not None.                
+                Indices of the 'k' nearest neighbors for the 'N' points.
+            list of lists if r is not None.
+                List of len 'N' holding a variable number of indices corresponding
+                to the neighbors with distance < r.
+        """
+        if k is not None:
+            return k_neighbourhood(self.xyz, k, kdtree=kdtree)
+        elif r is not None:
+            return r_neighbourhood(self.xyz, r)
+        else:
+            raise ValueError("You must supply 'k' or 'r' values.")
+        
     def get_mesh_vertices(self):
+        """ Decompose triangles of self.mesh from vertices in self.points
+        Returns
+        -------
+        v1, v2, v3: ndarray
+            (N, 3) arrays of vertices so v1[i], v2[i], v3[i] represent the ith triangle
         """
-        """
+        
         v1 = self.xyz[[self.mesh["v1"]]]
         v2 = self.xyz[[self.mesh["v2"]]]
         v3 = self.xyz[[self.mesh["v3"]]]
