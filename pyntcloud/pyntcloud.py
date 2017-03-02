@@ -9,6 +9,7 @@ from .filters import (
     ALL_FILTERS
 )
 from .io import FROM, TO
+from .neighbors import k_neighbors, r_neighbors
 from .plot import plot_points, DESCRIPTION
 from .sampling import (
     S_POINTS,
@@ -18,6 +19,7 @@ from .sampling import (
 )
 from .scalar_fields import ( 
     SF_EIGENVALUES,
+    SF_K_NEIGHBORS,
     SF_NORMALS,
     SF_RGB, 
     SF_VOXELGRID,
@@ -149,11 +151,11 @@ class PyntCloud(object):
         Avaliable scalar fields are:
 
         - REQUIRE EIGENVALUES
-
-            KWARGS : "ev"
-                Column names of the eigen values.
-
-            AVALIABLE :
+            KWARGS
+                ev : list of str
+                    Column names of the eigen values.
+                    Tip: store in variable the return of self.add_scalar_field("eigen_values", ...)
+            NAMES
                 sphericity
                 anisotropy
                 linearity
@@ -163,52 +165,67 @@ class PyntCloud(object):
                 eigen_sum
                 curvature
 
+        - REQUIRE K_NEIGHBORS 
+            KWARGS
+                k_neighbors : (N, k) ndarray
+                    Returned from self.get_neighbors(k, ...) or by manually querying some KDTree.                
+            NAMES 
+                eigen_decomposition
+                eigen_values
+
         - REQUIRE NORMALS 
-
-            KWARGS : None
-
-            AVALIABLE :
+            KWARGS
+                None
+            NAMES 
                 orientation_deg
                 orientation_rad
                 inclination_rad
                 inclination_deg
 
         - REQUIRE RGB 
-
-            KWARGS : None
-
-            AVALIABLE :
+            KWARGS
+                None
+            NAMES 
                 hsv
                 relative_luminance
                 rgb_intensity
 
         - REQUIRE VOXELGRID 
-
-            KWARGS : "voxelgrid"
-                VoxelGrid.id 
-                Tip: store in variable the return of self.add_structure("voxelgrid").
-
-            AVALIABLE :
+            KWARGS
+                voxelgrid : VoxelGrid.id 
+                    Tip: store in variable the return of self.add_structure("voxelgrid", ...)
+            NAMES
                 voxel_y
                 voxel_x
                 voxel_n
                 voxel_z
 
         - REQUIRE XYZ
-
-            KWARGS : None
-
-            AVALIABLE :
+            KWARGS
+                None
+            AVALIABLE
                 is_plane
                 is_sphere
+
         """
         if name in SF_EIGENVALUES:
+            k = kwargs["ev"][0].split("e1")[1]
             kwargs["ev"] = self.points[kwargs["ev"]].values
             valid_kwargs = crosscheck_kwargs_function(kwargs, SF_EIGENVALUES[name][1])
             all_sf = SF_EIGENVALUES[name][1](**valid_kwargs)
             sf_added = []
             for n, i in enumerate(SF_EIGENVALUES[name][0]):
-                name = "{}({})".format(i, kwargs["id"])
+                name = "{}{}".format(i, k)
+                self.points[name] = all_sf[n].astype("f")
+                sf_added.append(name)
+        
+        elif name in SF_K_NEIGHBORS:
+            kwargs["k_neighbors"] = self.xyz[kwargs["k_neighbors"]]
+            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_K_NEIGHBORS[name][1])
+            all_sf = SF_K_NEIGHBORS[name][1](**valid_kwargs)
+            sf_added = []
+            for n, i in enumerate(SF_K_NEIGHBORS[name][0]):
+                name = "{}({})".format(i, valid_kwargs["k_neighbors"].shape[1])
                 self.points[name] = all_sf[n].astype("f")
                 sf_added.append(name)
         
@@ -310,7 +327,7 @@ class PyntCloud(object):
         else:
             raise ValueError("Unsupported sample mode; supported modes are: {}".format(ALL_SAMPLING))
     
-    def get_neighbourhood(self, k=None, r=None, kdtree=None):
+    def get_neighbors(self, k=None, r=None, kdtree=None):
         """ For each point finds the indices that compose it's neighbourhood.
 
         Parameters
@@ -318,29 +335,41 @@ class PyntCloud(object):
         k : int, Default None
             For "K-nearest neighbor" search.
             Number of nearest neighbors that will be used to build the neighbourhood.
+
         r : float, Default None
             For "Fixed-radius near neighbors" search.
             Radius of the sphere that will be used to build the neighbourhood.
-        kdtree : .structures.kdtree.KDTree, Default None
-            Pre-computed instance of KDTree for "K-nearest neighbor" search.
+
+        kdtree : str, Default None
+            KDTree.id in self.kdtrees.
+
             If kdtree is None and k is not None:
-                The KDTree will be computed as part of the process.
-            Else:
+                The KDTree will be computed and added to PyntCloud as part of the process.
+            Elif r is not None:
                 kdtree kwarg will be ignored.
+            Else:
+                The given KDTree will be used for "K-nearest neighbor" search.
 
         Returns
         -------
-        neighbourhood : array-like
+        neighbors : array-like
             (N, k) ndarray if k is not None.                
                 Indices of the 'k' nearest neighbors for the 'N' points.
-            list of lists if r is not None.
-                List of len 'N' holding a variable number of indices corresponding
+            (N,) ndarray of lists if r is not None.
+                Array holding a variable number of indices corresponding
                 to the neighbors with distance < r.
         """
         if k is not None:
-            return k_neighbourhood(self.xyz, k, kdtree=kdtree)
+            if kdtree is None:
+                kdtree_id = self.add_structure("kdtree")
+                kdtree = self.kdtrees[kdtree_id]
+            else:
+                kdtree = self.kdtrees[kdtree]
+
+            return k_neighbors(self.xyz, k, kdtree)
+
         elif r is not None:
-            return r_neighbourhood(self.xyz, r)
+            return r_neighbors(self.xyz, r)
         else:
             raise ValueError("You must supply 'k' or 'r' values.")
         
