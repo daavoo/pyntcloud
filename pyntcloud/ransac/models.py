@@ -20,7 +20,7 @@ class Ransac_Model(ABC):
         pass
 
     @abstractmethod
-    def get_error(self, points):
+    def get_distances(self, points):
         pass
     
     @abstractmethod
@@ -37,7 +37,7 @@ class Ransac_Plane(Ransac_Model, Plane):
     def fit(self, k_points):
         return self.from_three_points(k_points)
     
-    def get_error(self, points):
+    def get_distances(self, points):
         return self.get_projections(points, only_distances=True)
     
     def are_valid(self, k_points):
@@ -53,7 +53,7 @@ class Ransac_Sphere(Ransac_Model, Sphere):
     def fit(self, k_points):
         return self.from_four_points(k_points)
     
-    def get_error(self, points):
+    def get_distances(self, points):
         return self.get_projections(points, only_distances=True)ç
     
     def are_valid(self, k_points):    
