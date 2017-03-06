@@ -4,12 +4,9 @@ import numpy as np
 
 class Sphere():
 
-    def __init__(self, center=None, radius=None, normals=False):
+    def __init__(self, center=None, radius=None):
         self.center = center
         self.radius= radius
-        # for ransac
-        self.k = 2 if normals else 4
-        self.name = "sphere"
     
     def from_four_points(self, points):
         # adapted from http://www.abecedarical.com/zenosamples/zs_sphere4pts.html
@@ -68,23 +65,4 @@ class Sphere():
             return distances   
         scales = self.radius / lengths
         projections = (scales[:,None] * vectors) + self.center
-        return distances, projections
-
-    # RANSAC METHODS
-
-    def fit(self, points):
-        if self.k == 4:
-            self.from_four_points(points)
-
-    def get_error(self, points):
-        return self.get_projections(points, only_distances=True)
-
-    def are_valid(self, points):    
-        x = np.ones((4,4))
-        x [:-1,:] = points.T
-        if np.linalg.det(x) == 0:
-            return False
-
-        return True
-
-        
+        return distances, projections        

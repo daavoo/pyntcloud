@@ -9,9 +9,6 @@ class Plane():
         self.normal = normal
         if normal is not None:
             self.normal /= np.linalg.norm(normal)
-        self.name = "plane"
-        # for ransac
-        self.k = 3
     
     def from_three_points(self, points):
         normal = np.cross(points[1] - points[0], points[2] - points[0])
@@ -37,16 +34,6 @@ class Plane():
         projections = points - (distances[:,None] * self.normal)
         return distances, projections
 
-    # RANSAC METHODS
-
-    def fit(self, points):
-        self.from_three_points(points)
-    
-    def get_error(self, points):
-        return self.get_projections(points, only_distances=True)     
-    
-    def are_valid(self, points):
-        return True
 
 
 
