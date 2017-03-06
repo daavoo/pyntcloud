@@ -15,40 +15,56 @@ from ..utils.array import cartesian
 
 class VoxelGrid(object):
     
-    def __init__(self, points, x_y_z=[2, 2, 2], bb_cuboid=True):
+    def __init__(self, points, x_y_z=[2, 2, 2], sizes=None, bb_cuboid=True):
         """
         Parameters
         ----------         
         points: (N,3) ndarray
-                The point cloud from wich we want to construct the VoxelGrid.
-                Where N is the number of points in the point cloud and the second
-                dimension represents the x, y and z coordinates of each point.
+            The point cloud from wich we want to construct the VoxelGrid.
+            Where N is the number of points in the point cloud and the second
+            dimension represents the x, y and z coordinates of each point.
         
-        x_y_z:  list
-                The number of segments in wich each axis will be divided.
-                x_y_z[0]: x axis 
-                x_y_z[1]: y axis 
-                x_y_z[2]: z axis
+        x_y_z:  list of int
+            Default: [2, 2, 2]
+            The number of segments in wich each axis will be divided.
+            x_y_z[0]: x axis 
+            x_y_z[1]: y axis 
+            x_y_z[2]: z axis
+            If sizes is not None it will be ignored.
+        
+        sizes: list of float
+            Default: None
+            The desired voxel size along each axis.
+            sizes[0]: voxel size along x axis.
+            sizes[1]: voxel size along y axis.
+            sizes[2]: voxel size along z axis.
 
         bb_cuboid(Optional): bool
-                If True(Default):   
-                    The bounding box of the point cloud will be adjusted
-                    in order to have all the dimensions of equal lenght.                
-                If False:
-                    The bounding box is allowed to have dimensions of different sizes.
+            Default: True
+            If True, the bounding box of the point cloud will be adjusted
+            in order to have all the dimensions of equal lenght.                
+
         """
         self.points = points
-        xyzmin = np.min(points, axis=0)
-        xyzmax = np.max(points, axis=0)
+        xyzmin = points.min(0)
+        xyzmax = points.max(0) 
 
         if bb_cuboid:
             #: adjust to obtain a  minimum bounding box with all sides of equal lenght 
             diff = max(xyzmax-xyzmin) - (xyzmax-xyzmin)
             xyzmin = xyzmin - diff / 2
             xyzmax = xyzmax + diff / 2 
+        
+        if sizes is not None:
+            # adjust to obtain sides divisible by size
+            margins = (((points.ptp(0) // sizes) + 1) * sizes) - points.ptp(0)
+            xyzmin -= margins / 2
+            xyzmax += margins / 2
+            x_y_z = ((xyzmax - xyzmin) / sizes).astype(int) 
 
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
+
         segments = []
         shape = []
 
@@ -66,7 +82,7 @@ class VoxelGrid(object):
         self.n_x = x_y_z[0]
         self.n_y = x_y_z[1]
         self.n_z = x_y_z[2]
-        self.id = "V([{},{},{}],{})".format(x_y_z[0], x_y_z[1], x_y_z[2], bb_cuboid)
+        self.id = "V({},{},{})".format(x_y_z, sizes, bb_cuboid)
         self.build()
 
     def build(self):
@@ -110,12 +126,8 @@ class VoxelGrid(object):
             for i, ax in enumerate(axes.flat):
                 if i >= len(feature_vector):
                     break
-                im = ax.imshow(feature_vector[i], cmap=cmap, interpolation="none")
+                im = ax.imshow(feature_vector[:, :, i], cmap=cmap, interpolation="none")
                 ax.set_title("Level " + str(i))
-            fig.subplots_adjust(right=0.8)
-            cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-            cbar = fig.colorbar(im, cax=cbar_ax)
-            cbar.set_label(mode.upper())
             
         elif d == 3:
             return plot_voxelgrid(self, cmap=cmap)
