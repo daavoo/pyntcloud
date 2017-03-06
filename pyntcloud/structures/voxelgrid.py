@@ -70,8 +70,6 @@ class VoxelGrid(object):
 
         for i in range(3):
             # note the +1 in num 
-            if type(x_y_z[i]) is not int:
-                raise TypeError("x_y_z[{}] must be int".format(i))
             s, step = np.linspace(xyzmin[i], xyzmax[i], num=(x_y_z[i] + 1), retstep=True)
             segments.append(s)
             shape.append(step)
