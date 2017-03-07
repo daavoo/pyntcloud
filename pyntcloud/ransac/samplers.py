@@ -3,7 +3,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from structures import VoxelGrid
 
-class Ransac_Sampler(ABC):
+class RansacSampler(ABC):
     """ Base class for ransac samplers.
 
     Parameters
@@ -26,10 +26,10 @@ class Ransac_Sampler(ABC):
         pass
 
 
-class Random_Sampler(Ransac_Sampler):
+class RandomSampler(RansacSampler):
     """ Sample random points.
 
-    Inherits from Ransac_Sampler.
+    Inherits from RansacSampler.
 
     """
     def __init__(self, points, k):
@@ -42,10 +42,10 @@ class Random_Sampler(Ransac_Sampler):
         return self.points[sample]
         
 
-class Voxelgrid_Sampler(Ransac_Sampler):
+class VoxelgridSampler(RansacSampler):
     """ Sample random points inside the same random voxel.
 
-    Inherits from Ransac_Sampler.
+    Inherits from RansacSampler.
 
     Parameters
     ----------

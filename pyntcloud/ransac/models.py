@@ -3,7 +3,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from ..geometry import Plane, Sphere
 
-class Ransac_Model(ABC):
+class RansacModel(ABC):
     """ Base class for ransac models.
 
     Parameters
@@ -27,10 +27,10 @@ class Ransac_Model(ABC):
     def are_valid(self, k_points):
         pass
 
-class Ransac_Plane(Ransac_Model, Plane):
+class RansacPlane(RansacModel, Plane):
 
     def __init__(self, max_dist=1e-4):
-        Ransac_Model.__init__(max_dist)
+        RansacModel.__init__(max_dist)
         Plane.__init__()
         self.k = 3
 
@@ -43,10 +43,10 @@ class Ransac_Plane(Ransac_Model, Plane):
     def are_valid(self, k_points):
         return True
 
-class Ransac_Sphere(Ransac_Model, Sphere):
+class RansacSphere(RansacModel, Sphere):
 
     def __init__(self, max_dist=1e-4):
-        Ransac_Model.__init__(max_dist)
+        RansacModel.__init__(max_dist)
         Sphere.__init__()
         self.k = 4
 
