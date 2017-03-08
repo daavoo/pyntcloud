@@ -54,7 +54,7 @@ class RansacSphere(RansacModel, Sphere):
         return self.from_four_points(k_points)
     
     def get_distances(self, points):
-        return self.get_projections(points, only_distances=True)ç
+        return self.get_projections(points, only_distances=True)
     
     def are_valid(self, k_points):    
         x = np.ones((4,4))
