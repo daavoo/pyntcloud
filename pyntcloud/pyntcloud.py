@@ -140,7 +140,7 @@ class PyntCloud(object):
         name : str
             One of the avaliable names in ALL_SF
         kwargs 
-            Avaliable kwargs vary for each name.
+            Vary for each name. See bellow.
         
         Returns
         -------
@@ -150,98 +150,104 @@ class PyntCloud(object):
         
         Notes
         -----
+        
         Avaliable scalar fields are:
 
-        - REQUIRE EIGENVALUES
-            KWARGS
-                ev : list of str
-                    Column names of the eigen values.
-                    Tip: store in variable the return of self.add_scalar_field("eigen_values", ...)
-            NAMES
-                sphericity
-                anisotropy
-                linearity
-                omnivariance
-                eigenentropy
-                planarity
-                eigen_sum
-                curvature
+        REQUIRE EIGENVALUES
+        -------------------
+        ARGS
+            ev : list of str
+                ev = self.add_scalar_field("eigen_values", ...)
+        NAMES
+            sphericity
+            
+            anisotropy
+            
+            linearity
+            
+            omnivariance
+            
+            eigenentropy
+            
+            planarity
+            
+            eigen_sum
+            
+            curvature
+                
+        REQUIRE K_NEIGHBORS 
+        -------------------
+        ARGS
+            k_neighbors : (N, k) ndarray
+                Returned from: self.get_neighbors(k, ...) / manually querying some self.kdtrees[x] / other methods.                
+        NAMES 
+            eigen_decomposition
+            
+            eigen_values
+            
+        REQUIRE NORMALS
+        ---------------
+        NAMES 
+            orientation_deg
+            
+            orientation_rad
+            
+            inclination_rad
+            
+            inclination_deg
+                
+        REQUIRE RGB 
+        -----------
+        NAMES 
+            hsv
+            
+            relative_luminance
+            
+            rgb_intensity
+                
 
-        - REQUIRE K_NEIGHBORS 
-            KWARGS
-                k_neighbors : (N, k) ndarray
-                    Returned from self.get_neighbors(k, ...) or by manually querying some KDTree.                
-            NAMES 
-                eigen_decomposition
-                eigen_values
+        REQUIRE VOXELGRID 
+        -----------------
+        ARGS
+            voxelgrid : VoxelGrid.id
+                voxelgrid = self.add_structure("voxelgrid", ...)
+                     
+        NAMES
+            voxel_y
+            
+            voxel_x
+            
+            voxel_n
+            
+            voxel_z
+                
 
-        - REQUIRE NORMALS 
-            KWARGS
-                None
-            NAMES 
-                orientation_deg
-                orientation_rad
-                inclination_rad
-                inclination_deg
-
-        - REQUIRE RGB 
-            KWARGS
-                None
-            NAMES 
-                hsv
-                relative_luminance
-                rgb_intensity
-
-        - REQUIRE VOXELGRID 
-            KWARGS
-                voxelgrid : VoxelGrid.id 
-                    Tip: store in variable the return of self.add_structure("voxelgrid", ...)
-            NAMES
-                voxel_y
-                voxel_x
-                voxel_n
-                voxel_z
-
-        - REQUIRE XYZ
-            KWARGS
-                None
-            AVALIABLE
-                is_plane
-                is_sphere
-
+        RANSAC (ONLY REQUIRE XYZ)
+        -------------------------
+        ARGS
+            max_dist : float, optional (Default 1e-4)
+                Maximum distance from point to model in order to be considered as inlier.
+            max_iterations : int, optional (Default 100)
+                Maximum number of fitting iterations.
+        NAMES
+            PlaneFit
+            
+            SphereFit
+            
+            CustomFit
+            
+                model : subclass of ransac.models.RansacModel
+                    Model to be fitted
+                sampler : subclass of ransac.models.RansacSampler
+                    Sample method to be used
+                name : str
+                    Will be used to name the added column
+                model_kwargs : dict, optional (Default {})
+                    Will be passed to single_fit function.
+                sampler_kwargs : dict, optional (Default {})
+                    Will be passed to single_fit function.
         """
         
-        """
-        if name in SF_EIGENVALUES:
-            k = kwargs["ev"][0].split("e1")[1]
-            kwargs["ev"] = self.points[kwargs["ev"]].values
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_EIGENVALUES[name][1])
-            all_sf = SF_EIGENVALUES[name][1](**valid_kwargs)
-            sf_added = []
-            for n, i in enumerate(SF_EIGENVALUES[name][0]):
-                name = "{}{}".format(i, k)
-                self.points[name] = all_sf[n].astype("f")
-                sf_added.append(name)
-        
-        elif name in SF_K_NEIGHBORS:
-            kwargs["k_neighbors"] = self.xyz[kwargs["k_neighbors"]]
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_K_NEIGHBORS[name][1])
-            all_sf = SF_K_NEIGHBORS[name][1](**valid_kwargs)
-            sf_added = []
-            for n, i in enumerate(SF_K_NEIGHBORS[name][0]):
-                name = "{}({})".format(i, valid_kwargs["k_neighbors"].shape[1])
-                self.points[name] = all_sf[n].astype("f")
-                sf_added.append(name)
-        
-        elif name in SF_NORMALS:
-            kwargs["normals"] = self.points[["nx", "ny", "nz"]].values
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_NORMALS[name][1])
-            all_sf = SF_NORMALS[name][1](**valid_kwargs)
-            sf_added = []
-            for n, i in enumerate(SF_NORMALS[name][0]):
-                self.points[i] = all_sf[n]
-                sf_added.append(i)
-        """
         if name in ALL_SF:
             SF = ALL_SF[name](self, **kwargs)
             SF.extract_info()
