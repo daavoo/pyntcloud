@@ -1,21 +1,52 @@
 
+from .base import ScalarField
 
-def voxel_x(voxelgrid):
+class ScalarField_Voxelgrid(ScalarField):
+
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud)
+        self.voxelgrid = voxelgrid
+    
+    def extract_info(self):
+        self.voxelgrid = self.pyntcloud.voxelgrids[self.voxelgrid]
+    
+
+class Voxel_X(ScalarField_Voxelgrid):
     """ Voxel index along x axis.
     """
-    return [voxelgrid.voxel_x]
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud, voxelgrid)
+    
+    def compute(self):
+        name = "{}({})".format("voxel_x", self.voxelgrid.id)
+        self.to_be_added[name] = self.voxelgrid.voxel_x
 
-def voxel_y(voxelgrid):
+class Voxel_Y(ScalarField_Voxelgrid):
     """ Voxel index along y axis.
     """
-    return [voxelgrid.voxel_y]
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud, voxelgrid)
+    
+    def compute(self):
+        name = "{}({})".format("voxel_y", self.voxelgrid.id)
+        self.to_be_added[name] = self.voxelgrid.voxel_y
 
-def voxel_z(voxelgrid):
+class Voxel_Z(ScalarField_Voxelgrid):
     """ Voxel index along z axis.
     """
-    return [voxelgrid.voxel_z]
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud, voxelgrid)
+    
+    def compute(self):
+        name = "{}({})".format("voxel_z", self.voxelgrid.id)
+        self.to_be_added[name] = self.voxelgrid.voxel_z
 
-def voxel_n(voxelgrid):
+class Voxel_N(ScalarField_Voxelgrid):
     """ Voxel index in 3D array using 'C' order.
     """
-    return [voxelgrid.voxel_n] 
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud, voxelgrid)
+    
+    def compute(self):
+        name = "{}({})".format("voxel_n", self.voxelgrid.id)
+        self.to_be_added[name] = self.voxelgrid.voxel_n
