@@ -1,76 +1,55 @@
-
 import numpy as np
+from .base import ScalarField
 
-def inclination_deg(normals):
+class ScalarField_Normals(ScalarField):
+
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+    
+    def extract_info(self):
+        self.normals = self.pyntcloud.points[["nx", "ny", "nz"]].values
+
+
+class InclinationDegrees(ScalarField_Normals):
     """ Vertical inclination with respect to Z axis in degrees.
-
-    Parameters
-    ----------
-    normals: (N, 3) ndarray
-        The normal vector associated to each of the 'N' points defined by 
-        it's nx, ny, nz components.
-    
-    Returns
-    -------
-    inclination_deg: (N,) ndarray
-        The inclination angle in degrees associated to each of the 'N' points.
     """
-    
-    return [np.rad2deg(np.arccos(normals[:,-1]))]
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+        
+    def compute(self):
+        inclination =  np.arccos(self.normals[:,-1])
+        self.to_be_added["inclination_deg"] = np.rad2deg(inclination)
 
-def inclination_rad(normals):
+class InclinationRadians(ScalarField_Normals):
     """ Vertical inclination with respect to Z axis in radians.
-
-    Parameters
-    ----------
-    normals: (N, 3) ndarray
-        The normal vector associated to each of the 'N' points defined by 
-        it's nx, ny, nz components.
-    
-    Returns
-    -------
-    inclination_rad: (N,) ndarray
-        The inclination angle in radians associated to each of the 'N' points.
     """
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+        
+    def compute(self):
+        inclination =  np.arccos(self.normals[:,-1])
+        self.to_be_added["inclination_rad"] = inclination
 
-    return [np.arccos(normals[:,-1])]
-
-def orientation_deg(normals):
+class OrientationDegrees(ScalarField_Normals):
     """ Horizontal orientation with respect to the XY plane in degrees.
-
-    Parameters
-    ----------
-    normals: (N, 3) ndarray
-        The normal vector associated to each of the 'N' points defined by 
-        it's nx, ny, nz components.
-    
-    Returns
-    -------
-    orientation_deg: (N,) ndarray
-        The orientation angle in degrees associated to each of the 'N' points.
     """
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+        
+    def compute(self):
+        angle = np.arctan2(self.normals[:,0], self.normals[:,1])
+         # convert (-180 , 180) to (0 , 360)
+        angle = np.where(angle < 0, angle + (2*np.pi), angle)
+        self.to_be_added["orientation_deg"] = np.rad2deg(angle)
 
-    angle = np.arctan2(normals[:,0], normals[:,1])
-    # convert (-180 , 180) to (0 , 360)
-    angle = np.where(angle <0, angle + (2*np.pi), angle)
-    return [np.rad2deg(angle)]
-
-def orientation_rad(normals):
-    """ Horizontal orientation with respect to the XY plane in radians.
-
-    Parameters
-    ----------
-    normals: (N, 3) ndarray
-        The normal vector associated to each of the 'N' points defined by 
-        it's nx, ny, nz components.
-    
-    Returns
-    -------
-    orientation_rad: (N,) ndarray
-        The orientation angle in radians associated to each of the 'N' points.
+class OrientationRadians(ScalarField_Normals):
+    """ Horizontal orientation with respect to the XY plane in degrees.
     """
-
-    angle = np.arctan2(normals[:,0], normals[:,1])
-    # convert (-PI , PI) to (0 , 2*PI)
-    angle = np.where(angle <0, angle + (2*np.pi), angle)
-    return [angle]
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+        
+    def compute(self):
+        angle = np.arctan2(self.normals[:,0], self.normals[:,1])
+         # convert (-180 , 180) to (0 , 360)
+        angle = np.where(angle < 0, angle + (2*np.pi), angle)
+        self.to_be_added["orientation_rad"] = angle

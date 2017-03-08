@@ -7,7 +7,8 @@ Ransac Implementation
 import numpy as np
 import copy
 
-def ransac( points, model, sampler, model_kwargs={}, sampler_kwargs={}, max_iterations=100, return_model=False):
+
+def single_fit( points, model, sampler, model_kwargs={}, sampler_kwargs={}, max_iterations=100, return_model=False):
     """ RANdom SAmple Consensus for fitting model to points.
 
     points : ndarray
