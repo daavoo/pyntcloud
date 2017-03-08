@@ -1,5 +1,5 @@
-
 from abc import ABC, abstractmethod
+from collections import OrderedDict
 
 class ScalarField(ABC):
     """ Base class for scalar fields.
@@ -7,7 +7,7 @@ class ScalarField(ABC):
 
     def __init__(self, pyntcloud):
         self.pyntcloud = pyntcloud
-        self.to_be_added = {}
+        self.to_be_added = OrderedDict()
     
     def get_and_set(self):
         sf_added = []
