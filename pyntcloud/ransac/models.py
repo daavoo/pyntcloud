@@ -30,7 +30,7 @@ class RansacModel(ABC):
 class RansacPlane(RansacModel, Plane):
 
     def __init__(self, max_dist=1e-4):
-        RansacModel.__init__(max_dist)
+        RansacModel.__init__(max_dist=max_dist)
         Plane.__init__()
         self.k = 3
 
@@ -46,7 +46,7 @@ class RansacPlane(RansacModel, Plane):
 class RansacSphere(RansacModel, Sphere):
 
     def __init__(self, max_dist=1e-4):
-        RansacModel.__init__(max_dist)
+        RansacModel.__init__(max_dist=max_dist)
         Sphere.__init__()
         self.k = 4
 
@@ -54,7 +54,7 @@ class RansacSphere(RansacModel, Sphere):
         return self.from_four_points(k_points)
     
     def get_distances(self, points):
-        return self.get_projections(points, only_distances=True)ç
+        return self.get_projections(points, only_distances=True)
     
     def are_valid(self, k_points):    
         x = np.ones((4,4))
