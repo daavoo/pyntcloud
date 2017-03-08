@@ -1,72 +1,65 @@
 import numpy as np
+from .base import ScalarField
 
-def rgb_intensity(rgb):
+class ScalarField_RGB(ScalarField):
+
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+    
+    def extract_info(self):
+        self.rgb = self.pyntcloud.points[["red", "green", "blue"]].values.astype("f")
+
+
+class RGB_Intensity(ScalarField_RGB):
     """ Red, green and blue intensity.
-    
-    Parameters
-    ----------
-    rgb: (N,3) ndarray
-        Red, green and blue values.
-    
-    Returns
-    -------
-    r_i, g_i, b_i: (N,) ndarray
-        Red, green and blue intensity as:
-        r_i = (r / (r+g+b))
-        g_i = (g / (r+g+b))
-        b_i = (b / (r+g+b))
     """
-    rgb_i = np.nan_to_num(rgb / np.sum(rgb, axis=1, keepdims=True)) 
-    return rgb_i[:,0], rgb_i[:,1], rgb_i[:,2]
 
-def relative_luminance(rgb):
-    """ Similar to grayscale.
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
     
-    Parameters
-    ----------
-    rgb: (N,3) ndarray
-        Red, green and blue values.
-    
-    Returns
-    -------
-    relative_luminance: (N,) ndarray
-        Computed following Wikipedia.
+    def compute(self):
+        rgb_i = np.nan_to_num(self.rgb / np.sum(self.rgb, axis=1, keepdims=True)) 
+        self.to_be_added["Ri"] = rgb_i[:,0]
+        self.to_be_added["Gi"] = rgb_i[:,1]
+        self.to_be_added["Bi"] = rgb_i[:,2]
+
+class Relative_Luminance(ScalarField_RGB):
+    """ Similar to grayscale. Computed following Wikipedia.
     """
-    rgb /= 255.
-    return [np.einsum('ij, j', rgb, np.array([0.2125, 0.7154, 0.0721]))]
 
-def hsv(rgb):
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+    
+    def compute(self):
+        self.rgb /= 255.
+        coefficients = np.array([0.2125, 0.7154, 0.0721])
+        self.to_be_added["relative_luminance"] = np.einsum('ij, j', self.rgb, coefficients)
+
+class HSV(ScalarField_RGB):
     """ Hue, Saturation, Value colorspace.
-    
-    Parameters
-    ----------
-    rgb: (N,3) ndarray
-        Red, green and blue values.
-    
-    Returns
-    -------
-    H, S, V: (N,) ndarray
-        Computed following Wikipedia.
+
     """
+    def __init__(self, pyntcloud):
+        super().__init__(pyntcloud)
+    
+    def compute(self):
+        rgb = self.rgb
+        MAX = np.max(rgb, -1)
+        MIN = np.min(rgb, -1)
+        MAX_MIN = np.ptp(rgb, -1)
 
-    MAX = np.max(rgb, -1)
-    MIN = np.min(rgb, -1)
-    MAX_MIN = np.ptp(rgb, -1)
-
-    H = np.empty_like(MAX)
-    
-    idx = rgb[:,0] == MAX
-    H[idx] = 60 * (rgb[idx, 1] - rgb[idx, 2]) / MAX_MIN[idx]
-    H[np.logical_and(idx, rgb[:,1] < rgb[:,2])] += 360
-    
-    idx = rgb[:,1] == MAX
-    H[idx] = (60 * (rgb[idx, 2] - rgb[idx, 0]) / MAX_MIN[idx]) + 120
-    
-    idx = rgb[:,2] == MAX
-    H[idx] = (60 * (rgb[idx, 0] - rgb[idx, 1]) / MAX_MIN[idx]) + 240
-    
-    H = np.nan_to_num(H)
-    S = np.nan_to_num(np.where(MAX == 0, 0, 1 - (MIN/MAX)))
-    V = np.nan_to_num(MAX/255 * 100) 
-    
-    return H, S, V 
+        H = np.empty_like(MAX)
+        
+        idx = rgb[:,0] == MAX
+        H[idx] = 60 * (rgb[idx, 1] - rgb[idx, 2]) / MAX_MIN[idx]
+        H[np.logical_and(idx, rgb[:,1] < rgb[:,2])] += 360
+        
+        idx = rgb[:,1] == MAX
+        H[idx] = (60 * (rgb[idx, 2] - rgb[idx, 0]) / MAX_MIN[idx]) + 120
+        
+        idx = rgb[:,2] == MAX
+        H[idx] = (60 * (rgb[idx, 0] - rgb[idx, 1]) / MAX_MIN[idx]) + 240
+        
+        self.to_be_added["H"] = np.nan_to_num(H)
+        self.to_be_added["S"] = np.nan_to_num(np.where(MAX == 0, 0, 1 - (MIN/MAX)))
+        self.to_be_added["V"] = np.nan_to_num(MAX/255 * 100) 
