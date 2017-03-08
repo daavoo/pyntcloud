@@ -48,8 +48,9 @@ def test_orientation_rad():
     cloud.points.drop("orientation_rad", 1, inplace=True)
 
 
-def test_rgb_intensity():
+def test_rgb_sf():
     
+    # RGB Intensity
     cloud.add_scalar_field('rgb_intensity')
 
     assert min(cloud.points["Ri"]) >= 0
@@ -60,20 +61,16 @@ def test_rgb_intensity():
     assert max(cloud.points["Bi"]) <= 1
 
     cloud.points.drop(["Ri", "Gi", "Bi"], 1, inplace=True)
-
-
-def test_relative_luminance():
     
+    # Relative Luminance    
     cloud.add_scalar_field('relative_luminance')
 
     assert min(cloud.points["relative_luminance"]) >= 0
     assert max(cloud.points["relative_luminance"]) < 255.01  
 
     cloud.points.drop("relative_luminance", 1, inplace=True)
-
-
-def test_hsv():
-
+    
+    # HSV
     cloud.add_scalar_field('hsv')
 
     assert min(cloud.points["H"]) >= 0
@@ -84,16 +81,15 @@ def test_hsv():
     assert max(cloud.points["V"]) <= 100
 
     cloud.points.drop(["H", "S", "V"], 1, inplace=True)
-
+    
 
 def test_voxelgrid_sf():
 
-    with pytest.raises(KeyError):
+    with pytest.raises(TypeError):
         # missing structure
         cloud.add_scalar_field("voxel_x")
 
-    cloud.add_structure("voxelgrid", x_y_z=[2,2,2])
-    vg_id = "V([2,2,2],True)"
+    vg_id = cloud.add_structure("voxelgrid", x_y_z=[2,2,2])
 
     with pytest.raises(KeyError):
         # wrong id
