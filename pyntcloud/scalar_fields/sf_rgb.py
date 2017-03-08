@@ -10,7 +10,7 @@ class ScalarField_RGB(ScalarField):
         self.rgb = self.pyntcloud.points[["red", "green", "blue"]].values.astype("f")
 
 
-class RGB_Intensity(ScalarField_RGB):
+class RGBIntensity(ScalarField_RGB):
     """ Red, green and blue intensity.
     """
 
@@ -23,7 +23,7 @@ class RGB_Intensity(ScalarField_RGB):
         self.to_be_added["Gi"] = rgb_i[:,1]
         self.to_be_added["Bi"] = rgb_i[:,2]
 
-class Relative_Luminance(ScalarField_RGB):
+class RelativeLuminance(ScalarField_RGB):
     """ Similar to grayscale. Computed following Wikipedia.
     """
 
