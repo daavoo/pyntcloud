@@ -17,20 +17,22 @@ from .sampling import (
     S_VOXELGRID,
     ALL_SAMPLING
 )
-from .scalar_fields import ( 
-    SF_EIGENVALUES,
-    SF_K_NEIGHBORS,
-    SF_NORMALS,
-    SF_RGB, 
-    SF_VOXELGRID,
-    SF_XYZ
-)
+from .scalar_fields import ALL_SF
 from .structures import KDTree, VoxelGrid, Octree
 from .utils.misc import crosscheck_kwargs_function
 
 
 class PyntCloud(object):
     """ A Pythonic Point Cloud
+
+    Parameters
+    ----------
+    points : pd.DataFrame
+        Core component. 
+        DataFrame of N rows by M columns.
+        Each row represents one point of the point cloud.
+        Each column represents one scalar field associated to it's corresponding point.
+        
     """
     
     def __init__(self, points, **kwargs):  
@@ -208,6 +210,8 @@ class PyntCloud(object):
                 is_sphere
 
         """
+        
+        """
         if name in SF_EIGENVALUES:
             k = kwargs["ev"][0].split("e1")[1]
             kwargs["ev"] = self.points[kwargs["ev"]].values
@@ -237,34 +241,12 @@ class PyntCloud(object):
             for n, i in enumerate(SF_NORMALS[name][0]):
                 self.points[i] = all_sf[n]
                 sf_added.append(i)
-
-        elif name in SF_RGB:
-            kwargs["rgb"] = self.points[["red", "green", "blue"]].values.astype("f")
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_RGB[name][1])
-            all_sf = SF_RGB[name][1](**valid_kwargs)
-            sf_added = []
-            for n, i in enumerate(SF_RGB[name][0]):
-                self.points[i] = all_sf[n]
-                sf_added.append(i)
-
-        elif name in SF_VOXELGRID:
-            kwargs["voxelgrid"] = self.voxelgrids[kwargs["voxelgrid"]]
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_VOXELGRID[name][1])
-            all_sf = SF_VOXELGRID[name][1](**valid_kwargs)
-            sf_added = []
-            for n, i in enumerate(SF_VOXELGRID[name][0]):
-                name = "{}({})".format(i, valid_kwargs["voxelgrid"].id)
-                self.points[name] = all_sf[n]
-                sf_added.append(name)
-        
-        elif name in SF_XYZ:
-            kwargs["points"] = self.xyz
-            valid_kwargs = crosscheck_kwargs_function(kwargs, SF_XYZ[name][1])
-            all_sf = SF_XYZ[name][1](**valid_kwargs)
-            sf_added = []
-            for n, i in enumerate(SF_XYZ[name][0]):
-                self.points[i] = all_sf[n]
-                sf_added.append(i)
+        """
+        if name in ALL_SF:
+            SF = ALL_SF[name](self, **kwargs)
+            SF.extract_info()
+            SF.compute()
+            sf_added = SF.get_and_set()
 
         else:
             raise ValueError("Unsupported scalar field. Check docstring")
