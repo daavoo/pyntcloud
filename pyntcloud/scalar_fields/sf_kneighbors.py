@@ -76,6 +76,6 @@ class EigenDecomposition(ScalarField_KNeighbors):
         ev2 = eigenvectors[idx_trick, :, sort[:,1]]
         ev3 = eigenvectors[idx_trick, :, sort[:,0]]
  
-        self.to_be_added["ev1({})".format(k)] = ev1
-        self.to_be_added["ev2({})".format(k)] = ev2
-        self.to_be_added["ev3({})".format(k)] = ev3 
+        self.to_be_added["ev1({})".format(k)] = ev1.tolist()
+        self.to_be_added["ev2({})".format(k)] = ev2.tolist()
+        self.to_be_added["ev3({})".format(k)] = ev3.tolist()

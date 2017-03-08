@@ -1,12 +1,54 @@
-import os
 import pytest
-
-from numpy import pi as PI
-
+import numpy as np
 from pyntcloud import PyntCloud
+
+PI = np.pi
 
 cloud = PyntCloud.from_file('data/sf/xyz_rgb_nxnynz.npz')
 
+def test_eigenvalues():
+    
+    k_neighbors = cloud.get_neighbors(k=5)
+    ev = cloud.add_scalar_field("eigen_values", k_neighbors=k_neighbors)
+    
+    with pytest.raises(TypeError):
+        # missing arg
+        cloud.add_scalar_field("sphericity")
+        
+    cloud.add_scalar_field("sphericity", ev=ev) 
+    cloud.points.drop("sphericity(5)", 1, inplace=True)
+    cloud.add_scalar_field("anisotropy", ev=ev) 
+    cloud.points.drop("anisotropy(5)", 1, inplace=True)
+    cloud.add_scalar_field("linearity", ev=ev)
+    cloud.points.drop("linearity(5)", 1, inplace=True)    
+    cloud.add_scalar_field("omnivariance", ev=ev)
+    cloud.points.drop("omnivariance(5)", 1, inplace=True) 
+    cloud.add_scalar_field("eigenentropy", ev=ev)
+    cloud.points.drop("eigenentropy(5)", 1, inplace=True) 
+    cloud.add_scalar_field("planarity", ev=ev)
+    cloud.points.drop("planarity(5)", 1, inplace=True)
+    cloud.add_scalar_field("eigen_sum", ev=ev)
+    cloud.points.drop("eigen_sum(5)", 1, inplace=True)
+    cloud.add_scalar_field("curvature", ev=ev)
+    cloud.points.drop("curvature(5)", 1, inplace=True)
+    
+def test_k_neighbors():
+    
+    k_neighbors = cloud.get_neighbors(k=5)
+    
+    with pytest.raises(TypeError):
+        # missing arg
+        cloud.add_scalar_field("eigen_values")
+        
+    ev = cloud.add_scalar_field("eigen_values", k_neighbors=k_neighbors)
+    assert ev[0] == "e1(5)"
+    
+    ev = ev = cloud.add_scalar_field("eigen_decomposition", k_neighbors=k_neighbors)
+    assert ev[3] == "ev1(5)"
+    idx =  np.random.randint(0, 100)
+    for i in [3,4,5]:
+        assert np.linalg.norm(cloud.points[ev[i]][idx]) > 0.99
+        assert np.linalg.norm(cloud.points[ev[i]][idx]) < 1.01
 
 def test_normals_sf():
     
@@ -60,7 +102,7 @@ def test_rgb_sf():
 def test_voxelgrid_sf():
 
     with pytest.raises(TypeError):
-        # missing structure
+        # missing arg
         cloud.add_scalar_field("voxel_x")
 
     vg_id = cloud.add_structure("voxelgrid", x_y_z=[2,2,2])

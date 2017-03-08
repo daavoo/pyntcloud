@@ -56,5 +56,5 @@ class CustomFit(ScalarField_Ransac):
     """
     
     def __init__(self, pyntcloud, model, sampler, name, model_kwargs={}, sampler_kwargs={}, max_iterations=100):
-        super().__init__(pyntcloud, model, sampler model_kwargs=model_kwargs, sampler_kwargs=sampler_kwargs, max_iterations=max_iterations)
+        super().__init__(pyntcloud, model, sampler, model_kwargs=model_kwargs, sampler_kwargs=sampler_kwargs, max_iterations=max_iterations)
         self.name = name
