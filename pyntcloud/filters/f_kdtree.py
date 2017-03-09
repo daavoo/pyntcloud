@@ -1,22 +1,27 @@
-
 import numpy as np
 from scipy.stats import zscore
+from .base import Filter
 
-def radious_outlier_removal(kdtree, points, k, r):
+class Filter_KDTree(Filter):
+
+    def __init__(self, pyntcloud, kdtree):
+        super().__init__(pyntcloud)
+        self.kdtree = kdtree
+    
+    def extract_info(self):
+        self.points = self.pyntcloud.xyz
+        self.kdtree = self.pyntcloud.kdtrees[self.kdtree]
+
+class RadiousOutlierRemoval(Filter_KDTree):
     """ Compute a Radious Outlier Removal filter using the Neighbourhood.
     
     Parameters
-    ----------                                    
-    r: float
+    ---------- 
+    k : int
+        Number of neighbors that will be used to compute the filter.                                  
+    r : float
         The radius of the sphere with center on each point. The filter
         will look for the required number of neighboors inside that sphere.    
-        
-    Returns
-    -------
-    ror_filter : boolean array
-        The boolean mask indicating wherever a point should be keeped or not.
-        The size of the boolean mask will be the same as the number of points
-        in the Neighbourhood.
         
     Notes
     -----          
@@ -31,27 +36,27 @@ def radious_outlier_removal(kdtree, points, k, r):
     A LOWER 'r' value will result in a HIGHER number of points trimmed.
 
     """
+    def __init__(self, pyntcloud, kdtree, k, r):
+        super().__init__(pyntcloud, kdtree)
+        self.k = k
+        self.r = r
+    
+    def compute(self):
+        distances = self.kdtree.query(self.points, k=self.k, n_jobs=-1)[0]
+        ror_filter = np.all(distances < self.r, axis=1)
 
-    distances = kdtree.query(points, k=k, n_jobs=-1)[0]
-    ror_filter = np.all(distances < r, axis=1)
+        return ror_filter
 
-    return ror_filter
-
-def statistical_outlier_removal(kdtree, points, k, z_max):
+class StatisticalOutlierRemoval(Filter_KDTree):
     """ Compute a Statistical Outlier Removal filter using the Neighbourhood.
 
     Parameters
-    ----------  
+    ---------- 
+    k : int
+        Number of neighbors that will be used to compute the filter. 
     z_max: float
         The maximum Z score wich determines if the point is an outlier or 
         not.
-        
-    Returns
-    -------
-    sor_filter : boolean array
-        The boolean mask indicating wherever a point should be keeped or not.
-        The size of the boolean mask will be the same as the number of points
-        in the Neighbourhood.
         
     Notes
     -----                
@@ -69,9 +74,14 @@ def statistical_outlier_removal(kdtree, points, k, z_max):
     A LOWER 'z_max' value will result in a HIGHER number of points trimmed.
 
     """
-
-    distances, inidices = kdtree.query(points, k=k, n_jobs=-1)
-    z_distances = zscore(np.mean(distances, axis=1), ddof=1)
-    sor_filter = abs(z_distances) < z_max
-
-    return sor_filter
+    def __init__(self, pyntcloud, kdtree, k, z_max):
+        super().__init__(pyntcloud, kdtree)
+        self.k = k
+        self.z_max = z_max
+    
+    def compute(self):
+        distances = self.kdtree.query(self.points, k=self.k, n_jobs=-1)[0]
+        z_distances = zscore(np.mean(distances, axis=1), ddof=1)
+        sor_filter = abs(z_distances) < self.z_max
+    
+        return sor_filter
