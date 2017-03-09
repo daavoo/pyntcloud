@@ -11,7 +11,7 @@ class Sampling_Mesh(Sampling):
     def extract_info(self):
         self.v1, self.v2, self.v3 = self.pyntcloud.get_mesh_vertices()
 
-class RandomMeshSampling(Sampling_Mesh):
+class RandomMesh(Sampling_Mesh):
     """ Sample points adjusting probabilities according to triangle area.
 
     Parameters

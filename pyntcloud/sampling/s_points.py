@@ -10,7 +10,7 @@ class Sampling_Points(Sampling):
     def extract_info(self):
         self.points = self.pyntcloud.xyz
         
-class RandomPointsSampling(Sampling_Points):
+class RandomPoints(Sampling_Points):
     """ 'n' unique points randomly chosen
 
     Parameters
