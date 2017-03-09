@@ -1,13 +1,8 @@
 #  HAKUNA MATATA
 
-
 from pandas import DataFrame
 
-from .filters import (
-    F_KDTREE,
-    F_XYZ,
-    ALL_FILTERS
-)
+from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
 from .plot import plot_points, DESCRIPTION
@@ -138,7 +133,7 @@ class PyntCloud(object):
         Parameters
         ----------
         name : str
-            One of the avaliable names in ALL_SF
+            One of the avaliable names. See bellow.
         kwargs 
             Vary for each name. See bellow.
         
@@ -230,11 +225,11 @@ class PyntCloud(object):
             max_iterations : int, optional (Default 100)
                 Maximum number of fitting iterations.
         NAMES
-            PlaneFit
+            plane_fit
             
-            SphereFit
+            sphere_fit
             
-            CustomFit
+            custom_fit
             
                 model : subclass of ransac.models.RansacModel
                     Model to be fitted
@@ -279,21 +274,62 @@ class PyntCloud(object):
 
     def get_filter(self, name, **kwargs):
         """ Compute filter over PyntCloud's points and return it
-        """
-        kwargs["points"] = self.xyz
         
-        if name in F_XYZ:
-            valid_args = crosscheck_kwargs_function(kwargs, F_XYZ[name])
-            return F_XYZ[name](**valid_args)
+        Parameters
+        ----------
+        name : str
+            One of the avaliable names. See bellow.
+        kwargs 
+            Vary for each name. See bellow.
+        
+        Returns
+        -------
+        filter : boolean array
+            Boolean mask indicating wherever a point should be keeped or not.
+            The size of the boolean mask will be the same as the number of points
+            in the pyntcloud.
+        
+        Notes
+        -----
+        
+        Avaliable filters are:
 
-        elif name in F_KDTREE:
-            kwargs["kdtree"] = self.kdtrees[kwargs["kdtree"]]
-            valid_args = crosscheck_kwargs_function(kwargs, F_KDTREE[name])
-            return F_KDTREE[name](**valid_args)
+        REQUIRE KDTREE
+        --------------
+        ARGS
+            kdtree : KDTree.id
+                kdtree = self.add_structure("kdtree", ...)
+        NAMES
+            ROR    (Radius Outlier Removal)
+                k : int
+                    Number of neighbors that will be used to compute the filter.                                  
+                r : float
+                    The radius of the sphere with center on each point. The filter
+                    will look for the required number of neighboors inside that sphere. 
+            SOR    (Statistical Outlier Removal)
+                k : int
+                    Number of neighbors that will be used to compute the filter. 
+                z_max: float
+                    The maximum Z score wich determines if the point is an outlier.
+                    
+        REQUIRE XYZ
+        --------------
+
+        NAMES
+            BB    (Bounding Box)
+                min_i, max_i: float
+                    The bounding box limits for each coordinate. If some limits are missing,
+                    the default values are -infinite for the min_i and infinite for the max_i.            
+        """
+
+        if name in ALL_FILTERS:
+            F = ALL_FILTERS[name](self, **kwargs)
+            F.extract_info()
+            return F.compute()
 
         else:
-            raise ValueError("Unsupported filter; supported filters are: {}".format(ALL_FILTERS)) 
-    
+            raise ValueError("Unsupported filter. Check docstring")
+            
     def get_sample(self, name, **kwargs):
         """ Returns arbitrary number of points sampled by selected method
         """
