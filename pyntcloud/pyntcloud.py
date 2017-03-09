@@ -6,12 +6,7 @@ from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
 from .plot import plot_points, DESCRIPTION
-from .sampling import (
-    S_POINTS,
-    S_MESH,
-    S_VOXELGRID,
-    ALL_SAMPLING
-)
+from .sampling import ALL_SAMPLING
 from .scalar_fields import ALL_SF
 from .structures import KDTree, VoxelGrid, Octree
 from .utils.misc import crosscheck_kwargs_function
@@ -332,25 +327,59 @@ class PyntCloud(object):
             
     def get_sample(self, name, **kwargs):
         """ Returns arbitrary number of points sampled by selected method
+        
+        Parameters
+        ----------
+        name : str
+            One of the avaliable names. See bellow.
+        kwargs 
+            Vary for each name. See bellow.
+        
+        Returns
+        -------
+        sampled_points: (n, 3) ndarray
+            'n' vary for each method.
+            
+        Notes
+        -----
+        
+        Avaliable sampling methods are:
+
+        REQUIRE MESH
+        --------------
+        NAMES
+            random_mesh    
+                n : int
+                    Number of points to be sampled.   
+                    
+        REQUIRE VOXELGRID
+        -----------------
+        ARGS
+            voxelgrid : VoxelGrid.id
+                voxelgrid = self.add_structure("voxelgrid", ...)
+        NAMES
+            voxelgrid_centers    
+             
+            voxelgrid_centroids
+            
+            voxelgrid_nearest    
+
+        USE POINTS
+        ----------
+        NAMES
+            random_points
+                n : int    
+                    Number of points to be sampled.                      
+
         """
-        if name in S_POINTS:
-            kwargs["points"] = self.xyz
-            valid_args = crosscheck_kwargs_function(kwargs, S_POINTS[name])
-            return S_POINTS[name](**valid_args)
-        
-        elif name in S_MESH:
-            kwargs["v1"], kwargs["v2"], kwargs["v3"] = self.get_mesh_vertices()
-            valid_args = crosscheck_kwargs_function(kwargs, S_MESH[name])
-            return S_MESH[name](**valid_args)
-        
-        elif name in S_VOXELGRID:
-            kwargs["voxelgrid"] = self.voxelgrids[kwargs["voxelgrid"]]
-            valid_args = crosscheck_kwargs_function(kwargs, S_VOXELGRID[name])
-            return S_VOXELGRID[name](**valid_args)
-        
+        if name in ALL_SAMPLING:
+            S = ALL_SAMPLING[name](self, **kwargs)
+            S.extract_info()
+            return S.compute()
+
         else:
-            raise ValueError("Unsupported sample mode; supported modes are: {}".format(ALL_SAMPLING))
-    
+            raise ValueError("Unsupported sampling. Check docstring") 
+            
     def get_neighbors(self, k=None, r=None, kdtree=None):
         """ For each point finds the indices that compose it's neighbourhood.
 
@@ -399,6 +428,7 @@ class PyntCloud(object):
         
     def get_mesh_vertices(self):
         """ Decompose triangles of self.mesh from vertices in self.points
+        
         Returns
         -------
         v1, v2, v3: ndarray
@@ -412,6 +442,8 @@ class PyntCloud(object):
         return v1, v2, v3
         
     def _clean_all_structures(self):
+        """ Utility function. Implicity called when self.points is assigned.
+        """
         self.mesh = None
         self.kdtrees = {}
         self.voxelgrids = {}
