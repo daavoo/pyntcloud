@@ -17,7 +17,7 @@ class RandomMesh(Sampling_Mesh):
     Parameters
     ----------
     n: int
-        Number of points to be sampled
+        Number of points to be sampled.
     """
     
     def __init__(self, pyntcloud, n):

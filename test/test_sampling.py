@@ -3,18 +3,17 @@ import pytest
 from pyntcloud import PyntCloud
 from pyntcloud.utils.array import point_in_array_2D
 
-cloud = PyntCloud.from_file("data/filters_sampling_structures.ply")
 
 def test_voxelgrid_sampling():
-
-    with pytest.raises(KeyError):
-        # missing structure
+    
+    cloud = PyntCloud.from_file("data/sampling/voxelgrid.ply")
+    
+    with pytest.raises(TypeError):
         cloud.get_sample("voxelgrid_centers")
     
     vg_id = cloud.add_structure("voxelgrid")
     
     with pytest.raises(KeyError):
-        # wrong id
         cloud.get_sample("voxelgrid_centers", voxelgrid=vg_id[:-2])
     
     sample = cloud.get_sample("voxelgrid_centers", voxelgrid=vg_id)
@@ -28,4 +27,29 @@ def test_voxelgrid_sampling():
     sample = cloud.get_sample("voxelgrid_nearest", voxelgrid=vg_id)
     
     assert point_in_array_2D([0.9, 0.9, 0.9], sample)
+
+def test_mesh_sampling():
+    
+    cloud = PyntCloud.from_file("data/sampling/mesh.ply")
+    
+    with pytest.raises(TypeError):
+        sample = cloud.get_sample("random_mesh")
+    
+    sample = cloud.get_sample("random_mesh", n=100)
+    
+    assert len(sample) == 100
+    assert all(sample.max(0) <= cloud.xyz.max(0))
+    assert all(sample.min(0) >= cloud.xyz.min(0))
+
+def test_points_sampling():
+    
+    cloud = PyntCloud.from_file("data/sampling/voxelgrid.ply")
+    
+    with pytest.raises(TypeError):
+        sample = cloud.get_sample("random_points")
+    
+    sample = cloud.get_sample("random_points", n=1)
+    
+    assert point_in_array_2D(sample, cloud.xyz)
+    
     

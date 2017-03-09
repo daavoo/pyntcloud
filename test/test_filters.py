@@ -2,8 +2,7 @@
 from pyntcloud import PyntCloud
 import pytest
 
-cloud = PyntCloud.from_file("data/filters_sampling_structures.ply")
-
+cloud = PyntCloud.from_file("data/filters/filters.ply")
 
 def test_kdtree_filters():
 
