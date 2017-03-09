@@ -13,11 +13,10 @@ setup(
               "pyntcloud.geometry",
               "pyntcloud.io",
               "pyntcloud.plot",
-              "pyntcloud.numba_functions",
               "pyntcloud.ransac",
               "pyntcloud.scalar_fields",
-              "pyntcloud.statistics",
-              "pyntcloud.structures"],
+              "pyntcloud.structures",
+              "pyntcloud.utils"],
     keywords=[
         "point cloud",
         "3D"
