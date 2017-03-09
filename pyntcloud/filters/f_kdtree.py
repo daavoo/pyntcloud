@@ -55,8 +55,7 @@ class StatisticalOutlierRemoval(Filter_KDTree):
     k : int
         Number of neighbors that will be used to compute the filter. 
     z_max: float
-        The maximum Z score wich determines if the point is an outlier or 
-        not.
+        The maximum Z score wich determines if the point is an outlier.
         
     Notes
     -----                

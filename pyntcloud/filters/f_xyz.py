@@ -10,7 +10,7 @@ class Filter_XYZ(Filter):
         self.points = self.pyntcloud.xyz
 
 class BoundingBox(Filter_XYZ):
-    """ Compute a bounding_box filter on the given points
+    """ Compute a bounding box filter on the given points
     
     Parameters
     ----------
