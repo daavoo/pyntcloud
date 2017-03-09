@@ -3,45 +3,21 @@
 HAKUNA MATATA
 """
 
-from .s_points import random_sampling
-from .s_mesh import mesh_sampling
+from .s_points import RandomPoints
+from .s_mesh import RandomMesh
 from .s_voxelgrid import (
-    voxelgrid_centers,
-    voxelgrid_centroids,
-    voxelgrid_nearest
+    VoxelgridCenters,
+    VoxelgridCentroids,
+    VoxelgridNearest
 )
 
-S_POINTS = {
-    'random_sampling': random_sampling
-} 
-
-S_MESH = {
-    'mesh_sampling': random_sampling
-} 
-
-S_VOXELGRID = {
-    'voxelgrid_centers': voxelgrid_centers,
-    'voxelgrid_centroids': voxelgrid_centroids,
-    'voxelgrid_nearest': voxelgrid_nearest
+ALL_SAMPLING = {
+    # Mesh            
+    'random_mesh': RandomMesh, 
+    # Points
+    'random_points' : RandomPoints,    
+    # Voxelgrid
+    'voxelgrid_centers' : VoxelgridCenters,
+    'voxelgrid_centroids' : VoxelgridCentroids,
+    'voxelgrid_nearest' : VoxelgridNearest
 }
-
-ALL_SAMPLING = \
-"""
-REQUIRE POINTS
---------------
-{}
-
-REQUIRE MESH 
-------------
-{}
-
-REQUIRE VOXLEGRID 
-------------
-{}
-{}
-{}
-""".format(
-    *S_POINTS,
-    *S_MESH,
-    *S_VOXELGRID
-)

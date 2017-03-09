@@ -1,59 +1,46 @@
-
 import numpy as np
+import pandas as pd
 from scipy.spatial import cKDTree
+from .base import Sampling
 
-def voxelgrid_centers(voxelgrid):
+class Sampling_Voxelgrid(Sampling):
+    """        
+    """
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud)
+        self.voxelgrid = voxelgrid
+    
+    def extract_info(self):
+        self.voxelgrid = self.pyntcloud.voxelgrids[self.voxelgrid]
+        
+class VoxelgridCenters(Sampling_Voxelgrid):
     """ Returns the points that represent each occupied voxel's center.
-
-    Parameters
-    ----------
-    voxelgrid: Voxelgrid instance
-        From ..structures.voxelgrid class
-    
-    Returns
-    -------
-    (N, 3) ndarray
-        Representing each occupied voxel's center.
-        N is the number of occupied voxels.
     """
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud, voxelgrid)
+        
+    def compute(self):
+        return self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)]
 
-    return voxelgrid.voxel_centers[np.unique(voxelgrid.voxel_n)]
-
-def voxelgrid_centroids(voxelgrid):
+class VoxelgridCentroids(Sampling_Voxelgrid):
     """ Returns the centroid of each group of points inside each occupied voxel.
-
-    Parameters
-    ----------
-    voxelgrid: Voxelgrid instance
-        From ..structures.voxelgrid class
-    
-    Returns
-    -------
-    (N, 3) ndarray
-        Representing the centroid of each group of points inside each occupied voxel.
-        N is the number of occupied voxels.
     """
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud, voxelgrid)
+        
+    def compute(self):
+        df = pd.DataFrame(self.pyntcloud.xyz, columns=["x", "y", "z"])
+        df["voxel_n"] = self.voxelgrid.voxel_n
+        return df.groupby("voxel_n").mean().values
 
-    df = pd.DataFrame(voxelgrid.points, columns=["x", "y", "z"])
-    df["voxel_n"] = voxelgrid.voxel_n
-    return df.groupby("voxel_n").mean().values
-
-def voxelgrid_nearest(voxelgrid):
+class VoxelgridNearest(Sampling_Voxelgrid):
     """ Returns the point closest to each occupied voxel's center.
-
-    Parameters
-    ----------
-    voxelgrid: Voxelgrid instance
-        From ..structures.voxelgrid class
-    
-    Returns
-    -------
-    (N, 3) ndarray
-        Representing the point closest to each occupied voxel's center.
-        N is the number of occupied voxels.
     """
-
-    nonzero_centers = voxelgrid.voxel_centers[np.unique(voxelgrid.voxel_n)]
-    kdt = cKDTree(voxelgrid.points)
-    dist, nearest_indices =  kdt.query(nonzero_centers, n_jobs=-1)
-    return voxelgrid.points[nearest_indices]
+    def __init__(self, pyntcloud, voxelgrid):
+        super().__init__(pyntcloud, voxelgrid)
+    
+    def compute(self):  
+        nonzero_centers = self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)]
+        kdt = cKDTree(self.pyntcloud.xyz)
+        dist, nearest_indices =  kdt.query(nonzero_centers, n_jobs=-1)
+        return self.pyntcloud.xyz[nearest_indices]
