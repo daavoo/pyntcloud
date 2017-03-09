@@ -7,25 +7,20 @@ cloud = PyntCloud.from_file("data/filters_sampling_structures.ply")
 
 def test_kdtree_filters():
 
-    with pytest.raises(KeyError):
-        # missing structure
+    with pytest.raises(TypeError):
         cloud.get_filter("ROR")
 
-    cloud.add_structure("kdtree")
+    kdtree = cloud.add_structure("kdtree")
 
     with pytest.raises(KeyError):
-        # wrong id
-        cloud.get_filter("ROR", kdtree="K(12)")
+        cloud.get_filter("ROR", kdtree="K(12)", k=2, r=0.2)
     
-    f = cloud.get_filter("ROR", kdtree="K(16)", k=2, r=0.2)
+    f = cloud.get_filter("ROR", kdtree=kdtree, k=2, r=0.2)
 
     assert f.argmin() == 3
 
-    f = cloud.get_filter("ROR", kdtree="K(16)", k=2, r=0.2)
-
-    with pytest.raises(KeyError):
-        # miss positional arg
-        cloud.get_filter("SOR", kdtree="K(16)", k=2)
+    with pytest.raises(TypeError):
+        cloud.get_filter("SOR", kdtree=kdtree, k=2)
 
     f = cloud.get_filter("SOR", kdtree="K(16)", k=2, z_max=0.5)
 
