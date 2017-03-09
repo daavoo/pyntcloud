@@ -22,7 +22,7 @@ class VoxelgridCenters(Sampling_Voxelgrid):
     def compute(self):
         return self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)]
 
-class Voxelgrid_Centroids(Sampling_Voxelgrid):
+class VoxelgridCentroids(Sampling_Voxelgrid):
     """ Returns the centroid of each group of points inside each occupied voxel.
     """
     def __init__(self, pyntcloud, voxelgrid):
@@ -33,7 +33,7 @@ class Voxelgrid_Centroids(Sampling_Voxelgrid):
         df["voxel_n"] = self.voxelgrid.voxel_n
         return df.groupby("voxel_n").mean().values
 
-class Voxelgrid_Nearest(Sampling_Voxelgrid):
+class VoxelgridNearest(Sampling_Voxelgrid):
     """ Returns the point closest to each occupied voxel's center.
     """
     def __init__(self, pyntcloud, voxelgrid):
