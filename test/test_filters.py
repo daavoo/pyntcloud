@@ -1,11 +1,12 @@
-
+import os
 from pyntcloud import PyntCloud
 import pytest
 
-cloud = PyntCloud.from_file("data/filters/filters.ply")
+path = os.path.abspath(os.path.dirname(__file__))
+cloud = PyntCloud.from_file(path + "\\data\\filters\\filters.ply")
 
 def test_kdtree_filters():
-
+    
     with pytest.raises(TypeError):
         cloud.get_filter("ROR")
 
