@@ -2,8 +2,8 @@ import os
 
 from pyntcloud import PyntCloud
 
-path = os.path.abspath(os.path.dirname(__file__))
-data_path = path + '\\data\\io\\test'
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
+data_path = '\\data\\io\\test'
 
 def assert_points_xyz(data):
     assert data.points['x'][7] == 1.0

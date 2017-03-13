@@ -2,11 +2,11 @@ import os
 from pyntcloud import PyntCloud
 import pytest
 
-path = os.path.abspath(os.path.dirname(__file__))
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
 
 def test_kdtree_filters():
-    cloud = PyntCloud.from_file(path + "\\data\\filters\\filters.ply")
+    cloud = PyntCloud.from_file("\\data\\filters\\filters.ply")
     
     with pytest.raises(TypeError):
         cloud.get_filter("ROR")
@@ -29,7 +29,7 @@ def test_kdtree_filters():
 
 
 def test_xyz_filters():
-    cloud = PyntCloud.from_file(path + "\\data\\filters\\filters.ply")
+    cloud = PyntCloud.from_file("\\data\\filters\\filters.ply")
     
     bound = {
         "min_x": 0.4,
