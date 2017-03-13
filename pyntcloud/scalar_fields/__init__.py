@@ -18,11 +18,6 @@ from .sf_normals import (
     OrientationDegrees,
     OrientationRadians
 )
-from .sf_ransac import (
-    PlaneFit,
-    SphereFit,
-    CustomFit
-)
 from .sf_rgb import (
     HSV,
     RelativeLuminance,
@@ -34,7 +29,11 @@ from .sf_voxelgrid import (
     VoxelY,
     VoxelZ
 )
-
+from .sf_xyz import (
+    PlaneFit,
+    SphereFit,
+    CustomFit
+)
 ALL_SF = {
     # Eigenvalues
     'anisotropy': Anisotropy,
@@ -53,10 +52,6 @@ ALL_SF = {
     'inclination_rad': InclinationRadians,
     'orientation_deg': OrientationDegrees,
     'orientation_rad': OrientationRadians,
-    # Ransac
-    'custom_fit': CustomFit,
-    'plane_fit': PlaneFit,
-    'sphere_fit': SphereFit,
     # RGB
     'hsv': HSV,
     'relative_luminance': RelativeLuminance,
@@ -65,5 +60,9 @@ ALL_SF = {
     'voxel_n': VoxelN,
     'voxel_x': VoxelX,
     'voxel_y': VoxelY,
-    'voxel_z': VoxelZ
+    'voxel_z': VoxelZ,
+    # XYZ
+    'custom_fit': CustomFit,
+    'plane_fit': PlaneFit,
+    'sphere_fit': SphereFit,
 }

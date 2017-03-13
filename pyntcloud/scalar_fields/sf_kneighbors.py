@@ -1,5 +1,6 @@
 import numpy as np
 from .base import ScalarField
+from ..utils.array import eigen_3D
 
 class ScalarField_KNeighbors(ScalarField):
     """
@@ -22,15 +23,9 @@ class EigenValues(ScalarField_KNeighbors):
         super().__init__(pyntcloud, k_neighbors)
     
     def compute(self):
-        k_neighbors = self.k_neighbors
-
-        diffs = k_neighbors - k_neighbors.mean(1,keepdims=True)
-        cov_3D = np.einsum('ijk,ijl->ikl', diffs, diffs) / k_neighbors.shape[1]
-
-        eigenvalues, eigenvectors = np.linalg.eig(cov_3D)
-
+        eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
         sort = eigenvalues.argsort()
-
+        
         # range from 0-shape[0] to allow indexing along axis 1 and 2
         idx_trick = range(eigenvalues.shape[0])
 
@@ -38,7 +33,7 @@ class EigenValues(ScalarField_KNeighbors):
         e2 = eigenvalues[idx_trick, sort[:,1]]
         e3 = eigenvalues[idx_trick, sort[:,0]]
         
-        k = k_neighbors.shape[1]
+        k = self.k_neighbors.shape[1]
         self.to_be_added["e1({})".format(k)] = e1
         self.to_be_added["e2({})".format(k)] = e2
         self.to_be_added["e3({})".format(k)] = e3                  
@@ -50,13 +45,7 @@ class EigenDecomposition(ScalarField_KNeighbors):
         super().__init__(pyntcloud, k_neighbors)
     
     def compute(self):
-        k_neighbors = self.k_neighbors
-
-        diffs = k_neighbors - k_neighbors.mean(1,keepdims=True)
-        cov_3D = np.einsum('ijk,ijl->ikl', diffs, diffs) / k_neighbors.shape[1]
-
-        eigenvalues, eigenvectors = np.linalg.eig(cov_3D)
-
+        eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
         sort = eigenvalues.argsort()
 
         # range from 0-shape[0] to allow indexing along axis 1 and 2
@@ -66,7 +55,7 @@ class EigenDecomposition(ScalarField_KNeighbors):
         e2 = eigenvalues[idx_trick, sort[:,1]]
         e3 = eigenvalues[idx_trick, sort[:,0]]
         
-        k = k_neighbors.shape[1]
+        k = self.k_neighbors.shape[1]
         self.to_be_added["e1({})".format(k)] = e1
         self.to_be_added["e2({})".format(k)] = e2
         self.to_be_added["e3({})".format(k)] = e3            
@@ -79,3 +68,20 @@ class EigenDecomposition(ScalarField_KNeighbors):
         self.to_be_added["ev1({})".format(k)] = ev1.tolist()
         self.to_be_added["ev2({})".format(k)] = ev2.tolist()
         self.to_be_added["ev3({})".format(k)] = ev3.tolist()
+
+class Normals(ScalarField_KNeighbors):
+    """ Compute normals using k neighbors.
+    """
+    def __init__(self, pyntcloud, k_neighbors):
+        super().__init__(pyntcloud, k_neighbors)
+    
+    def compute(self):
+        eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
+        sort = eigenvalues.argsort()
+        
+        # range from 0-shape[0] to allow indexing along axis 1 and 2
+        idx_trick = range(eigenvalues.shape[0])
+        unoriented_normals = eigenvalues[idx_trick, sort[:,0]]
+
+
+    
