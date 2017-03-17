@@ -2,7 +2,7 @@
 
 import numpy as np
 
-class Sphere():
+class Sphere(object):
 
     def __init__(self, center=None, radius=None):
         self.center = center
