@@ -8,7 +8,7 @@ path = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_voxelgrid_sampling():
-    cloud = PyntCloud.from_file(path + "\\data\\sampling\\voxelgrid.ply")
+    cloud = PyntCloud.from_file(path + "/data/sampling/voxelgrid.ply")
     with pytest.raises(TypeError):
         cloud.get_sample("voxelgrid_centers")
     
@@ -30,7 +30,7 @@ def test_voxelgrid_sampling():
     assert point_in_array_2D([0.9, 0.9, 0.9], sample)
 
 def test_mesh_sampling():
-    cloud = PyntCloud.from_file(path + "\\data\\sampling\\mesh.ply")
+    cloud = PyntCloud.from_file(path + "/data/sampling/mesh.ply")
     with pytest.raises(TypeError):
         sample = cloud.get_sample("random_mesh")
     
@@ -41,7 +41,7 @@ def test_mesh_sampling():
     assert all(sample.min(0) >= cloud.xyz.min(0))
 
 def test_points_sampling():
-    cloud = PyntCloud.from_file(path + "\\data\\sampling\\voxelgrid.ply")
+    cloud = PyntCloud.from_file(path + "/data/sampling/voxelgrid.ply")
     with pytest.raises(TypeError):
         sample = cloud.get_sample("random_points")
     
