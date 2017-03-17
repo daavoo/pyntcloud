@@ -30,7 +30,7 @@ class PlaneFit(ScalarField_XYZ):
         super().__init__(pyntcloud)
         
     def compute(self):
-        self.to_be_added[self.name] =  single_fit(self.model, self.sampler,
+        self.to_be_added[self.name] =  single_fit(self.points, self.model, self.sampler,
                                          model_kwargs=self.model_kwargs,
                                          max_iterations=self.max_iterations)
 
@@ -47,7 +47,7 @@ class SphereFit(ScalarField_XYZ):
         super().__init__(pyntcloud)
         
     def compute(self):
-        self.to_be_added[self.name] =  single_fit(self.model, self.sampler,
+        self.to_be_added[self.name] =  single_fit(self.points, self.model, self.sampler,
                                          model_kwargs=self.model_kwargs,
                                          max_iterations=self.max_iterations)
 
@@ -65,7 +65,7 @@ class CustomFit(ScalarField_XYZ):
         super().__init__(pyntcloud)
         
     def compute(self):
-        self.to_be_added[self.name] =  single_fit(self.model,self.sampler,
+        self.to_be_added[self.name] =  single_fit(self.points, self.model,self.sampler,
                                          model_kwargs=self.model_kwargs,
                                          sampler_kwargs=self.sampler_kwargs,
                                          max_iterations=self.max_iterations)
