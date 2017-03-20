@@ -30,8 +30,7 @@ class RansacModel(ABC):
 class RansacPlane(RansacModel, Plane):
 
     def __init__(self, max_dist=1e-4):
-        RansacModel.__init__(max_dist=max_dist)
-        Plane.__init__()
+        super().__init__(max_dist=max_dist)
         self.k = 3
 
     def fit(self, k_points):
@@ -46,8 +45,7 @@ class RansacPlane(RansacModel, Plane):
 class RansacSphere(RansacModel, Sphere):
 
     def __init__(self, max_dist=1e-4):
-        RansacModel.__init__(max_dist=max_dist)
-        Sphere.__init__()
+        super().__init__(max_dist=max_dist)
         self.k = 4
 
     def fit(self, k_points):

@@ -2,7 +2,7 @@
 
 import numpy as np
 
-class Plane():
+class Plane(object):
 
     def __init__(self, point=None, normal=None):
         self.point = point 
