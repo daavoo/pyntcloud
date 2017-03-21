@@ -49,3 +49,5 @@ Temporary Items
 .vscode/settings.json
 *.pyc
 .cache/v/cache/lastfailed
+
+pyntcloud\.egg-info/

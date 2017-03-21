@@ -311,7 +311,7 @@ class PyntCloud(object):
         --------------
 
         NAMES
-            BB    (Bounding Box)
+            BBOX    (Bounding Box)
                 min_i, max_i: float
                     The bounding box limits for each coordinate. If some limits are missing,
                     the default values are -infinite for the min_i and infinite for the max_i.            
