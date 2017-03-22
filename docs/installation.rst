@@ -2,6 +2,9 @@
 Installation
 ============
 
+source
+======
+
 .. code-block:: bash
 
     git clone https://github.com/daavoo/pyntcloud.git
@@ -9,3 +12,11 @@ Installation
     cd pyntcloud
     
     python setup.py develop
+
+pip
+===
+.. code-block:: bash
+
+    pip install pyntcloud
+    
+    
