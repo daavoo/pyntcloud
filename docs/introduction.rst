@@ -1,4 +1,4 @@
-
+============
 Introduction
 ============
 
@@ -7,7 +7,7 @@ what are the capabilities of pyntcloud as a point cloud processing tool.
 
 
 Point clouds
-------------
+============
 Point clouds are one of the most relevant entities for representing three dimensional
 data these days, along with polygonal meshes.
 
@@ -23,7 +23,7 @@ be adquired nowdays from different sources. For example:
 - `3D reconstruction from multiple images <https://en.wikipedia.org/wiki/3D_reconstruction_from_multiple_images>`__
 
 pyntcloud
----------
+=========
 pyntcloud enables simple and interactive exploration of point cloud data. 
 
 Althoug by conception was built to be used for point cloud researching with 
