@@ -1,4 +1,4 @@
-
+============
 Introduction
 ============
 
@@ -7,43 +7,44 @@ what are the capabilities of pyntcloud as a point cloud processing tool.
 
 
 Point clouds
-------------
+============
 Point clouds are one of the most relevant entities for representing three dimensional
 data these days, along with polygonal meshes.
 
 In it's simplest form, a point cloud is a set of points in a cartesian coordinate 
 system.
 
-Accurate [3D point clouds](https://en.wikipedia.org/wiki/Point_cloud) can (easily and cheaply) 
+Accurate `3D point clouds <https://en.wikipedia.org/wiki/Point_cloud>`__ can (easily and cheaply) 
 be adquired nowdays from different sources. For example:
 
-- RGB-D devices: [Google Tango](http://get.google.com/tango/), [Microsoft Kinect](https://developer.microsoft.com/en-us/windows/kinect), etc.
-- [Lidar](https://en.wikipedia.org/wiki/Lidar).
-- [3D reconstruction from multiple images](https://en.wikipedia.org/wiki/3D_reconstruction_from_multiple_images).
+- RGB-D devices: `Google Tango <http://get.google.com/tango/>`__, `Microsoft Kinect <https://developer.microsoft.com/en-us/windows/kinect>`__, etc.
 
-Pyntcloud
----------
-Pyntcloud enables simple and interactive exploration of point cloud data. 
+- `Lidar <https://en.wikipedia.org/wiki/Lidar>`__.
+- `3D reconstruction from multiple images <https://en.wikipedia.org/wiki/3D_reconstruction_from_multiple_images>`__
+
+pyntcloud
+=========
+pyntcloud enables simple and interactive exploration of point cloud data. 
 
 Althoug by conception was built to be used for point cloud researching with 
-[Jupyter Notebooks](http://jupyter.org/), the library is suitable for other uses.
+`Jupyter Notebooks <http://jupyter.org/>`__ the library is suitable for other uses.
 
-Pyntcloud is composed by several modules (as indepentent as possible) that englobe
+pyntcloud is composed by several modules (as indepentent as possible) that englobe
 commom point cloud processing operations:
 
-- filters
-- geometry
-- io
-- neighbors
-- plot
-- ransac
-- sampling
-- scalar_fields
-- structures
-- utils
+-   filters
+-   geometry
+-   io
+-   neighbors
+-   plot
+-   ransac
+-   sampling
+-   scalar_fields
+-   structures
+-   utils
 
 Most of the functionallity of this modules can be accesed by the core class of
-the library, PyntCloud, and it's corresponding methods:
+the library, **PyntCloud**, and it's corresponding methods:
 
 .. code-block:: python
 
@@ -61,4 +62,4 @@ the library, PyntCloud, and it's corresponding methods:
     # ...
 
 Although most of the functionallity in the modules can be used without constructing
-a PyntCloud instance.
+a PyntCloud instance, the recommended workflow for the average user is the one explained in this documentation.
