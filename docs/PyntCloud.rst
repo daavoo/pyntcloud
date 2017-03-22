@@ -14,18 +14,16 @@ fluent way of manipulating this entities.
 Attributes
 ==========
 
-PyntCloud's attributes serve to store information that might be used by PyntCloud's
-methods.
+PyntCloud's attributes serve to store information about the point cloud and the 
+structures associated with it.
 
-Each PyntCloud's instance contains the following attributes:
-
+Each PyntCloud's instance some predifined attributes:
+   
 -   centroid
 -   kdtrees
 -   mesh
 -   octrees
--   points
-
-This is the only attribute that can't be empty.
+-   points - This is the only attribute that can't be empty.
 
 -   voxelgrids
 -   xyz
@@ -52,3 +50,6 @@ The information about this attributes is reported by the __repr__ method:
     Centroid: 0.45000001788139343, 0.45000001788139343, 0.45000001788139343
     Other attributes: 
     """
+    
+Methods
+=======

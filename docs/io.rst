@@ -1,6 +1,7 @@
 ===================
 Reading and writing
 ===================
+.. currentmodule:: pyntcloud
 
 As mentioned in the introduction, 3D point clouds could be obtained from many 
 different sources, each one with it's own file format.
@@ -20,10 +21,20 @@ generic array formats (more formats will be added in the near future):
 Reading
 =======
 
-The reading routines are implemented as a PyntCloud's **class method** wich enables
-the instantation as follows:
+.. automethod:: PyntCloud.from_file
 
 .. code-block:: python
 
     from pyntcloud import PyntCloud
     my_point_cloud = PyntCloud.from_file("some_file.ply")
+    
+Writing
+=======
+
+.. automethod:: PyntCloud.to_file
+
+.. code-block:: python
+
+    # my_point_cloud is a PyntCloud instance
+    my_point_cloud.to_file("out_file.obj")
+

@@ -1,8 +1,8 @@
 =====================
-Welcome to Pyntcloud!
+Welcome to pyntcloud!
 =====================
 
-Pyntcloud is a Python library for working with 3D point clouds.
+pyntcloud is a Python library for working with 3D point clouds.
 
 WORK IN PROGRESS
 
@@ -13,3 +13,5 @@ WORK IN PROGRESS
    installation
    PyntCloud
    io
+   points
+   
