@@ -37,4 +37,8 @@ Writing
 
     # my_point_cloud is a PyntCloud instance
     my_point_cloud.to_file("out_file.obj")
+    
+Alternative ways for creating PyntClouds
+========================================
+
 

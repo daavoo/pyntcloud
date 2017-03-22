@@ -9,6 +9,10 @@ In pyntcloud *points* is one of many attributes of the core class PyntCloud, alt
 This attribute is internally represented as a 
 `pandas DataFrame <http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html>`__.
 
+It is highly recommended to read the pandas DataFrame documentation in order to
+understand what are the posibilitites for manipulating the point
+cloud information that this entitie brings.
+
 .. code-block:: python
 
     from pyntcloud import PyntCloud
@@ -25,9 +29,6 @@ This attribute is internally represented as a
     4  0.9  0.9  0.9
     5  1.0  1.0  1.0
     """
-
-As you will see bellow, this enables huge possibilities for manipulating the point
-cloud information easily and quickly.
 
 Restrictions
 ============
