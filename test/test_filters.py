@@ -3,7 +3,7 @@ from pyntcloud import PyntCloud
 import pytest
 
 path = os.path.abspath(os.path.dirname(__file__))
-cloud = PyntCloud.from_file(path + "\\data\\filters\\filters.ply")
+cloud = PyntCloud.from_file(path + "/data/filters.ply")
 
 def test_kdtree_filters():
     

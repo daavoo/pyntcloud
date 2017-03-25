@@ -3,10 +3,10 @@ import pytest
 import numpy as np
 from pyntcloud import PyntCloud
 
-PI = np.pi
+PI = np.pi + 0.01
 
 path = os.path.abspath(os.path.dirname(__file__))
-cloud = PyntCloud.from_file(path + "\\data\\sf\\xyz_rgb_nxnynz.npz")
+cloud = PyntCloud.from_file(path + "/data/mnist.npz")
 
 def test_eigenvalues():
     

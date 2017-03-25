@@ -51,3 +51,5 @@ Temporary Items
 .cache/v/cache/lastfailed
 
 pyntcloud\.egg-info/
+
+\.ipynb_checkpoints/
