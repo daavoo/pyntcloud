@@ -2,4 +2,4 @@
 ![pyntcloud Logo](/docs/pyntcloud_logo.png)
 Pyntcloud is a Python library for working with 3D point clouds.
 
-Check the documentation at: http://pyntcloud.readthedocs.io
+Check the documentation at: http://pyntcloud.readthedocs.io/en/latest/index.html
