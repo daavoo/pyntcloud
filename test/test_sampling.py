@@ -4,7 +4,7 @@ import pytest
 from pyntcloud import PyntCloud
 from pyntcloud.utils.array import point_in_array_2D
 
-os.chdir(os.path.abspath(os.path.dirname(__file__)))
+path = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_voxelgrid_sampling():
