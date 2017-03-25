@@ -1,22 +1,19 @@
-
-Welcome to Pyntcloud!
+=====================
+Welcome to pyntcloud!
 =====================
 
-Pyntcloud is a Python library for working with 3D point clouds.
+pyntcloud is a Python library for working with 3D point clouds.
+
+.. image:: pyntcloud_logo.png
+
+WORK IN PROGRESS
 
 .. toctree::
    :maxdepth: 2
    
    introduction
    installation
+   PyntCloud
+   io
+   points
    
-   
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

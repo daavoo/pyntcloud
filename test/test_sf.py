@@ -3,14 +3,12 @@ import pytest
 import numpy as np
 from pyntcloud import PyntCloud
 
-PI = np.pi
+PI = np.pi + 0.01
 
 path = os.path.abspath(os.path.dirname(__file__))
-
+cloud = PyntCloud.from_file(path + "/data/mnist.npz")
 
 def test_eigenvalues():
-    cloud = PyntCloud.from_file(path + "/data/sf/xyz_rgb_nxnynz.npz")
-
     k_neighbors = cloud.get_neighbors(k=5)
     ev = cloud.add_scalar_field("eigen_values", k_neighbors=k_neighbors)
     
@@ -36,9 +34,6 @@ def test_eigenvalues():
     cloud.points.drop("curvature(5)", 1, inplace=True)
     
 def test_k_neighbors():
-
-    cloud = PyntCloud.from_file(path + "/data/sf/xyz_rgb_nxnynz.npz")
-
     k_neighbors = cloud.get_neighbors(k=5)
     
     with pytest.raises(TypeError):
@@ -56,9 +51,6 @@ def test_k_neighbors():
         assert np.linalg.norm(cloud.points[ev[i]][idx]) < 1.01
 
 def test_normals_sf():
-
-    cloud = PyntCloud.from_file(path + "/data/sf/xyz_rgb_nxnynz.npz")
-
     cloud.add_scalar_field('inclination_deg')
     assert min(cloud.points["inclination_deg"]) >= 0
     assert max(cloud.points["inclination_deg"]) <= 180
@@ -81,9 +73,6 @@ def test_normals_sf():
 
 
 def test_rgb_sf():
-
-    cloud = PyntCloud.from_file(path + "/data/sf/xyz_rgb_nxnynz.npz")
-
     cloud.add_scalar_field('rgb_intensity')
     assert min(cloud.points["Ri"]) >= 0
     assert min(cloud.points["Gi"]) >= 0
@@ -109,9 +98,6 @@ def test_rgb_sf():
     
 
 def test_voxelgrid_sf():
-
-    cloud = PyntCloud.from_file(path + "/data/sf/xyz_rgb_nxnynz.npz")
-
     with pytest.raises(TypeError):
         # missing arg
         cloud.add_scalar_field("voxel_x")

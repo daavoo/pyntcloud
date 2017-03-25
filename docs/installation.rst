@@ -1,6 +1,9 @@
-
+============
 Installation
 ============
+
+source
+======
 
 .. code-block:: bash
 
@@ -9,3 +12,11 @@ Installation
     cd pyntcloud
     
     python setup.py develop
+
+pip
+===
+.. code-block:: bash
+
+    pip install pyntcloud
+    
+    
