@@ -5,7 +5,7 @@ from pandas import DataFrame
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
-from .plot import plot_points, DESCRIPTION
+from .plot import DESCRIPTION
 from .sampling import ALL_SAMPLING
 from .scalar_fields import ALL_SF
 from .structures import KDTree, VoxelGrid, Octree
@@ -215,16 +215,17 @@ class PyntCloud(object):
 
         RANSAC (ONLY REQUIRE XYZ)
         -------------------------
-        ARGS
-            max_dist : float, optional (Default 1e-4)
-                Maximum distance from point to model in order to be considered as inlier.
-            max_iterations : int, optional (Default 100)
-                Maximum number of fitting iterations.
         NAMES
             plane_fit
-            
+                max_dist : float, optional (Default 1e-4)
+                    Maximum distance from point to model in order to be considered as inlier.
+                max_iterations : int, optional (Default 100)
+                    Maximum number of fitting iterations.
             sphere_fit
-            
+                max_dist : float, optional (Default 1e-4)
+                    Maximum distance from point to model in order to be considered as inlier.
+                max_iterations : int, optional (Default 100)
+                    Maximum number of fitting iterations.
             custom_fit
             
                 model : subclass of ransac.models.RansacModel

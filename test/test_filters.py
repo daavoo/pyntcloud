@@ -6,7 +6,6 @@ path = os.path.abspath(os.path.dirname(__file__))
 cloud = PyntCloud.from_file(path + "/data/filters.ply")
 
 def test_kdtree_filters():
-    
     with pytest.raises(TypeError):
         cloud.get_filter("ROR")
 
@@ -28,7 +27,6 @@ def test_kdtree_filters():
 
 
 def test_xyz_filters():
-
     bound = {
         "min_x": 0.4,
         "max_x": 0.6,
