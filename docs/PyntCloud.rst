@@ -1,6 +1,7 @@
 =========
 PyntCloud
 =========
+.. currentmodule:: pyntcloud
 
 **PyntCloud** is the core class that englobes almost all the functionallity avaliable
 in **pyntcloud**.
@@ -24,7 +25,6 @@ Each PyntCloud's instance some predifined attributes:
 -   mesh
 -   octrees
 -   points - This is the only attribute that can't be empty.
-
 -   voxelgrids
 -   xyz
 
@@ -53,3 +53,5 @@ The information about this attributes is reported by the __repr__ method:
     
 Methods
 =======
+
+.. automethod:: PyntCloud.add_scalar_field

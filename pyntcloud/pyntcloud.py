@@ -144,100 +144,99 @@ class PyntCloud(object):
         
         Avaliable scalar fields are:
 
-        REQUIRE EIGENVALUES
-        -------------------
-        ARGS
-            ev : list of str
-                ev = self.add_scalar_field("eigen_values", ...)
-        NAMES
-            sphericity
-            
-            anisotropy
-            
-            linearity
-            
-            omnivariance
-            
-            eigenentropy
-            
-            planarity
-            
-            eigen_sum
-            
-            curvature
+        **REQUIRE EIGENVALUES**
+
+            ARGS
+                ev : list of str
+                    ev = self.add_scalar_field("eigen_values", ...)
+            NAMES
+                sphericity
                 
-        REQUIRE K_NEIGHBORS 
-        -------------------
-        ARGS
-            k_neighbors : (N, k) ndarray
-                Returned from: self.get_neighbors(k, ...) / manually querying some self.kdtrees[x] / other methods.                
-        NAMES 
-            eigen_decomposition
-            
-            eigen_values
-            
-        REQUIRE NORMALS
-        ---------------
-        NAMES 
-            orientation_deg
-            
-            orientation_rad
-            
-            inclination_rad
-            
-            inclination_deg
+                anisotropy
                 
-        REQUIRE RGB 
-        -----------
-        NAMES 
-            hsv
+                linearity
+                
+                omnivariance
+                
+                eigenentropy
+                
+                planarity
+                
+                eigen_sum
+                
+                curvature
+                
+        **REQUIRE K_NEIGHBORS** 
+
+            ARGS
+                k_neighbors : (N, k) ndarray
+                    Returned from: self.get_neighbors(k, ...) / manually querying some self.kdtrees[x] / other methods.                
+            NAMES 
+                eigen_decomposition
+                
+                eigen_values
             
-            relative_luminance
-            
-            rgb_intensity
+        **REQUIRE NORMALS**
+
+            NAMES 
+                orientation_deg
+                
+                orientation_rad
+                
+                inclination_rad
+                
+                inclination_deg
+                
+        **REQUIRE RGB**
+
+            NAMES 
+                hsv
+                
+                relative_luminance
+                
+                rgb_intensity
                 
 
-        REQUIRE VOXELGRID 
-        -----------------
-        ARGS
-            voxelgrid : VoxelGrid.id
-                voxelgrid = self.add_structure("voxelgrid", ...)
+        **REQUIRE VOXELGRID**
+
+            ARGS
+                voxelgrid : VoxelGrid.id
+                    voxelgrid = self.add_structure("voxelgrid", ...)
                      
-        NAMES
-            voxel_y
-            
-            voxel_x
-            
-            voxel_n
-            
-            voxel_z
+            NAMES
+                voxel_x
+                
+                voxel_y
+                
+                voxel_n
+                
+                voxel_z
                 
 
-        RANSAC (ONLY REQUIRE XYZ)
-        -------------------------
-        NAMES
-            plane_fit
-                max_dist : float, optional (Default 1e-4)
-                    Maximum distance from point to model in order to be considered as inlier.
-                max_iterations : int, optional (Default 100)
-                    Maximum number of fitting iterations.
-            sphere_fit
-                max_dist : float, optional (Default 1e-4)
-                    Maximum distance from point to model in order to be considered as inlier.
-                max_iterations : int, optional (Default 100)
-                    Maximum number of fitting iterations.
-            custom_fit
-            
-                model : subclass of ransac.models.RansacModel
-                    Model to be fitted
-                sampler : subclass of ransac.models.RansacSampler
-                    Sample method to be used
-                name : str
-                    Will be used to name the added column
-                model_kwargs : dict, optional (Default {})
-                    Will be passed to single_fit function.
-                sampler_kwargs : dict, optional (Default {})
-                    Will be passed to single_fit function.
+        **ONLY REQUIRE XYZ**
+
+            NAMES
+                plane_fit
+                    max_dist : float, optional (Default 1e-4)
+                        Maximum distance from point to model in order to be considered as inlier.
+                    max_iterations : int, optional (Default 100)
+                        Maximum number of fitting iterations.
+                sphere_fit
+                    max_dist : float, optional (Default 1e-4)
+                        Maximum distance from point to model in order to be considered as inlier.
+                    max_iterations : int, optional (Default 100)
+                        Maximum number of fitting iterations.
+                custom_fit
+                    model : subclass of ransac.models.RansacModel
+                        Model to be fitted
+                    sampler : subclass of ransac.models.RansacSampler
+                        Sample method to be used
+                    name : str
+                        Will be used to name the added column
+                    model_kwargs : dict, optional (Default {})
+                        Will be passed to single_fit function.
+                    sampler_kwargs : dict, optional (Default {})
+                        Will be passed to single_fit function.
         """
         
         if name in ALL_SF:

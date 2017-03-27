@@ -36,7 +36,7 @@ Writing
 .. code-block:: python
 
     # my_point_cloud is a PyntCloud instance
-    my_point_cloud.to_file("out_file.obj")
+    my_point_cloud.to_file("out_file.obj", internals=["points", "mesh"])
     
 Alternative ways for creating PyntClouds
 ========================================
@@ -47,7 +47,7 @@ there are many other formats and sources where you can store point cloud data.
 That's why although pyntcloud will include support for other file formats, it will
 never cover all.
 
-The good news are that as long as you can load the data into Python, you can create
+The good news are that as long as you can **load the data into Python**, you can create
 a PyntCloud instance manually.
 
 The key thing is to understand that you can't just plug in the raw data into the
@@ -55,7 +55,7 @@ PyntClud's constructor, there are some restrictions.
 
 This restrictions are covered in :ref:`working-with-points`.
 
-As long as you can adapt your data to modify this restrictions, you will be able
+As long as you can adapt your data to this restrictions, you will be able
 to construct a PyntCloud from formats that are not covered in *from_file*.
 
 Some examples of manually constructing a PyntCloud:
@@ -75,14 +75,30 @@ To construct a PyntCloud from ascii files, you can use the pandas function
 Check the linked documentation to explore all the possible arguments in order to
 adjust them to read your ascii file.
 
-As an example, given a .pts file with this content:
+As an example, given a *example.pts* file with this content:
 
-8
--0.037829 0.12794 0.004474
--0.044779 0.128887 0.001904
--0.068009 0.151244 0.037195
--0.002287 0.13015 0.02322
--0.022605 0.126675 0.007155
--0.025107 0.125921 0.006242
--0.03712 0.127449 0.001795
-0.033213 0.112692 0.027686
+.. code-block:: python
+
+    8
+    -0.037829 0.12794 0.004474
+    -0.044779 0.128887 0.001904
+    -0.068009 0.151244 0.037195
+    -0.002287 0.13015 0.02322
+    -0.022605 0.126675 0.007155
+    -0.025107 0.125921 0.006242
+    -0.03712 0.127449 0.001795
+    0.033213 0.112692 0.027686
+    
+You can construct a PyntCloud as follows:
+
+.. code-block:: python
+    
+    import pandas as pd
+    from pyntcloud import PyntCloud
+    
+    points = pd.read_csv("example.pts", 
+                         sep=" ",
+                         header=0, 
+                         names=["x","y","z"])
+    
+    cloud = PyntCloud(points)
