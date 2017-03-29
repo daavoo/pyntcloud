@@ -53,3 +53,7 @@ Temporary Items
 pyntcloud\.egg-info/
 
 \.ipynb_checkpoints/
+
+build/
+dist/
+docs/_build
