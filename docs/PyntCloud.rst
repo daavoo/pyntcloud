@@ -24,7 +24,7 @@ Each PyntCloud's instance some predifined attributes:
 -   kdtrees
 -   mesh
 -   octrees
--   points - This is the only attribute that can't be empty.
+-   points - :ref:`working-with-points`
 -   voxelgrids
 -   xyz
 
@@ -54,4 +54,26 @@ The information about this attributes is reported by the __repr__ method:
 Methods
 =======
 
+Avaliable methods are very intuitive.
+
+Methods starting with the word **add** will incorporate new information to some existing PyntCloud attribute.
+
+Methods starting with the word **get** will return some information extracted from the PyntCloud.
+
+I/O methods are documented in :ref:`reading-and-writing`.
+
+*ADD* METHODS
+-------------
+
 .. automethod:: PyntCloud.add_scalar_field
+
+.. automethod:: PyntCloud.add_structure
+
+*GET* METHODS
+-------------
+
+.. automethod:: PyntCloud.get_filter
+
+.. automethod:: PyntCloud.get_sample
+
+.. automethod:: PyntCloud.get_neighbors

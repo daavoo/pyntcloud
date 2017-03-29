@@ -87,12 +87,12 @@ class PyntCloud(object):
         
         Parameters
         ----------
-        filename : str
+        filename: str
             Path to the file from wich the data will be readed
 
         Returns
         -------
-        PyntCloud : object
+        PyntCloud: object
             PyntCloud's instance, containing all valid elements in the file.
         """
         ext = filename.split(".")[-1].upper()
@@ -106,10 +106,11 @@ class PyntCloud(object):
 
         Parameters
         ----------
-        filename : str
+        filename: str
             Path to the file from wich the data will be readed
             
-        internals : list of str, optional, Default:["points"]
+        internals: list of str, optional
+            Default: ["points"]
             Names of the attributes that will be extracted from the PyntCloud.
         """
         
@@ -128,14 +129,14 @@ class PyntCloud(object):
 
         Parameters
         ----------
-        name : str
+        name: str
             One of the avaliable names. See bellow.
         kwargs 
             Vary for each name. See bellow.
         
         Returns
         -------
-        sf_added : list of str
+        sf_added: list of str
             The name of each of the columns (scalar fields) added.
             Usefull for chaining operations that require string names.
         
@@ -147,96 +148,97 @@ class PyntCloud(object):
         **REQUIRE EIGENVALUES**
 
             ARGS
-                ev : list of str
+                ev: list of str
                     ev = self.add_scalar_field("eigen_values", ...)
-            NAMES
-                sphericity
-                
-                anisotropy
-                
-                linearity
-                
-                omnivariance
-                
-                eigenentropy
-                
-                planarity
-                
-                eigen_sum
-                
-                curvature
+
+            sphericity
+            
+            anisotropy
+            
+            linearity
+            
+            omnivariance
+            
+            eigenentropy
+            
+            planarity
+            
+            eigen_sum
+            
+            curvature
                 
         **REQUIRE K_NEIGHBORS** 
 
             ARGS
-                k_neighbors : (N, k) ndarray
+                k_neighbors: (N, k) ndarray
                     Returned from: self.get_neighbors(k, ...) / manually querying some self.kdtrees[x] / other methods.                
-            NAMES 
-                eigen_decomposition
-                
-                eigen_values
+
+            eigen_decomposition
+            
+            eigen_values
             
         **REQUIRE NORMALS**
 
-            NAMES 
-                orientation_deg
-                
-                orientation_rad
-                
-                inclination_rad
-                
-                inclination_deg
+            orientation_deg
+            
+            orientation_rad
+            
+            inclination_rad
+            
+            inclination_deg
                 
         **REQUIRE RGB**
 
-            NAMES 
-                hsv
-                
-                relative_luminance
-                
-                rgb_intensity
+            hsv
+            
+            relative_luminance
+            
+            rgb_intensity
                 
 
         **REQUIRE VOXELGRID**
 
             ARGS
-                voxelgrid : VoxelGrid.id
+                voxelgrid: VoxelGrid.id
                     voxelgrid = self.add_structure("voxelgrid", ...)
                      
-            NAMES
-                voxel_x
-                
-                voxel_y
-                
-                voxel_n
-                
-                voxel_z
+            voxel_x
+            
+            voxel_y
+            
+            voxel_n
+            
+            voxel_z
                 
 
         **ONLY REQUIRE XYZ**
 
-            NAMES
-                plane_fit
-                    max_dist : float, optional (Default 1e-4)
-                        Maximum distance from point to model in order to be considered as inlier.
-                    max_iterations : int, optional (Default 100)
-                        Maximum number of fitting iterations.
-                sphere_fit
-                    max_dist : float, optional (Default 1e-4)
-                        Maximum distance from point to model in order to be considered as inlier.
-                    max_iterations : int, optional (Default 100)
-                        Maximum number of fitting iterations.
-                custom_fit
-                    model : subclass of ransac.models.RansacModel
-                        Model to be fitted
-                    sampler : subclass of ransac.models.RansacSampler
-                        Sample method to be used
-                    name : str
-                        Will be used to name the added column
-                    model_kwargs : dict, optional (Default {})
-                        Will be passed to single_fit function.
-                    sampler_kwargs : dict, optional (Default {})
-                        Will be passed to single_fit function.
+            plane_fit
+                max_dist: float, optional 
+                    Default: 1e-4
+                    Maximum distance from point to model in order to be considered as inlier.
+                max_iterations: int, optional (Default 100)
+                    Maximum number of fitting iterations.
+            sphere_fit
+                max_dist: float, optional 
+                    Default: 1e-4
+                    Maximum distance from point to model in order to be considered as inlier.
+                max_iterations: int, optional 
+                    Default: 100
+                    Maximum number of fitting iterations.
+            custom_fit
+                model: subclass of ransac.models.RansacModel
+                    Model to be fitted
+                sampler: subclass of ransac.models.RansacSampler
+                    Sample method to be used
+                name: str
+                    Will be used to name the added column
+                model_kwargs: dict, optional 
+                    Default: {}
+                    Will be passed to single_fit function.
+                sampler_kwargs: dict, optional 
+                    Default: {}
+                    Will be passed to single_fit function.
         """
         
         if name in ALL_SF:
@@ -252,6 +254,54 @@ class PyntCloud(object):
 
     def add_structure(self, name, **kwargs):
         """ Build a structure and add it to the corresponding PyntCloud's attribute
+        
+        Parameters
+        ----------
+        name: str
+            One of the avaliable names. See bellow.
+        kwargs 
+            Vary for each name. See bellow.
+        
+        Returns
+        -------
+        structure.id: str
+            Identification string associated with the added structure.
+            Usefull for chaining operations that require string names.
+        
+        Notes
+        -----
+        Avaliable structures are:
+        
+        **ONLY REQUIRE XYZ**
+
+            kdtree
+                leafsize: int, optional
+                    Default: 16
+                    The number of points at which the algorithm switches over to brute-force. 
+                    Has to be positive.
+    
+            voxelgrid 
+                x_y_z: list of int, optional
+                    Default: [2, 2, 2]
+                    The number of segments in wich each axis will be divided.
+                    x_y_z[0]: x axis 
+                    x_y_z[1]: y axis 
+                    x_y_z[2]: z axis
+                    If sizes is not None it will be ignored.
+                sizes: list of float, optional
+                    Default: None
+                    The desired voxel size along each axis.
+                    sizes[0]: voxel size along x axis.
+                    sizes[1]: voxel size along y axis.
+                    sizes[2]: voxel size along z axis.
+                bb_cuboid: bool, optional
+                    Default: True
+                    If True, the bounding box of the point cloud will be adjusted
+                    in order to have all the dimensions of equal lenght. 
+    
+            octree
+                TODO
+        
         """
         kwargs["points"] = self.xyz
         structures = {
@@ -273,14 +323,15 @@ class PyntCloud(object):
         
         Parameters
         ----------
-        name : str
+        name: str
             One of the avaliable names. See bellow.
+            
         kwargs 
             Vary for each name. See bellow.
         
         Returns
         -------
-        filter : boolean array
+        filter: boolean array
             Boolean mask indicating wherever a point should be keeped or not.
             The size of the boolean mask will be the same as the number of points
             in the pyntcloud.
@@ -290,32 +341,32 @@ class PyntCloud(object):
         
         Avaliable filters are:
 
-        REQUIRE KDTREE
-        --------------
-        ARGS
-            kdtree : KDTree.id
-                kdtree = self.add_structure("kdtree", ...)
-        NAMES
+        **REQUIRE KDTREE**
+        
+            ARGS
+                kdtree : KDTree.id
+                    kdtree = self.add_structure("kdtree", ...)
+            
             ROR    (Radius Outlier Removal)
-                k : int
+                k: int
                     Number of neighbors that will be used to compute the filter.                                  
-                r : float
+                r: float
                     The radius of the sphere with center on each point. The filter
                     will look for the required number of neighboors inside that sphere. 
+                    
             SOR    (Statistical Outlier Removal)
-                k : int
+                k: int
                     Number of neighbors that will be used to compute the filter. 
                 z_max: float
                     The maximum Z score wich determines if the point is an outlier.
                     
-        REQUIRE XYZ
-        --------------
+        **ONLY REQUIRE XYZ**
 
-        NAMES
             BBOX    (Bounding Box)
                 min_i, max_i: float
                     The bounding box limits for each coordinate. If some limits are missing,
-                    the default values are -infinite for the min_i and infinite for the max_i.            
+                    the default values are -infinite for the min_i and infinite for the max_i.    
+                
         """
 
         if name in ALL_FILTERS:
@@ -331,10 +382,13 @@ class PyntCloud(object):
         
         Parameters
         ----------
-        name : str
-            One of the avaliable names. See bellow.
+        name: str
+            One of the avaliable names. 
+            See bellow.
+            
         kwargs 
-            Vary for each name. See bellow.
+            Vary for each name. 
+            See bellow.
         
         Returns
         -------
@@ -346,30 +400,30 @@ class PyntCloud(object):
         
         Avaliable sampling methods are:
 
-        REQUIRE MESH
-        --------------
-        NAMES
+        
+       **REQUIRE MESH**
+    
             random_mesh    
-                n : int
+                n: int
                     Number of points to be sampled.   
                     
-        REQUIRE VOXELGRID
-        -----------------
-        ARGS
-            voxelgrid : VoxelGrid.id
-                voxelgrid = self.add_structure("voxelgrid", ...)
-        NAMES
+        **REQUIRE VOXELGRID**
+        
+            ARGS
+                voxelgrid: VoxelGrid.id
+                    voxelgrid = self.add_structure("voxelgrid", ...)
+            
             voxelgrid_centers    
              
             voxelgrid_centroids
             
             voxelgrid_nearest    
 
-        USE POINTS
-        ----------
-        NAMES
+        
+        **USE POINTS**
+        
             random_points
-                n : int    
+                n: int    
                     Number of points to be sampled.                      
 
         """
@@ -386,27 +440,35 @@ class PyntCloud(object):
 
         Parameters
         ----------
-        k : int, Default None
+        k: int, optional
+            Default: None
             For "K-nearest neighbor" search.
             Number of nearest neighbors that will be used to build the neighbourhood.
 
-        r : float, Default None
-            For "Fixed-radius near neighbors" search.
+        r: float, optional
+            Default: None
+            For "Fixed-radius neighbors" search.
             Radius of the sphere that will be used to build the neighbourhood.
 
-        kdtree : str, Default None
+        kdtree: str, optional
+            Default: None
             KDTree.id in self.kdtrees.
-
-            If kdtree is None and k is not None:
-                The KDTree will be computed and added to PyntCloud as part of the process.
-            Elif r is not None:
-                kdtree kwarg will be ignored.
-            Else:
-                The given KDTree will be used for "K-nearest neighbor" search.
+            
+            - If **kdtree** is None and **k** is not None:
+                
+            The KDTree will be computed and added to PyntCloud as part of the process.
+            
+            - Elif **r** is not None:
+                
+            kdtree kwarg will be ignored.
+            
+            - Else:
+                
+            The given KDTree will be used for "K-nearest neighbor" search.
 
         Returns
         -------
-        neighbors : array-like
+        neighbors: array-like
             (N, k) ndarray if k is not None.                
                 Indices of the 'k' nearest neighbors for the 'N' points.
             (N,) ndarray of lists if r is not None.

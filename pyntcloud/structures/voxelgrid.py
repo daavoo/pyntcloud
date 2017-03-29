@@ -24,7 +24,7 @@ class VoxelGrid(object):
             Where N is the number of points in the point cloud and the second
             dimension represents the x, y and z coordinates of each point.
         
-        x_y_z:  list of int
+        x_y_z :  list of int, optional
             Default: [2, 2, 2]
             The number of segments in wich each axis will be divided.
             x_y_z[0]: x axis 
@@ -32,14 +32,14 @@ class VoxelGrid(object):
             x_y_z[2]: z axis
             If sizes is not None it will be ignored.
         
-        sizes: list of float
+        sizes : list of float, optional
             Default: None
             The desired voxel size along each axis.
             sizes[0]: voxel size along x axis.
             sizes[1]: voxel size along y axis.
             sizes[2]: voxel size along z axis.
 
-        bb_cuboid(Optional): bool
+        bb_cuboid : bool, optional
             Default: True
             If True, the bounding box of the point cloud will be adjusted
             in order to have all the dimensions of equal lenght.                
