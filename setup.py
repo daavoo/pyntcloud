@@ -18,13 +18,17 @@ setup(
               "pyntcloud.structures",
               "pyntcloud.utils"],
     keywords=[
-        "point cloud",
+        "point-clouds",
         "3D"
     ],
     install_requires=[
         "numpy",
         "scipy",
         "pandas",
+        "ipython",
+        "pytest",
+        "matplotlib",
+        "numpydoc"
     ],
     classifiers=[
             "Development Status :: 1 - Planning",
@@ -32,7 +36,6 @@ setup(
             "Intended Audience :: Developers",
             "Intended Audience :: Science/Research",
             "License :: Hakuna Matata",
-            "Natural Language :: Galician",
             "Operating System :: OS Independent",
             "Programming Language :: Python",
             "Topic :: Scientific/Engineering",
