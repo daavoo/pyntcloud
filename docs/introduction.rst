@@ -9,7 +9,8 @@ what are the capabilities of pyntcloud as a point cloud processing tool.
 Point clouds
 ============
 Point clouds are one of the most relevant entities for representing three dimensional
-data these days, along with polygonal meshes.
+data these days, along with polygonal meshes (wich are just a special case of point clouds with
+connectivity graph attached).
 
 In it's simplest form, a point cloud is a set of points in a cartesian coordinate 
 system.
