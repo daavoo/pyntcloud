@@ -18,6 +18,7 @@ generic array formats (more formats will be added in the near future):
 -   `.npy / .npz <https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html>`__
 -   `.obj <https://en.wikipedia.org/wiki/Wavefront_.obj_file>`__
 -   `.off <https://en.wikipedia.org/wiki/OFF_(file_format)>`__
+-   `.pcd <http://pointclouds.org/documentation/tutorials/pcd_file_format.php#pcd-file-format>`__
 -   `.ply <https://en.wikipedia.org/wiki/PLY_(file_format)>`__
 
 Reading
@@ -63,7 +64,7 @@ to construct a PyntCloud from formats that are not covered in *from_file*.
 Some examples of manually constructing a PyntCloud:
 
 ASCII files
------------
+===========
 
 There are many formats englobed in this kind of files: .asc, .txt, .pts, ...
 
