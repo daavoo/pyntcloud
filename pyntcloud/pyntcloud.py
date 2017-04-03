@@ -401,6 +401,7 @@ class PyntCloud(object):
         Avaliable sampling methods are:
             
         **REQUIRE MESH**
+        
             random_mesh
                 n: int
                     Number of points to be sampled.   

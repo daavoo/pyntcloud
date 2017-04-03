@@ -27,9 +27,9 @@ setup(
         "pandas",
         "ipython",
         "pytest",
-        "matplotlib",
-        "numpydoc"
+        "matplotlib"
     ],
+            
     classifiers=[
             "Development Status :: 1 - Planning",
             "Intended Audience :: Education",
