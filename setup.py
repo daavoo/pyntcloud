@@ -27,7 +27,8 @@ setup(
         "pandas",
         "ipython",
         "pytest",
-        "matplotlib"
+        "matplotlib",
+        "python-lzf"
     ],
             
     classifiers=[
