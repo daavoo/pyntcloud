@@ -103,7 +103,7 @@ def read_ply(filename):
 
         names = [x[0] for x in dtypes["vertex"]]
 
-        data["points"] = pd.read_csv(filename, sep=" ", header=None, engine="python", skiprows=top, skip_footer=bottom, usecols=names, names=names) 
+        data["points"] = pd.read_csv(filename, sep=r'\s+', header=None, engine="python", skiprows=top, skip_footer=bottom, usecols=names, names=names) 
 
         for n, col in enumerate(data["points"].columns):
             data["points"][col] = data["points"][col].astype(dtypes["vertex"][n][1])
@@ -114,7 +114,7 @@ def read_ply(filename):
             names = [x[0] for x in dtypes["face"]][1:]
             usecols = [1,2,3]
 
-            data["mesh"] = pd.read_csv(filename, sep=" ", header=None, engine="python", skiprows=top, usecols=usecols, names=names)
+            data["mesh"] = pd.read_csv(filename, sep=r'\s+', header=None, engine="python", skiprows=top, usecols=usecols, names=names)
 
             for n, col in enumerate(data["mesh"].columns):
                 data["mesh"][col] = data["mesh"][col].astype(dtypes["face"][n+1][1])    
@@ -175,10 +175,10 @@ def write_ply(filename, points=None, mesh=None, as_text=False):
 
     if as_text:
         if points is not None:
-            points.to_csv(filename, sep=" ", index=False, header=False, mode='a',
+            points.to_csv(filename, sep=r'\s+', index=False, header=False, mode='a',
                                                                 encoding='ascii')
         if mesh is not None:
-            mesh.to_csv(filename, sep=" ", index=False, header=False, mode='a',
+            mesh.to_csv(filename, sep=r'\s+', index=False, header=False, mode='a',
                                                                 encoding='ascii')
 
     else:
