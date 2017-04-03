@@ -14,6 +14,8 @@ setup(
               "pyntcloud.io",
               "pyntcloud.plot",
               "pyntcloud.ransac",
+              "pyntcloud.neighbors",
+              "pyntcloud.sampling",
               "pyntcloud.scalar_fields",
               "pyntcloud.structures",
               "pyntcloud.utils"],
