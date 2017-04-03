@@ -404,7 +404,13 @@ class PyntCloud(object):
         
             random_mesh
                 n: int
-                    Number of points to be sampled.   
+                    Number of points to be sampled. 
+                rgb: bool, optional
+                    Default: False
+                    Indicates if rgb values will be also sampled
+                normals: bool, optional
+                    Default: False
+                    Indicates if normals will be also sampled
                     
         **REQUIRE VOXELGRID**
         
@@ -488,7 +494,7 @@ class PyntCloud(object):
         else:
             raise ValueError("You must supply 'k' or 'r' values.")
         
-    def get_mesh_vertices(self):
+    def get_mesh_vertices(self, rgb=False, normals=False):
         """ Decompose triangles of self.mesh from vertices in self.points
         
         Returns
@@ -497,9 +503,17 @@ class PyntCloud(object):
             (N, 3) arrays of vertices so v1[i], v2[i], v3[i] represent the ith triangle
         """
         
-        v1 = self.xyz[[self.mesh["v1"]]]
-        v2 = self.xyz[[self.mesh["v2"]]]
-        v3 = self.xyz[[self.mesh["v3"]]]
+        use_columns = ["x", "y", "z"]
+        if rgb:
+            use_columns.extend(["red", "green", "blue"])
+        if normals:
+            use_columns.extend(["nx","ny","nz"])
+        
+        points = self.points[use_columns].values
+        
+        v1 = points[[self.mesh["v1"]]]
+        v2 = points[[self.mesh["v2"]]]
+        v3 = points[[self.mesh["v3"]]]
 
         return v1, v2, v3
         
