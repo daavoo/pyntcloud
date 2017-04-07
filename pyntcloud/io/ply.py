@@ -208,7 +208,7 @@ def describe_element(name, df):
     element = ['element ' + name + ' ' + str(len(df))]
     
     if name == 'face':
-        element.append("property list uchar int points_indices")
+        element.append("property list uchar int vertex_indices")
         
     else:
         for i in range(len(df.columns)):
