@@ -14,5 +14,5 @@ Centroid: {}, {}, {}
 Other attributes:{}        
 """
 
-from .points import plot_points
+from .points import plot_PyntCloud
 from .voxelgrid import plot_voxelgrid

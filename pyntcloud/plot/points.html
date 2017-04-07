@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<head>
+  <title>PyntCloud</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <style>
+      body {
+      	color: #cccccc;
+      	font-family: Monospace;
+      	font-size: 13px;
+      	text-align: center;
+      	background-color: #050505;
+      	margin: 0px;
+      	overflow: hidden;
+      }
+      #logo_container {
+      	position: absolute;
+      	top: 0px;
+      	width: 100%;
+      }
+      #PyntCloudLogo {
+        height: 100px;
+      }
+  </style>
+</head>
+<body>
+  <div>
+      	<img id="PyntCloudLogo" src="https://raw.githubusercontent.com/daavoo/pyntcloud/master/docs/pyntcloud_logo.png">
+  </div>
+
+  <div id="container">
+  </div>
+
+  <script src="http://threejs.org/build/three.js"></script>
+  <script src="http://threejs.org/examples/js/Detector.js"></script>
+  <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+  <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="http://threejs.org/examples/js/loaders/PLYLoader.js"></script>
+
+  <script>
+
+  	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+  	var container;
+  	var camera, scene, renderer;
+  	var points;
+
+  	init();
+  	animate();
+
+//========================= INIT ==============================================//
+
+  	function init() {
+
+      var filename = FILENAME_PLACEHOLDER;
+
+      // CONFIGURATION FROM JSON
+      var conf_json = (function() {
+          var json = null;
+          $.ajax({
+              'async': false,
+              'global': false,
+              'url': filename + ".json",
+              'dataType': "json",
+              'success': function (data) {
+                  json = data;
+              }
+          });
+          return json;
+      })();
+      console.log(conf_json);
+
+  		scene = new THREE.Scene();
+
+      // CAMERA
+  		camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  		camera.position.x = conf_json.camera_position[0];
+  		camera.position.y = conf_json.camera_position[1];
+  		camera.position.z = conf_json.camera_position[2];
+  		camera.up = new THREE.Vector3( 0, 0, 1 );
+
+      var loader = new THREE.PLYLoader();
+				loader.load( filename + ".ply", function ( geometry ) {
+          var material = new THREE.PointsMaterial( { size: 0.005, vertexColors: THREE.VertexColors } );
+       		var points = new THREE.Points( geometry, material );
+      		scene.add( points );        
+				});
+
+      // RENDERER
+  		renderer = new THREE.WebGLRenderer( { antialias: false } );
+  		renderer.setPixelRatio( window.devicePixelRatio );
+  		renderer.setSize( window.innerWidth, window.innerHeight );
+
+      // ORBIT CONTROLS
+  		controls = new THREE.OrbitControls( camera, renderer.domElement );
+  		controls.target.copy( new THREE.Vector3(conf_json.look_at[0], conf_json.look_at[1], conf_json.look_at[2] ) );
+      camera.lookAt( new THREE.Vector3(conf_json.look_at[0], conf_json.look_at[1], conf_json.look_at[2]));
+
+      // ADD CONTAINER TO DOM
+      container = document.getElementById( 'container' );
+  		container.appendChild( renderer.domElement );
+
+      // RESIZE LISTENER
+  		window.addEventListener( 'resize', onWindowResize, false );
+
+  	}
+
+//========================= RESIZE ============================================//
+
+  	function onWindowResize() {
+  		camera.aspect = window.innerWidth / window.innerHeight;
+  		camera.updateProjectionMatrix();
+  		renderer.setSize( window.innerWidth, window.innerHeight );
+  	}
+
+//========================= ANIMATE ===========================================//
+
+  	function animate() {
+  		requestAnimationFrame( animate );
+  		render();
+  	}
+
+//========================= RENDER ============================================//
+
+  	function render() {
+  		renderer.render( scene, camera );
+  	}
+  </script>
+</body>
+</html>
