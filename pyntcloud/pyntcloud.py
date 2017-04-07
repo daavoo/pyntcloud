@@ -1,11 +1,14 @@
 #  HAKUNA MATATA
 
-from pandas import DataFrame
+import numpy as np
+import pandas as pd
+
+import matplotlib.pyplot as plt
 
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
-from .plot import DESCRIPTION
+from .plot import DESCRIPTION, plot_PyntCloud
 from .sampling import ALL_SAMPLING
 from .scalar_fields import ALL_SF
 from .structures import KDTree, VoxelGrid, Octree
@@ -74,7 +77,7 @@ class PyntCloud(object):
     
     @points.setter
     def points(self, df):
-        if not isinstance(df, DataFrame):
+        if not isinstance(df, pd.DataFrame):
             raise TypeError("Points argument must be a DataFrame")
         elif not set(['x', 'y', 'z']).issubset(df.columns):
             raise ValueError("Points must have x, y and z coordinates")
@@ -524,6 +527,36 @@ class PyntCloud(object):
         self.kdtrees = {}
         self.voxelgrids = {}
         self.octrees = {}
-
+        
+    def plot(self, 
+             use_as_color=["red", "green", "blue"], 
+             cmap="hsv",
+             output_name="pyntcloud_plot",
+             width=800,
+             height=500):
+        
+        try:
+            colors = self.points[use_as_color].values
+        except:
+            colors = None
+        
+        if use_as_color != ["red", "green", "blue"] and colors is not None:
+            s_m = plt.cm.ScalarMappable(cmap=cmap)
+            colors = s_m.to_rgba(colors)[:,:-1]   * 255
+        
+        elif colors is None:
+            # default color orange
+            colors = np.repeat([[255,125,0]], self.xyz.shape[0], axis=0)
+        
+        colors = colors.astype(np.uint8)
+        
+        points = pd.DataFrame(self.xyz, columns=["x","y","z"])
+        
+        for n, i in enumerate({"red", "green", "blue"}):
+            points[i] = colors[:,n]
+            
+        new_PyntCloud = PyntCloud(points)
+            
+        return plot_PyntCloud(new_PyntCloud, output_name=output_name)
 
     
