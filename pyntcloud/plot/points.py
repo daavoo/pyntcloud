@@ -27,7 +27,7 @@ def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
     
     with open("{}.json".format(output_name), "w") as json_out_file:
         json.dump(conf, json_out_file)    
-
+    
     cloud.to_file("{}.ply".format(output_name))
 
     return IFrame("{}.html".format(output_name), width=width, height=height)

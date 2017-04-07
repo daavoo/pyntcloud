@@ -534,6 +534,47 @@ class PyntCloud(object):
              output_name="pyntcloud_plot",
              width=800,
              height=500):
+        """ Visualize PyntCloud in a Jupyter notebook using three.js
+        
+        Parameters
+        ----------
+        use_as_color: str or ["red", "green", "blue"], optional
+            Default: ["red", "green", "blue"]
+            Indicates wich scalar fields will be used to colorize the rendered
+            point cloud.
+        
+        cmap: str, optional
+            Default: "hsv"
+            Color map that will be used to convert a single scalar field into rgb.
+            Check matplotlib cmaps.
+        
+        output_name: str, optional
+            Default: "pyntcloud_plot"
+            Base filename that will be used to create:
+                output_name.html
+                output_name.ply
+                output_name.json
+                
+        width: int, optional
+            Default: 800
+            Adjusts the size of the IFrame plotted in Jupyter notebook.
+        
+        height: int, optional
+            Default: 500
+            Adjusts the size of the IFrame plotted in Jupyter notebook.
+            
+        Returns
+        -------
+        Ipython.display.IFrame
+            output_name.html inside an IFrame
+        
+        Notes
+        ----- 
+        You can visualize the output_name.html outside the notebook as a regular
+        html. You might need to run a local server or adjust the browser privacy
+        policies in order to allow javascript to load local files.
+        
+        """
         
         try:
             colors = self.points[use_as_color].values
@@ -552,11 +593,11 @@ class PyntCloud(object):
         
         points = pd.DataFrame(self.xyz, columns=["x","y","z"])
         
-        for n, i in enumerate({"red", "green", "blue"}):
+        for n, i in enumerate(["red", "green", "blue"]):
             points[i] = colors[:,n]
-            
+        
         new_PyntCloud = PyntCloud(points)
-            
+
         return plot_PyntCloud(new_PyntCloud, output_name=output_name)
 
     
