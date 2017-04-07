@@ -18,14 +18,14 @@
       	top: 0px;
       	width: 100%;
       }
-      .logo {
-      	max-width: 20%;
+      #PyntCloudLogo {
+        height: 100px;
       }
   </style>
 </head>
 <body>
   <div>
-      	<img class="logo" src="https://media.githubusercontent.com/media/daavoo/pyntcloud/master/docs/data/pyntcloud.png">
+      	<img id="PyntCloudLogo" src="https://raw.githubusercontent.com/daavoo/pyntcloud/master/docs/pyntcloud_logo.png">
   </div>
 
   <div id="container">
@@ -35,74 +35,91 @@
   <script src="http://threejs.org/examples/js/Detector.js"></script>
   <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
   <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="http://threejs.org/examples/js/loaders/PLYLoader.js"></script>
 
   <script>
 
   	if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
-  	var container, stats;
+  	var container;
   	var camera, scene, renderer;
   	var points;
 
   	init();
   	animate();
 
+//========================= INIT ==============================================//
+
   	function init() {
 
-  		var camera_x = ;
-  		var camera_y = ;
-  		var camera_z = ;
+      var filename = FILENAME_PLACEHOLDER;
 
-      var look_x = ;
-      var look_y = ;
-      var look_z = ;
-
-      var points_size = {points_size};
-
-  		var axis_size = {axis_size};
-
-  		var positions = new Float32Array();
-
-  		var colors = new Float32Array();
-
-  		container = document.getElementById( 'container' );
+      // CONFIGURATION FROM JSON
+      var conf_json = (function() {
+          var json = null;
+          $.ajax({
+              'async': false,
+              'global': false,
+              'url': filename + ".json",
+              'dataType': "json",
+              'success': function (data) {
+                  json = data;
+              }
+          });
+          return json;
+      })();
+      console.log(conf_json);
 
   		scene = new THREE.Scene();
 
+      // CAMERA
   		camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
-  		camera.position.x = camera_x;
-  		camera.position.y = camera_y;
-  		camera.position.z = camera_z;
+  		camera.position.x = conf_json.camera_position[0];
+  		camera.position.y = conf_json.camera_position[1];
+  		camera.position.z = conf_json.camera_position[2];
   		camera.up = new THREE.Vector3( 0, 0, 1 );
 
-  		if (axis_size > 0){
-        var axisHelper = new THREE.AxisHelper( axis_size );
-		    scene.add( axisHelper );
-      }
+      var loader = new THREE.PLYLoader();
+				loader.load( filename + ".ply", function ( geometry ) {
+          console.log(geometry.index == null);
 
-  		var pointsGeometry = new THREE.BufferGeometry();
-  		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-  		geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+          if (geometry.index == null){
+            var material = new THREE.PointsMaterial( { size: 0.005, vertexColors: THREE.VertexColors } );
+         		var points = new THREE.Points( geometry, material );
+        		scene.add( points );
+          }
+          else{
+            geometry.computeVertexNormals();
 
-  		var pointsMaterial = new THREE.PointsMaterial( { size: points_size, vertexColors: THREE.VertexColors } );
+            var material = new THREE.MeshStandardMaterial( { color: 0x0055ff, shading: THREE.FlatShading } );
+            var mesh = new THREE.Mesh( geometry, material );
 
-  		points = new THREE.Points( pointsGeometry, pointsMaterial );
+            scene.add( mesh );
+          }
+          console.log(scene);
+				});
 
-  		scene.add( points );
-
-
-  		renderer = new THREE.WebGLRenderer( {{ antialias: false }} );
+      // RENDERER
+  		renderer = new THREE.WebGLRenderer( { antialias: false } );
   		renderer.setPixelRatio( window.devicePixelRatio );
   		renderer.setSize( window.innerWidth, window.innerHeight );
 
+      // ORBIT CONTROLS
   		controls = new THREE.OrbitControls( camera, renderer.domElement );
-  		controls.target.copy( new THREE.Vector3(look_x, look_y, look_z) );
-      camera.lookAt( new THREE.Vector3(look_x, look_y, look_z));
+  		controls.target.copy( new THREE.Vector3(conf_json.look_at[0], conf_json.look_at[1], conf_json.look_at[2] ) );
+      camera.lookAt( new THREE.Vector3(conf_json.look_at[0], conf_json.look_at[1], conf_json.look_at[2]));
 
+      // ADD CONTAINER TO DOM
+      container = document.getElementById( 'container' );
   		container.appendChild( renderer.domElement );
 
+      // RESIZE LISTENER
   		window.addEventListener( 'resize', onWindowResize, false );
+
   	}
+
+//========================= RESIZE ============================================//
 
   	function onWindowResize() {
   		camera.aspect = window.innerWidth / window.innerHeight;
@@ -110,10 +127,14 @@
   		renderer.setSize( window.innerWidth, window.innerHeight );
   	}
 
+//========================= ANIMATE ===========================================//
+
   	function animate() {
   		requestAnimationFrame( animate );
   		render();
   	}
+
+//========================= RENDER ============================================//
 
   	function render() {
   		renderer.render( scene, camera );
