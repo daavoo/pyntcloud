@@ -1,39 +1,37 @@
 import os
+import json
 from IPython.display import IFrame
-from shutil import copyfile
 
-def plot_points(xyz=None, colors=None, size=0.1, axis=False, output_name=None):
-    src = os.path.dirname(os.path.abspath(__file__))
-    print(src)
-    return
-    if output_name is None:
-        output_name = "plot_points.html"
-        
-    positions = xyz.reshape(-1).tolist()
-
-    camera_position = xyz.max(0) + abs(xyz.max(0))
-
-    look = xyz.mean(0)
-
-    if colors is None:
-        colors = [1,0.5,0] * len(positions)
-
-    elif len(colors.shape) > 1:
-        colors = colors.reshape(-1).tolist()
-
-    if axis:
-        size = xyz.ptp() * 1.5
-    else:
-        axis_size = 0
-
+def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
+    """ Generate 3 output files (html, json and ply) to be plotted in Jupyter
     
-    #copyfile(src, dst)
+    Parameters
+    ----------
+    cloud: PyntCloud instance
+    """
+    
+    src = "{}/{}".format(os.path.dirname(os.path.abspath(__file__)), "points.html")
+    dst = "{}/{}".format(os.getcwd(), "{}.html".format(output_name))
+    
+    # write new html file replacing placeholder
+    with open(src, "r") as inp, open(dst, "w") as out:
+        for line in inp:
+            if "FILENAME_PLACEHOLDER" in line:
+                line = line.replace("FILENAME_PLACEHOLDER", "'{}'".format(output_name))
+            
+            out.write(line)
+    
+    conf = {}
+    conf["camera_position"] = (cloud.xyz.max(0) + abs(cloud.xyz.max(0))).tolist()
+    conf["look_at"] = cloud.xyz.mean(0).tolist()
+    
+    with open("{}.json".format(output_name), "w") as json_out_file:
+        json.dump(conf, json_out_file)    
 
-    return
+    cloud.to_file("{}.ply".format(output_name))
 
-    return IFrame(output_name, width=800, height=800)
+    return IFrame("{}.html".format(output_name), width=width, height=height)
 
 
-plot_points()
 
 
