@@ -83,6 +83,7 @@ class PyntCloud(object):
             raise ValueError("Points must have x, y and z coordinates")
         self._clean_all_structures()
         self.__points = df
+        self.xyz = self.__points[["x", "y", "z"]].values
              
     @classmethod
     def from_file(cls, filename):
@@ -527,6 +528,7 @@ class PyntCloud(object):
         self.kdtrees = {}
         self.voxelgrids = {}
         self.octrees = {}
+        
         
     def plot(self, 
              use_as_color=["red", "green", "blue"], 
