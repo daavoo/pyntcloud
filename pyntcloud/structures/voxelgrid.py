@@ -56,11 +56,14 @@ class VoxelGrid(object):
             xyzmax = xyzmax + diff / 2 
         
         if sizes is not None:
-            # adjust to obtain sides divisible by size
-            margins = (((points.ptp(0) // sizes) + 1) * sizes) - points.ptp(0)
-            xyzmin -= margins / 2
-            xyzmax += margins / 2
-            x_y_z = ((xyzmax - xyzmin) / sizes).astype(int) 
+            x_y_z = [1, 1, 1]
+            for n, size in enumerate(sizes):
+                if size is None:
+                    continue
+                margin = (((points.ptp(0)[n] // size) + 1) * size) - points.ptp(0)[n]
+                xyzmin[n] -= margin / 2
+                xyzmax[n] += margin / 2
+                x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int) 
 
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
@@ -93,7 +96,7 @@ class VoxelGrid(object):
 
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
-        self.voxel_centers = cartesian(midsegments)
+        self.voxel_centers = cartesian(midsegments).astype(np.float32)
 
     def get_feature_vector(self, mode="binary"):
 
