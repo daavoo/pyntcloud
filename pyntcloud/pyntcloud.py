@@ -491,10 +491,10 @@ class PyntCloud(object):
             else:
                 kdtree = self.kdtrees[kdtree]
 
-            return k_neighbors(self.xyz, k, kdtree)
+            return k_neighbors(kdtree, k)
 
         elif r is not None:
-            return r_neighbors(self.xyz, r)
+            return r_neighbors(kdtree, r)
         else:
             raise ValueError("You must supply 'k' or 'r' values.")
         
