@@ -406,7 +406,7 @@ class PyntCloud(object):
             
         **REQUIRE MESH**
         
-            random_mesh
+            mesh_random_sampling
                 n: int
                     Number of points to be sampled. 
                 rgb: bool, optional
@@ -431,7 +431,7 @@ class PyntCloud(object):
         
         **USE POINTS**
         
-            random_points
+            points_random_sampling
                 n: int    
                     Number of points to be sampled.                      
 

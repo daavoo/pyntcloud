@@ -13,9 +13,9 @@ from .s_voxelgrid import (
 
 ALL_SAMPLING = {
     # Mesh            
-    'random_mesh': RandomMesh, 
+    'mesh_random_sampling': RandomMesh, 
     # Points
-    'random_points' : RandomPoints,    
+    'points_random_sampling' : RandomPoints,    
     # Voxelgrid
     'voxelgrid_centers' : VoxelgridCenters,
     'voxelgrid_centroids' : VoxelgridCentroids,

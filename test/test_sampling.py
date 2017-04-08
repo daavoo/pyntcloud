@@ -33,9 +33,9 @@ def test_mesh_sampling():
     path = os.path.abspath(os.path.dirname(__file__))
     cloud = PyntCloud.from_file(path + "/data/mesh.ply")
     with pytest.raises(TypeError):
-        sample = cloud.get_sample("random_mesh")
+        sample = cloud.get_sample("mesh_random_sampling")
     
-    sample = cloud.get_sample("random_mesh", n=100)
+    sample = cloud.get_sample("mesh_random_sampling", n=100)
     
     assert len(sample) == 100
     assert all(sample.max(0) <= cloud.xyz.max(0))
@@ -45,9 +45,9 @@ def test_points_sampling():
     path = os.path.abspath(os.path.dirname(__file__))
     cloud = PyntCloud.from_file(path + "/data/voxelgrid.ply")
     with pytest.raises(TypeError):
-        sample = cloud.get_sample("random_points")
+        sample = cloud.get_sample("points_random_sampling")
     
-    sample = cloud.get_sample("random_points", n=1)
+    sample = cloud.get_sample("points_random_sampling", n=1)
     
     assert point_in_array_2D(sample, cloud.xyz)
     
