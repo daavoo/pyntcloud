@@ -112,7 +112,7 @@ You can use different plots to visualize the information in points:
 
     cloud.points.boxplot()
 
-.. image:: boxplot.png
+.. image:: /images/boxplot.png
 
 .. code-block:: python
 
@@ -120,7 +120,7 @@ You can use different plots to visualize the information in points:
     
     scatter_matrix(cloud.points, diagonal="kde", figsize=(8,8))
 
-.. image:: scatter_matrix.png
+.. image:: /images/scatter_matrix.png
 
 You can perform operations over points like getting wich points are above some 
 "z" coordinate:
