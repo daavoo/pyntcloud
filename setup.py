@@ -31,7 +31,8 @@ setup(
         "ipython",
         "pytest",
         "matplotlib",
-        "python-lzf"
+        "python-lzf",
+        "numba"
     ],    
     classifiers=[
             "Development Status :: 1 - Planning",
