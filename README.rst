@@ -6,6 +6,8 @@
 
 Pyntcloud is a Python library for working with 3D point clouds.
 
+It's currently under heavy development so you should expect API changes. Check Projects tab: https://github.com/daavoo/pyntcloud/projects/2
+
 Check the documentation at: http://pyntcloud.readthedocs.io/en/latest/index.html
 
 You can follow the quickstart bellow for a real-world example of using pyntcloud.
