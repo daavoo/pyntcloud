@@ -1,23 +1,18 @@
-from .base import Structure
-
 from scipy.spatial import cKDTree
 
 
-class KDTree(Structure, cKDTree):
+class KDTree(cKDTree):
 
     def __init__(self, PyntCloud, leafsize=16):
-        Structure.__init__(self, PyntCloud)
-        cKDTree.__init__(self, self.PyntCloud.xyz, leafsize=leafsize)
+        super().__init__(PyntCloud.xyz, leafsize=leafsize)
         self.id = "K({})".format(leafsize)
+        self.PyntCloud = PyntCloud
     
     def extract_info(self):
-        return
-        
-    def compute(self):
-        return
+        pass
     
-    def query(self):
-        return
+    def compute(self):
+        pass
     
     def get_and_set(self):
         
