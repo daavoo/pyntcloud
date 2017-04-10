@@ -484,17 +484,18 @@ class PyntCloud(object):
                 Array holding a variable number of indices corresponding
                 to the neighbors with distance < r.
         """
+
+           
         if k is not None:
             if kdtree is None:
                 kdtree_id = self.add_structure("kdtree")
                 kdtree = self.kdtrees[kdtree_id]
             else:
                 kdtree = self.kdtrees[kdtree]
-
             return k_neighbors(kdtree, k)
-
+        
         elif r is not None:
-            return r_neighbors(kdtree, r)
+            return r_neighbors(self.xyz, r)
         else:
             raise ValueError("You must supply 'k' or 'r' values.")
         
