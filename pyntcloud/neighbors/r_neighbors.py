@@ -1,4 +1,3 @@
-import numpy as np
 
 def r_neighbors(points, r):
     """ Get indices of all neartest neighbors with a distance < r for each point
@@ -17,4 +16,5 @@ def r_neighbors(points, r):
         Where N = kdtree.data.shape[0]
         X varies for each point
     """
-    return None
+
+    return  

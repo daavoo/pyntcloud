@@ -132,6 +132,7 @@ def read_pcd(filename):
                 column = np.fromstring(buf[ix:(ix+bytes)], dt)
                 pc_data[dtype.names[dti]] = column
                 ix += bytes
+                
     data["points"] = pd.DataFrame(pc_data)
     
     return data

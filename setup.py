@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='pyntcloud',
     version='0.1',
-    description='Point cloud operations in Python',
+    description='Python library for working with 3D point clouds.',
     url='https://github.com/daavoo/pyntcloud',
     author='David de la Iglesia Castro',
     author_email='daviddelaiglesiacastro@gmail.com',
@@ -12,8 +12,11 @@ setup(
               "pyntcloud.filters",
               "pyntcloud.geometry",
               "pyntcloud.io",
+              "pyntcloud.learn",
+              "pyntcloud.neighbors",
               "pyntcloud.plot",
               "pyntcloud.ransac",
+              "pyntcloud.sampling",
               "pyntcloud.scalar_fields",
               "pyntcloud.structures",
               "pyntcloud.utils"],
@@ -29,8 +32,7 @@ setup(
         "pytest",
         "matplotlib",
         "python-lzf"
-    ],
-            
+    ],    
     classifiers=[
             "Development Status :: 1 - Planning",
             "Intended Audience :: Education",
@@ -44,4 +46,4 @@ setup(
             "Topic :: Scientific/Engineering :: Information Analysis",
             ],
     
-    )
+)
