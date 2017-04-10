@@ -1,17 +1,28 @@
-#  HAKUNA MATATA
+from .base import Structure
 
-"""
-KDTree Class extending cKDTree
-"""
-
-import numpy as np
 from scipy.spatial import cKDTree
 
 
-class KDTree(cKDTree):
-    # TODO instead of extend cKDTree make this class a wrapper
-    # around different KDTree implementations: scipy, flann, etc.
+class KDTree(Structure, cKDTree):
 
-    def __init__(self, points, leafsize=16):
+    def __init__(self, PyntCloud, leafsize=16):
+        Structure.__init__(self, PyntCloud)
+        cKDTree.__init__(self, self.PyntCloud.xyz, leafsize=leafsize)
         self.id = "K({})".format(leafsize)
-        super().__init__(points, leafsize=leafsize)
+    
+    def extract_info(self):
+        return
+        
+    def compute(self):
+        return
+    
+    def query(self):
+        return
+    
+    def get_and_set(self):
+        
+        self.PyntCloud.kdtrees[self.id] = self
+        
+        self.PyntCloud = None
+        
+        return self.id
