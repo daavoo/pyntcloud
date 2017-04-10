@@ -1,21 +1,15 @@
-#  HAKUNA MATATA
-
-"""
-VoxelGrid Class
-"""
-
 import numpy as np
-import pandas as pd
 from matplotlib import pyplot as plt
 from scipy.spatial import cKDTree
 
+from .base import Structure
 from ..plot import plot_voxelgrid
 from ..utils.array import cartesian
 
 
-class VoxelGrid(object):
+class VoxelGrid(Structure):
     
-    def __init__(self, points, x_y_z=[2, 2, 2], sizes=None, bb_cuboid=True):
+    def __init__(self, PyntCloud, x_y_z=[2, 2, 2], sizes=None, bb_cuboid=True):
         """
         Parameters
         ----------         
@@ -45,25 +39,34 @@ class VoxelGrid(object):
             in order to have all the dimensions of equal lenght.                
 
         """
-        self.points = points
+        super().__init__(PyntCloud)
+        
+        self.x_y_z = x_y_z
+        self.sizes = sizes
+        self.bb_cuboid = bb_cuboid
+        
+    def extract_info(self):
+    
+        points = self.points = self.PyntCloud.xyz
+        
         xyzmin = points.min(0)
         xyzmax = points.max(0) 
 
-        if bb_cuboid:
+        if self.bb_cuboid:
             #: adjust to obtain a  minimum bounding box with all sides of equal lenght 
             diff = max(xyzmax-xyzmin) - (xyzmax-xyzmin)
             xyzmin = xyzmin - diff / 2
             xyzmax = xyzmax + diff / 2 
         
-        if sizes is not None:
-            x_y_z = [1, 1, 1]
-            for n, size in enumerate(sizes):
+        if self.sizes is not None:
+            self.x_y_z = [1, 1, 1]
+            for n, size in enumerate(self.sizes):
                 if size is None:
                     continue
                 margin = (((points.ptp(0)[n] // size) + 1) * size) - points.ptp(0)[n]
                 xyzmin[n] -= margin / 2
                 xyzmax[n] += margin / 2
-                x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int) 
+                self.x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int) 
 
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
@@ -73,20 +76,22 @@ class VoxelGrid(object):
 
         for i in range(3):
             # note the +1 in num 
-            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(x_y_z[i] + 1), retstep=True)
+            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1), retstep=True)
             segments.append(s)
             shape.append(step)
             
         self.segments = segments
         self.shape = shape
-        self.n_voxels = x_y_z[0] * x_y_z[1] * x_y_z[2]
-        self.n_x = x_y_z[0]
-        self.n_y = x_y_z[1]
-        self.n_z = x_y_z[2]
-        self.id = "V({},{},{})".format(x_y_z, sizes, bb_cuboid)
-        self.build()
+        
+        self.n_voxels = self.x_y_z[0] * self.x_y_z[1] * self.x_y_z[2]
+        
+        self.n_x = self.x_y_z[0]
+        self.n_y = self.x_y_z[1]
+        self.n_z = self.x_y_z[2]
+        
+        self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.bb_cuboid)
 
-    def build(self):
+    def compute(self):
         # find where each point lies in corresponding segmented axis
         # -1 so index are 0-based; clip for edge cases
         self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0, self.n_x)
@@ -97,7 +102,23 @@ class VoxelGrid(object):
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
         self.voxel_centers = cartesian(midsegments).astype(np.float32)
-
+    
+    def query(self, points):
+        voxel_x = np.clip(np.searchsorted(self.segments[0], points[:,0]) - 1, 0, self.n_x)
+        voxel_y = np.clip(np.searchsorted(self.segments[1], points[:,1]) - 1, 0, self.n_y)
+        voxel_z = np.clip(np.searchsorted(self.segments[2], points[:,2]) - 1, 0, self.n_z) 
+        voxel_n = np.ravel_multi_index([voxel_x, voxel_y, voxel_z], [self.n_x, self.n_y, self.n_z])
+        
+        return voxel_n
+    
+    def get_and_set(self):
+        
+        self.PyntCloud.voxelgrids[self.id] = self
+        
+        self.PyntCloud = None
+        
+        return self.id
+    
     def get_feature_vector(self, mode="binary"):
 
         if mode == "binary":

@@ -11,7 +11,7 @@ from .neighbors import k_neighbors, r_neighbors
 from .plot import DESCRIPTION, plot_PyntCloud
 from .sampling import ALL_SAMPLING
 from .scalar_fields import ALL_SF
-from .structures import KDTree, VoxelGrid, Octree
+from .structures import ALL_STRUCTURES
 from .utils.misc import crosscheck_kwargs_function
 
 
@@ -307,20 +307,16 @@ class PyntCloud(object):
                 TODO
         
         """
-        kwargs["points"] = self.xyz
-        structures = {
-            'kdtree':(KDTree, self.kdtrees),
-            'voxelgrid':(VoxelGrid, self.voxelgrids), 
-            'octree':(Octree, self.octrees)
-            }
-        if name in structures:
-            valid_kwargs = crosscheck_kwargs_function(kwargs, structures[name][0])  
-            structure = structures[name][0](**valid_kwargs)
-            structures[name][1][structure.id] = structure
+        if name in ALL_STRUCTURES:
+            STRUCTURE = ALL_STRUCTURES[name](self, **kwargs)
+            STRUCTURE.extract_info()
+            STRUCTURE.compute()
+            added = STRUCTURE.get_and_set()
+
         else:
-            raise ValueError("Unsupported structure; supported structures are: {}".format(list(structures)))
-            
-        return structure.id 
+            raise ValueError("Unsupported scalar field. Check docstring")
+
+        return added
 
     def get_filter(self, name, **kwargs):
         """ Compute filter over PyntCloud's points and return it
