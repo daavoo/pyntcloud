@@ -144,5 +144,81 @@ And visualize the segmented point cloud:
 
 .. image:: /docs/images/4.gif
 
+Clustering Dinosaurs
+--------------------
 
-WORK IN PROGRESS
+Let's separate the points that belong to each dinosaur using a simple clustering
+technique called euclidean clustering.
+
+First, we add a VoxelGrid to the PyntCloud. 
+
+The 'sizes' parameter is quite important. 
+
+If the distance between one query point and it's closest point in some cluster 
+is higher than this parameter, the point won't be considered part of that cluster.
+
+In this case, we now that Dinosaurs are pretty damm big, and they are not really close,
+so let's set a separation of 3 metters along the 3 axis.
+
+.. code-block:: python
+    
+    vg_id = scene.add_structure("voxelgrid", sizes=[3,3,3])
+    
+Add a new scalar field that indicates to wich cluster each point belong:
+
+.. code-block:: python
+
+    clusters_id = scene.add_scalar_field("euclidean_clusters", voxelgrid=vg_id)
+    
+Visualize the scene colored according to those clusters:
+
+.. image:: /docs/images/5.gif
+
+Using Deep Learning to clasify dinosaurs
+----------------------------------------
+
+Deep learning is quite cool, so why don't we use it to classify wich of the clusters
+is an herbibore dinosaur and wich one a carnivore.
+
+Deep learning with 3D data involves some complications compared with 2D (images).
+
+Luckely for us, pyntcloud includes the 'learn' module wich make things a lot easier.
+
+First of all, let's use the cluster information to split the point cloud and create
+a PyntCloud for each dinosaur:
+
+.. code-block:: python
+
+    # just to avoid verbose
+    clusters = scene.points[clusters_id]
+    
+    dinos = []
+    for n in clusters.unique():
+        dino = scene.points.loc[clusters == n]
+        dinos.append(PyntCloud(dino))
+
+And save each dinosaur to it's own file:
+
+.. code-block:: python
+
+    # create an empty directory
+    import os
+    
+    # test is a name convetion for the data that we want to label
+    os.makedirs("test/unknown")
+    
+    for n, dino in enumerate(dinos):
+        dino.to_file("test/unknown/{}.ply".format(n))  
+
+In order to make use of deep learning, normally we have to desing a model and train
+the model with tons of data before be able to make any good predictions.
+
+Luckely for us in pyntcloud.learn there are some pre-defined and pre-trained models
+ready to be finetuned for our own pourpuses. 
+
+There is even a model already trained that can classify dinosaurs into herbibores
+and carnivores, how convenient!
+
+To make use of all this functionallity we need to first import the learn module:
+
+
