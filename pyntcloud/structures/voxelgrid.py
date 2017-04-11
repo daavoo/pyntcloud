@@ -5,6 +5,7 @@ from scipy.spatial import cKDTree
 from .base import Structure
 from ..plot import plot_voxelgrid
 from ..utils.array import cartesian
+from ..utils.numba import groupby_max, groupby_count, groupby_sum
 
 
 class VoxelGrid(Structure):
@@ -120,14 +121,14 @@ class VoxelGrid(Structure):
         return self.id
     
     def get_feature_vector(self, mode="binary"):
-
+        
+        vector = np.zeros(self.n_voxels)
+        
         if mode == "binary":
-            vector = np.zeros(self.n_x * self.n_y * self.n_z)
             vector[np.unique(self.voxel_n)] = 1
             return vector.reshape((self.n_x, self.ny, self.nz))
 
         elif mode == "density":
-            vector = np.zeros(self.n_x * self.n_y * self.n_z)
             count = np.bincount(self.voxel_n)
             vector[:len(count)] = count
             vector /= len(self.voxel_n)
@@ -138,6 +139,18 @@ class VoxelGrid(Structure):
             kdt = cKDTree(self.points)
             d, i =  kdt.query(self.voxel_centers, n_jobs=-1)
             return d.reshape((self.n_x, self.ny, self.nz))
+        
+        elif mode.endswith("_max"):
+            N = {"x_max":0, "y_max":1, "z_max":2}
+            return groupby_max(self.points, self.voxel_n, N[mode], vector)
+        
+        elif mode.endswith("_mean"):
+            N = {"x_mean":0, "y_mean":1, "z_mean":2}
+            s = np.zeros(self.n_voxels)
+            c = np.zeros(self.n_voxels)
+            return (np.nan_to_num(groupby_sum(self.points, self.voxel_n, N[mode], s) /
+                    groupby_count(self.points, self.voxel_n, c)))
+    
 
     def plot_feature_vector(self, mode="binary", d=2, cmap="Oranges"):
         feature_vector = self.get_feature_vector(mode)
