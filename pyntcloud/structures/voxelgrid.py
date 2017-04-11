@@ -236,7 +236,7 @@ class VoxelGrid(Structure):
                                               valid_neighbor_indices[:,1],
                                               valid_neighbor_indices[:,2]), self.x_y_z)
     
-        return [x for x in ravel_indices if x in self.set_n]
+        return [x for x in ravel_indices if x in self.set_voxel_n]
     
     def plot_feature_vector(self, mode="binary", d=2, cmap="Oranges"):
         feature_vector = self.get_feature_vector(mode)

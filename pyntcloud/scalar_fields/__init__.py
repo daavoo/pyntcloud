@@ -27,7 +27,8 @@ from .sf_voxelgrid import (
     VoxelN,
     VoxelX,
     VoxelY,
-    VoxelZ
+    VoxelZ,
+    EuclideanClusters
 )
 from .sf_xyz import (
     PlaneFit,
@@ -61,6 +62,7 @@ ALL_SF = {
     'voxel_x': VoxelX,
     'voxel_y': VoxelY,
     'voxel_z': VoxelZ,
+    'euclidean_clusters': EuclideanClusters,
     # XYZ
     'custom_fit': CustomFit,
     'plane_fit': PlaneFit,
