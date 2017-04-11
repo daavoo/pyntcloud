@@ -213,6 +213,8 @@ class PyntCloud(object):
             voxel_n
             
             voxel_z
+            
+            euclidean_clusters
                 
 
         **ONLY REQUIRE XYZ**
