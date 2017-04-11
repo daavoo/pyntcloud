@@ -86,29 +86,28 @@ class VoxelGrid(Structure):
         
         self.n_voxels = self.x_y_z[0] * self.x_y_z[1] * self.x_y_z[2]
         
-        self.n_x = self.x_y_z[0]
-        self.n_y = self.x_y_z[1]
-        self.n_z = self.x_y_z[2]
-        
         self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.bb_cuboid)
 
     def compute(self):
         # find where each point lies in corresponding segmented axis
         # -1 so index are 0-based; clip for edge cases
-        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0, self.n_x)
-        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:,1]) - 1, 0, self.n_y)
-        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:,2]) - 1, 0, self.n_z) 
-        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z], [self.n_x, self.n_y, self.n_z])
+        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0, self.x_y_z[0])
+        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:,1]) - 1, 0, self.x_y_z[1])
+        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:,2]) - 1, 0, self.x_y_z[2]) 
+        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z], self.x_y_z)
 
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
         self.voxel_centers = cartesian(midsegments).astype(np.float32)
     
     def query(self, points):
-        voxel_x = np.clip(np.searchsorted(self.segments[0], points[:,0]) - 1, 0, self.n_x)
-        voxel_y = np.clip(np.searchsorted(self.segments[1], points[:,1]) - 1, 0, self.n_y)
-        voxel_z = np.clip(np.searchsorted(self.segments[2], points[:,2]) - 1, 0, self.n_z) 
-        voxel_n = np.ravel_multi_index([voxel_x, voxel_y, voxel_z], [self.n_x, self.n_y, self.n_z])
+        """ TODO Make query_voxelgrid an independent function, and add a light
+        save mode where only segments and x_y_z are saved.
+        """
+        voxel_x = np.clip(np.searchsorted(self.segments[0], points[:,0]) - 1, 0, self.x_y_z[0])
+        voxel_y = np.clip(np.searchsorted(self.segments[1], points[:,1]) - 1, 0, self.x_y_z[1])
+        voxel_z = np.clip(np.searchsorted(self.segments[2], points[:,2]) - 1, 0, self.x_y_z[2]) 
+        voxel_n = np.ravel_multi_index([voxel_x, voxel_y, voxel_z], self.x_y_z)
         
         return voxel_n
     
@@ -126,19 +125,19 @@ class VoxelGrid(Structure):
         
         if mode == "binary":
             vector[np.unique(self.voxel_n)] = 1
-            return vector.reshape((self.n_x, self.ny, self.nz))
+            return vector.reshape(self.x_y_z)
 
         elif mode == "density":
             count = np.bincount(self.voxel_n)
             vector[:len(count)] = count
             vector /= len(self.voxel_n)
-            return vector.reshape((self.n_x, self.ny, self.nz))
+            return vector.reshape(self.x_y_z)
 
         elif mode == "TDF":
             truncation = np.linalg.norm(self.shape)
             kdt = cKDTree(self.points)
             d, i =  kdt.query(self.voxel_centers, n_jobs=-1)
-            return d.reshape((self.n_x, self.ny, self.nz))
+            return d.reshape(self.x_y_z)
         
         elif mode.endswith("_max"):
             N = {"x_max":0, "y_max":1, "z_max":2}
