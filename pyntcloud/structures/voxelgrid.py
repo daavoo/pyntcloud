@@ -205,7 +205,17 @@ class VoxelGrid(Structure):
     
     
     def get_voxel_neighbors(self, voxel):
-        """ Get valid, non-empty 26 neighbors of voxel
+        """ Get valid, non-empty 26 neighbors of voxel.
+        
+        Parameters
+        ----------
+        voxel: int in self.set_voxel_n
+        
+        Returns
+        -------
+        neighbors: list of int
+            Indices of the valid, non-empty 26 neighborhood around voxel.
+            
         """
         x, y, z = np.unravel_index(voxel, self.x_y_z)
 
