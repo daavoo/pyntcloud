@@ -11,7 +11,8 @@ from ..utils.numba import groupby_max, groupby_count, groupby_sum
 class VoxelGrid(Structure):
     
     def __init__(self, PyntCloud, x_y_z=[2, 2, 2], sizes=None, bb_cuboid=True):
-        """
+        """ Grid of voxels with support for different build methods
+        
         Parameters
         ----------         
         points: (N,3) ndarray
@@ -33,6 +34,8 @@ class VoxelGrid(Structure):
             sizes[0]: voxel size along x axis.
             sizes[1]: voxel size along y axis.
             sizes[2]: voxel size along z axis.
+            Note
+            sizes[n] might be None. This axis will not be splitted.
 
         bb_cuboid : bool, optional
             Default: True
@@ -47,6 +50,8 @@ class VoxelGrid(Structure):
         self.bb_cuboid = bb_cuboid
         
     def extract_info(self):
+        """ ABC API. Extracts information from the PyntCloud
+        """
     
         points = self.points = self.PyntCloud.xyz
         
@@ -55,11 +60,12 @@ class VoxelGrid(Structure):
 
         if self.bb_cuboid:
             #: adjust to obtain a  minimum bounding box with all sides of equal lenght 
-            diff = max(xyzmax-xyzmin) - (xyzmax-xyzmin)
-            xyzmin = xyzmin - diff / 2
-            xyzmax = xyzmax + diff / 2 
+            margin = max(xyzmax-xyzmin) - (xyzmax-xyzmin)
+            xyzmin = xyzmin - margin / 2
+            xyzmax = xyzmax + margin / 2 
         
         if self.sizes is not None:
+            #: adjust to obtain side dividible by size
             self.x_y_z = [1, 1, 1]
             for n, size in enumerate(self.sizes):
                 if size is None:
@@ -77,7 +83,8 @@ class VoxelGrid(Structure):
 
         for i in range(3):
             # note the +1 in num 
-            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1), retstep=True)
+            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1),
+                                  retstep=True)
             segments.append(s)
             shape.append(step)
             
@@ -86,33 +93,43 @@ class VoxelGrid(Structure):
         
         self.n_voxels = self.x_y_z[0] * self.x_y_z[1] * self.x_y_z[2]
         
-        self.n_x = self.x_y_z[0]
-        self.n_y = self.x_y_z[1]
-        self.n_z = self.x_y_z[2]
-        
         self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.bb_cuboid)
 
     def compute(self):
+        """ ABC API. Build the structure
+        """
         # find where each point lies in corresponding segmented axis
         # -1 so index are 0-based; clip for edge cases
-        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0, self.n_x)
-        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:,1]) - 1, 0, self.n_y)
-        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:,2]) - 1, 0, self.n_z) 
-        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z], [self.n_x, self.n_y, self.n_z])
+        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:,0]) - 1, 0,
+                               self.x_y_z[0])
+        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:,1]) - 1, 0,
+                               self.x_y_z[1])
+        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:,2]) - 1, 0,
+                               self.x_y_z[2]) 
+        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z],
+                                            self.x_y_z)
 
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
         self.voxel_centers = cartesian(midsegments).astype(np.float32)
+        self.set_voxel_n = set(self.voxel_n)
     
     def query(self, points):
-        voxel_x = np.clip(np.searchsorted(self.segments[0], points[:,0]) - 1, 0, self.n_x)
-        voxel_y = np.clip(np.searchsorted(self.segments[1], points[:,1]) - 1, 0, self.n_y)
-        voxel_z = np.clip(np.searchsorted(self.segments[2], points[:,2]) - 1, 0, self.n_z) 
-        voxel_n = np.ravel_multi_index([voxel_x, voxel_y, voxel_z], [self.n_x, self.n_y, self.n_z])
+        """ ABC API. Query structure.
+        
+        TODO Make query_voxelgrid an independent function, and add a light
+        save mode where only segments and x_y_z are saved.
+        """
+        voxel_x = np.clip(np.searchsorted(self.segments[0], points[:,0]) - 1, 0, self.x_y_z[0])
+        voxel_y = np.clip(np.searchsorted(self.segments[1], points[:,1]) - 1, 0, self.x_y_z[1])
+        voxel_z = np.clip(np.searchsorted(self.segments[2], points[:,2]) - 1, 0, self.x_y_z[2]) 
+        voxel_n = np.ravel_multi_index([voxel_x, voxel_y, voxel_z], self.x_y_z)
         
         return voxel_n
     
     def get_and_set(self):
+        """ ABC API. Set attribute and return name
+        """
         
         self.PyntCloud.voxelgrids[self.id] = self
         
@@ -121,24 +138,59 @@ class VoxelGrid(Structure):
         return self.id
     
     def get_feature_vector(self, mode="binary"):
+        """ Return a vector of size = self.n_voxels. See mode options bellow:
+            
+        Parameters
+        ----------
+        mode: str in optional modes. See Notes
+            Default "binary"        
         
+        Returns
+        -------
+        vector: array of variable shape. See Notes
+        
+        Notes
+        -----
+        Avaliable modes are:
+            
+        binary
+            0 for empty voxels, 1 for occupied.
+            return shape: (self.x_y_z)
+            
+        density
+            number of points inside voxel / total number of points.
+            return shape: (self.x_y_z)
+            
+        TDF
+            Truncated Distance Function. Check Wikipedia.
+            return shape: (self.x_y_z)
+            
+        x_max, y_max, z_max
+            Maximum coordinate value of points inside each voxel.
+            return shape: (self.n_voxels)
+            
+        x_mean, y_mean, z_mean
+            Mean coordinate value of points inside each voxel.
+            return shape: (self.n_voxels)
+                
+        """
         vector = np.zeros(self.n_voxels)
         
         if mode == "binary":
             vector[np.unique(self.voxel_n)] = 1
-            return vector.reshape((self.n_x, self.ny, self.nz))
+            return vector.reshape(self.x_y_z)
 
         elif mode == "density":
             count = np.bincount(self.voxel_n)
             vector[:len(count)] = count
             vector /= len(self.voxel_n)
-            return vector.reshape((self.n_x, self.ny, self.nz))
+            return vector.reshape(self.x_y_z)
 
         elif mode == "TDF":
-            truncation = np.linalg.norm(self.shape)
+            #truncation = np.linalg.norm(self.shape)
             kdt = cKDTree(self.points)
             d, i =  kdt.query(self.voxel_centers, n_jobs=-1)
-            return d.reshape((self.n_x, self.ny, self.nz))
+            return d.reshape(self.x_y_z)
         
         elif mode.endswith("_max"):
             N = {"x_max":0, "y_max":1, "z_max":2}
@@ -151,17 +203,61 @@ class VoxelGrid(Structure):
             return (np.nan_to_num(groupby_sum(self.points, self.voxel_n, N[mode], s) /
                     groupby_count(self.points, self.voxel_n, c)))
     
+    
+    def get_voxel_neighbors(self, voxel):
+        """ Get valid, non-empty 26 neighbors of voxel.
+        
+        Parameters
+        ----------
+        voxel: int in self.set_voxel_n
+        
+        Returns
+        -------
+        neighbors: list of int
+            Indices of the valid, non-empty 26 neighborhood around voxel.
+            
+        """
+        x, y, z = np.unravel_index(voxel, self.x_y_z)
 
+        valid_x = []
+        valid_y = []
+        valid_z = []
+        if x-1 >= 0:
+            valid_x.append(x-1)
+        if y-1 >= 0:
+            valid_y.append(y-1)
+        if z-1 >= 0:
+            valid_z.append(z-1)
+    
+        valid_x.append(x)
+        valid_y.append(y)
+        valid_z.append(z)
+    
+        if x+1 < self.x_y_z[0]:
+            valid_x.append(x+1)
+        if y+1 < self.x_y_z[1]:
+            valid_y.append(y+1)
+        if z+1 < self.x_y_z[2]:
+            valid_z.append(z+1)
+    
+        valid_neighbor_indices = cartesian((valid_x, valid_y, valid_z))
+    
+        ravel_indices = np.ravel_multi_index((valid_neighbor_indices[:,0],
+                                              valid_neighbor_indices[:,1],
+                                              valid_neighbor_indices[:,2]), self.x_y_z)
+    
+        return [x for x in ravel_indices if x in self.set_voxel_n]
+    
     def plot_feature_vector(self, mode="binary", d=2, cmap="Oranges"):
         feature_vector = self.get_feature_vector(mode)
         
         if d == 2:
-            fig, axes= plt.subplots(int(np.ceil(self.n_z / 4)), 4, figsize=(8,8))
+            fig, axes= plt.subplots(int(np.ceil(self.x_y_z[2] / 4)), 4, figsize=(8,8))
             plt.tight_layout()
             for i, ax in enumerate(axes.flat):
                 if i >= len(feature_vector):
                     break
-                im = ax.imshow(feature_vector[:, :, i], cmap=cmap, interpolation="none")
+                ax.imshow(feature_vector[:, :, i], cmap=cmap, interpolation="none")
                 ax.set_title("Level " + str(i))
             
         elif d == 3:
