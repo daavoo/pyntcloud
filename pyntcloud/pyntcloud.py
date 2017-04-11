@@ -225,6 +225,7 @@ class PyntCloud(object):
                     Maximum distance from point to model in order to be considered as inlier.
                 max_iterations: int, optional (Default 100)
                     Maximum number of fitting iterations.
+                    
             sphere_fit
                 max_dist: float, optional 
                     Default: 1e-4
@@ -232,6 +233,7 @@ class PyntCloud(object):
                 max_iterations: int, optional 
                     Default: 100
                     Maximum number of fitting iterations.
+                    
             custom_fit
                 model: subclass of ransac.models.RansacModel
                     Model to be fitted

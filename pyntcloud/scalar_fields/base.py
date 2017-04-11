@@ -14,7 +14,11 @@ class ScalarField(ABC):
         for k, v in self.to_be_added.items():
             sf_added.append(k)
             self.pyntcloud.points[k] = v
-        return sf_added
+        
+        if len(sf_added) == 1:
+            return sf_added[0]
+        else:
+            return sf_added
 
     @abstractmethod
     def extract_info(self):
