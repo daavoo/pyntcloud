@@ -6,11 +6,47 @@
 
 Pyntcloud is a Python library for working with 3D point clouds.
 
-It's currently under heavy development so you should expect API changes. Check Projects tab: https://github.com/daavoo/pyntcloud/projects/2
+It's currently under heavy development so you should expect API changes. Check Projects tab to be aware of future changes:
 
-Check the documentation at: http://pyntcloud.readthedocs.io/en/latest/index.html
+https://github.com/daavoo/pyntcloud/projects/2
 
-You can follow the quickstart bellow for a real-world example of using pyntcloud.
+Installation
+============
+This 3 steps should allow you to use pyntcloud under Mac, Linux and Windows:
+
+1. Grab miniconda: 
+
+https://conda.io/miniconda.html
+
+2. Grab the pyntcloud_env.yml file:
+
+https://raw.githubusercontent.com/daavoo/pyntcloud/master/pyntcloud_env.yml
+
+You can manually save the content to a file or use:
+
+.. code-block:: bash
+
+    wget https://raw.githubusercontent.com/daavoo/pyntcloud/master/pyntcloud_env.yml
+    
+3. Type in the terminal:
+
+.. code-block:: bash
+
+    conda env create -f pyntcloud_env.yml
+
+And you now have an isolated enviroment with pyntcloud and all it's dependecies!. To make use of it:
+
+.. code-block:: bash
+
+    # activate pyntcloud in Windows
+    source activate pyntcloud
+    # Open Jupyter to start coding!
+    jupyter-notebook
+
+Documentation
+=============
+
+http://pyntcloud.readthedocs.io/en/latest/index.html
 
 QuickStart
 ==========
