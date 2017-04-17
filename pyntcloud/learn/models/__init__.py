@@ -1,2 +1,0 @@
-from .voxnet import VoxNet
-
