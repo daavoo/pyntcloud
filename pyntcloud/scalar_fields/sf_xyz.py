@@ -1,6 +1,6 @@
 import numpy as np
 from ..ransac import single_fit, RANSAC_MODELS, RANSAC_SAMPLERS
-from .base import ScalarField
+from ..base import ScalarField
 
 class ScalarField_XYZ(ScalarField):
     """

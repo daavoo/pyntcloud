@@ -1,5 +1,4 @@
-import numpy as np
-from .base import ScalarField
+from ..base import ScalarField
 from ..utils.array import eigen_3D
 
 class ScalarField_KNeighbors(ScalarField):

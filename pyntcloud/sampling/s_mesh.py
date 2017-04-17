@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from .base import Sampling
+from ..base import Sampling
 from ..geometry.areas import triangle_area_multi
 
 class Sampling_Mesh(Sampling):
