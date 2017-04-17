@@ -142,7 +142,7 @@ class VoxelGrid(Structure):
             
         Parameters
         ----------
-        mode: str in optional modes. See Notes
+        mode: str in avaliable modes. See Notes
             Default "binary"        
         
         Returns
@@ -162,7 +162,9 @@ class VoxelGrid(Structure):
             return shape: (self.x_y_z)
             
         TDF
-            Truncated Distance Function. Check Wikipedia.
+            Truncated Distance Function. Value between 0 and 1 indicating the distance 
+            between the voxel's center and the closest point. 1 on the surface,
+            0 on voxels further than 2 * voxel side.   
             return shape: (self.x_y_z)
             
         x_max, y_max, z_max
