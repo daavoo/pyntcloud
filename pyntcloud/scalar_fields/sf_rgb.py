@@ -1,5 +1,5 @@
 import numpy as np
-from .base import ScalarField
+from ..base import ScalarField
 
 class ScalarField_RGB(ScalarField):
 

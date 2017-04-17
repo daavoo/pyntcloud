@@ -1,5 +1,5 @@
 import numpy as np
-from .base import Filter
+from ..base import Filter
 
 class Filter_XYZ(Filter):
 

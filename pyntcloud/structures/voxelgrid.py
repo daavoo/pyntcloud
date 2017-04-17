@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy.spatial import cKDTree
 
-from .base import Structure
+from ..base import Structure
 from ..plot import plot_voxelgrid
 from ..utils.array import cartesian
 from ..utils.numba import groupby_max, groupby_count, groupby_sum

@@ -1,5 +1,5 @@
 from random import sample
-from .base import Sampling
+from ..base import Sampling
 
 class Sampling_Points(Sampling):
     """        
