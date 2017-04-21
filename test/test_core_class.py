@@ -31,7 +31,6 @@ def test_clean_all_structures():
     
     points = np.random.rand(10, 3)
     points = pd.DataFrame(points, columns=["x","y","z"])
-    
     cloud = PyntCloud(points)
     
     cloud.add_structure("voxelgrid")
@@ -43,4 +42,22 @@ def test_clean_all_structures():
     cloud.points = cloud.points[x_above_05]
     
     assert len(cloud.voxelgrids) == 0
+    
+def test_repr():
+    """
+    - When custom attributes are added, __repr__ must show it's name and type
+    """
+    
+    points = np.random.rand(10, 3)
+    points = pd.DataFrame(points, columns=["x","y","z"])
+    cloud = PyntCloud(points)
+    
+    # some dummy attribute
+    important_dict= {"black":"Carl", "white":"Lenny"}
+    cloud.important_information = important_dict
+    
+    reprstring = cloud.__repr__()
+    reprstring = reprstring.split("\n")
+    
+    assert reprstring[-2].strip() == "important_information: <class 'dict'>"
     
