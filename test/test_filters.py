@@ -1,6 +1,7 @@
 import os
-from pyntcloud import PyntCloud
 import pytest
+from pyntcloud import PyntCloud
+
 
 path = os.path.abspath(os.path.dirname(__file__))
 cloud = PyntCloud.from_file(path + "/data/filters.ply")
