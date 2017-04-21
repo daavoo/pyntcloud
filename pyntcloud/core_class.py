@@ -55,7 +55,7 @@ class PyntCloud(object):
             "xyz", 
             "filters"
         ]
-        others = ["\n\t {}: {}".format(x, str(type(x))) for x in self.__dict__ if x not in default]
+        others = ["\n\t {}: {}".format(x, str(type(getattr(self,x)))) for x in self.__dict__ if x not in default]
         
         if self.mesh is None:
             n_faces = 0
