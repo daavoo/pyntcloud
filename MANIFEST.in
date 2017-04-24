@@ -1,0 +1,4 @@
+include *.rst
+recursive-include docs *
+recursive-include pyntcloud *.html
+include README.rst
