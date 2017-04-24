@@ -1,29 +1,15 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='pyntcloud',
-    version='0.1',
+    version='8999',
     description='Python library for working with 3D point clouds.',
     url='https://github.com/daavoo/pyntcloud',
     author='David de la Iglesia Castro',
     author_email='daviddelaiglesiacastro@gmail.com',
     license='HAKUNAMATATA',
-    packages=['pyntcloud',
-              "pyntcloud.filters",
-              "pyntcloud.geometry",
-              "pyntcloud.io",
-              "pyntcloud.learn",
-              "pyntcloud.neighbors",
-              "pyntcloud.plot",
-              "pyntcloud.ransac",
-              "pyntcloud.sampling",
-              "pyntcloud.scalar_fields",
-              "pyntcloud.structures",
-              "pyntcloud.utils"],
-    keywords=[
-        "point-clouds",
-        "3D"
-    ],
+    packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         "numpy",
         "scipy",
@@ -33,18 +19,6 @@ setup(
         "matplotlib",
         "python-lzf",
         "numba"
-    ],    
-    classifiers=[
-            "Development Status :: 1 - Planning",
-            "Intended Audience :: Education",
-            "Intended Audience :: Developers",
-            "Intended Audience :: Science/Research",
-            "License :: Hakuna Matata",
-            "Operating System :: OS Independent",
-            "Programming Language :: Python",
-            "Topic :: Scientific/Engineering",
-            "Topic :: Scientific/Engineering :: Mathematics",
-            "Topic :: Scientific/Engineering :: Information Analysis",
-            ],
-    
+    ],
+
 )
