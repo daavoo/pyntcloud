@@ -6,11 +6,47 @@
 
 Pyntcloud is a Python library for working with 3D point clouds.
 
-It's currently under heavy development so you should expect API changes. Check Projects tab: https://github.com/daavoo/pyntcloud/projects/2
+It's currently under heavy development so you should expect API changes. Check Projects tab to be aware of future changes:
 
-Check the documentation at: http://pyntcloud.readthedocs.io/en/latest/index.html
+https://github.com/daavoo/pyntcloud/projects/2
 
-You can follow the quickstart bellow for a real-world example of using pyntcloud.
+Installation
+============
+This 3 steps should allow you to use pyntcloud under Mac, Linux and Windows:
+
+1. Grab miniconda: 
+
+https://conda.io/miniconda.html
+
+2. Grab the pyntcloud_env.yml file:
+
+https://raw.githubusercontent.com/daavoo/pyntcloud/master/pyntcloud_env.yml
+
+You can manually save the content to a file or use:
+
+.. code-block:: bash
+
+    wget https://raw.githubusercontent.com/daavoo/pyntcloud/master/pyntcloud_env.yml
+    
+3. Type in the terminal:
+
+.. code-block:: bash
+
+    conda env create -f pyntcloud_env.yml
+
+And you now have an isolated enviroment with pyntcloud and all it's dependecies!. To make use of it:
+
+.. code-block:: bash
+
+    # activate pyntcloud in Windows
+    source activate pyntcloud
+    # Open Jupyter to start coding!
+    jupyter-notebook
+
+Documentation
+=============
+
+http://pyntcloud.readthedocs.io/en/latest/index.html
 
 QuickStart
 ==========
@@ -55,7 +91,9 @@ And checking what is the information contained in it:
 .. code-block:: python
 
     print(scene)
-    """
+
+.. parsed-literal::
+
     PyntCloud
     51777 points with 7 scalar fields
     99059 faces in mesh
@@ -63,8 +101,7 @@ And checking what is the information contained in it:
     0 octrees
     0 voxelgrids
     Centroid: -17.429340362548828, 7.901965618133545, 5.268535137176514
-    Other attributes:
-    """
+    Other attributes:  
 
 We notice that the file is actually a triangular mesh.
 
@@ -92,7 +129,9 @@ Check the result:
 .. code-block:: python
 
     print(scene)
-    """
+    
+.. parsed-literal::
+
     PyntCloud
     500000 points with 6 scalar fields
     0 faces in mesh
@@ -100,8 +139,6 @@ Check the result:
     0 octrees
     0 voxelgrids
     Centroid: -10.083915710449219, 0.9554269313812256, 0.3894706070423126
-    Other attributes:
-    """
 
 And visualize the scene:
 
@@ -119,14 +156,16 @@ those points:
     scene.add_scalar_field("plane_fit", n_inliers_to_stop=len(scene.points)/30)
 
     print(scene.points.head())
-    """
+    
+.. parsed-literal::
+
                x          y    z  red  green  blue   nx   ny   nz  is_plane
     0 -23.514395 -10.208544  0.0    0     85     0  0.0  0.0  1.0         1
     1 -21.890928  46.220840  0.0    0     85     0  0.0  0.0  1.0         1
     2 -21.945238 -43.863705  0.0    0     85     0  0.0  0.0  1.0         1
     3 -17.939890   4.941135  0.0    0     28     0  0.0  0.0  1.0         1
     4 -22.573780  44.184689  0.0    0     85     0  0.0  0.0  1.0         1
-    """
+
 
 And visualize the scene using the new scalar field:
 

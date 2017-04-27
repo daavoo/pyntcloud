@@ -93,5 +93,4 @@ dependencies:
   - prompt-toolkit==1.0.14
   - git+https://github.com/daavoo/pyntcloud.git
   - python-lzf==0.2.4
-prefix: /home/daviddelaiglesia/miniconda3/envs/pyntcloud
 
