@@ -4,11 +4,11 @@
 Working with points
 ===================
 
-A classic point cloud is just a set of points. 
+A classic point cloud is just a set of points.
 
 In pyntcloud *points* is one of many attributes of the core class PyntCloud, althougt it's probably the most important.
 
-This attribute is internally represented as a 
+This attribute is internally represented as a
 `pandas DataFrame <http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html>`__.
 
 It is highly recommended to read the pandas DataFrame documentation in order to
@@ -18,11 +18,12 @@ cloud information that this entitie brings.
 .. code-block:: python
 
     from pyntcloud import PyntCloud
-    
-    cloud = PyntCloud.from_file("test/data/filters/filters.ply")   
-    
+
+    cloud = PyntCloud.from_file("test/data/filters/filters.ply")
+
     cloud.points
-    """
+
+.. parsed-literal::
          x    y    z
     0  0.0  0.0  0.0
     1  0.1  0.1  0.1
@@ -30,7 +31,7 @@ cloud information that this entitie brings.
     3  0.5  0.5  0.5
     4  0.9  0.9  0.9
     5  1.0  1.0  1.0
-    """
+
 
 Restrictions
 ============
@@ -40,24 +41,26 @@ attribute.
 
 -   *points* must be a pandas DataFrame
 
-If you want to instantiate a PyntCloud using the constructor, you have to pass 
+If you want to instantiate a PyntCloud using the constructor, you have to pass
 a pandas DataFrame as the *points* argument.
 
-If you want to change the *points* argument, you have to change it for a new 
+If you want to change the *points* argument, you have to change it for a new
 pandas DataFrame.
 
 .. code-block:: python
 
     import numpy as np
-    
+
     from pyntcloud import PyntCloud
-    
+
     points = np.random.rand(1000, 3)
-    
+
     cloud = PyntCloud(points)
-    
-    "TypeError: Points argument must be a DataFrame"
-    
+
+.. parsed-literal::
+
+    TypeError: Points argument must be a DataFrame
+
 -   *points* must have 'x', 'y' and 'z' columns
 
 The DataFrame that you use as *points* must have at least this 3 columns.
@@ -65,17 +68,19 @@ The DataFrame that you use as *points* must have at least this 3 columns.
 .. code-block:: python
 
     import numpy as np
-    
+
     import pandas as pd
-    
+
     from pyntcloud import PyntCloud
-    
+
     points = pd.DataFrame(np.random.rand(1000, 3))
-    
+
     cloud = PyntCloud(points)
-    
-    "ValueError: Points must have x, y and z coordinates"
-    
+
+.. parsed-literal::
+
+    ValueError: Points must have x, y and z coordinates
+
 Basic manipulation
 ==================
 
@@ -90,11 +95,13 @@ You can quickly get statistical information about points with a single command:
 .. code-block:: python
 
     from pyntcloud import PyntCloud
-    
-    cloud = PyntCloud.from_file("test/data/filters/filters.ply")   
-    
+
+    cloud = PyntCloud.from_file("test/data/filters/filters.ply")
+
     cloud.points.describe()
-    """
+
+.. parsed-literal::
+
                   x         y         z
     count  6.000000  6.000000  6.000000
     mean   0.450000  0.450000  0.450000
@@ -104,8 +111,8 @@ You can quickly get statistical information about points with a single command:
     50%    0.350000  0.350000  0.350000
     75%    0.800000  0.800000  0.800000
     max    1.000000  1.000000  1.000000
-    """
-    
+
+
 You can use different plots to visualize the information in points:
 
 .. code-block:: python
@@ -116,20 +123,22 @@ You can use different plots to visualize the information in points:
 
 .. code-block:: python
 
-    from pandas.tools.plotting import scatter_matrix  
-    
+    from pandas.tools.plotting import scatter_matrix
+
     scatter_matrix(cloud.points, diagonal="kde", figsize=(8,8))
 
 .. image:: /images/scatter_matrix.png
 
-You can perform operations over points like getting wich points are above some 
+You can perform operations over points like getting wich points are above some
 "z" coordinate:
 
 .. code-block:: python
 
     above_03 = cloud.points["z"] > 0.3
     above_03
-    """
+
+.. parsed-literal::
+
     0    False
     1    False
     2    False
@@ -137,11 +146,11 @@ You can perform operations over points like getting wich points are above some
     4     True
     5     True
     Name: x, dtype: bool
-    """
-    
+
+
 You can find more information about this kind of operations in Working with scalar
 fields.
 
 As mentioned above, to fully understad the manipulation possibilities that the
-pandas DataFrame brings, is better to take a look at 
+pandas DataFrame brings, is better to take a look at
 `it's documentation <http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html>`__.

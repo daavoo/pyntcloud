@@ -6,20 +6,18 @@ PyntCloud
 **PyntCloud** is the core class that englobes almost all the functionallity avaliable
 in **pyntcloud**.
 
-This class was designed as a programming-focused extension of the original concept of point cloud.
-
-Whereas in it's classical form the point clouds are understood as simple sets of points, a 
+Whereas, in it's classical form, the point clouds are understood as simple sets of points, a
 PyntCloud is a Python class with several **attributes** and **methods** that enable a more
 fluent way of manipulating this entities.
 
 Attributes
 ==========
 
-PyntCloud's attributes serve to store information about the point cloud and the 
+PyntCloud's attributes serve to store information about the point cloud and the
 structures associated with it.
 
 Each PyntCloud's instance some predifined attributes:
-   
+
 -   centroid
 -   kdtrees
 -   mesh
@@ -36,11 +34,13 @@ The information about this attributes is reported by the __repr__ method:
 .. code-block:: python
 
     from pyntcloud import PyntCloud
-    
-    cloud = PyntCloud.from_file("test/data/filters/filters.ply")   
-    
+
+    cloud = PyntCloud.from_file("test/data/filters/filters.ply")
+
     print(cloud)
-    """
+
+.. parsed-literal::
+
     PyntCloud
     6 points with 0 scalar fields
     0 faces in mesh
@@ -48,9 +48,9 @@ The information about this attributes is reported by the __repr__ method:
     0 octrees
     0 voxelgrids
     Centroid: 0.45000001788139343, 0.45000001788139343, 0.45000001788139343
-    Other attributes: 
-    """
-    
+    Other attributes:
+
+
 Methods
 =======
 
