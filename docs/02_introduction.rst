@@ -2,7 +2,7 @@
 Introduction
 ============
 
-This page will introduce the general concept of *point clouds* and illustrate 
+This page will introduce the general concept of *point clouds* and illustrate
 what are the capabilities of pyntcloud as a point cloud processing tool.
 
 
@@ -12,23 +12,23 @@ Point clouds are one of the most relevant entities for representing three dimens
 data these days, along with polygonal meshes (wich are just a special case of point clouds with
 connectivity graph attached).
 
-In it's simplest form, a point cloud is a set of points in a cartesian coordinate 
+In it's simplest form, a point cloud is a set of points in a cartesian coordinate
 system.
 
-Accurate `3D point clouds <https://en.wikipedia.org/wiki/Point_cloud>`__ can (easily and cheaply) 
+Accurate `3D point clouds <https://en.wikipedia.org/wiki/Point_cloud>`__ can (easily and cheaply)
 be adquired nowdays from different sources. For example:
 
 - RGB-D devices: `Google Tango <http://get.google.com/tango/>`__, `Microsoft Kinect <https://developer.microsoft.com/en-us/windows/kinect>`__, etc.
 
 - `Lidar <https://en.wikipedia.org/wiki/Lidar>`__.
-- `3D reconstruction from multiple images <https://en.wikipedia.org/wiki/3D_reconstruction_from_multiple_images>`__
+
+- Camera + Photogrammetry software (`Open source Colmap <https://colmap.github.io/>`__, `Agisoft Photoscan <http://www.agisoft.com/>`__, . . . )
 
 pyntcloud
 =========
-pyntcloud enables simple and interactive exploration of point cloud data. 
+pyntcloud enables simple and interactive exploration of point cloud data.
 
-Althoug by conception was built to be used for point cloud researching with 
-`Jupyter Notebooks <http://jupyter.org/>`__ the library is suitable for other uses.
+Althoug it was built for being used on `Jupyter Notebooks <http://jupyter.org/>`__ the library is suitable for other kind of uses.
 
 pyntcloud is composed by several modules (as indepentent as possible) that englobe
 commom point cloud processing operations:

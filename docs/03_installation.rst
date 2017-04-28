@@ -22,7 +22,7 @@ The only excuse for not using it, is that you didn't know about it. And now you 
 
 https://conda.io/miniconda.html
 
-** Grab conda 2.7 version**, it allows us to create python3 enviroments aswell, so
+**Grab conda 2.7 version**, it allows us to create python3 enviroments aswell, so
 blindly trust me and grab the conda 2.7 version.
 
 Answer **yes** when you get this prompt:
@@ -85,13 +85,14 @@ Now if you run:
 
 You should see a new Conda tab on the top
 
-.. image:: images/vanillajupyter.png
+.. image:: images/condajupyter.png
 
 This might look like a small modification, but it is game-changing. When you click
-the New button, you now should see the option to select wich enviroment should
+the New button, you can now select wich enviroment should
 the new notebook use. This is HUGE.
 
-3. Install pyntcloud:
+3. Install pyntcloud
+--------------------
 
 Grab:
 
@@ -103,7 +104,7 @@ You can manually save the content to a file or use:
 
     wget https://raw.githubusercontent.com/daavoo/pyntcloud/master/enviroment.yml
 
-3. Type in the terminal:
+Type in the terminal:
 
 .. code-block:: bash
 
@@ -120,3 +121,34 @@ To make use of it, run this **without** activating the enviroment:
 And create a new Notebook selecting env:pyntcloud as kernel:
 
 .. image:: images/pyntcloudnotebook.png
+
+4. Run the QuickStart
+---------------------
+
+Now that we have all setted up, let's run the QuickStart notebook, wich will give
+us a quick overview of pyntcloud.
+
+First, clone the pyntcloud-notebooks repo:
+
+.. code-block:: bash
+
+    git clone https://github.com/daavoo/pyntcloud-notebooks.git
+
+Move to the root directory of the repo and launch jupyter notebook (remember, **without**
+activating the pyntcloud enviroment, because we are using `nb_conda`):
+
+.. code-block:: bash
+
+    cd pyntcloud-notebooks/
+
+    jupyter notebook
+
+Now we can open the QuickStart.ipynb file and go through the tutorial.
+
+If you get a prompt asking which kernel should be used, make sure that you select
+env:pyntcloud.
+
+You can verify that the notebook is running the correct kernel by looking at the
+top right of the window:
+
+.. image:: images/quickstartnotebook.png

@@ -20,3 +20,8 @@ Upcoming changes
 ================
 
 https://github.com/daavoo/pyntcloud/projects/2
+
+Code examples
+=============
+
+https://github.com/daavoo/pyntcloud-notebooks
