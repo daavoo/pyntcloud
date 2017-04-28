@@ -6,7 +6,8 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = pyntcloud
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = ../../pyntcloud-docs
+
 
 # Put it first so that "make" without argument is like "make help".
 help:
