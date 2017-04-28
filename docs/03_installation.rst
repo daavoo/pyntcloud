@@ -22,7 +22,7 @@ The only excuse for not using it, is that you didn't know about it. And now you 
 
 https://conda.io/miniconda.html
 
-** Grab conda 2.7 version**, it allows us to create python3 enviroments aswell, so
+**Grab conda 2.7 version**, it allows us to create python3 enviroments aswell, so
 blindly trust me and grab the conda 2.7 version.
 
 Answer **yes** when you get this prompt:
