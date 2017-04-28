@@ -11,8 +11,8 @@ This documentation is under cosntruction.
 .. toctree::
    :maxdepth: 2
 
-   02_introduction
-   03_installation
-   04_PyntCloud
-   05_io
-   06_points
+   introduction
+   installation
+   PyntCloud
+   io
+   points
