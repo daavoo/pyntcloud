@@ -17,6 +17,7 @@ def read_las(filename):
     data = {}
 
     with laspy.file.File(filename) as las:
-        data["points"] = pd.DataFrame(las.points)
+        data["points"] = pd.DataFrame(las.points["point"])
+        data["points"].columns = (x.lower() for x in data["points"].columns)
 
     return data
