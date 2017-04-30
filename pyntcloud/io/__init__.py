@@ -1,3 +1,4 @@
+from .ascii import read_ascii
 from .las import read_las
 from .mat import read_mat
 from .npz import read_npz, write_npz
@@ -7,13 +8,17 @@ from .off import read_off
 from .pcd import read_pcd
 
 FROM = {
+    "ASC": read_ascii,
     "LAS": read_las,
     "MAT": read_mat,
     "NPZ": read_npz,
     "OBJ": read_obj,
-    "PLY": read_ply,
     "OFF": read_off,
-    "PCD": read_pcd
+    "PCD": read_pcd,
+    "PLY": read_ply,
+    "PTS": read_ascii,
+    "TXT": read_ascii,
+    "XYZ": read_ascii
 }
 
 TO = {
