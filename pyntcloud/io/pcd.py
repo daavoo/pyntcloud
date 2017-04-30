@@ -18,6 +18,7 @@ numpy_pcd_type_mappings = [(np.dtype('float32'), ('F', 4)),
 numpy_type_to_pcd_type = dict(numpy_pcd_type_mappings)
 pcd_type_to_numpy_type = dict((q, p) for (p, q) in numpy_pcd_type_mappings)
 
+
 def parse_header(lines):
     metadata = {}
     for ln in lines:
@@ -43,12 +44,13 @@ def parse_header(lines):
         # TODO apparently count is not required?
     # add some reasonable defaults
     if 'count' not in metadata:
-        metadata['count'] = [1]*len(metadata['fields'])
+        metadata['count'] = [1] * len(metadata['fields'])
     if 'viewpoint' not in metadata:
         metadata['viewpoint'] = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
     if 'version' not in metadata:
         metadata['version'] = '.7'
     return metadata
+
 
 def build_dtype(metadata):
     """ build numpy structured array dtype from pcl metadata.
@@ -68,10 +70,11 @@ def build_dtype(metadata):
             typenames.append(np_type)
         else:
             fieldnames.extend(['%s_%04d' % (f, i) for i in range(c)])
-            typenames.extend([np_type]*c)
+            typenames.extend([np_type] * c)
 
     dtype = np.dtype(list(zip(fieldnames, typenames)))
     return dtype
+
 
 def read_pcd(filename):
     """ Reads and pcd file and return the elements as pandas Dataframes.
@@ -96,18 +99,17 @@ def read_pcd(filename):
                 metadata = parse_header(header)
                 dtype = build_dtype(metadata)
                 break
-            
+
         if metadata['data'] == 'ascii':
             pc_data = np.loadtxt(f, dtype=dtype, delimiter=' ')
-            
-            
+
         elif metadata['data'] == 'binary':
-            rowstep = metadata['points']*dtype.itemsize
+            rowstep = metadata['points'] * dtype.itemsize
             # for some reason pcl adds empty space at the end of files
             buf = f.read(rowstep)
-            
+
             pc_data = np.fromstring(buf, dtype=dtype)
-            
+
         elif metadata['data'] == 'binary_compressed':
             # compressed size of data (uint32)
             # uncompressed size of data (uint32)
@@ -129,10 +131,10 @@ def read_pcd(filename):
             for dti in range(len(dtype)):
                 dt = dtype[dti]
                 bytes = dt.itemsize * metadata['width']
-                column = np.fromstring(buf[ix:(ix+bytes)], dt)
+                column = np.fromstring(buf[ix:(ix + bytes)], dt)
                 pc_data[dtype.names[dti]] = column
                 ix += bytes
-                
+
     data["points"] = pd.DataFrame(pc_data)
-    
+
     return data

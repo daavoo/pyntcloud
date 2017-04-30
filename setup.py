@@ -18,7 +18,8 @@ setup(
         "pytest",
         "matplotlib",
         "python-lzf",
-        "numba"
+        "numba",
+        "laspy"
     ],
 
 )
