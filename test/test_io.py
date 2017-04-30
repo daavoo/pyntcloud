@@ -117,3 +117,10 @@ def test_read_mat():
     assert_points_xyz(mat)
     assert_points_color(mat)
     assert_mesh(mat)
+
+
+def test_read_ascii():
+    ply_ascii = PyntCloud.from_file(data_path + '.asc', sep=" ",
+                                    names=["x", "y", "z"], dtype="f")
+
+    assert_points_xyz(ply_ascii)
