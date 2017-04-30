@@ -8,7 +8,6 @@ from .pcd import read_pcd
 
 FROM = {
     "LAS": read_las,
-    "LAZ": read_las,
     "MAT": read_mat,
     "NPZ": read_npz,
     "OBJ": read_obj,
