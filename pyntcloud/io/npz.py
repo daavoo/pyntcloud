@@ -5,7 +5,7 @@ import pandas as pd
 
 
 def read_npz(filename, points_name="points", mesh_name="mesh"):
-    """ Read a .npz file and store all possible elements in pandas DataFrame 
+    """ Read a .npz file and store all possible elements in pandas DataFrame
     Parameters
     ----------
     filename: str
@@ -24,7 +24,7 @@ def read_npz(filename, points_name="points", mesh_name="mesh"):
     return data
 
 
-def write_npz(filename,  **kwargs):  
+def write_npz(filename,  **kwargs):
     """
     Parameters
     ----------

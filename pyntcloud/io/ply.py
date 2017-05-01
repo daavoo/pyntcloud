@@ -25,7 +25,8 @@ ply_dtypes = dict([
     (b'double', 'f8')
 ])
 
-valid_formats = {'ascii': '', 'binary_big_endian': '>', 'binary_little_endian': '<'}
+valid_formats = {'ascii': '', 'binary_big_endian': '>',
+                 'binary_little_endian': '<'}
 
 
 def read_ply(filename):
@@ -48,12 +49,12 @@ def read_ply(filename):
         fmt = ply.readline().split()[1].decode()
         # get extension for building the numpy dtypes
         ext = valid_formats[fmt]
-                
+
         line = []
         dtypes = defaultdict(list)
         count = 2
         points_size = None
-        mesh_size = None        
+        mesh_size = None
         while b'end_header' not in line and line != b'':
             line = ply.readline()
 
@@ -65,33 +66,37 @@ def read_ply(filename):
                     points_size = size
                 elif name == "face":
                     mesh_size = size
-                
+
             elif b'property' in line:
                 line = line.split()
                 # element mesh
                 if b'list' in line:
                     mesh_names = ['n_points', 'v1', 'v2', 'v3']
-                    
+
                     if fmt == "ascii":
                         # the first number has different dtype than the list
-                        dtypes[name].append((mesh_names[0], ply_dtypes[line[2]]))
+                        dtypes[name].append(
+                            (mesh_names[0], ply_dtypes[line[2]]))
                         # rest of the numbers have the same dtype
                         dt = ply_dtypes[line[3]]
                     else:
                         # the first number has different dtype than the list
-                        dtypes[name].append((mesh_names[0], ext + ply_dtypes[line[2]]))
+                        dtypes[name].append(
+                            (mesh_names[0], ext + ply_dtypes[line[2]]))
                         # rest of the numbers have the same dtype
                         dt = ext + ply_dtypes[line[3]]
-                    
+
                     for j in range(1, 4):
                         dtypes[name].append((mesh_names[j], dt))
                 else:
                     if fmt == "ascii":
-                        dtypes[name].append((line[2].decode(), ply_dtypes[line[1]]))
+                        dtypes[name].append(
+                            (line[2].decode(), ply_dtypes[line[1]]))
                     else:
-                        dtypes[name].append((line[2].decode(), ext + ply_dtypes[line[1]]))
+                        dtypes[name].append(
+                            (line[2].decode(), ext + ply_dtypes[line[1]]))
             count += 1
-        
+
         # for bin
         end_header = ply.tell()
 
@@ -99,34 +104,40 @@ def read_ply(filename):
 
     if fmt == 'ascii':
         top = count
-        bottom = 0 if mesh_size is None else mesh_size 
+        bottom = 0 if mesh_size is None else mesh_size
 
         names = [x[0] for x in dtypes["vertex"]]
 
-        data["points"] = pd.read_csv(filename, sep=" ", header=None, engine="python", skiprows=top, skip_footer=bottom, usecols=names, names=names) 
+        data["points"] = pd.read_csv(filename, sep=" ", header=None, engine="python",
+                                     skiprows=top, skip_footer=bottom, usecols=names, names=names)
 
         for n, col in enumerate(data["points"].columns):
-            data["points"][col] = data["points"][col].astype(dtypes["vertex"][n][1])
+            data["points"][col] = data["points"][col].astype(
+                dtypes["vertex"][n][1])
 
         if mesh_size is not None:
             top = count + points_size
 
             names = [x[0] for x in dtypes["face"]][1:]
-            usecols = [1,2,3]
+            usecols = [1, 2, 3]
 
-            data["mesh"] = pd.read_csv(filename, sep=" ", header=None, engine="python", skiprows=top, usecols=usecols, names=names)
+            data["mesh"] = pd.read_csv(
+                filename, sep=" ", header=None, engine="python", skiprows=top, usecols=usecols, names=names)
 
             for n, col in enumerate(data["mesh"].columns):
-                data["mesh"][col] = data["mesh"][col].astype(dtypes["face"][n+1][1])    
-            
+                data["mesh"][col] = data["mesh"][col].astype(
+                    dtypes["face"][n + 1][1])
+
     else:
         with open(filename, 'rb') as ply:
             ply.seek(end_header)
-            data["points"] = pd.DataFrame(np.fromfile(ply, dtype=dtypes["vertex"], count=points_size))
+            data["points"] = pd.DataFrame(np.fromfile(
+                ply, dtype=dtypes["vertex"], count=points_size))
             if mesh_size is not None:
-                data["mesh"]  = pd.DataFrame(np.fromfile(ply, dtype=dtypes["face"], count=mesh_size))
+                data["mesh"] = pd.DataFrame(np.fromfile(
+                    ply, dtype=dtypes["face"], count=mesh_size))
                 data["mesh"].drop('n_points', axis=1, inplace=True)
-    
+
     return data
 
 
@@ -176,10 +187,10 @@ def write_ply(filename, points=None, mesh=None, as_text=False):
     if as_text:
         if points is not None:
             points.to_csv(filename, sep=" ", index=False, header=False, mode='a',
-                                                                encoding='ascii')
+                          encoding='ascii')
         if mesh is not None:
             mesh.to_csv(filename, sep=" ", index=False, header=False, mode='a',
-                                                                encoding='ascii')
+                        encoding='ascii')
 
     else:
         # open in binary/append to use tofile
@@ -188,9 +199,9 @@ def write_ply(filename, points=None, mesh=None, as_text=False):
                 points.to_records(index=False).tofile(ply)
             if mesh is not None:
                 mesh.to_records(index=False).tofile(ply)
-                
+
     return True
-    
+
 
 def describe_element(name, df):
     """ Takes the columns of the dataframe and builds a ply-like description
@@ -206,10 +217,10 @@ def describe_element(name, df):
     """
     property_formats = {'f': 'float', 'u': 'uchar', 'i': 'int'}
     element = ['element ' + name + ' ' + str(len(df))]
-    
+
     if name == 'face':
         element.append("property list uchar int vertex_indices")
-        
+
     else:
         for i in range(len(df.columns)):
             # get first letter of dtype to infer format
