@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def r_neighbors(kdtree, r):
     """ Get indices of all neartest neighbors with a distance < r for each point
 
