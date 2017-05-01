@@ -9,6 +9,7 @@ from .pcd import read_pcd
 
 FROM = {
     "ASC": read_ascii,
+    "CSV": read_ascii,
     "LAS": read_las,
     "MAT": read_mat,
     "NPZ": read_npz,
