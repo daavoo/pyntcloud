@@ -465,17 +465,13 @@ class PyntCloud(object):
             Default: None
             KDTree.id in self.kdtrees.
 
-            - If **kdtree** is None and **k** is not None:
+            - If **kdtree** is None:
 
             The KDTree will be computed and added to PyntCloud as part of the process.
 
-            - Elif **r** is not None:
-
-            kdtree kwarg will be ignored.
-
             - Else:
 
-            The given KDTree will be used for "K-nearest neighbor" search.
+            The given KDTree will be used for neighbor search.
 
         Returns
         -------
@@ -487,17 +483,18 @@ class PyntCloud(object):
                 to the neighbors with distance < r.
         """
 
+        if kdtree is None:
+            kdtree_id = self.add_structure("kdtree")
+            kdtree = self.kdtrees[kdtree_id]
+        else:
+            kdtree = self.kdtrees[kdtree]
 
         if k is not None:
-            if kdtree is None:
-                kdtree_id = self.add_structure("kdtree")
-                kdtree = self.kdtrees[kdtree_id]
-            else:
-                kdtree = self.kdtrees[kdtree]
             return k_neighbors(kdtree, k)
 
         elif r is not None:
-            return r_neighbors(self.xyz, r)
+            return r_neighbors(kdtree, r)
+
         else:
             raise ValueError("You must supply 'k' or 'r' values.")
 
