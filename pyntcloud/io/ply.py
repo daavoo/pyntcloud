@@ -109,7 +109,7 @@ def read_ply(filename):
         names = [x[0] for x in dtypes["vertex"]]
 
         data["points"] = pd.read_csv(filename, sep=" ", header=None, engine="python",
-                                     skiprows=top, skip_footer=bottom, usecols=names, names=names)
+                                     skiprows=top, skipfooter=bottom, usecols=names, names=names)
 
         for n, col in enumerate(data["points"].columns):
             data["points"][col] = data["points"][col].astype(

@@ -16,7 +16,6 @@ generic array formats (more formats will be added in the near future):
 
 -   .asc / .pts / .txt / .csv / .xyz (see 'Note about ASCII files' bellow)
 -   `.las <https://www.asprs.org/committee-general/laser-las-file-format-exchange-activities.html>`__
--   `.mat <https://es.mathworks.com/help/matlab/import_export/mat-file-versions.html>`__
 -   `.npy / .npz <https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html>`__
 -   `.obj <https://en.wikipedia.org/wiki/Wavefront_.obj_file>`__
 -   `.off <https://en.wikipedia.org/wiki/OFF_(file_format)>`__
