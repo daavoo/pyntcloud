@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.1//EN" "http://www.web3d.org/specifications/x3d-3.1.dtd">
+<X3D profile="Immersive" version="3.1" xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.1.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance">
+ <head>
+  <meta content="diamond.x3d" name="title"/>
+  <meta content="Generated from Meshlab X3D Exported" name="description"/>
+  <meta content="2 mayo 2017" name="created"/>
+  <meta content="Meshlab X3D Exported, http://meshlab.sourceforge.net" name="generator"/>
+ </head>
+ <Scene>
+  <Shape>
+   <IndexedFaceSet coordIndex="0 1 2 -1 0 3 2 -1 3 4 2 -1 4 1 2 -1 0 1 5 -1 0 3 5 -1 3 4 5 -1 4 1 5 -1" solid="false">
+    <Coordinate point="0.5 0 0.5 0 0.5 0.5 0.5 0.5 0 1 0.5 0.5 0.5 1 0.5 0.5 0.5 1"/>
+    <ColorRGBA color="1 0 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 0 1 0 0 1 1"/>
+    <Normal vector="0 -1 0 -1 0 0 0 0 -1 1 0 0 0 1 0 0 0 1"/>
+   </IndexedFaceSet>
+  </Shape>
+ </Scene>
+</X3D>

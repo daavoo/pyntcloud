@@ -3,13 +3,13 @@ import numpy as np
 from pyntcloud import PyntCloud
 
 path = os.path.abspath(os.path.dirname(__file__))
-data_path = path + '/data/bunny'
+data_path = path + '/data/diamond'
 
 
 def assert_points_xyz(data):
-    assert np.isclose(data.points['x'][0], -0.037829701)
-    assert np.isclose(data.points['y'][0], 0.12794)
-    assert np.isclose(data.points['z'][0], 0.0044746702)
+    assert np.isclose(data.points['x'][0], 0.5)
+    assert np.isclose(data.points['y'][0], 0)
+    assert np.isclose(data.points['z'][0], 0.5)
 
     assert str(data.points["x"].dtype) == 'float32'
     assert str(data.points["y"].dtype) == 'float32'
@@ -17,9 +17,9 @@ def assert_points_xyz(data):
 
 
 def assert_points_color(data):
-    assert data.points['red'][0] == 103
+    assert data.points['red'][0] == 255
     assert data.points['green'][0] == 0
-    assert data.points['blue'][0] == 31
+    assert data.points['blue'][0] == 0
 
     assert str(data.points['red'].dtype) == 'uint8'
     assert str(data.points['green'].dtype) == 'uint8'
@@ -27,9 +27,9 @@ def assert_points_color(data):
 
 
 def assert_mesh(data):
-    assert data.mesh["v1"][0] == 20399
-    assert data.mesh["v2"][0] == 21215
-    assert data.mesh["v3"][0] == 21216
+    assert data.mesh["v1"][0] == 0
+    assert data.mesh["v2"][0] == 1
+    assert data.mesh["v3"][0] == 2
 
     assert str(data.mesh['v1'].dtype) == 'int32'
     assert str(data.mesh['v2'].dtype) == 'int32'
@@ -37,7 +37,7 @@ def assert_mesh(data):
 
 
 def test_read_ply_bin():
-    ply_bin = PyntCloud.from_file(data_path + '_bin.ply')
+    ply_bin = PyntCloud.from_file(data_path + '.ply')
 
     assert_points_xyz(ply_bin)
     assert_points_color(ply_bin)
@@ -45,7 +45,7 @@ def test_read_ply_bin():
 
 
 def test_read_ply_ascii():
-    ply_ascii = PyntCloud.from_file(data_path + '.ply')
+    ply_ascii = PyntCloud.from_file(data_path + '_ascii.ply')
 
     assert_points_xyz(ply_ascii)
     assert_points_color(ply_ascii)
@@ -53,7 +53,7 @@ def test_read_ply_ascii():
 
 
 def test_write_ply():
-    data = PyntCloud.from_file(data_path + '_bin.ply')
+    data = PyntCloud.from_file(data_path + '.ply')
 
     data.to_file(data_path + 'writed_ascii.ply', internal=["points", "mesh"],
                  as_text=True)
@@ -81,7 +81,7 @@ def test_read_npz():
 
 
 def test_write_npz():
-    data = PyntCloud.from_file(data_path + '_bin.ply')
+    data = PyntCloud.from_file(data_path + '.ply')
 
     data.to_file(data_path + 'writed_npz.npz', internal=["points", "mesh"])
 
@@ -100,7 +100,7 @@ def test_read_obj():
 
 
 def test_write_obj():
-    data = PyntCloud.from_file(data_path + '_bin.ply')
+    data = PyntCloud.from_file(data_path + '.ply')
 
     data.to_file(data_path + 'writed.obj', internal=["points", "mesh"])
 
@@ -111,16 +111,10 @@ def test_write_obj():
     os.remove(data_path + 'writed.obj')
 
 
-def test_read_mat():
-    mat = PyntCloud.from_file(data_path + '.mat')
-
-    assert_points_xyz(mat)
-    assert_points_color(mat)
-    assert_mesh(mat)
-
-
 def test_read_ascii():
-    ply_ascii = PyntCloud.from_file(data_path + '.asc', sep=" ",
-                                    names=["x", "y", "z"], dtype="f")
+    ply_ascii = PyntCloud.from_file(data_path + '.xyz', sep=" ", header=None,
+                                    index_col=False,
+                                    names=["x", "y", "z", "nx", "ny", "nz"],
+                                    dtype="f")
 
     assert_points_xyz(ply_ascii)
