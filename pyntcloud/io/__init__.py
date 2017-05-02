@@ -1,6 +1,5 @@
 from .ascii import read_ascii
 from .las import read_las
-from .mat import read_mat
 from .npz import read_npz, write_npz
 from .obj import read_obj, write_obj
 from .ply import read_ply, write_ply
@@ -11,7 +10,6 @@ FROM = {
     "ASC": read_ascii,
     "CSV": read_ascii,
     "LAS": read_las,
-    "MAT": read_mat,
     "NPZ": read_npz,
     "OBJ": read_obj,
     "OFF": read_off,
