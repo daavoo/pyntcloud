@@ -116,9 +116,11 @@ class PyntCloud(object):
         filename: str
             Path to the file from wich the data will be readed
 
-        internals: list of str, optional
+        internal: list of str, optional
             Default: ["points"]
             Names of the attributes that will be extracted from the PyntCloud.
+
+        kwargs: only usable in some formats
         """
 
         ext = filename.split(".")[-1].upper()

@@ -41,7 +41,7 @@ Writing
 .. code-block:: python
 
     # my_point_cloud is a PyntCloud instance
-    my_point_cloud.to_file("out_file.obj", internals=["points", "mesh"])
+    my_point_cloud.to_file("out_file.obj", internal=["points", "mesh"])
 
 Alternative ways for creating PyntClouds
 ========================================

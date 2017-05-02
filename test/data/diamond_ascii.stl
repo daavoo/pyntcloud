@@ -1,0 +1,58 @@
+solid vcg
+  facet normal -5.773503e-01 -5.773503e-01 -5.773503e-01
+    outer loop
+      vertex   5.000000e-01  0.000000e+00  5.000000e-01
+      vertex   0.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  0.000000e+00
+    endloop
+  endfacet
+  facet normal -5.773503e-01  5.773503e-01  5.773503e-01
+    outer loop
+      vertex   5.000000e-01  0.000000e+00  5.000000e-01
+      vertex   1.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  0.000000e+00
+    endloop
+  endfacet
+  facet normal -5.773503e-01 -5.773503e-01  5.773503e-01
+    outer loop
+      vertex   1.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  1.000000e+00  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  0.000000e+00
+    endloop
+  endfacet
+  facet normal  5.773503e-01 -5.773503e-01  5.773503e-01
+    outer loop
+      vertex   5.000000e-01  1.000000e+00  5.000000e-01
+      vertex   0.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  0.000000e+00
+    endloop
+  endfacet
+  facet normal  5.773503e-01  5.773503e-01 -5.773503e-01
+    outer loop
+      vertex   5.000000e-01  0.000000e+00  5.000000e-01
+      vertex   0.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  1.000000e+00
+    endloop
+  endfacet
+  facet normal  5.773503e-01 -5.773503e-01  5.773503e-01
+    outer loop
+      vertex   5.000000e-01  0.000000e+00  5.000000e-01
+      vertex   1.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  1.000000e+00
+    endloop
+  endfacet
+  facet normal  5.773503e-01  5.773503e-01  5.773503e-01
+    outer loop
+      vertex   1.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  1.000000e+00  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  1.000000e+00
+    endloop
+  endfacet
+  facet normal -5.773503e-01  5.773503e-01  5.773503e-01
+    outer loop
+      vertex   5.000000e-01  1.000000e+00  5.000000e-01
+      vertex   0.000000e+00  5.000000e-01  5.000000e-01
+      vertex   5.000000e-01  5.000000e-01  1.000000e+00
+    endloop
+  endfacet
+endsolid vcg
