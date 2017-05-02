@@ -5,7 +5,7 @@ from .sf_eigenvalues import (
     EigenSum,
     Linearity,
     Omnivariance,
-    Planarity,    
+    Planarity,
     Sphericity
 )
 from .sf_kneighbors import (
@@ -42,12 +42,12 @@ ALL_SF = {
     'eigenentropy': Eigenentropy,
     'eigen_sum': EigenSum,
     'linearity': Linearity,
-    'omnivariance': Omnivariance,    
-    'planarity': Planarity, 
+    'omnivariance': Omnivariance,
+    'planarity': Planarity,
     'sphericity': Sphericity,
     # Kneighbors
     'eigen_decomposition': EigenDecomposition,
-    'eigen_values': EigenValues, 
+    'eigen_values': EigenValues,
     # Normals
     'inclination_deg': InclinationDegrees,
     'inclination_rad': InclinationRadians,
