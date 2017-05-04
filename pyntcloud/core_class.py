@@ -481,7 +481,7 @@ class PyntCloud(object):
 
         kdtree: str, optional
             Default: None
-            KDTree.id in self.kdtrees.
+            KDTree.id in self.structures.
 
             - If **kdtree** is None:
 
@@ -502,9 +502,9 @@ class PyntCloud(object):
         """
         if kdtree is None:
             kdtree_id = self.add_structure("kdtree")
-            kdtree = self.kdtrees[kdtree_id]
+            kdtree = self.structures[kdtree_id]
         else:
-            kdtree = self.kdtrees[kdtree]
+            kdtree = self.structures[kdtree]
 
         if k is not None:
             return k_neighbors(kdtree, k)

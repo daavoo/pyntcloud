@@ -68,8 +68,7 @@ class VoxelGrid(Structure):
             for n, size in enumerate(self.sizes):
                 if size is None:
                     continue
-                margin = (((points.ptp(0)[n] // size) + 1)
-                          * size) - points.ptp(0)[n]
+                margin = (((points.ptp(0)[n] // size) + 1) * size) - points.ptp(0)[n]
                 xyzmin[n] -= margin / 2
                 xyzmax[n] += margin / 2
                 self.x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int)
