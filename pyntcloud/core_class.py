@@ -5,6 +5,7 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 
+from .base import StructuresDict
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
@@ -16,44 +17,45 @@ from .utils.misc import crosscheck_kwargs_function
 
 
 class PyntCloud(object):
-    """ A Pythonic Point Cloud
+    """A Pythonic Point Cloud."""
 
-    Parameters
-    ----------
-    points : pd.DataFrame
-        Core component.
-        DataFrame of N rows by M columns.
-        Each row represents one point of the point cloud.
-        Each column represents one scalar field associated to it's corresponding point.
+    def __init__(self, points, mesh=None, structures={}, **kwargs):
+        """Create PyntCloud.
 
-    """
+        Parameters
+        ----------
+        points: pd.DataFrame
+            DataFrame of N rows by M columns.
+            Each row represents one point of the point cloud.
+            Each column represents one scalar field associated to it's corresponding point.
 
-    def __init__(self, points, **kwargs):
+        mesh: pd.DataFrame or None, optional
+            Default: None
+            Triangular mesh associated with points.
+
+        structures: dict, optional
+            Map key(base.Structure.id) to val(base.Structure)
+
+        kwargs: custom attributes
+        """
         self.points = points
-        self.mesh = None
-        for key in kwargs:
-            if "kdtrees" in key:
-                self.kdtrees = kwargs[key]
-            elif "octrees" in key:
-                self.octrees = kwargs[key]
-            elif "voxelgrids" in key:
-                self.voxelgrids = kwargs[key]
-            else:
-                setattr(self, key, kwargs[key])
-        # store raw values to share memory along structures
+        self.mesh = mesh
+        self.structures = StructuresDict()
+        for key, val in structures.items():
+            self.structures[key] = val
+        for key, val in kwargs.items():
+            setattr(self, key, val)
+        # store raw xyz values to share memory along structures
         self.xyz = self.points[["x", "y", "z"]].values
         self.centroid = self.xyz.mean(0)
 
     def __repr__(self):
         default = [
             "_PyntCloud__points",
-            "mesh",
-            "kdtrees",
-            "octrees",
-            "voxelgrids",
-            "centroid",
+            "_PyntCloud__mesh",
+            "structures",
             "xyz",
-            "filters"
+            "centroid"
         ]
         others = ["\n\t {}: {}".format(x, str(type(getattr(self, x))))
                   for x in self.__dict__ if x not in default]
@@ -66,9 +68,8 @@ class PyntCloud(object):
         return DESCRIPTION.format(
             len(self.points), len(self.points.columns) - 3,
             n_faces,
-            len(self.kdtrees),
-            len(self.octrees),
-            len(self.voxelgrids),
+            self.structures.n_kdtrees,
+            self.structures.n_voxelgrids,
             self.centroid[0], self.centroid[1], self.centroid[2],
             "".join(others))
 
@@ -82,13 +83,28 @@ class PyntCloud(object):
             raise TypeError("Points argument must be a DataFrame")
         elif not set(['x', 'y', 'z']).issubset(df.columns):
             raise ValueError("Points must have x, y and z coordinates")
-        self._clean_all_structures()
-        self.__points = df
-        self.xyz = self.__points[["x", "y", "z"]].values
+        self._update_points(df)
+
+    @property
+    def mesh(self):
+        return self.__mesh
+
+    @mesh.setter
+    def mesh(self, df):
+        # allow PyntCloud to don't have mesh assigned
+        if df is not None:
+            if not isinstance(df, pd.DataFrame):
+                raise TypeError("Mesh argument must be a DataFrame")
+            elif not set(['v1', 'v2', 'v3']).issubset(df.columns):
+                print(df.columns)
+                raise ValueError("Mesh must have v1, v2 and v3 columns, at least")
+            self.__mesh = df
+        else:
+            self.__mesh = None
 
     @classmethod
     def from_file(cls, filename, **kwargs):
-        """ Extracts data from file and constructs a PyntCloud with it
+        """Extract data from file and constructs a PyntCloud with it.
 
         Parameters
         ----------
@@ -109,7 +125,7 @@ class PyntCloud(object):
             return cls(**FROM[ext](filename, **kwargs))
 
     def to_file(self, filename, internal=["points"], **kwargs):
-        """ Save PyntCloud's data to file
+        """Save PyntCloud's data to file.
 
         Parameters
         ----------
@@ -122,7 +138,6 @@ class PyntCloud(object):
 
         kwargs: only usable in some formats
         """
-
         ext = filename.split(".")[-1].upper()
         if ext not in TO:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
@@ -134,7 +149,7 @@ class PyntCloud(object):
         TO[ext](**valid_args)
 
     def add_scalar_field(self, name, **kwargs):
-        """ Add one or multiple columns to PyntCloud.points
+        """Add one or multiple columns to PyntCloud.points.
 
         Parameters
         ----------
@@ -255,7 +270,6 @@ class PyntCloud(object):
                     Default: {}
                     Will be passed to single_fit function.
         """
-
         if name in ALL_SF:
             SF = ALL_SF[name](self, **kwargs)
             SF.extract_info()
@@ -268,7 +282,7 @@ class PyntCloud(object):
         return sf_added
 
     def add_structure(self, name, **kwargs):
-        """ Build a structure and add it to the corresponding PyntCloud's attribute
+        """Build a structure and add it to the corresponding PyntCloud's attribute.
 
         Parameters
         ----------
@@ -325,12 +339,12 @@ class PyntCloud(object):
             added = STRUCTURE.get_and_set()
 
         else:
-            raise ValueError("Unsupported scalar field. Check docstring")
+            raise ValueError("Unsupported structure. Check docstring")
 
         return added
 
     def get_filter(self, name, **kwargs):
-        """ Compute filter over PyntCloud's points and return it
+        """Compute filter over PyntCloud's points and return it.
 
         Parameters
         ----------
@@ -379,7 +393,6 @@ class PyntCloud(object):
                     the default values are -infinite for the min_i and infinite for the max_i.
 
         """
-
         if name in ALL_FILTERS:
             F = ALL_FILTERS[name](self, **kwargs)
             F.extract_info()
@@ -389,7 +402,7 @@ class PyntCloud(object):
             raise ValueError("Unsupported filter. Check docstring")
 
     def get_sample(self, name, **kwargs):
-        """ Returns arbitrary number of points sampled by selected method
+        """Return arbitrary number of points sampled by selected method.
 
         Parameters
         ----------
@@ -452,7 +465,7 @@ class PyntCloud(object):
             raise ValueError("Unsupported sampling. Check docstring")
 
     def get_neighbors(self, k=None, r=None, kdtree=None):
-        """ For each point finds the indices that compose it's neighbourhood.
+        """For each point finds the indices that compose it's neighbourhood.
 
         Parameters
         ----------
@@ -468,7 +481,7 @@ class PyntCloud(object):
 
         kdtree: str, optional
             Default: None
-            KDTree.id in self.kdtrees.
+            KDTree.id in self.structures.
 
             - If **kdtree** is None:
 
@@ -487,12 +500,11 @@ class PyntCloud(object):
                 Array holding a variable number of indices corresponding
                 to the neighbors with distance < r.
         """
-
         if kdtree is None:
             kdtree_id = self.add_structure("kdtree")
-            kdtree = self.kdtrees[kdtree_id]
+            kdtree = self.structures[kdtree_id]
         else:
-            kdtree = self.kdtrees[kdtree]
+            kdtree = self.structures[kdtree]
 
         if k is not None:
             return k_neighbors(kdtree, k)
@@ -504,14 +516,13 @@ class PyntCloud(object):
             raise ValueError("You must supply 'k' or 'r' values.")
 
     def get_mesh_vertices(self, rgb=False, normals=False):
-        """ Decompose triangles of self.mesh from vertices in self.points
+        """Decompose triangles of self.mesh from vertices in self.points.
 
         Returns
         -------
         v1, v2, v3: ndarray
             (N, 3) arrays of vertices so v1[i], v2[i], v3[i] represent the ith triangle
         """
-
         use_columns = ["x", "y", "z"]
         if rgb:
             use_columns.extend(["red", "green", "blue"])
@@ -526,13 +537,13 @@ class PyntCloud(object):
 
         return v1, v2, v3
 
-    def _clean_all_structures(self):
-        """ Utility function. Implicity called when self.points is assigned.
-        """
+    def _update_points(self, df):
+        """Utility function. Implicity called when self.points is assigned."""
         self.mesh = None
-        self.kdtrees = {}
-        self.voxelgrids = {}
-        self.octrees = {}
+        self.structures = StructuresDict()
+        self.__points = df
+        self.xyz = self.__points[["x", "y", "z"]].values
+        self.centroid = self.xyz.mean(0)
 
     def plot(self,
              use_as_color=["red", "green", "blue"],
@@ -540,7 +551,7 @@ class PyntCloud(object):
              output_name="pyntcloud_plot",
              width=800,
              height=500):
-        """ Visualize PyntCloud in a Jupyter notebook using three.js
+        """Visualize PyntCloud in a Jupyter notebook using three.js.
 
         Parameters
         ----------
@@ -579,9 +590,7 @@ class PyntCloud(object):
         You can visualize the output_name.html outside the notebook as a regular
         html. You might need to run a local server or adjust the browser privacy
         policies in order to allow javascript to load local files.
-
         """
-
         try:
             colors = self.points[use_as_color].values
         except:
