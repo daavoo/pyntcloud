@@ -339,7 +339,7 @@ class PyntCloud(object):
             added = STRUCTURE.get_and_set()
 
         else:
-            raise ValueError("Unsupported scalar field. Check docstring")
+            raise ValueError("Unsupported structure. Check docstring")
 
         return added
 
