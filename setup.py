@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+
 setup(
     name='pyntcloud',
     version='8999',
@@ -21,5 +22,4 @@ setup(
         "numba",
         "laspy"
     ],
-
 )
