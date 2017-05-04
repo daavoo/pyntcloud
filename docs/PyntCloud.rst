@@ -19,11 +19,9 @@ structures associated with it.
 Each PyntCloud's instance some predifined attributes:
 
 -   centroid
--   kdtrees
 -   mesh
--   octrees
 -   points - :ref:`working-with-points`
--   voxelgrids
+-   structures
 -   xyz
 
 You may also add other attributes to your own PyntCloud's instance.
@@ -45,7 +43,6 @@ The information about this attributes is reported by the __repr__ method:
     6 points with 0 scalar fields
     0 faces in mesh
     0 kdtrees
-    0 octrees
     0 voxelgrids
     Centroid: 0.45000001788139343, 0.45000001788139343, 0.45000001788139343
     Other attributes:
