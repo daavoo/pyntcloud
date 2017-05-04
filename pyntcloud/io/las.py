@@ -19,6 +19,8 @@ def read_las(filename):
     with laspy.file.File(filename) as las:
         data["points"] = pd.DataFrame(las.points["point"])
         data["points"].columns = (x.lower() for x in data["points"].columns)
+        # because laspy do something strange with scale
+        data["points"].loc[:, ["x", "y", "z"]] *= las.header.scale
         data["las_header"] = las.header
 
     return data
