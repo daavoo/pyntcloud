@@ -25,7 +25,6 @@ class PyntCloud(object):
         Parameters
         ----------
         points: pd.DataFrame
-            Core component.
             DataFrame of N rows by M columns.
             Each row represents one point of the point cloud.
             Each column represents one scalar field associated to it's corresponding point.
@@ -53,9 +52,10 @@ class PyntCloud(object):
     def __repr__(self):
         default = [
             "_PyntCloud__points",
-            "mesh",
+            "_PyntCloud__mesh",
             "structures",
             "xyz",
+            "centroid"
         ]
         others = ["\n\t {}: {}".format(x, str(type(getattr(self, x))))
                   for x in self.__dict__ if x not in default]
@@ -68,9 +68,8 @@ class PyntCloud(object):
         return DESCRIPTION.format(
             len(self.points), len(self.points.columns) - 3,
             n_faces,
-            len(self.kdtrees),
-            len(self.octrees),
-            len(self.voxelgrids),
+            self.structures.n_kdtrees,
+            self.structures.n_voxelgrids,
             self.centroid[0], self.centroid[1], self.centroid[2],
             "".join(others))
 
@@ -100,6 +99,8 @@ class PyntCloud(object):
                 print(df.columns)
                 raise ValueError("Mesh must have v1, v2 and v3 columns, at least")
             self.__mesh = df
+        else:
+            self.__mesh = None
 
     @classmethod
     def from_file(cls, filename, **kwargs):
@@ -538,7 +539,6 @@ class PyntCloud(object):
 
     def _update_points(self, df):
         """Utility function. Implicity called when self.points is assigned."""
-        print("UPDATE POINTS CALLED")
         self.mesh = None
         self.structures = StructuresDict()
         self.__points = df
