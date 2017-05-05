@@ -1,5 +1,4 @@
-#  HAKUNA MATATA
-
+import os
 import numpy as np
 import pandas as pd
 
@@ -555,6 +554,43 @@ class PyntCloud(object):
             Must be equal lenght than self.points
         """
         self.points = self.points.loc[filter].reset_index(drop=True)
+
+    def split_on(self, sf, and_return=False, save_format="ply", save_path=os.getcwd()):
+        """Divide the PyntCloud using unique values in given sf.
+
+        This function will generate PyntClouds by grouping points using the unique
+        values found in the given scalar field.
+
+        Parameters
+        ----------
+        sf: str
+            Name of the scalar field to be used for splitting.
+
+        and_return: boolean, optional
+            Default: False
+            If True, return a list with the splits.
+
+        save_format: str, optional
+            Default: "ply"
+            Extension used to save the generated PyntClouds.
+            Must be of of the formats present in pyntcloud.io.TO
+
+        save_path: str, optional
+            Default: "."
+            Path where the PyntClouds will be saved.
+        """
+        sf = self.points[sf]
+
+        splits = {x: PyntCloud(self.points.loc[sf == x]) for x in sf.unique()}
+
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+        for key, val in splits.items():
+            val.to_file("{}/{}.{}".format(save_path, key, save_format))
+
+        if and_return:
+            return splits
 
     def _update_points(self, df):
         """Utility function. Implicity called when self.points is assigned."""
