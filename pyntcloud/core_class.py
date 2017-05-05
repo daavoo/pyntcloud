@@ -343,13 +343,17 @@ class PyntCloud(object):
 
         return added
 
-    def get_filter(self, name, **kwargs):
+    def get_filter(self, name, and_apply=False, **kwargs):
         """Compute filter over PyntCloud's points and return it.
 
         Parameters
         ----------
         name: str
             One of the avaliable names. See bellow.
+
+        and_apply: boolean, optional
+            Default: False
+            If True, filter will be applied to self.points
 
         kwargs
             Vary for each name. See bellow.
@@ -396,7 +400,12 @@ class PyntCloud(object):
         if name in ALL_FILTERS:
             F = ALL_FILTERS[name](self, **kwargs)
             F.extract_info()
-            return F.compute()
+            boolean_array = F.compute()
+
+            if and_apply:
+                self.apply_filter(boolean_array)
+
+            return boolean_array
 
         else:
             raise ValueError("Unsupported filter. Check docstring")
@@ -536,6 +545,16 @@ class PyntCloud(object):
         v3 = points[[self.mesh["v3"]]]
 
         return v1, v2, v3
+
+    def apply_filter(self, filter):
+        """Update self.points removing points where filter is False.
+
+        Parameters
+        ----------
+        filter: boolean array
+            Must be equal lenght than self.points
+        """
+        self.points = self.points.loc[filter].reset_index(drop=True)
 
     def _update_points(self, df):
         """Utility function. Implicity called when self.points is assigned."""
