@@ -74,3 +74,5 @@ I/O methods are documented in :ref:`reading-and-writing`.
 .. automethod:: PyntCloud.get_sample
 
 .. automethod:: PyntCloud.get_neighbors
+
+.. automethod:: PyntCloud.get_mesh_vertices

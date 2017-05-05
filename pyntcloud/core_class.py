@@ -537,6 +537,16 @@ class PyntCloud(object):
 
         return v1, v2, v3
 
+    def apply_filter(self, filter):
+        """Update self.points removing points where filter is False.
+
+        Parameters
+        ----------
+        filter: boolean array
+            Must be equal lenght than self.points
+        """
+        self.points = self.points.loc[filter].reset_index(drop=True)
+
     def _update_points(self, df):
         """Utility function. Implicity called when self.points is assigned."""
         self.mesh = None
