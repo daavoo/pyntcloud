@@ -1,7 +1,11 @@
+import os
 import pytest
 import numpy as np
 import pandas as pd
+from shutil import rmtree
 from pyntcloud import PyntCloud
+
+path = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_points():
@@ -59,3 +63,34 @@ def test_repr():
     reprstring = reprstring.split("\n")
 
     assert reprstring[-2].strip() == "important_information: <class 'dict'>"
+
+
+def test_split_on():
+    """PyntCloud.split_on.
+
+    - Raise KeyError on invalid scalar field
+    - Raise ValueError on invalid save_format
+    - and_return should return list of PyntClouds
+    - Implicitily check save_path is working
+
+    """
+    cloud = PyntCloud.from_file(path + "/data/mnist.npz")
+    vg_id = cloud.add_structure("voxelgrid", x_y_z=[2, 2, 2])
+
+    voxel_n = cloud.add_scalar_field("voxel_n", voxelgrid=vg_id)
+
+    with pytest.raises(KeyError):
+        cloud.split_on("bad_sf")
+
+    with pytest.raises(ValueError):
+        cloud.split_on(voxel_n, save_format="bad_format")
+
+    output = cloud.split_on(voxel_n, save_path="tmp_out")
+
+    assert output is None
+
+    output = cloud.split_on(voxel_n, and_return=True, save_path="tmp_out")
+
+    assert len(output) == 8
+
+    rmtree("tmp_out")
