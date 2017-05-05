@@ -8,6 +8,14 @@ cloud = PyntCloud.from_file(path + "/data/filters.ply")
 
 
 def test_kdtree_filters():
+    """filters.f_kdtree.
+
+    - Raise TypeError when missing required arguments
+    - Raise KeyError when structure.id is invalid
+    - Raise TypeError when wrong argument is given (k instead of r)
+    - Manually check known result.
+
+    """
     with pytest.raises(TypeError):
         cloud.get_filter("ROR")
 
@@ -29,6 +37,11 @@ def test_kdtree_filters():
 
 
 def test_xyz_filters():
+    """filters.f_xyz.
+
+    - Manually check known result.
+
+    """
     cloud = PyntCloud.from_file(path + "/data/filters.ply")
 
     bbox = {
