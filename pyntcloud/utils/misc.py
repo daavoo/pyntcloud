@@ -1,5 +1,6 @@
 from inspect import signature, Parameter
 
+
 def crosscheck_kwargs_function(kwargs, function):
     f_positional = []
     f_kwargs = []
@@ -11,11 +12,11 @@ def crosscheck_kwargs_function(kwargs, function):
                 accepts_args = True
             elif p.kind == Parameter.VAR_KEYWORD:
                 accept_kwargs = True
-            else:  
+            else:
                 f_positional.append(x)
         else:
             f_kwargs.append(x)
-    
+
     valid_kwargs = {}
 
     for x in f_positional:
@@ -32,4 +33,3 @@ def crosscheck_kwargs_function(kwargs, function):
             valid_kwargs[x] = kwargs[x]
 
     return valid_kwargs
-    
