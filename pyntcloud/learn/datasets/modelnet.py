@@ -64,8 +64,8 @@ def get_and_setup_modelnet(N):
     extract_folder: str
     """
     cwd = os.getcwd()
-    zip_file = f"{cwd}/modelnet10.zip"
-    extract_folder = f"{cwd}/modelnet10"
+    zip_file = f"{cwd}/modelnet{N}.zip"
+    extract_folder = f"{cwd}/modelnet{N}"
 
     if not os.path.exists(zip_file):
         print(f"Downloading ModelNet")
