@@ -1,11 +1,3 @@
-"""
-Implementation of:
-
-Maturana, D. and Scherer, S.;
-VoxNet: A 3D Convolutional Neural Network for Real-Time Object Recognition.
-
-Modified in order to accept different input shapes.
-"""
 import torch
 from collections import OrderedDict
 
@@ -16,7 +8,31 @@ class VoxNet(torch.nn.Module):
                  weights_path=None,
                  load_body_weights=True,
                  load_head_weights=True):
+        """
+        VoxNet: A 3D Convolutional Neural Network for Real-Time Object Recognition.
 
+        Modified in order to accept different input shapes.
+
+        Parameters
+        ----------
+        num_classes: int, optional
+            Default: 10
+        input_shape: (x, y, z) tuple, optional
+            Default: (32, 32, 32)
+        weights_path: str or None, optional
+            Default: None
+        load_body_weights: bool, optional
+            Default: True
+        load_head_weights: bool, optional
+            Default: True
+
+        Notes
+        -----
+        Weights avaliable at: url to be added
+
+        If you want to finetune with custom classes, set load_head_weights to False.
+        Default head weights are pretrained with ModelNet10.
+        """
         super().__init__()
         self.body = torch.nn.Sequential(OrderedDict([
             ('conv1', torch.nn.Conv3d(in_channels=1, out_channels=32, kernel_size=5, stride=2)),
