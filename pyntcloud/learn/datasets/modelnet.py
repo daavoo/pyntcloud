@@ -68,22 +68,25 @@ def get_and_setup_modelnet(N):
     extract_folder = f"{cwd}/modelnet{N}"
 
     if not os.path.exists(zip_file):
-        print(f"Downloading ModelNet")
+        print(f"Downloading ModelNet{N}")
         urllib.request.urlretrieve(MODELNET_URLS[N], zip_file)
 
-    os.makedirs(extract_folder)
-    print("Unzipping ModelNet")
-    with zipfile.ZipFile(zip_file) as zf:
-        zf.extractall(extract_folder)
+    if not os.path.exists(extract_folder):
+        os.makedirs(extract_folder)
+        print("Unzipping ModelNet")
+        with zipfile.ZipFile(zip_file) as zf:
+            zf.extractall(extract_folder)
 
     print("Removing __MACOSX")
     # Thanks, Steve Jobs
-    rmtree(f"{extract_folder}/__MACOSX")
+    try:
+        rmtree(f"{extract_folder}/__MACOSX")
+    except FileNotFoundError:
+        pass
 
     print("Rearranging ModelNet")
-
     # create proper train/test split
-    BASE = f"{extract_folder}/ModelNet10/"
+    BASE = f"{extract_folder}/ModelNet{N}/"
     for class_dir in os.listdir(BASE):
         if os.path.isdir(os.path.join(BASE, class_dir)):
             os.makedirs(f"{extract_folder}/train/{class_dir}")
@@ -99,8 +102,6 @@ def get_and_setup_modelnet(N):
         os.rename(src, dst)
 
     print("Fixing wrong off files")
-
-    # some files are corrupted, fix
     all_files = glob(f"{extract_folder}/*/*/*.off")
     for path in all_files:
         f = open(path, 'r')
@@ -108,9 +109,6 @@ def get_and_setup_modelnet(N):
         f.close()
 
         if lines[0].strip().lower() != 'off':
-            print(path)
-            print(lines[0])
-
             splits = lines[0][3:].strip().split(' ')
             n_verts = int(splits[0])
             n_faces = int(splits[1])
