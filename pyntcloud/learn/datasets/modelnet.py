@@ -3,7 +3,7 @@ import urllib
 import zipfile
 from glob import glob
 from shutil import rmtree
-from .folder import ThreeDimFolder
+from .folder import ClassificationFolder
 
 MODELNET_URLS = {
     10: "http://3dshapenets.cs.princeton.edu/ModelNet10.zip",
@@ -11,7 +11,7 @@ MODELNET_URLS = {
 }
 
 
-class ModelNet10(ThreeDimFolder):
+class ModelNet10(ClassificationFolder):
 
     def __init__(self,
                  root=None,
@@ -31,7 +31,7 @@ class ModelNet10(ThreeDimFolder):
         super().__init__(root, transform, target_transform, load_3D_kwargs)
 
 
-class ModelNet40(ThreeDimFolder):
+class ModelNet40(ClassificationFolder):
 
     def __init__(self,
                  root=None,
@@ -109,6 +109,7 @@ def get_and_setup_modelnet(N):
         f.close()
 
         if lines[0].strip().lower() != 'off':
+
             splits = lines[0][3:].strip().split(' ')
             n_verts = int(splits[0])
             n_faces = int(splits[1])

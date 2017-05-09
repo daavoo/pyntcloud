@@ -40,7 +40,7 @@ def make_dataset(dir, class_to_idx):
     return dataset
 
 
-class ThreeDimFolder(data.Dataset):
+class ClassificationFolder(data.Dataset):
 
     def __init__(self, root, transform=None, target_transform=None, load_3D_kwargs={}):
         classes, class_to_idx = find_classes(root)
