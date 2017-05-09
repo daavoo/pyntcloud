@@ -51,7 +51,7 @@ def load_3D(path,
 
     if voxelize:
         vgrid_id = point_cloud.add_structure("voxelgrid", x_y_z=target_size)
-        voxelgrid = point_cloud.voxelgrids[vgrid_id]
+        voxelgrid = point_cloud.structures[vgrid_id]
 
         if voxel_mode == "binary":
             feature_vector = voxelgrid.get_feature_vector(mode="binary")
