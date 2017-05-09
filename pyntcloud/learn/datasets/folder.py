@@ -40,14 +40,11 @@ def make_dataset(dir, class_to_idx):
     return dataset
 
 
-class ThreeDimFolder(data.Dataset):
+class ClassificationFolder(data.Dataset):
 
     def __init__(self, root, transform=None, target_transform=None, load_3D_kwargs={}):
         classes, class_to_idx = find_classes(root)
         dataset = make_dataset(root, class_to_idx)
-        if len(dataset) == 0:
-            raise(RuntimeError("Found 0 valid 3D files in subfolders of: " + root + "\n"
-                               "Supported image extensions are: " + ",".join(VALID_EXTENSIONS)))
 
         self.root = root
         self.dataset = dataset

@@ -23,7 +23,7 @@ def read_off(filename):
         data = {}
 
         data["points"] = pd.read_csv(filename, sep=" ", header=None, engine="python",
-                                     skiprows=count, skip_footer=n_faces,
+                                     skiprows=count, skipfooter=n_faces,
                                      names=["x", "y", "z"])
 
         data["mesh"] = pd.read_csv(filename, sep=" ", header=None, engine="python",
