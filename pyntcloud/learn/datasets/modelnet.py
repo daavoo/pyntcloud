@@ -18,7 +18,7 @@ class ModelNet10(ClassificationFolder):
                  train=True,
                  transform=None,
                  target_transform=None,
-                 load_3D_kwargs={}):
+                 load_3D_kwargs={"target_size": (32, 32, 32)}):
 
         if root is None:
             root = get_and_setup_modelnet(10)
@@ -38,7 +38,7 @@ class ModelNet40(ClassificationFolder):
                  train=True,
                  transform=None,
                  target_transform=None,
-                 load_3D_kwargs={}):
+                 load_3D_kwargs={"target_size": (32, 32, 32)}):
 
         if root is None:
             root = get_and_setup_modelnet(40)

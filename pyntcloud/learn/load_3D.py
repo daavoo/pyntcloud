@@ -63,7 +63,8 @@ def load_3D(path,
             raise ValueError("Unvalid mode; avaliable modes are: {}".format(
                 {"binary", "density", "TDF"}))
 
-        return feature_vector
+        # add fake channel
+        return feature_vector[None, ...]
 
     else:
         return point_cloud
