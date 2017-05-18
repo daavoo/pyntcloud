@@ -118,3 +118,16 @@ def test_read_ascii():
                                     dtype="f")
 
     assert_points_xyz(ply_ascii)
+
+
+def test_read_off():
+    off = PyntCLoud.from_file(data_path + '.off')
+
+    assert_points_xyz(off)
+
+
+def test_read_color_off():
+    color_off = PyntCloud.from_file(data_path + '_color.off')
+
+    assert_points_xyz(color_off)
+    assert_points_color(color_off)
