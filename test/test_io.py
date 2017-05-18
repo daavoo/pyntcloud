@@ -112,21 +112,9 @@ def test_write_obj():
 
 
 def test_read_ascii():
-    ascii = PyntCloud.from_file(data_path + '.xyz', sep=" ", header=None,
+    ply_ascii = PyntCloud.from_file(data_path + '.xyz', sep=" ", header=None,
                                     index_col=False,
                                     names=["x", "y", "z", "nx", "ny", "nz"],
                                     dtype="f")
 
-    assert_points_xyz(ascii)
-
-
-def test_read_off():
-    off = PyntCLoud.from_file(data_path + '.off')
-
-    assert_points_xyz(off)
-
-def test_read_color_off():
-    color_off = PyntCloud.from_file(data_path + '_color.off')
-
-    assert_points_xyz(color_off)
-    assert_points_color(color_off) 
+    assert_points_xyz(ply_ascii)
