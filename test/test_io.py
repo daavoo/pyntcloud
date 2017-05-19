@@ -121,7 +121,7 @@ def test_read_ascii():
 
 
 def test_read_off():
-    off = PyntCLoud.from_file(data_path + '.off')
+    off = PyntCloud.from_file(data_path + '.off')
 
     assert_points_xyz(off)
 
