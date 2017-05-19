@@ -73,4 +73,5 @@ dependencies:
 - llvmlite=0.17.0=py36_0
 - numba=0.32.0=np112py36_0
 - pip:
-  - git+https://github.com/daavoo/pyntcloud.git
+  - laspy
+  - python-lzf

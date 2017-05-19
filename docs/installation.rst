@@ -110,6 +110,14 @@ Type in the terminal:
 
     conda env create -f enviroment.yml
 
+    source activate pyntcloud
+
+    git clone https://github.com/daavoo/pyntcloud.git
+
+    cd pyntcloud
+
+    python setup.py develop
+
 And you now have an isolated enviroment with pyntcloud and all it's dependecies!.
 
 To make use of it, run this **without** activating the enviroment:
