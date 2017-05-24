@@ -1,4 +1,4 @@
-from .ascii import read_ascii
+from .ascii import read_ascii, write_ascii
 from .las import read_las
 from .npz import read_npz, write_npz
 from .obj import read_obj, write_obj
@@ -17,11 +17,16 @@ FROM = {
     "PLY": read_ply,
     "PTS": read_ascii,
     "TXT": read_ascii,
-    "XYZ": read_ascii
+    "XYZ": read_ascii,
 }
 
 TO = {
+    "ASC": write_ascii,
+    "CSV": write_ascii,
     "NPZ": write_npz,
     "OBJ": write_obj,
-    "PLY": write_ply
+    "PLY": write_ply,
+    "PTS": write_ascii,
+    "TXT": write_ascii,
+    "XYZ": write_ascii,
 }

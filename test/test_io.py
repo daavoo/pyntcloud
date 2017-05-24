@@ -112,13 +112,30 @@ def test_write_obj():
 
 
 def test_read_ascii():
-    ply_ascii = PyntCloud.from_file(data_path + '.xyz', sep=" ", header=None,
+    data = PyntCloud.from_file(data_path + '.xyz', sep=" ", header=None,
                                     index_col=False,
                                     names=["x", "y", "z", "nx", "ny", "nz"],
                                     dtype="f")
 
-    assert_points_xyz(ply_ascii)
+    assert_points_xyz(data)
 
+def test_write_ascii():
+    data = PyntCloud.from_file(data_path + '.xyz', sep=" ", header=None,
+                                    index_col=False,
+                                    names=["x", "y", "z", "nx", "ny", "nz"],
+                                    dtype="f")
+
+    data.to_file(data_path + 'writed.txt', sep=" ", header=None)
+
+
+    writed_data = PyntCloud.from_file(data_path + 'writed.txt',sep=" ", header=None,
+                                    index_col=False,
+                                    names=["x", "y", "z", "nx", "ny", "nz"],
+                                    dtype="f")
+
+    assert all(data.points == writed_data.points)
+
+    os.remove(data_path + 'writed.txt')
 
 def test_read_off():
     off = PyntCloud.from_file(data_path + '.off')
