@@ -1,3 +1,5 @@
+import pandas as pd
+
 from random import sample
 from ..base import Sampling
 
@@ -24,5 +26,17 @@ class RandomPoints(Sampling_Points):
         self.n = n
     
     def compute(self):
+        #
+        result = pd.DataFrame()
+
+        result_xyz = self.points[sample(range(0, self.points.shape[0]), self.n)]
         
-        return self.points[sample(range(0, self.points.shape[0]), self.n)]
+        result["x"] = result_xyz[:,0]
+        result["y"] = result_xyz[:,1]
+        result["z"] = result_xyz[:,2]
+        
+        #
+        
+        
+        #return self.points[sample(range(0, self.points.shape[0]), self.n)]
+        return result
