@@ -409,7 +409,7 @@ class PyntCloud(object):
         else:
             raise ValueError("Unsupported filter. Check docstring")
 
-    def get_sample(self, name, **kwargs):
+    def get_sample(self, name, as_PyntCloud=False, **kwargs):
         """Return arbitrary number of points sampled by selected method.
 
         Parameters
@@ -418,14 +418,18 @@ class PyntCloud(object):
             One of the avaliable names.
             See bellow.
 
+        as_PyntCloud: bool, optional
+            Default: False
+            If True, sampled points will be returned as PyntCloud instance.
+
         kwargs
             Vary for each name.
             See bellow.
 
         Returns
         -------
-        sampled_points: (n, 3) ndarray
-            'n' vary for each method.
+        sampled_points: (n, 3) ndarray or PyntCloud
+            'n' vary for each method. PyntCloud if as_PyntCloud
 
         Notes
         -----
@@ -462,15 +466,19 @@ class PyntCloud(object):
             points_random_sampling
                 n: int
                     Number of points to be sampled.
-
         """
         if name in ALL_SAMPLING:
             S = ALL_SAMPLING[name](self, **kwargs)
             S.extract_info()
-            return S.compute()
+            sampled_points = S.compute()
+
+            if as_PyntCloud:
+                return PyntCloud(sampled_points)
+
+            return sampled_points
 
         else:
-            raise ValueError("Unsupported sampling. Check docstring")
+            raise ValueError("Unsupported sampling method. Check docstring")
 
     def get_neighbors(self, k=None, r=None, kdtree=None):
         """For each point finds the indices that compose it's neighbourhood.
