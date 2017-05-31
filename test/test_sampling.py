@@ -52,3 +52,7 @@ def test_points_sampling():
     sample = cloud.get_sample("points_random_sampling", n=1)
 
     assert point_in_array_2D(sample, cloud.xyz)
+
+    sample = cloud.get_sample("points_random_sampling", n=1, as_PyntCloud=True)
+
+    assert isinstance(sample, PyntCloud)
