@@ -1,4 +1,5 @@
 import os
+import shutil
 from IPython.display import IFrame
 
 
@@ -9,8 +10,8 @@ def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
     ----------
     cloud: PyntCloud instance
     """
-
-    src = "{}/{}".format(os.path.dirname(os.path.abspath(__file__)), "points.html")
+    BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+    src = "{}/{}".format(BASE_PATH, "points.html")
     dst = "{}/{}".format(os.getcwd(), "{}.html".format(output_name))
 
     camera_position = (cloud.xyz.max(0) + abs(cloud.xyz.max(0))).tolist()
@@ -31,5 +32,11 @@ def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
             out.write(line)
 
     cloud.to_file("{}.ply".format(output_name))
+
+    try:
+        shutil.copytree("{}/assets".format(BASE_PATH),
+                        "{}/{}".format(os.getcwd(), "pyntcloud_plot_assets"))
+    except FileExistsError:
+        pass
 
     return IFrame("{}.html".format(output_name), width=width, height=height)
