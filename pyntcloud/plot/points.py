@@ -3,7 +3,7 @@ import shutil
 from IPython.display import IFrame
 
 
-def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
+def plot_PyntCloud(cloud, size=0.3, output_name="pyntcloud_plot", width=800, height=500):
     """ Generate 3 output files (html, json and ply) to be plotted in Jupyter
 
     Parameters
@@ -29,6 +29,8 @@ def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
             elif "LOOK_AT_PLACEHOLDER" in line:
                 line = line.replace("LOOK_AT_PLACEHOLDER", "{}".format(look_at))
 
+            elif "SIZE_PLACEHOLDER" in line:
+                line = line.replace("SIZE_PLACEHOLDER", "{}".format(size))
             out.write(line)
 
     cloud.to_file("{}.ply".format(output_name))

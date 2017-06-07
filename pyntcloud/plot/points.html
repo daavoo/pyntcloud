@@ -72,7 +72,7 @@
             loader = new THREE.PLYLoader();
             loader.load(filename + ".ply", function(geometry) {
                 var material = new THREE.PointsMaterial({
-                    size: 0.3,
+                    size: SIZE_PLACEHOLDER,
                     vertexColors: THREE.VertexColors
                 });
                 var points = new THREE.Points(geometry, material);
