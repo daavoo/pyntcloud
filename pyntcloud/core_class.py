@@ -609,7 +609,7 @@ class PyntCloud(object):
         self.centroid = self.xyz.mean(0)
 
     def plot(self,
-             size=0.3,
+             point_size=0.3,
              use_as_color=["red", "green", "blue"],
              cmap="hsv",
              output_name="pyntcloud_plot",
@@ -619,6 +619,10 @@ class PyntCloud(object):
 
         Parameters
         ----------
+        point_size: float, optional
+            Default: 0.3
+            Size of the plotted points.
+            
         use_as_color: str or ["red", "green", "blue"], optional
             Default: ["red", "green", "blue"]
             Indicates wich scalar fields will be used to colorize the rendered
@@ -677,4 +681,4 @@ class PyntCloud(object):
 
         new_PyntCloud = PyntCloud(points)
 
-        return plot_PyntCloud(new_PyntCloud, size, output_name=output_name)
+        return plot_PyntCloud(new_PyntCloud, point_size, output_name=output_name)
