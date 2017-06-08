@@ -3,12 +3,17 @@ import shutil
 from IPython.display import IFrame
 
 
-def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
+def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=800, height=500):
     """ Generate 3 output files (html, json and ply) to be plotted in Jupyter
 
     Parameters
     ----------
     cloud: PyntCloud instance
+
+    point_size: float, optional
+        Default: 0.3
+        Size of the plotted points.
+
     """
     BASE_PATH = os.path.dirname(os.path.abspath(__file__))
     src = "{}/{}".format(BASE_PATH, "points.html")
@@ -29,6 +34,8 @@ def plot_PyntCloud(cloud, output_name="pyntcloud_plot", width=800, height=500):
             elif "LOOK_AT_PLACEHOLDER" in line:
                 line = line.replace("LOOK_AT_PLACEHOLDER", "{}".format(look_at))
 
+            elif "SIZE_PLACEHOLDER" in line:
+                line = line.replace("SIZE_PLACEHOLDER", "{}".format(point_size))
             out.write(line)
 
     cloud.to_file("{}.ply".format(output_name))
