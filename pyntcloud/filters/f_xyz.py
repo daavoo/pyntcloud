@@ -5,16 +5,16 @@ class Filter_XYZ(Filter):
 
     def __init__(self, pyntcloud):
         super().__init__(pyntcloud)
-    
+
     def extract_info(self):
         self.points = self.pyntcloud.xyz
 
 class BoundingBox(Filter_XYZ):
     """ Compute a bounding box filter on the given points
-    
+
     Parameters
     ----------
-        
+
     min_i, max_i: float
         The bounding box limits for each coordinate. If some limits are missing,
         the default values are -infinite for the min_i and infinite for the max_i.
@@ -26,7 +26,7 @@ class BoundingBox(Filter_XYZ):
         self.min_x, self.max_x = min_x, max_x
         self.min_y, self.max_y = min_y, max_y
         self.min_z, self.max_z = min_z, max_z
-        
+
     def compute(self):
 
         bound_x = np.logical_and(self.points[:, 0] > self.min_x,
@@ -35,7 +35,7 @@ class BoundingBox(Filter_XYZ):
                                  self.points[:, 1] < self.max_y)
         bound_z = np.logical_and(self.points[:, 2] > self.min_z,
                                  self.points[:, 2] < self.max_z)
-        
-        bb_filter = np.logical_and(bound_x, bound_y, bound_z)
-    
+
+        bb_filter = np.logical_and(np.logical_and(bound_x, bound_y), bound_z)
+
         return bb_filter
