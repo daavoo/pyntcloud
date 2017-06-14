@@ -1,5 +1,6 @@
 import numpy as np
 from .base import GeometryModel
+from ...utils.array import PCA
 
 
 class Plane(GeometryModel):
@@ -20,6 +21,19 @@ class Plane(GeometryModel):
         point = np.array([-d / a, -d / b, -d / c])
         self.point = point
         self.normal = normal / np.linalg.norm(normal)
+
+    def from_point_cloud(self, points):
+        """
+        Least Squares fit.
+
+        Parameters
+        ----------
+        points: (N, 3) ndarray
+        """
+        w, v = PCA(points)
+        #: the normal of the plane is the last eigenvector
+        self.normal = v[:, 2]
+        self.point = np.mean(points, axis=0)
 
     def get_equation(self):
         a, b, c = self.normal
