@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import zscore
-from ..base import Filter
+from .base import Filter
 
 
 class Filter_KDTree(Filter):

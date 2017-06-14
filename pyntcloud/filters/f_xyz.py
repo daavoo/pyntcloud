@@ -1,5 +1,6 @@
 import numpy as np
-from ..base import Filter
+from .base import Filter
+
 
 class Filter_XYZ(Filter):
 
@@ -8,6 +9,7 @@ class Filter_XYZ(Filter):
 
     def extract_info(self):
         self.points = self.pyntcloud.xyz
+
 
 class BoundingBox(Filter_XYZ):
     """ Compute a bounding box filter on the given points
@@ -20,8 +22,9 @@ class BoundingBox(Filter_XYZ):
         the default values are -infinite for the min_i and infinite for the max_i.
 
     """
+
     def __init__(self, pyntcloud, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
-                        max_y=np.inf, min_z=-np.inf, max_z=np.inf):
+                 max_y=np.inf, min_z=-np.inf, max_z=np.inf):
         super().__init__(pyntcloud)
         self.min_x, self.max_x = min_x, max_x
         self.min_y, self.max_y = min_y, max_y
