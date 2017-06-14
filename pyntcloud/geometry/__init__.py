@@ -3,5 +3,5 @@
 HAKUNA MATATA
 """
 
-from .plane import Plane
-from .sphere import Sphere
+from .models.plane import Plane
+from .models.sphere import Sphere
