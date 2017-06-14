@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def cartesian(arrays, out=None):
     """Generate a cartesian product of input arrays.
 
@@ -45,7 +46,7 @@ def cartesian(arrays, out=None):
 
     for n, arr in enumerate(arrays):
         out[:, n] = arrays[n][ix[:, n]]
-        
+
     return out
 
 def point_in_array_2D(point, array_2D):
