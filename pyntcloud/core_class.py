@@ -4,7 +4,7 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 
-from .base import StructuresDict
+from .structures.base import StructuresDict
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
@@ -622,7 +622,7 @@ class PyntCloud(object):
         point_size: float, optional
             Default: 0.3
             Size of the plotted points.
-            
+
         use_as_color: str or ["red", "green", "blue"], optional
             Default: ["red", "green", "blue"]
             Indicates wich scalar fields will be used to colorize the rendered

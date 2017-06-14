@@ -1,9 +1,8 @@
-#  HAKUNA MATATA
-
 import numpy as np
+from .base import GeometryModel
 
 
-class Plane(object):
+class Plane(GeometryModel):
 
     def __init__(self, point=None, normal=None):
         self.point = point
@@ -11,7 +10,7 @@ class Plane(object):
         if normal is not None:
             self.normal /= np.linalg.norm(normal)
 
-    def from_three_points(self, points):
+    def from_k_points(self, points):
         normal = np.cross(points[1] - points[0], points[2] - points[0])
         self.point = points[0]
         self.normal = normal / np.linalg.norm(normal)

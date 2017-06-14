@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
-from ..base import Sampling
+from .base import Sampling
 
 
 class Sampling_Voxelgrid(Sampling):

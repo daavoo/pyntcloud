@@ -1,6 +1,6 @@
 from scipy.spatial import cKDTree
 
-from ..base import Structure
+from .base import Structure
 
 
 class KDTree(cKDTree, Structure):
