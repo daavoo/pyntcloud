@@ -1,7 +1,8 @@
 import numpy as np
+from .base import GeometryModel
 
 
-class Plane(object):
+class Plane(GeometryModel):
 
     def __init__(self, point=None, normal=None):
         self.point = point

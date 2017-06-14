@@ -1,7 +1,8 @@
 import numpy as np
+from .base import GeometryModel
 
 
-class Sphere(object):
+class Sphere(GeometryModel):
 
     def __init__(self, center=None, radius=None):
         self.center = center
