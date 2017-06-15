@@ -12,7 +12,7 @@ from .plot import DESCRIPTION, plot_PyntCloud
 from .sampling import ALL_SAMPLING
 from .scalar_fields import ALL_SF
 from .structures import ALL_STRUCTURES
-from .utils.misc import crosscheck_kwargs_function
+from .utils.dataframe import convert_columns_dtype
 
 
 class PyntCloud(object):
@@ -137,15 +137,15 @@ class PyntCloud(object):
 
         kwargs: only usable in some formats
         """
+        convert_columns_dtype(self.points, np.float64, np.float32)
         ext = filename.split(".")[-1].upper()
         if ext not in TO:
             raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
         kwargs["filename"] = filename
         for x in internal:
             kwargs[x] = getattr(self, x)
-        valid_args = crosscheck_kwargs_function(kwargs, TO[ext])
 
-        TO[ext](**valid_args)
+        TO[ext](**kwargs)
 
     def add_scalar_field(self, name, **kwargs):
         """Add one or multiple columns to PyntCloud.points.
@@ -278,6 +278,7 @@ class PyntCloud(object):
         else:
             raise ValueError("Unsupported scalar field. Check docstring")
 
+        convert_columns_dtype(self.points, np.float64, np.float32)
         return sf_added
 
     def add_structure(self, name, **kwargs):
@@ -604,6 +605,7 @@ class PyntCloud(object):
         """Utility function. Implicity called when self.points is assigned."""
         self.mesh = None
         self.structures = StructuresDict()
+        convert_columns_dtype(df, np.float64, np.float32)
         self.__points = df
         self.xyz = self.__points[["x", "y", "z"]].values
         self.centroid = self.xyz.mean(0)

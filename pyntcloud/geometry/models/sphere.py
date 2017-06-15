@@ -86,7 +86,7 @@ class Sphere(GeometryModel):
             (center[2] * center[2]) + center[3]
 
         self.center = center[:3].T[0]
-        self.radius = np.sqrt(t)
+        self.radius = np.sqrt(t)[0]
 
     def get_projections(self, points, only_distances=False):
         vectors = points - self.center
