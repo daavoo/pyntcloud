@@ -75,7 +75,7 @@ def cartesian_to_spherical(xyz, degrees=True):
 
     azimuthal = np.arctan(y / x)
 
-    polar = np.arctan(np.sqrt((x * x) + (y * y)) / z)
+    polar = np.arccos(z / radial)
 
     if degrees:
         azimuthal = np.rad2deg(azimuthal)
