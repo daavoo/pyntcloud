@@ -33,7 +33,11 @@ def read_obj(filename):
                 f.append(line.strip()[2:])
 
     points = pd.DataFrame(v, dtype='f4', columns=['x', 'y', 'z'])
-    vn = pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz'])
+
+    if len(vn) > 0:
+        vn = pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz'])
+
+        points = points.join(vn)
 
     if len(f) > 0 and "//" in f[0]:
         mesh_columns = ['v1', 'vn1', 'v2', 'vn2', 'v3', 'vn3']
@@ -47,7 +51,7 @@ def read_obj(filename):
 
     mesh = pd.DataFrame(f, dtype='i4', columns=mesh_columns)
 
-    data = {'points': points, 'mesh': mesh, "normals": vn}
+    data = {'points': points, 'mesh': mesh}
 
     return data
 
