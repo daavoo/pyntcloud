@@ -1,20 +1,20 @@
 import numpy as np
 
 
-def spherical_to_cartesian(radial, azimuthal, polar, degrees=True):
+def spherical_to_cartesian(r, theta, phi, degrees=True):
     """
     Convert spherical coordinates (r, theta, phi) to cartesian (x, y, z).
 
     Parameters
     ----------
-    radial: (N,) ndarray
-        'r'. Radial distance.
-    azimuthal: (N,) ndarray
-        'theta'. Azimuthal angle.
-    polar: (N,) ndarray
-        'phi'. Polar angle.
+    r: (N,) ndarray
+        Radial distance.
+    theta: (N,) ndarray
+        Azimuthal angle.
+    phi: (N,) ndarray
+        Polar angle.
     degrees: bool, optional
-        If True, azimuthal and polar will be assumed to be in degrees.
+        If True, theta and phi will be assumed to be in degrees.
 
     Returns
     -------
@@ -26,19 +26,19 @@ def spherical_to_cartesian(radial, azimuthal, polar, degrees=True):
     Use notation of mathematical systems, NOT physics.
     """
     if degrees:
-        azimuthal = np.deg2rad(azimuthal)
-        polar = np.deg2rad(polar)
+        theta = np.deg2rad(theta)
+        phi = np.deg2rad(phi)
 
-    sin_theta = np.sin(azimuthal)
-    cos_theta = np.cos(azimuthal)
-    sin_phi = np.sin(polar)
-    cos_phi = np.cos(polar)
+    sin_theta = np.sin(theta)
+    cos_theta = np.cos(theta)
+    sin_phi = np.sin(phi)
+    cos_phi = np.cos(phi)
 
-    xyz = np.empty((radial.shape[0], 3), dtype=np.float32)
+    xyz = np.empty((r.shape[0], 3), dtype=np.float32)
 
-    xyz[:, 0] = radial * sin_phi * cos_theta
-    xyz[:, 1] = radial * sin_phi * sin_theta
-    xyz[:, 2] = radial * cos_phi
+    xyz[:, 0] = r * sin_phi * cos_theta
+    xyz[:, 1] = r * sin_phi * sin_theta
+    xyz[:, 2] = r * cos_phi
 
     return xyz
 
@@ -56,12 +56,12 @@ def cartesian_to_spherical(xyz, degrees=True):
 
     Returns
     -------
-    radial: (N,) ndarray
-        'r'. Radial distance.
-    azimuthal: (N,) ndarray
-        'theta'. Azimuthal angle.
-    polar: (N,) ndarray
-        'phi'. Polar angle.
+    r: (N,) ndarray
+        Radial distance.
+    theta: (N,) ndarray
+        Azimuthal angle.
+    phi: (N,) ndarray
+        Polar angle.
 
     Notes
     -----
@@ -71,31 +71,31 @@ def cartesian_to_spherical(xyz, degrees=True):
     y = xyz[:, 1]
     z = xyz[:, 2]
 
-    radial = np.sqrt((x * x) + (y * y) + (z * z))
+    r = np.sqrt((x * x) + (y * y) + (z * z))
 
-    azimuthal = np.arctan(y / x)
+    theta = np.arctan(y / x)
 
-    polar = np.arccos(z / radial)
+    phi = np.arccos(z / r)
 
     if degrees:
-        azimuthal = np.rad2deg(azimuthal)
-        polar = np.rad2deg(polar)
+        theta = np.rad2deg(theta)
+        phi = np.rad2deg(phi)
 
-    return radial, azimuthal, polar
+    return r, theta, phi
 
 
-def cylindrical_to_cartesian(radial, angular, height, degrees=True):
+def cylindrical_to_cartesian(ro, phi, z, degrees=True):
     """
     Convert cylindrical coordinates (ro, phi, zeta) to cartesian (x, y, z).
 
     Parameters
     ----------
-    radial: (N,) ndarray
-        'ro'. Radial distance.
-    angular: (N,) ndarray
-        'phi'. Angular position.
-    height: (N,) ndarray
-        'zeta'. Altitude.
+    ro: (N,) ndarray
+        Radial distance.
+    phi: (N,) ndarray
+        Angular position.
+    z: (N,) ndarray
+        Altitude.
     degrees: bool, optional
         If True, angular will be assumed to be in degrees.
 
@@ -112,23 +112,23 @@ def cylindrical_to_cartesian(radial, angular, height, degrees=True):
     The longitudinal axis corresponds to the 'z' axis.
     """
     if degrees:
-        angular = np.deg2rad(angular)
+        phi = np.deg2rad(phi)
 
-    sin_phi = np.sin(angular)
-    cos_phi = np.cos(angular)
+    sin_phi = np.sin(phi)
+    cos_phi = np.cos(phi)
 
-    xyz = np.empty((radial.shape[0], 3), dtype=np.float32)
+    xyz = np.empty((ro.shape[0], 3), dtype=np.float32)
 
-    xyz[:, 0] = radial * cos_phi
-    xyz[:, 1] = radial * sin_phi
-    xyz[:, 2] = height
+    xyz[:, 0] = ro * cos_phi
+    xyz[:, 1] = ro * sin_phi
+    xyz[:, 2] = z
 
     return xyz
 
 
 def cartesian_to_cylindrical(xyz, degrees=True):
     """
-    Convert cartesian coordinates (x, y, z) to cylindrical (ro, theta, zeta).
+    Convert cartesian coordinates (x, y, z) to cylindrical (ro, phi, zeta).
 
     Parameters
     ----------
@@ -139,12 +139,12 @@ def cartesian_to_cylindrical(xyz, degrees=True):
 
     Returns
     -------
-    radial: (N,) ndarray
-        'ro'. Radial distance.
-    angular: (N,) ndarray
-        'theta'. Angular position.
-    height: (N,) ndarray
-        'zeta'. Altitude.
+    ro: (N,) ndarray
+        Radial distance.
+    phi: (N,) ndarray
+        Angular position.
+    z: (N,) ndarray
+        Altitude.
 
     Notes
     -----
@@ -157,57 +157,93 @@ def cartesian_to_cylindrical(xyz, degrees=True):
     y = xyz[:, 1]
     z = xyz[:, 2]
 
-    radial = np.sqrt((x * x) + (y * y))
+    ro = np.sqrt((x * x) + (y * y))
 
-    angular = np.arctan(y / x)
-
-    height = z
+    phi = np.arctan2(y, x)
 
     if degrees:
-        angular = np.rad2deg(angular)
+        phi = np.rad2deg(phi)
 
-    return radial, angular, height
+    return ro, phi, z
 
 
-def cylindrical_to_spherical(radial, angular, height, degrees=True, theta_is_inclination=False):
+def cylindrical_to_spherical(ro, phi, zeta, degrees=True, phi_is_inclination=True):
     """
-    Convert cylindrical coordinates (ro, theta, zeta) to spherical (r, theta, phi).
+    Convert cylindrical coordinates (ro, phi, zeta) to spherical (r, theta, phi).
 
     Parameters
     ----------
-    radial: (N,) ndarray
-        'ro'. Radial distance.
-    angular: (N,) ndarray
-        'theta'. Angular position.
-    height: (N,) ndarray
-        'zeta'. Altitude.
+    ro: (N,) ndarray
+        Radial distance.
+    phi: (N,) ndarray
+        Angular position.
+    zeta: (N,) ndarray
+        Altitude.
     degrees: bool, optional
         If True, azimuthal and polar will be returned in degrees.
+    phi_is_inclination: bool, optional
+        See https://en.wikipedia.org/wiki/Cylindrical_coordinate_system#Spherical_coordinates.
 
     Returns
     -------
-    radial_out: (N,) ndarray
-        'r'. Radial distance.
-    azimuthal: (N,) ndarray
-        'theta'. Azimuthal angle.
-    polar: (N,) ndarray
-        'phi'. Polar angle.
+    r: (N,) ndarray
+        Radial distance.
+    theta: (N,) ndarray
+        Azimuthal angle.
+    phi: (N,) ndarray
+        Polar angle.
     """
 
-    radial_out = np.sqrt((radial * radial) + (height * height))
-    azimuthal = angular
+    r = np.sqrt((ro * ro) + (zeta * zeta))
 
-    if theta_is_inclination:
-        polar = np.arctan(radial / height)
+    theta = phi
+
+    if phi_is_inclination:
+        phi = np.arctan2(ro, zeta)
     else:
-        polar = np.arctan(height / radial)
-
-    # some weird arctan shit
-    need_fix_arctan = np.logical_and(np.logical_and(radial > 0, height < 0),
-                                     polar < 0)
-    polar[need_fix_arctan] = abs(polar[need_fix_arctan]) + (np.pi / 2)
+        phi = np.arctan2(zeta, ro)
 
     if degrees:
-        polar = np.rad2deg(polar)
+        phi = np.rad2deg(phi)
 
-    return radial_out, azimuthal, polar
+    return r, theta, phi
+
+
+def spherical_to_cylindrical(r, theta, phi, degrees=True, phi_is_inclination=False):
+    """
+    Convert spherical coordinates (r, theta, phi) to cylindrical (ro, phi, zeta).
+
+    Parameters
+    ----------
+    r: (N,) ndarray
+        Radial distance.
+    theta: (N,) ndarray
+        Azimuthal angle.
+    phi: (N,) ndarray
+        Polar angle.
+    degrees: bool, optional
+        If True, azimuthal and polar will be returned in degrees.
+    phi_is_inclination: bool, optional
+        See https://en.wikipedia.org/wiki/Cylindrical_coordinate_system#Spherical_coordinates.
+
+    Returns
+    -------
+    ro: (N,) ndarray
+        Radial distance.
+    phi: (N,) ndarray
+        Angular position.
+    z: (N,) ndarray
+        Altitude.
+    """
+    if degrees:
+        phi = np.deg2rad(phi)
+
+    sin_phi = np.sin(phi)
+    cos_phi = np.cos(phi)
+
+    ro = r * sin_phi
+    z = r * cos_phi
+
+    phi = theta
+
+    return ro, phi, z

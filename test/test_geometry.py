@@ -5,6 +5,7 @@ from pyntcloud.geometry.coord_systems import (
     cylindrical_to_cartesian,
     cartesian_to_cylindrical,
     cylindrical_to_spherical,
+    spherical_to_cylindrical
 )
 
 
@@ -90,10 +91,10 @@ def test_cylindrical_to_spherical():
     data = np.array([[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
 
     result = np.zeros_like(expected)
-    radial, azimuthal, polar = cylindrical_to_spherical(data[:, 0], data[:, 1], data[:, 2])
-    result[:, 0] = radial
-    result[:, 1] = azimuthal
-    result[:, 2] = polar
+    r, theta, phi = cylindrical_to_spherical(data[:, 0], data[:, 1], data[:, 2])
+    result[:, 0] = r
+    result[:, 1] = theta
+    result[:, 2] = phi
 
     assert np.all(np.isclose(result, expected))
 
@@ -101,9 +102,34 @@ def test_cylindrical_to_spherical():
 
     data[:, 1] = np.deg2rad(data[:, 1])
 
-    radial, azimuthal, polar = cylindrical_to_spherical(data[:, 0], data[:, 1], data[:, 2], degrees=False)
-    result[:, 0] = radial
-    result[:, 1] = azimuthal
-    result[:, 2] = polar
+    r, theta, phi = cylindrical_to_spherical(data[:, 0], data[:, 1], data[:, 2], degrees=False)
+    result[:, 0] = r
+    result[:, 1] = theta
+    result[:, 2] = phi
+
+    assert np.all(np.isclose(result, expected))
+
+
+def test_spherical_to_cylindrical():
+    expected = np.array([[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
+
+    data = np.array([[1, 45, 45], [1, -45, 135]], dtype=np.float32)
+
+    result = np.zeros_like(expected)
+    ro, phi, z = spherical_to_cylindrical(data[:, 0], data[:, 1], data[:, 2])
+    result[:, 0] = ro
+    result[:, 1] = phi
+    result[:, 2] = z
+
+    assert np.all(np.isclose(result, expected))
+
+    expected[:, 1] = np.deg2rad(expected[:, 1])
+
+    data[:, 1:] = np.deg2rad(data[:, 1:])
+
+    ro, phi, z = spherical_to_cylindrical(data[:, 0], data[:, 1], data[:, 2], degrees=False)
+    result[:, 0] = ro
+    result[:, 1] = phi
+    result[:, 2] = z
 
     assert np.all(np.isclose(result, expected))
