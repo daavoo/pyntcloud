@@ -4,6 +4,7 @@ from pyntcloud.geometry.coord_systems import (
     cartesian_to_spherical,
     cylindrical_to_cartesian,
     cartesian_to_cylindrical,
+    cylindrical_to_spherical,
 )
 
 
@@ -79,5 +80,30 @@ def test_cartesian_to_cylindrical():
     result[:, 0] = radial
     result[:, 1] = angular
     result[:, 2] = height
+
+    assert np.all(np.isclose(result, expected))
+
+
+def test_cylindrical_to_spherical():
+    expected = np.array([[1, 45, 45], [1, -45, 135]], dtype=np.float32)
+
+    data = np.array([[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
+
+    result = np.zeros_like(expected)
+    radial, azimuthal, polar = cylindrical_to_spherical(data[:, 0], data[:, 1], data[:, 2])
+    result[:, 0] = radial
+    result[:, 1] = azimuthal
+    result[:, 2] = polar
+
+    assert np.all(np.isclose(result, expected))
+
+    expected[:, 1:] = np.deg2rad(expected[:, 1:])
+
+    data[:, 1] = np.deg2rad(data[:, 1])
+
+    radial, azimuthal, polar = cylindrical_to_spherical(data[:, 0], data[:, 1], data[:, 2], degrees=False)
+    result[:, 0] = radial
+    result[:, 1] = azimuthal
+    result[:, 2] = polar
 
     assert np.all(np.isclose(result, expected))

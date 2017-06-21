@@ -128,7 +128,7 @@ def cylindrical_to_cartesian(radial, angular, height, degrees=True):
 
 def cartesian_to_cylindrical(xyz, degrees=True):
     """
-    Convert cartesian coordinates (x, y, z) to spherical cylindrical (ro, phi, zeta).
+    Convert cartesian coordinates (x, y, z) to cylindrical (ro, theta, zeta).
 
     Parameters
     ----------
@@ -142,7 +142,7 @@ def cartesian_to_cylindrical(xyz, degrees=True):
     radial: (N,) ndarray
         'ro'. Radial distance.
     angular: (N,) ndarray
-        'phi'. Angular position.
+        'theta'. Angular position.
     height: (N,) ndarray
         'zeta'. Altitude.
 
@@ -167,3 +167,46 @@ def cartesian_to_cylindrical(xyz, degrees=True):
         angular = np.rad2deg(angular)
 
     return radial, angular, height
+
+
+def cylindrical_to_spherical(radial, angular, height, degrees=True, theta_is_inclination=False):
+    """
+    Convert cylindrical coordinates (ro, theta, zeta) to spherical (r, theta, phi).
+
+    Parameters
+    ----------
+    radial: (N,) ndarray
+        'ro'. Radial distance.
+    angular: (N,) ndarray
+        'theta'. Angular position.
+    height: (N,) ndarray
+        'zeta'. Altitude.
+    degrees: bool, optional
+        If True, azimuthal and polar will be returned in degrees.
+
+    Returns
+    -------
+    radial_out: (N,) ndarray
+        'r'. Radial distance.
+    azimuthal: (N,) ndarray
+        'theta'. Azimuthal angle.
+    polar: (N,) ndarray
+        'phi'. Polar angle.
+    """
+
+    radial_out = np.sqrt((radial * radial) + (height * height))
+    azimuthal = angular
+
+    if theta_is_inclination:
+        polar = np.arctan(radial / height)
+    else:
+        polar = np.arctan(height / radial)
+
+    # some weird arctan shit
+    need_fix_arctan = np.logical_and(radial > 0, height < 0)
+    polar[need_fix_arctan] = abs(polar[need_fix_arctan]) + (np.pi / 2)
+
+    if degrees:
+        polar = np.rad2deg(polar)
+
+    return radial_out, azimuthal, polar
