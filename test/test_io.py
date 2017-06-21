@@ -131,3 +131,8 @@ def test_read_color_off():
 
     assert_points_xyz(color_off)
     assert_points_color(color_off)
+
+def test_read_stl():
+    stl = PyntCloud.from_file(data_path + '_ascii.stl')
+    assert_points_xyz(stl)
+#    assert_mesh(stl)
