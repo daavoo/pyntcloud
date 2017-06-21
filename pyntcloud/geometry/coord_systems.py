@@ -203,7 +203,8 @@ def cylindrical_to_spherical(radial, angular, height, degrees=True, theta_is_inc
         polar = np.arctan(height / radial)
 
     # some weird arctan shit
-    need_fix_arctan = np.logical_and(radial > 0, height < 0)
+    need_fix_arctan = np.logical_and(np.logical_and(radial > 0, height < 0),
+                                     polar < 0)
     polar[need_fix_arctan] = abs(polar[need_fix_arctan]) + (np.pi / 2)
 
     if degrees:
