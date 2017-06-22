@@ -73,7 +73,7 @@ def cartesian_to_spherical(xyz, degrees=True):
 
     r = np.sqrt((x * x) + (y * y) + (z * z))
 
-    theta = np.arctan(y / x)
+    theta = np.arctan2(y, x)
 
     phi = np.arccos(z / r)
 
