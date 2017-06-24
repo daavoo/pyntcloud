@@ -33,7 +33,8 @@ from .sf_voxelgrid import (
 from .sf_xyz import (
     PlaneFit,
     SphereFit,
-    CustomFit
+    CustomFit,
+    SphericalCoordinates
 )
 ALL_SF = {
     # Eigenvalues
@@ -67,4 +68,5 @@ ALL_SF = {
     'custom_fit': CustomFit,
     'plane_fit': PlaneFit,
     'sphere_fit': SphereFit,
+    'spherical_coords': SphericalCoordinates,
 }
