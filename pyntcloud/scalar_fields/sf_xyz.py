@@ -1,4 +1,5 @@
 import numpy as np
+from ..geometry.coord_systems import cartesian_to_spherical
 from ..ransac import single_fit, RANSAC_MODELS, RANSAC_SAMPLERS
 from .base import ScalarField
 
@@ -22,7 +23,8 @@ class ScalarField_XYZ(ScalarField):
 
 
 class PlaneFit(ScalarField_XYZ):
-    """ Points belonging to the best RansacPlane found.
+    """
+    Get wich points belong to the best RansacSphere found.
     """
 
     def __init__(self, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
@@ -36,15 +38,17 @@ class PlaneFit(ScalarField_XYZ):
         super().__init__(pyntcloud)
 
     def compute(self):
-        self.to_be_added[self.name] = single_fit(self.points, self.model, self.sampler,
-                                                 model_kwargs=self.model_kwargs,
-                                                 max_iterations=self.max_iterations,
-                                                 n_inliers_to_stop=self.n_inliers_to_stop).astype(np.uint8)
+        inliers = single_fit(self.points, self.model, self.sampler,
+                             model_kwargs=self.model_kwargs,
+                             max_iterations=self.max_iterations,
+                             n_inliers_to_stop=self.n_inliers_to_stop)
+        self.to_be_added[self.name] = inliers.astype(np.uint8)
+
 
 
 class SphereFit(ScalarField_XYZ):
-    """ Returns wich points belong to the best RansacSphere found.
-
+    """
+    Get wich points belong to the best RansacSphere found.
     """
 
     def __init__(self, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
@@ -58,18 +62,20 @@ class SphereFit(ScalarField_XYZ):
         super().__init__(pyntcloud)
 
     def compute(self):
-        self.to_be_added[self.name] = single_fit(self.points, self.model, self.sampler,
-                                                 model_kwargs=self.model_kwargs,
-                                                 max_iterations=self.max_iterations,
-                                                 n_inliers_to_stop=self.n_inliers_to_stop).astype(np.uint8)
+        inliers = single_fit(self.points, self.model, self.sampler,
+                             model_kwargs=self.model_kwargs,
+                             max_iterations=self.max_iterations,
+                             n_inliers_to_stop=self.n_inliers_to_stop)
+        self.to_be_added[self.name] = inliers.astype(np.uint8)
 
 
 class CustomFit(ScalarField_XYZ):
-    """ Fit using custom model and/or sampler
+    """ 
+    Fit using custom model and/or sampler.
     """
 
     def __init__(self, pyntcloud, model, sampler, name, model_kwargs={},
-                 sampler_kwargs={}, max_iterations=100):
+                 sampler_kwargs={}, max_iterations=100, n_inliers_to_stop=None):
         self.model = model
         self.sampler = sampler
         self.name = name
@@ -79,7 +85,25 @@ class CustomFit(ScalarField_XYZ):
         super().__init__(pyntcloud)
 
     def compute(self):
-        self.to_be_added[self.name] = single_fit(self.points, self.model, self.sampler,
-                                                 model_kwargs=self.model_kwargs,
-                                                 sampler_kwargs=self.sampler_kwargs,
-                                                 max_iterations=self.max_iterations)
+        inliers = single_fit(self.points, self.model, self.sampler,
+                             model_kwargs=self.model_kwargs,
+                             max_iterations=self.max_iterations,
+                             n_inliers_to_stop=self.n_inliers_to_stop)
+        self.to_be_added[self.name] = inliers.astype(np.uint8)
+
+
+class SphericalCoordinates(ScalarField_XYZ):
+    """
+    Get radial, azimuthal and polar values from x, y, z coordinates.
+    """
+
+    def __init__(self, pyntcloud, degrees=True):
+        self.degrees = degrees
+        super().__init__(pyntcloud)
+
+    def compute(self):
+        radial, theta, phi = cartesian_to_spherical(self.points, degrees=self.degrees)
+
+        self.to_be_added["radial"] = radial
+        self.to_be_added["polar"] = theta
+        self.to_be_added["azimuthal"] = phi

@@ -268,6 +268,11 @@ class PyntCloud(object):
                 sampler_kwargs: dict, optional
                     Default: {}
                     Will be passed to single_fit function.
+
+            spherical_coords
+                degrees: bool, optional
+                    Default: True.
+                    Return polar and azimuthal angles in degrees.
         """
         if name in ALL_SF:
             SF = ALL_SF[name](self, **kwargs)
