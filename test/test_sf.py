@@ -146,9 +146,18 @@ def test_sf_xyz():
 
     # fit with default values (max_dist=1e-4)
     is_plane = cloud.add_scalar_field("plane_fit")
-    all(cloud.points[is_plane] == [1, 1, 1, 1, 0])
+    assert sorted(cloud.points[is_plane].value_counts()) == [1, 4]
 
     # fit with higher tolerance -> include outlier
     is_plane = cloud.add_scalar_field("plane_fit", max_dist=0.4)
+    assert sorted(cloud.points[is_plane].value_counts()) == [5]
 
-    all(cloud.points[is_plane] == [1, 1, 1, 1, 1])
+    cloud = PyntCloud.from_file(path + "/data/sphere.ply")
+
+    is_sphere = cloud.add_scalar_field("sphere_fit")
+    assert sorted(cloud.points[is_sphere].value_counts()) == [1, 2928]
+
+    is_sphere = cloud.add_scalar_field("sphere_fit", max_dist=26)
+    assert sorted(cloud.points[is_sphere].value_counts()) == [2929]
+
+
