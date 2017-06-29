@@ -240,7 +240,7 @@ class VoxelGrid(Structure):
 
         return [x for x in ravel_indices if x in self.set_voxel_n]
 
-    def plot_feature_vector(self, mode="binary", d=2, cmap="Oranges"):
+    def plot(self, d=2, mode="binary", cmap="Oranges", axis=False, output_name=None, width=800, height=500):
         feature_vector = self.get_feature_vector(mode)
 
         if d == 2:
@@ -255,4 +255,4 @@ class VoxelGrid(Structure):
                 ax.set_title("Level " + str(i))
 
         elif d == 3:
-            return plot_voxelgrid(self, cmap=cmap)
+            return plot_voxelgrid(self, mode=mode, cmap=cmap, axis=axis, output_name=output_name, width=width, height=height)
