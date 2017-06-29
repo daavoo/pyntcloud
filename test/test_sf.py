@@ -6,10 +6,10 @@ from pyntcloud import PyntCloud
 PI = np.pi + 0.01
 
 path = os.path.abspath(os.path.dirname(__file__))
-cloud = PyntCloud.from_file(path + "/data/mnist.npz")
 
 
 def test_eigenvalues():
+    cloud = PyntCloud.from_file(path + "/data/mnist.npz")
     k_neighbors = cloud.get_neighbors(k=5)
     ev = cloud.add_scalar_field("eigen_values", k_neighbors=k_neighbors)
 
@@ -36,6 +36,7 @@ def test_eigenvalues():
 
 
 def test_k_neighbors():
+    cloud = PyntCloud.from_file(path + "/data/mnist.npz")
     k_neighbors = cloud.get_neighbors(k=5)
 
     with pytest.raises(TypeError):
@@ -55,6 +56,8 @@ def test_k_neighbors():
 
 
 def test_normals_sf():
+    cloud = PyntCloud.from_file(path + "/data/mnist.npz")
+
     cloud.add_scalar_field('inclination_deg')
     assert min(cloud.points["inclination_deg"]) >= 0
     assert max(cloud.points["inclination_deg"]) <= 180
@@ -77,6 +80,8 @@ def test_normals_sf():
 
 
 def test_rgb_sf():
+    cloud = PyntCloud.from_file(path + "/data/mnist.npz")
+
     cloud.add_scalar_field('rgb_intensity')
     assert min(cloud.points["Ri"]) >= 0
     assert min(cloud.points["Gi"]) >= 0
@@ -102,6 +107,8 @@ def test_rgb_sf():
 
 
 def test_voxelgrid_sf():
+    cloud = PyntCloud.from_file(path + "/data/mnist.npz")
+
     with pytest.raises(TypeError):
         # missing arg
         cloud.add_scalar_field("voxel_x")
@@ -125,15 +132,32 @@ def test_voxelgrid_sf():
     assert max(cloud.points[sf_id]) <= 7
     cloud.points.drop(sf_id, 1, inplace=True)
 
+    cloud = PyntCloud.from_file(path + "/data/voxelgrid.ply")
+
+    voxelgrid = cloud.add_structure("voxelgrid", sizes=[0.3] * 3)
+    clusters = cloud.add_scalar_field("euclidean_clusters", voxelgrid=voxelgrid)
+    counts = sorted(cloud.points[clusters].value_counts().values)
+    assert len(counts) == 2
+    assert counts == [2, 4]
+
 
 def test_sf_xyz():
     cloud = PyntCloud.from_file(path + "/data/plane.npz")
 
     # fit with default values (max_dist=1e-4)
     is_plane = cloud.add_scalar_field("plane_fit")
-    all(cloud.points[is_plane] == [1, 1, 1, 1, 0])
+    assert sorted(cloud.points[is_plane].value_counts()) == [1, 4]
 
     # fit with higher tolerance -> include outlier
     is_plane = cloud.add_scalar_field("plane_fit", max_dist=0.4)
+    assert sorted(cloud.points[is_plane].value_counts()) == [5]
 
-    all(cloud.points[is_plane] == [1, 1, 1, 1, 1])
+    cloud = PyntCloud.from_file(path + "/data/sphere.ply")
+
+    is_sphere = cloud.add_scalar_field("sphere_fit")
+    assert sorted(cloud.points[is_sphere].value_counts()) == [1, 2928]
+
+    is_sphere = cloud.add_scalar_field("sphere_fit", max_dist=26)
+    assert sorted(cloud.points[is_sphere].value_counts()) == [2929]
+
+
