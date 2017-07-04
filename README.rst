@@ -13,13 +13,16 @@ Pyntcloud is a Python(3 because we are not in 2008) library for working with 3D 
 📖 Documentation
 ================
 
-=================== ===
-`Home`_  Start Here.
-`Introduction`_  What are point clouds and what is pyntcloud.
-`Basic Installation`_ Get pyntcloud running on your computer.
-`Setting up a Jupyter Enviroment`_  Get superpowers with Jupyter.
++---------------------------------------+--------------------------------------------------+
+| `Home`_                               | Start Here.                                      |
++---------------------------------------+--------------------------------------------------+
+| `Introduction`_                       | What are point clouds and what is pyntcloud.     |
++---------------------------------------+--------------------------------------------------+
+| `Basic Installation`_                 | Get pyntcloud running on your computer.          |
++---------------------------------------+--------------------------------------------------+
+| `Setting up a Jupyter Enviroment`_    | Get superpowers with Jupyter.                    |
++---------------------------------------+--------------------------------------------------+
 
-=================== ===
 .. _Home: http://pyntcloud.readthedocs.io/en/latest/
 .. _Introduction: http://pyntcloud.readthedocs.io/en/latest/introduction.html
 .. _Basic Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
