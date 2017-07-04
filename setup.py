@@ -18,7 +18,6 @@ setup(
         "scipy",
         "pandas",
         "ipython",
-        "pytest",
         "matplotlib",
         "python-lzf",
         "numba",
