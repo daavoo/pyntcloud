@@ -38,19 +38,21 @@ def coplanar_area(points, plane_normal=None):
 
     if not plane_normal:
 
-        p, normal = plane_def_by(points[:3])
+        #  p, normal = plane_def_by(points[:3])
+        pass
 
     else:
-        normal = normalize(plane_normal)
+        #  normal = normalize(plane_normal)
+        pass
 
     #: get an array with the first point positioned as last
     points_rolled = np.roll(points, len(points) - 1, axis=0)
 
-    cross_product = cross(points, points_rolled)
+    cross_product = np.cross(points, points_rolled)
 
     summed = np.sum(cross_product, axis=0)
 
-    total = np.dot(summed, normal)
+    total = np.dot(summed, plane_normal)
 
     area = 0.5 * abs(total)
 
@@ -77,7 +79,7 @@ def projected_area(points, plane_point, plane_normal):
 
     """
 
-    points = project_on_plane(points, plane_point, plane_normal)
+    # points = project_on_plane(points, plane_point, plane_normal)
 
     area = coplanar_area(points, plane_normal=plane_normal)
 

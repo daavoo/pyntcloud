@@ -26,7 +26,7 @@ be adquired nowdays from different sources. For example:
 
 pyntcloud
 =========
-pyntcloud enables simple and interactive exploration of point cloud data.
+pyntcloud enables simple and interactive exploration of point cloud data, regardless of which sensor was used to generate it or what is the use case.
 
 Althoug it was built for being used on `Jupyter Notebooks <http://jupyter.org/>`__ the library is suitable for other kind of uses.
 
@@ -36,6 +36,7 @@ commom point cloud processing operations:
 -   filters
 -   geometry
 -   io
+-   learn
 -   neighbors
 -   plot
 -   ransac
@@ -63,4 +64,4 @@ the library, **PyntCloud**, and it's corresponding methods:
     # ...
 
 Although most of the functionallity in the modules can be used without constructing
-a PyntCloud instance, the recommended workflow for the average user is the one explained in this documentation.
+a PyntCloud instance, the recommended workflow for the average user is the one showcased above.

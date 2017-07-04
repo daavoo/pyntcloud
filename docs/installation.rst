@@ -1,162 +1,95 @@
+.. _basic-installation:
+
+==================
+Basic installation
+==================
+
+Requirements
 ============
-Installation
-============
 
-pyntcloud is intended to make working with point clouds fun. In order to do so,
-we need the right tools!
+At the very least, you need a Python(3) installation and the following requirements:
 
-This might look a little tedious for some people (I hope it don't), but I promise
-that you will seriously appreciate this setting up process later.
+- ipython
+- laspy
+- matplotlib
+- numpy
+- numba
+- scipy
+- pandas
+- python-lzf
 
-This is my personal recommended fun setup. If you think that other way might be funnier, open
-an issue and I will add it to this page.
+You can install this requirements however you want to.
 
-The following steps will allow you to use pyntcloud under Mac, Linux and Windows:
-
-1. Grab and setup miniconda
-----------------------------
-
-Conda is a "OS-agnostic, system-level binary package manager and ecosystem".
-
-The only excuse for not using it, is that you didn't know about it. And now you do.
-
-https://conda.io/miniconda.html
-
-**Grab conda 2.7 version**, it allows us to create python3 enviroments aswell, so
-blindly trust me and grab the conda 2.7 version.
-
-Answer **yes** when you get this prompt:
+Once you have this requirements installed, you can install pyntcloud using:
 
 .. code-block:: bash
 
-    Do you wish the installer to prepend the Miniconda2 install location
-    to PATH in your /home/daviddelaiglesia/.bashrc ? [yes|no]
-    [no] >>> yes
+    pip install git+https://github.com/daavoo/pyntcloud
 
-Once you have installed conda, add the `conda-forge <https://conda-forge.github.io/>`__ channel.
+Using conda
+===========
 
-.. code-block:: bash
+We provide you a easier installation using conda.
 
-    conda config --add channels conda-forge
+First, install https://conda.io/miniconda.html.
 
-This will allow us to install packages from conda-forge, "A community led
-collection of recipes, build infrastructure and distributions for the conda package manager".
+Then, download the conda enviroment file at:
 
-2. Add Jupyter and nb_conda
----------------------------
-
-Now that you have conda installed and the conda-forge channel is up, we are going
-to add some cool packages.
-
-First, we will install `Jupyter <http://jupyter.org/>`__ (and a bunch
-of dependencies) in the **base** conda enviroment.
-
-.. code-block:: bash
-
-    conda install jupyter -y
-
-Try that everything is working by running.
-
-.. code-block:: bash
-
-    jupyter notebook
-
-This should open on your default browser something like:
-
-.. image:: images/vanillajupyter.png
-
-Shut it down with `Ctrl+C`.
-
-Now, Jupyter is great, but it doesn't handle conda enviroments quite well by default,
-and you **must** work using conda enviroments.
-
-So we will install another package that allows us to create, launch and manage notebooks
-while working with different enviroments.
-
-.. code-block:: bash
-
-    conda install nb_conda -y
-
-Now if you run:
-
-.. code-block:: bash
-
-    jupyter notebook
-
-You should see a new Conda tab on the top
-
-.. image:: images/condajupyter.png
-
-This might look like a small modification, but it is game-changing. When you click
-the New button, you can now select wich enviroment should
-the new notebook use. This is HUGE.
-
-3. Install pyntcloud
---------------------
-
-Grab:
-
-https://raw.githubusercontent.com/daavoo/pyntcloud/master/enviroment.yml
+https://raw.githubusercontent.com/daavoo/pyntcloud/master/env.yml
 
 You can manually save the content to a file or use:
 
 .. code-block:: bash
 
-    wget https://raw.githubusercontent.com/daavoo/pyntcloud/master/enviroment.yml
+    wget https://raw.githubusercontent.com/daavoo/pyntcloud/master/env.yml
 
-Type in the terminal:
+After that, type in a terminal:
 
 .. code-block:: bash
-
-    conda env create -f enviroment.yml
+    
+    conda env create -f env.yml
 
     source activate pyntcloud
 
-    git clone https://github.com/daavoo/pyntcloud.git
+    pip install git+https://github.com/daavoo/pyntcloud
 
+
+Installation for developers
+===========================
+
+If you want to hack around pyntcloud, there are a few more requirements:
+
+- autopep8
+- flake8
+- pytest
+
+If you are using conda, create an enviroment using the following file instead of the env.yml:
+
+https://raw.githubusercontent.com/daavoo/pyntcloud/master/dev_env.yml
+
+
+Once you have the requirements installed, you can install pyntcloud in development mode as follows:
+
+.. code-block:: bash
+
+    git clone https://github.com/daavoo/pyntcloud.git
+    
     cd pyntcloud
 
-    python setup.py develop
+    # if conda
+    source activate pyntcloud
 
-And you now have an isolated enviroment with pyntcloud and all it's dependecies!.
+    pip install -e .
 
-To make use of it, run this **without** activating the enviroment:
-
-.. code-block:: bash
-
-    jupyter notebook
-
-And create a new Notebook selecting env:pyntcloud as kernel:
-
-.. image:: images/pyntcloudnotebook.png
-
-4. Run the QuickStart
----------------------
-
-Now that we have all setted up, let's run the QuickStart notebook, wich will give
-us a quick overview of pyntcloud.
-
-First, clone the pyntcloud-notebooks repo:
+From the root of the repo, you can run:
 
 .. code-block:: bash
 
-    git clone https://github.com/daavoo/pyntcloud-notebooks.git
+    # for auto-formating the code
+    autopep8
 
-Move to the root directory of the repo and launch jupyter notebook (remember, **without**
-activating the pyntcloud enviroment, because we are using `nb_conda`):
+    # for getting warnings about syntax and other kind of errors
+    falke8
 
-.. code-block:: bash
-
-    cd pyntcloud-notebooks/
-
-    jupyter notebook
-
-Now we can open the QuickStart.ipynb file and go through the tutorial.
-
-If you get a prompt asking which kernel should be used, make sure that you select
-env:pyntcloud.
-
-You can verify that the notebook is running the correct kernel by looking at the
-top right of the window:
-
-.. image:: images/quickstartnotebook.png
+    # for running all the tests
+    pytest -v

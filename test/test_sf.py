@@ -135,7 +135,8 @@ def test_voxelgrid_sf():
     cloud = PyntCloud.from_file(path + "/data/voxelgrid.ply")
 
     voxelgrid = cloud.add_structure("voxelgrid", sizes=[0.3] * 3)
-    clusters = cloud.add_scalar_field("euclidean_clusters", voxelgrid=voxelgrid)
+    clusters = cloud.add_scalar_field(
+        "euclidean_clusters", voxelgrid=voxelgrid)
     counts = sorted(cloud.points[clusters].value_counts().values)
     assert len(counts) == 2
     assert counts == [2, 4]
@@ -159,5 +160,3 @@ def test_sf_xyz():
 
     is_sphere = cloud.add_scalar_field("sphere_fit", max_dist=26)
     assert sorted(cloud.points[is_sphere].value_counts()) == [2929]
-
-

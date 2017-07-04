@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def read_off(filename):
 
     with open(filename) as off:
@@ -30,7 +31,7 @@ def read_off(filename):
                                      skiprows=count, skipfooter=n_faces,
                                      names=point_names, index_col=False)
         for n in ["x", "y", "z"]:
-             data["points"][n] = data["points"][n].astype(np.float32)
+            data["points"][n] = data["points"][n].astype(np.float32)
 
         if color:
             for n in ["red", "green", "blue"]:

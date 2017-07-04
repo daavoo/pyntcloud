@@ -96,7 +96,8 @@ class PyntCloud(object):
                 raise TypeError("Mesh argument must be a DataFrame")
             elif not set(['v1', 'v2', 'v3']).issubset(df.columns):
                 print(df.columns)
-                raise ValueError("Mesh must have v1, v2 and v3 columns, at least")
+                raise ValueError(
+                    "Mesh must have v1, v2 and v3 columns, at least")
             self.__mesh = df
         else:
             self.__mesh = None
@@ -119,7 +120,8 @@ class PyntCloud(object):
         """
         ext = filename.split(".")[-1].upper()
         if ext not in FROM:
-            raise ValueError("Unsupported file format; supported formats are: {}".format(list(FROM)))
+            raise ValueError(
+                "Unsupported file format; supported formats are: {}".format(list(FROM)))
         else:
             return cls(**FROM[ext](filename, **kwargs))
 
@@ -140,7 +142,8 @@ class PyntCloud(object):
         convert_columns_dtype(self.points, np.float64, np.float32)
         ext = filename.split(".")[-1].upper()
         if ext not in TO:
-            raise ValueError("Unsupported file format; supported formats are: {}".format(list(TO)))
+            raise ValueError(
+                "Unsupported file format; supported formats are: {}".format(list(TO)))
         kwargs["filename"] = filename
         for x in internal:
             kwargs[x] = getattr(self, x)
