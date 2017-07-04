@@ -4,12 +4,13 @@ from inspect import signature, Parameter
 def crosscheck_kwargs_function(kwargs, function):
     f_positional = []
     f_kwargs = []
-    accepts_args = False
+    # accepts_args = False
     accept_kwargs = False
     for x, p in signature(function).parameters.items():
         if p.default == Parameter.empty:
             if p.kind == Parameter.VAR_POSITIONAL:
-                accepts_args = True
+                # accepts_args = True
+                pass
             elif p.kind == Parameter.VAR_KEYWORD:
                 accept_kwargs = True
             else:

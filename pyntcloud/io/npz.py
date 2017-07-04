@@ -24,7 +24,7 @@ def read_npz(filename, points_name="points", mesh_name="mesh"):
     return data
 
 
-def write_npz(filename,  **kwargs):
+def write_npz(filename, **kwargs):
     """
     Parameters
     ----------

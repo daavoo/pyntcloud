@@ -13,6 +13,7 @@ class RansacModel(ABC):
     max_dist : float
         Treshold distance to consider a point as an inlier.
     """
+
     def __init__(self, max_dist=1e-4):
         self.max_dist = max_dist
 

@@ -12,12 +12,12 @@ from .s_voxelgrid import (
 )
 
 ALL_SAMPLING = {
-    # Mesh            
-    'mesh_random_sampling': RandomMesh, 
+    # Mesh
+    'mesh_random_sampling': RandomMesh,
     # Points
-    'points_random_sampling' : RandomPoints,    
+    'points_random_sampling': RandomPoints,
     # Voxelgrid
-    'voxelgrid_centers' : VoxelgridCenters,
-    'voxelgrid_centroids' : VoxelgridCentroids,
-    'voxelgrid_nearest' : VoxelgridNearest
+    'voxelgrid_centers': VoxelgridCenters,
+    'voxelgrid_centroids': VoxelgridCentroids,
+    'voxelgrid_nearest': VoxelgridNearest
 }

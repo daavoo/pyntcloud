@@ -35,7 +35,8 @@ class VoxNet(torch.nn.Module):
         """
         super().__init__()
         self.body = torch.nn.Sequential(OrderedDict([
-            ('conv1', torch.nn.Conv3d(in_channels=1, out_channels=32, kernel_size=5, stride=2)),
+            ('conv1', torch.nn.Conv3d(in_channels=1,
+                                      out_channels=32, kernel_size=5, stride=2)),
             ('lkrelu1', torch.nn.LeakyReLU()),
             ('drop1', torch.nn.Dropout(p=0.2)),
             ('conv2', torch.nn.Conv3d(in_channels=32, out_channels=32, kernel_size=3)),
@@ -45,7 +46,8 @@ class VoxNet(torch.nn.Module):
         ]))
 
         # Trick to accept different input shapes
-        x = self.body(torch.autograd.Variable(torch.rand((1, 1) + input_shape)))
+        x = self.body(torch.autograd.Variable(
+            torch.rand((1, 1) + input_shape)))
         first_fc_in_features = 1
         for n in x.size()[1:]:
             first_fc_in_features *= n

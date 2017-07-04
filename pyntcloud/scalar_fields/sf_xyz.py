@@ -45,7 +45,6 @@ class PlaneFit(ScalarField_XYZ):
         self.to_be_added[self.name] = inliers.astype(np.uint8)
 
 
-
 class SphereFit(ScalarField_XYZ):
     """
     Get wich points belong to the best RansacSphere found.
@@ -70,8 +69,8 @@ class SphereFit(ScalarField_XYZ):
 
 
 class CustomFit(ScalarField_XYZ):
-    """ 
-    Fit using custom model and/or sampler.
+    """
+    Fit using custom model and sampler.
     """
 
     def __init__(self, pyntcloud, model, sampler, name, model_kwargs={},
@@ -102,7 +101,8 @@ class SphericalCoordinates(ScalarField_XYZ):
         super().__init__(pyntcloud)
 
     def compute(self):
-        radial, theta, phi = cartesian_to_spherical(self.points, degrees=self.degrees)
+        radial, theta, phi = cartesian_to_spherical(
+            self.points, degrees=self.degrees)
 
         self.to_be_added["radial"] = radial
         self.to_be_added["polar"] = theta

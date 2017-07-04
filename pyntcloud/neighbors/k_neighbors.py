@@ -17,4 +17,4 @@ def k_neighbors(kdtree, k):
     """
     # [1] to select indices and ignore distances
     # [:,1:] to discard self-neighbor
-    return kdtree.query(kdtree.data, k=k+1, n_jobs=-1)[1][:, 1:]
+    return kdtree.query(kdtree.data, k=k + 1, n_jobs=-1)[1][:, 1:]

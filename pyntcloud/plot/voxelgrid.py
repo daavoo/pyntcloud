@@ -7,7 +7,13 @@ from IPython.display import IFrame
 from matplotlib import pyplot as plt
 
 
-def plot_voxelgrid(voxelgrid, mode="binary", cmap="Oranges", axis=True, output_name=None, width=800, height=500):
+def plot_voxelgrid(voxelgrid,
+                   mode="binary",
+                   cmap="Oranges",
+                   axis=True,
+                   output_name=None,
+                   width=800,
+                   height=500):
 
     scaled_shape = voxelgrid.shape / min(voxelgrid.shape)
 

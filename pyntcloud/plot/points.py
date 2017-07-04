@@ -26,16 +26,20 @@ def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=80
     with open(src, "r") as inp, open(dst, "w") as out:
         for line in inp:
             if "FILENAME_PLACEHOLDER" in line:
-                line = line.replace("FILENAME_PLACEHOLDER", "'{}'".format(output_name))
+                line = line.replace("FILENAME_PLACEHOLDER",
+                                    "'{}'".format(output_name))
 
             elif "CAMERA_POSITION_PLACEHOLDER" in line:
-                line = line.replace("CAMERA_POSITION_PLACEHOLDER", "{}".format(camera_position))
+                line = line.replace(
+                    "CAMERA_POSITION_PLACEHOLDER", "{}".format(camera_position))
 
             elif "LOOK_AT_PLACEHOLDER" in line:
-                line = line.replace("LOOK_AT_PLACEHOLDER", "{}".format(look_at))
+                line = line.replace("LOOK_AT_PLACEHOLDER",
+                                    "{}".format(look_at))
 
             elif "SIZE_PLACEHOLDER" in line:
-                line = line.replace("SIZE_PLACEHOLDER", "{}".format(point_size))
+                line = line.replace("SIZE_PLACEHOLDER",
+                                    "{}".format(point_size))
             out.write(line)
 
     cloud.to_file("{}.ply".format(output_name))

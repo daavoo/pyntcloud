@@ -88,3 +88,4 @@ class Normals(ScalarField_KNeighbors):
         # range from 0-shape[0] to allow indexing along axis 1 and 2
         idx_trick = range(eigenvalues.shape[0])
         unoriented_normals = eigenvectors[idx_trick, :, sort[:, 0]]
+        return unoriented_normals

@@ -22,6 +22,7 @@ def read_ascii(filename, **kwargs):
 
     return data
 
+
 def write_ascii(filename, points, mesh=None, **kwargs):
     """Write points (and optionally mesh) content to filename.
 
