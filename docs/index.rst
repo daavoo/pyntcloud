@@ -13,6 +13,7 @@ This documentation is under cosntruction.
 
    introduction
    installation
+   jupyter
    PyntCloud
    io
    points
