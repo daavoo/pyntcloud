@@ -15,10 +15,11 @@ class Filter_KDTree(Filter):
 
 
 class RadiousOutlierRemoval(Filter_KDTree):
-    """Compute a Radious Outlier Removal filter using the Neighbourhood.
+    """Compute a Radious Outlier Removal filter using the given KDTree.
 
     Parameters
     ----------
+    kdtree: pyntcloud.structures.KDTree
     k : int
         Number of neighbors that will be used to compute the filter.
     r : float
@@ -36,7 +37,6 @@ class RadiousOutlierRemoval(Filter_KDTree):
     the desired result.
 
     A LOWER 'r' value will result in a HIGHER number of points trimmed.
-
     """
 
     def __init__(self, pyntcloud, kdtree, k, r):
@@ -52,10 +52,11 @@ class RadiousOutlierRemoval(Filter_KDTree):
 
 
 class StatisticalOutlierRemoval(Filter_KDTree):
-    """Compute a Statistical Outlier Removal filter using the Neighbourhood.
+    """Compute a Statistical Outlier Removal filter using the given KDTree.
 
     Parameters
     ----------
+    kdtree: pyntcloud.structures.KDTree
     k : int
         Number of neighbors that will be used to compute the filter.
     z_max: float
@@ -75,7 +76,6 @@ class StatisticalOutlierRemoval(Filter_KDTree):
     the filter to the desired result.
 
     A LOWER 'z_max' value will result in a HIGHER number of points trimmed.
-
     """
 
     def __init__(self, pyntcloud, kdtree, k, z_max):
