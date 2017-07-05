@@ -1,4 +1,4 @@
-.. _reading-and-writing:
+.. _io:
 
 ===================
 Reading and writing
@@ -26,6 +26,7 @@ Reading
 =======
 
 .. automethod:: PyntCloud.from_file
+    :noindex:
 
 .. code-block:: python
 
@@ -57,7 +58,7 @@ a PyntCloud instance manually.
 The key thing is to understand that you can't just plug in the raw data into the
 PyntClud's constructor; there are some restrictions.
 
-This restrictions are covered in :ref:`working-with-points`.
+This restrictions are covered in :ref:`points`.
 
 As long as you can adapt your data to this restrictions, you will be able
 to construct a PyntCloud from formats that are not covered in *from_file*.

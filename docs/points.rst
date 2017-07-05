@@ -1,8 +1,8 @@
-.. _working-with-points:
+.. _points:
 
-===================
-Working with points
-===================
+============
+Aboud Points
+============
 
 A classic point cloud is just a set of points.
 
