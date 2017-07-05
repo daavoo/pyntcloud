@@ -82,7 +82,7 @@ def read_pcd(filename):
     Parameters
     ----------
     filename: str
-        Path to the obj file.
+        Path to the pcd file.
 
     Returns
     -------

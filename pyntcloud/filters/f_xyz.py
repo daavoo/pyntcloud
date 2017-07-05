@@ -12,14 +12,16 @@ class Filter_XYZ(Filter):
 
 
 class BoundingBox(Filter_XYZ):
-    """ Compute a bounding box filter on the given points
+    """
+    Compute a bounding box filter for the given points.
 
     Parameters
     ----------
 
-    min_i, max_i: float
-        The bounding box limits for each coordinate. If some limits are missing,
-        the default values are -infinite for the min_i and infinite for the max_i.
+    min_x, max_x, min_y, max_y, min_z, max_z: float
+        The bounding box limits for each coordinate.
+        If some limits are missing, the default values are -infinite
+        for the min_i and infinite for the max_i.
 
     """
 

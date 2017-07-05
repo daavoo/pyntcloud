@@ -33,7 +33,7 @@ Althoug it was built for being used on `Jupyter Notebooks <http://jupyter.org/>`
 pyntcloud is composed by several modules (as indepentent as possible) that englobe
 commom point cloud processing operations:
 
--   filters
+-   filters - :ref:`filters` - :ref:`filters_dev`
 -   geometry
 -   io
 -   learn
