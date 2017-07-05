@@ -15,5 +15,7 @@ This documentation is under cosntruction.
    installation
    jupyter
    PyntCloud
+   filters
+   filters_dev
    io
    points
