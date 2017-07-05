@@ -22,8 +22,11 @@ Pyntcloud is a Python(3 because we are not in 2008) library for working with 3D 
 +---------------------------------------+--------------------------------------------------+
 | `Setting up a Jupyter Enviroment`_    | Get superpowers with Jupyter.                    |
 +---------------------------------------+--------------------------------------------------+
+| `PyntCloud`_                          | Overview of pyntcloud's core class               |
++---------------------------------------+--------------------------------------------------+
 
 .. _Home: http://pyntcloud.readthedocs.io/en/latest/
 .. _Introduction: http://pyntcloud.readthedocs.io/en/latest/introduction.html
 .. _Basic Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
 .. _Setting up a Jupyter Enviroment: http://pyntcloud.readthedocs.io/en/latest/jupyter.html
+.. _PyntCloud: http://pyntcloud.readthedocs.io/en/latest/PyntCloud.html
