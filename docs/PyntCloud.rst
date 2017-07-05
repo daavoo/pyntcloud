@@ -20,7 +20,7 @@ Each PyntCloud's instance some predifined attributes:
 
 -   centroid
 -   mesh
--   points - :ref:`working-with-points`
+-   points - :ref:`points`
 -   structures
 -   xyz
 
@@ -53,26 +53,43 @@ Methods
 
 Avaliable methods are very intuitive.
 
-Methods starting with the word **add** will incorporate new information to some existing PyntCloud attribute.
+Methods starting with the word **add** incorporate new information to some existing PyntCloud attribute.
 
-Methods starting with the word **get** will return some information extracted from the PyntCloud.
+Methods starting with the word **get** return some information extracted from the PyntCloud.
 
-I/O methods are documented in :ref:`reading-and-writing`.
+I/O methods read/write information from/to diferent 3D formats.
 
 *ADD* METHODS
 -------------
 
-.. automethod:: PyntCloud.add_scalar_field
+.. function:: PyntCloud.add_scalar_field
 
-.. automethod:: PyntCloud.add_structure
+.. function:: PyntCloud.add_structure
 
 *GET* METHODS
 -------------
 
-.. automethod:: PyntCloud.get_filter
+.. function:: PyntCloud.get_filter
 
-.. automethod:: PyntCloud.get_sample
+:ref:`filters`
 
-.. automethod:: PyntCloud.get_neighbors
+:ref:`filters_dev`
 
-.. automethod:: PyntCloud.get_mesh_vertices
+.. function:: PyntCloud.get_sample
+
+:ref:`samplers`
+
+:ref:`samplers_dev`
+
+.. function:: PyntCloud.get_neighbors
+
+.. function:: PyntCloud.get_mesh_vertices
+
+*I/O* METHODS
+-------------
+
+:ref:`io`
+
+.. function:: PyntCloud.from_file
+
+.. function:: PyntCloud.to_file

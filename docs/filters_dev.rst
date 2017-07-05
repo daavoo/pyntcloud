@@ -6,6 +6,12 @@
 
 This page contains usefull information for developers that want to modify / add content to the filters module.
 
+Before anithing, two big advices:
+
+- Use the existing filters as guideline.
+
+- Follow the general CONTRIBUTING GUIDELINES.
+
 The Big Picture
 ===============
 
@@ -14,6 +20,7 @@ The Big Picture
 Filters are used by the method:
 
 .. function:: PyntCloud.get_filter
+    :noindex:
 
 Take a look at the source code in order to get a general overview of how filters are being used. All filters are classes and all have the same
 methods.
@@ -32,7 +39,7 @@ The base class is located at pyntcloud/filters/base.py
 
 .. autoclass:: Filter     
 
-At the very least, all filters receive a PyntCloud instance when they are instantiated.
+At the very least, all filters receive a PyntCloud when they are instantiated.
 
 The `Filter.exctract_info` method must be overrided in order to extract and save in a attribute the information required to compute the filter.
 
@@ -92,7 +99,3 @@ In order to do so, you have to do some things:
 - (Probably) Re-write your `compute` method because tests bring bugs to light.
 - Document them in the `PyntCloud.get_filter` docstring at `pyntcloud/core_class.py`.
 - Document them at `docs/filters.rst`.
-
-Use the existing filters as guideline.
-
-Follow the general CONTRIBUTING GUIDELINES.
