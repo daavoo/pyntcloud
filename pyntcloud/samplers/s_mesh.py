@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
 
-from .base import Sampling
+from .base import Sampler
 from ..geometry.areas import triangle_area_multi
 
 
-class Sampling_Mesh(Sampling):
+class Sampler_Mesh(Sampler):
     """
     """
 
@@ -38,7 +38,7 @@ class Sampling_Mesh(Sampling):
             self.v3_normals = v3[:, 3:6]
 
 
-class RandomMesh(Sampling_Mesh):
+class RandomMesh(Sampler_Mesh):
     """ Sample points adjusting probabilities according to triangle area.
 
     Parameters

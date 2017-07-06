@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Sampling(ABC):
+class Sampler(ABC):
     """Base class for sampling methods."""
 
     def __init__(self, pyntcloud):

@@ -11,7 +11,7 @@ from .s_voxelgrid import (
     VoxelgridNearest
 )
 
-ALL_SAMPLING = {
+ALL_SAMPLERS = {
     # Mesh
     'mesh_random_sampling': RandomMesh,
     # Points

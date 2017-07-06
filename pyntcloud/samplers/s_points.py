@@ -1,8 +1,8 @@
 from random import sample
-from .base import Sampling
+from .base import Sampler
 
 
-class Sampling_Points(Sampling):
+class Sampler_Points(Sampler):
     """
     """
 
@@ -13,7 +13,7 @@ class Sampling_Points(Sampling):
         self.points = self.pyntcloud.points
 
 
-class RandomPoints(Sampling_Points):
+class RandomPoints(Sampler_Points):
     """ 'n' unique points randomly chosen
 
     Parameters

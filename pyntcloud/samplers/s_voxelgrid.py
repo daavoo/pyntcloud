@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
-from .base import Sampling
+from .base import Sampler
 
 
-class Sampling_Voxelgrid(Sampling):
+class Sampler_Voxelgrid(Sampler):
     """
     """
 
@@ -16,7 +16,7 @@ class Sampling_Voxelgrid(Sampling):
         self.voxelgrid = self.pyntcloud.structures[self.voxelgrid]
 
 
-class VoxelgridCenters(Sampling_Voxelgrid):
+class VoxelgridCenters(Sampler_Voxelgrid):
     """Returns the points that represent each occupied voxel's center."""
 
     def __init__(self, pyntcloud, voxelgrid):
@@ -26,7 +26,7 @@ class VoxelgridCenters(Sampling_Voxelgrid):
         return self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)]
 
 
-class VoxelgridCentroids(Sampling_Voxelgrid):
+class VoxelgridCentroids(Sampler_Voxelgrid):
     """Returns the centroid of each group of points inside each occupied voxel."""
 
     def __init__(self, pyntcloud, voxelgrid):
@@ -38,7 +38,7 @@ class VoxelgridCentroids(Sampling_Voxelgrid):
         return df.groupby("voxel_n").mean().values
 
 
-class VoxelgridNearest(Sampling_Voxelgrid):
+class VoxelgridNearest(Sampler_Voxelgrid):
     """Returns the point closest to each occupied voxel's center."""
 
     def __init__(self, pyntcloud, voxelgrid):

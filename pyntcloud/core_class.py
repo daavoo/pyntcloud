@@ -9,7 +9,7 @@ from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
 from .plot import DESCRIPTION, plot_PyntCloud
-from .sampling import ALL_SAMPLING
+from .samplers import ALL_SAMPLERS
 from .scalar_fields import ALL_SF
 from .structures import ALL_STRUCTURES
 from .utils.dataframe import convert_columns_dtype
@@ -476,8 +476,8 @@ class PyntCloud(object):
                 n: int
                     Number of points to be sampled.
         """
-        if name in ALL_SAMPLING:
-            S = ALL_SAMPLING[name](self, **kwargs)
+        if name in ALL_SAMPLERS:
+            S = ALL_SAMPLERS[name](self, **kwargs)
             S.extract_info()
             sampled_points = S.compute()
 
