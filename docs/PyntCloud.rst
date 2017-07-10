@@ -64,6 +64,10 @@ I/O methods read/write information from/to diferent 3D formats.
 
 .. function:: PyntCloud.add_scalar_field
 
+:ref:`scalar_fields`
+
+:ref:`scalar_fields_dev`
+
 .. function:: PyntCloud.add_structure
 
 *GET* METHODS

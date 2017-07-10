@@ -1,8 +1,8 @@
 .. _io:
 
-===================
-Reading and writing
-===================
+===
+I/O
+===
 .. currentmodule:: pyntcloud
 
 As mentioned in the introduction, 3D point clouds could be obtained from many

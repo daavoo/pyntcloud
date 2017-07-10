@@ -1,8 +1,8 @@
 .. _samplers_dev:
 
-=======================
-[DEVELOPERS] - Samplers
-=======================
+==============
+Samplers - Dev
+==============
 
 This page contains usefull information for developers that want to modify / add content to the samplers module.
 

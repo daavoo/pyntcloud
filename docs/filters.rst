@@ -1,8 +1,8 @@
 .. _filters:
 
-=============
-About Filters
-=============
+=======
+Filters
+=======
 
 .. currentmodule:: pyntcloud
 
