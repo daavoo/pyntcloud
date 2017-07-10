@@ -1,8 +1,8 @@
 .. _samplers:
 
-==============
-About Samplers
-==============
+========
+Samplers
+========
 
 .. currentmodule:: pyntcloud
 

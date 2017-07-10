@@ -7,3 +7,4 @@ matplotlib
 python-lzf
 numba
 laspy
+sphinx_bootstrap_theme

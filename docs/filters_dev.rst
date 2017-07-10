@@ -1,8 +1,8 @@
 .. _filters_dev:
 
-======================
-[DEVELOPERS] - Filters
-======================
+=============
+Filters - Dev
+=============
 
 This page contains usefull information for developers that want to modify / add content to the filters module.
 

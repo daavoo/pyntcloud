@@ -9,15 +9,15 @@ pyntcloud is a Python library for working with 3D point clouds.
 This documentation is under cosntruction.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    introduction
    installation
    jupyter
    PyntCloud
+   points
    filters
    filters_dev
    io
-   points
    samplers
    samplers_dev
