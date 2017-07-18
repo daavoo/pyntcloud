@@ -9,7 +9,6 @@ class KDTree(cKDTree, Structure):
         cKDTree.__init__(self, PyntCloud.xyz, leafsize=leafsize)
         Structure.__init__(self, PyntCloud)
         self.id = "K({})".format(leafsize)
-        self.PyntCloud = PyntCloud
 
     def extract_info(self):
         pass
