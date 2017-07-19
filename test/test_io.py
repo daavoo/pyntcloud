@@ -55,9 +55,9 @@ def test_read_ply_ascii():
 def test_write_ply():
     data = PyntCloud.from_file(data_path + '.ply')
 
-    data.to_file(data_path + 'writed_ascii.ply', internal=["points", "mesh"],
+    data.to_file(data_path + 'writed_ascii.ply', also_save=["mesh"],
                  as_text=True)
-    data.to_file(data_path + 'writed_bin.ply', internal=["points", "mesh"],
+    data.to_file(data_path + 'writed_bin.ply', also_save=["mesh"],
                  as_text=False)
 
     writed_ply_ascii = PyntCloud.from_file(data_path + 'writed_ascii.ply')
@@ -83,7 +83,7 @@ def test_read_npz():
 def test_write_npz():
     data = PyntCloud.from_file(data_path + '.ply')
 
-    data.to_file(data_path + 'writed_npz.npz', internal=["points", "mesh"])
+    data.to_file(data_path + 'writed_npz.npz', also_save=["mesh"])
 
     writed_npz = PyntCloud.from_file(data_path + 'writed_npz.npz')
 
@@ -102,7 +102,7 @@ def test_read_obj():
 def test_write_obj():
     data = PyntCloud.from_file(data_path + '.ply')
 
-    data.to_file(data_path + 'writed.obj', internal=["points", "mesh"])
+    data.to_file(data_path + 'writed.obj', also_save=["mesh"])
 
     writed_obj = PyntCloud.from_file(data_path + 'writed.obj')
 
