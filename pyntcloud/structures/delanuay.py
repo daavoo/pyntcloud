@@ -19,9 +19,7 @@ class Delaunay3D(Delaunay, Structure):
     def extract_info(self):
         """ABC API"""
         self._points = self.PyntCloud.xyz
-        self.id = "D({},{},{})".format(self._furthest_site,
-                                       self._incremental,
-                                       self._qhull_options)
+        self.id = "D({},{})".format(self._furthest_site, self._qhull_options)
 
     def compute(self):
         """ABC API"""

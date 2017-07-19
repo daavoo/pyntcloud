@@ -27,6 +27,7 @@ class StructuresDict(dict):
         self.n_voxelgrids = 0
         self.n_kdtrees = 0
         self.n_delanuays = 0
+        self.n_convex_hulls = 0
         super().__init__(*args)
 
     def __setitem__(self, key, val):
@@ -40,6 +41,8 @@ class StructuresDict(dict):
             self.n_kdtrees += 1
         elif key.startswith("D"):
             self.n_delanuays += 1
+        elif key.startswith("CH"):
+            self.n_convex_hulls += 1
         else:
             raise ValueError("{} is not a valid structure.id".format(key))
         super().__setitem__(key, val)
