@@ -79,6 +79,7 @@ class Normals(ScalarField_KNeighbors):
     """
 
     def __init__(self, pyntcloud, k_neighbors):
+        self.k = k_neighbors.shape[1]
         super().__init__(pyntcloud, k_neighbors)
 
     def compute(self):
@@ -88,4 +89,9 @@ class Normals(ScalarField_KNeighbors):
         # range from 0-shape[0] to allow indexing along axis 1 and 2
         idx_trick = range(eigenvalues.shape[0])
         unoriented_normals = eigenvectors[idx_trick, :, sort[:, 0]]
-        return unoriented_normals
+        nx = unoriented_normals[:, 0]
+        ny = unoriented_normals[:, 1]
+        nz = unoriented_normals[:, 2]
+        self.to_be_added["nx({})".format(self.k)] = nx
+        self.to_be_added["ny({})".format(self.k)] = ny
+        self.to_be_added["nz({})".format(self.k)] = nz
