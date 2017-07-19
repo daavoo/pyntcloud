@@ -125,7 +125,7 @@ class PyntCloud(object):
         else:
             return cls(**FROM[ext](filename, **kwargs))
 
-    def to_file(self, filename, internal=["points"], **kwargs):
+    def to_file(self, filename, also_save=None, **kwargs):
         """Save PyntCloud's data to file.
 
         Parameters
@@ -133,9 +133,10 @@ class PyntCloud(object):
         filename: str
             Path to the file from wich the data will be readed
 
-        internal: list of str, optional
-            Default: ["points"]
-            Names of the attributes that will be extracted from the PyntCloud.
+        also_save: list of str, optional
+            Default: None
+            Names of the attributes that will be extracted from the PyntCloud
+            to be saved in adition to points. Usually also_save=["mesh"]
 
         kwargs: only usable in some formats
         """
@@ -145,8 +146,10 @@ class PyntCloud(object):
             raise ValueError(
                 "Unsupported file format; supported formats are: {}".format(list(TO)))
         kwargs["filename"] = filename
-        for x in internal:
-            kwargs[x] = getattr(self, x)
+        kwargs["points"] = self.points
+        if also_save is not None:
+            for x in also_save:
+                kwargs[x] = getattr(self, x)
 
         TO[ext](**kwargs)
 
