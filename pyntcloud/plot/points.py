@@ -42,7 +42,7 @@ def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=80
                                     "{}".format(point_size))
             out.write(line)
 
-    cloud.to_file("{}.ply".format(output_name))
+    cloud.to_file("{}.ply".format(output_name), also_save=["mesh"])
 
     try:
         shutil.copytree("{}/assets".format(BASE_PATH),
