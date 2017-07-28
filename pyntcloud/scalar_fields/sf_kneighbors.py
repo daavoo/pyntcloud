@@ -21,10 +21,6 @@ class ScalarField_KNeighbors(ScalarField):
 class EigenValues(ScalarField_KNeighbors):
     """ Compute the eigen values of each point's neighbourhood
     """
-
-    def __init__(self, pyntcloud, k_neighbors):
-        super().__init__(pyntcloud, k_neighbors)
-
     def compute(self):
         eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
         sort = eigenvalues.argsort()
@@ -45,10 +41,6 @@ class EigenValues(ScalarField_KNeighbors):
 class EigenDecomposition(ScalarField_KNeighbors):
     """ Compute the eigen decomposition of each point's neighbourhood
     """
-
-    def __init__(self, pyntcloud, k_neighbors):
-        super().__init__(pyntcloud, k_neighbors)
-
     def compute(self):
         eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
         sort = eigenvalues.argsort()
@@ -77,11 +69,6 @@ class EigenDecomposition(ScalarField_KNeighbors):
 class Normals(ScalarField_KNeighbors):
     """ Compute normals using k neighbors.
     """
-
-    def __init__(self, pyntcloud, k_neighbors):
-        self.k = k_neighbors.shape[1]
-        super().__init__(pyntcloud, k_neighbors)
-
     def compute(self):
         eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
         sort = eigenvalues.argsort()
@@ -92,6 +79,7 @@ class Normals(ScalarField_KNeighbors):
         nx = unoriented_normals[:, 0]
         ny = unoriented_normals[:, 1]
         nz = unoriented_normals[:, 2]
-        self.to_be_added["nx({})".format(self.k)] = nx
-        self.to_be_added["ny({})".format(self.k)] = ny
-        self.to_be_added["nz({})".format(self.k)] = nz
+        k = k_neighbors.shape[1]
+        self.to_be_added["nx({})".format(k)] = nx
+        self.to_be_added["ny({})".format(k)] = ny
+        self.to_be_added["nz({})".format(k)] = nz

@@ -3,10 +3,6 @@ from .base import Filter
 
 
 class Filter_XYZ(Filter):
-
-    def __init__(self, pyntcloud):
-        super().__init__(pyntcloud)
-
     def extract_info(self):
         self.points = self.pyntcloud.xyz
 

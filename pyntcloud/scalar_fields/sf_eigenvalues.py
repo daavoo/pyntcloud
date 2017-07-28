@@ -25,10 +25,6 @@ class ScalarField_EigenValues(ScalarField):
 class Anisotropy(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "anisotropy{}".format(self.k)
         ev = self.ev
@@ -38,10 +34,6 @@ class Anisotropy(ScalarField_EigenValues):
 class Curvature(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "curvature{}".format(self.k)
         ev = self.ev
@@ -51,10 +43,6 @@ class Curvature(ScalarField_EigenValues):
 class Eigenentropy(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "eigenentropy{}".format(self.k)
         ev = self.ev
@@ -67,10 +55,6 @@ class Eigenentropy(ScalarField_EigenValues):
 class EigenSum(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "eigen_sum{}".format(self.k)
         self.to_be_added[name] = self.ev[:, 0] + self.ev[:, 1] + self.ev[:, 2]
@@ -79,10 +63,6 @@ class EigenSum(ScalarField_EigenValues):
 class Linearity(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "linearity{}".format(self.k)
         ev = self.ev
@@ -92,10 +72,6 @@ class Linearity(ScalarField_EigenValues):
 class Omnivariance(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "omnivariance{}".format(self.k)
         ev = self.ev
@@ -105,10 +81,6 @@ class Omnivariance(ScalarField_EigenValues):
 class Planarity(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "planarity{}".format(self.k)
         ev = self.ev
@@ -118,10 +90,6 @@ class Planarity(ScalarField_EigenValues):
 class Sphericity(ScalarField_EigenValues):
     """
     """
-
-    def __init__(self, pyntcloud, ev):
-        super().__init__(pyntcloud, ev)
-
     def compute(self):
         name = "sphericity{}".format(self.k)
         ev = self.ev
