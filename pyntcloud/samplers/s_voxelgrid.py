@@ -37,4 +37,4 @@ class VoxelgridNearest(Sampler_Voxelgrid):
             self.voxelgrid.voxel_n)]
         kdt = cKDTree(self.pyntcloud.xyz)
         dist, nearest_indices = kdt.query(nonzero_centers, n_jobs=-1)
-        return self.pyntcloud.xyz[nearest_indices]
+        return self.pyntcloud.points.ix[nearest_indices].reset_index(drop=True)

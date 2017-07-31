@@ -29,7 +29,7 @@ code. For example you can:
 - Load a point cloud from disk.
 - Add 3 new sacalar fields by converting RGB to HSV.
 - Build a grid of voxels from the point cloud.
-- Build a new point cloud keeping only the points that are closest to it's corresponding voxel center.
+- Build a new point cloud keeping only the nearest point to each occupied voxel center.
 - Save the new point cloud.
 
 With the following concise code:
