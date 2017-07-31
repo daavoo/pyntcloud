@@ -5,19 +5,6 @@ from .base import ScalarField
 
 
 class ScalarField_XYZ(ScalarField):
-    """
-    Parameters
-    ----------
-    model : ransac.model.RansacModel
-        Model that will be fitted to points
-
-    sampler : ransac.sampler.RansacSampler
-        Sampler function that will be used when fitting the model.
-    """
-
-    def __init__(self, pyntcloud):
-        super().__init__(pyntcloud)
-
     def extract_info(self):
         self.points = self.pyntcloud.xyz
 

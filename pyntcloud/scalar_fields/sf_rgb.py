@@ -3,10 +3,6 @@ from .base import ScalarField
 
 
 class ScalarField_RGB(ScalarField):
-
-    def __init__(self, pyntcloud):
-        super().__init__(pyntcloud)
-
     def extract_info(self):
         self.rgb = self.pyntcloud.points[[
             "red", "green", "blue"]].values.astype("f")
@@ -15,10 +11,6 @@ class ScalarField_RGB(ScalarField):
 class RGBIntensity(ScalarField_RGB):
     """ Red, green and blue intensity.
     """
-
-    def __init__(self, pyntcloud):
-        super().__init__(pyntcloud)
-
     def compute(self):
         rgb_i = np.nan_to_num(
             self.rgb / np.sum(self.rgb, axis=1, keepdims=True))
@@ -30,10 +22,6 @@ class RGBIntensity(ScalarField_RGB):
 class RelativeLuminance(ScalarField_RGB):
     """ Similar to grayscale. Computed following Wikipedia.
     """
-
-    def __init__(self, pyntcloud):
-        super().__init__(pyntcloud)
-
     def compute(self):
         self.rgb /= 255.
         coefficients = np.array([0.2125, 0.7154, 0.0721])
@@ -42,13 +30,8 @@ class RelativeLuminance(ScalarField_RGB):
 
 
 class HSV(ScalarField_RGB):
-    """ Hue, Saturation, Value colorspace.
-
+    """Hue, Saturation, Value colorspace.
     """
-
-    def __init__(self, pyntcloud):
-        super().__init__(pyntcloud)
-
     def compute(self):
         rgb = self.rgb
         MAX = np.max(rgb, -1)
