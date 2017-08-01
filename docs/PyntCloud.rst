@@ -20,7 +20,7 @@ Each PyntCloud's instance some predifined attributes:
 
 -   centroid
 -   mesh
--   points - :ref:`points`
+-   :ref:`points`
 -   structures
 -   xyz
 
@@ -57,7 +57,9 @@ Methods starting with the word **add** incorporate new information to some exist
 
 Methods starting with the word **get** return some information extracted from the PyntCloud.
 
-I/O methods read/write information from/to diferent 3D formats.
+**I/O** methods read/write information from/to diferent 3D formats.
+
+**Other** methods are usefull things that don't fit in any of the above categories.
 
 *ADD* METHODS
 -------------
@@ -97,3 +99,12 @@ I/O methods read/write information from/to diferent 3D formats.
 .. function:: PyntCloud.from_file
 
 .. function:: PyntCloud.to_file
+
+*OTHER* METHODS
+-------------
+
+.. function:: PyntCloud.apply_filter
+
+.. function:: PyntCloud.split_on
+
+.. function:: PyntCloud.plot

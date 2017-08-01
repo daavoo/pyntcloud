@@ -4,14 +4,95 @@ Making point clouds fun again
 
 .. image:: /docs/images/pyntcloud_logo.png
 
-Pyntcloud is a Python (3, because we are not in 2008) library for working with 3D point clouds.
+**pyntcloud** is a Python (3, because we are not in 2008) library for working with 3D point clouds.
 
 .. image:: https://travis-ci.org/daavoo/pyntcloud.svg?branch=master
     :target: https://travis-ci.org/daavoo/pyntcloud
     :alt: Travis Build Status
 
-📖 Documentation
-================
+- Overview_
+- Documentation_
+
+.. _Overview:
+
+Overview
+========
+
+Concise API
+-----------
+
+You can access most of pyntcloud's functionallity from it's core class: PyntCloud.
+
+With PyntCloud you can penform complex 3D processing operations with minimum lines of 
+code. For example you can:
+
+- Load a point cloud from disk.
+- Add 3 new sacalar fields by converting RGB to HSV.
+- Build a grid of voxels from the point cloud.
+- Build a new point cloud keeping only the nearest point to each occupied voxel center.
+- Save the new point cloud.
+
+With the following concise code:
+
+.. code-block:: python
+
+    from pyntcloud import PyntCloud
+
+    cloud = PyntCloud.from_file("some_file.ply")
+
+    cloud.add_scalar_field("hsv")
+
+    voxelgrid_id = cloud.add_structure("voxelgrid", x_y_z=[32, 32, 32])
+
+    points = cloud.get_sample("voxelgrid_nearest", voxelgrid=voxelgrid_id)
+
+    new_cloud = PyntCloud(points)
+    
+    new_cloud.to_file("out_file.ply")
+
+Lightweigth visulizer
+---------------------
+
+Every PyntCloud can be visualized using the `plot` method.
+
+This will create a stand-alone html visualizer. The cool thing about this is that
+you can open it in any browser and if you call it from inside a Jupyter Notebook, the
+visualizer will be embedded as an IFrame:
+
+.. image:: /docs/images/plot1.gif
+
+The plot function has many options.
+
+For example you can use any scalar field as color with a custom colormap:
+
+.. image:: /docs/images/plot2.gif
+
+Or, if it exists, visualize the mesh associated with the point cloud:
+
+.. image:: /docs/images/plot3.gif
+
+
+Bunch of things to do
+---------------------
+
+pyntcloud comes with many different modules for processing 3D information.
+
+Take a look at the documentation for an overview of each of them.
+
+
+Easy to use and extend
+----------------------
+
+Because Python. 
+
+Check the documentation of each module to learn what can be done and the "- Dev" sections for extending.
+
+
+.. _Documentation:
+
+Documentation 
+=============
+📖 📖
 
 +---------------------------------------+--------------------------------------------------+
 | `Home`_                               | Start Here.                                      |

@@ -5,9 +5,9 @@ def convert_columns_dtype(df, old_dtype, new_dtype):
     ----------
     df: pandas.DataFrame
 
-    old_dtype: numpy type
+    old_dtype: numpy dtype
 
-    new_dtype: numpy type
+    new_dtype: numpy dtype
     """
     changed = []
     for column in df.columns:

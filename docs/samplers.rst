@@ -24,13 +24,15 @@ All samplers are accesible trough:
 
 We group the avaliable samplers based on what information is used for it's computation.
 
+.. currentmodule:: pyntcloud.samplers
+
 Use points
 ==========
 
 "points_random_sampling"
 ------------------------
 
-.. automethod:: samplers.RandomPoints
+.. autoclass:: RandomPoints
 
 Use mesh
 ========
@@ -38,7 +40,7 @@ Use mesh
 "mesh_random_sampling"
 ----------------------
 
-.. automethod:: samplers.RandomMesh
+.. autoclass:: RandomMesh
 
 Use VoxelGrid
 =============
@@ -46,14 +48,14 @@ Use VoxelGrid
 "voxelgrid_centers"
 -------------------
 
-.. automethod:: samplers.VoxelgridCenters
+.. autoclass:: VoxelgridCenters
 
 "voxelgrid_centroids"
 ---------------------
 
-.. automethod:: samplers.VoxelgridCentroids
+.. autoclass:: VoxelgridCentroids
 
 "voxelgrid_nearest"
 -------------------
 
-.. automethod:: samplers.VoxelgridNearest
+.. autoclass:: VoxelgridNearest
