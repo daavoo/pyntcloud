@@ -37,11 +37,17 @@ With the following concise code:
 .. code-block:: python
 
     from pyntcloud import PyntCloud
+
     cloud = PyntCloud.from_file("some_file.ply")
+
     cloud.add_scalar_field("hsv")
+
     voxelgrid_id = cloud.add_structure("voxelgrid", x_y_z=[32, 32, 32])
+
     points = cloud.get_sample("voxelgrid_nearest", voxelgrid=voxelgrid_id)
+
     new_cloud = PyntCloud(points)
+    
     new_cloud.to_file("out_file.ply")
 
 Lightweigth visulizer
