@@ -21,3 +21,4 @@ This documentation is under cosntruction.
    io
    samplers
    samplers_dev
+   structures

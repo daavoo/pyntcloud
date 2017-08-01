@@ -15,8 +15,11 @@ This boolean array separates the points that passed the filter and thus will be 
 Filters are accesible trough:
 
 .. function:: PyntCloud.get_filter
+    :noindex:
 
 We group the avaliable filters based on what are the requirements for computing them.
+
+.. currentmodule:: pyntcloud.filters
 
 Only require XYZ
 =================
@@ -24,7 +27,7 @@ Only require XYZ
 "BBOX" (Bounding Box)
 ---------------------
 
-.. automethod:: filters.BoundingBox
+.. autoclass:: BoundingBox
 
 Require KDTree
 =================
@@ -32,9 +35,9 @@ Require KDTree
 "ROR" (Radius Outlier Removal)
 ------------------------------
 
-.. automethod:: filters.RadiousOutlierRemoval
+.. autoclass:: RadiousOutlierRemoval
 
 "SOR" (Statistical Outlier Removal)
 -----------------------------------
 
-.. automethod:: filters.StatisticalOutlierRemoval
+.. autoclass:: StatisticalOutlierRemoval

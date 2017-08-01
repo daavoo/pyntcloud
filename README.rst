@@ -13,7 +13,7 @@ Making point clouds fun again
 - Overview_
 - Documentation_
 
-.. _Overview
+.. _Overview:
 
 Overview
 ========
@@ -66,12 +66,20 @@ Or, if it exists, visualize the mesh associated with the point cloud:
 .. image:: /docs/images/plot3.gif
 
 
+Bunch of things to do
+---------------------
+
+pyntcloud comes with many different modules for processing 3D information.
+
+Take a look at the documentation for an overview of each of them.
+
+
 Easy to use and extend
 ----------------------
 
 Because Python. 
 
-Check the "- Dev" sections in the documentation for extending.
+Check the documentation of each module to learn what can be done and the "- Dev" sections for extending.
 
 
 .. _Documentation:

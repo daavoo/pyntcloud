@@ -24,5 +24,24 @@ You can create structures using:
 
 .. function:: PyntCloud.add_structure
 
+.. currentmodule:: pyntcloud.structures
+
+Convex Hull
+===========
+
+.. autoclass:: ConvexHull
+
+Delanuay3D
+==========
+
+.. autoclass:: Delaunay3D
+
 KDTree
 ======
+
+.. autoclass:: KDTree
+
+VoxelGrid
+=========
+
+.. autoclass:: VoxelGrid
