@@ -19,7 +19,8 @@ class Sampler_Voxelgrid(Sampler):
 class VoxelgridCenters(Sampler_Voxelgrid):
     """Returns the points that represent each occupied voxel's center."""
     def compute(self):
-        return self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)]
+        s = self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)]
+        return pd.DataFrame(s, columns=["x", "y", "z"])
 
 
 class VoxelgridCentroids(Sampler_Voxelgrid):
@@ -27,7 +28,7 @@ class VoxelgridCentroids(Sampler_Voxelgrid):
     def compute(self):
         df = pd.DataFrame(self.pyntcloud.xyz, columns=["x", "y", "z"])
         df["voxel_n"] = self.voxelgrid.voxel_n
-        return df.groupby("voxel_n").mean().values
+        return df.groupby("voxel_n").mean()
 
 
 class VoxelgridNearest(Sampler_Voxelgrid):

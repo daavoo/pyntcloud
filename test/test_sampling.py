@@ -19,15 +19,15 @@ def test_voxelgrid_sampling():
 
     sample = cloud.get_sample("voxelgrid_centers", voxelgrid=vg_id)
 
-    assert point_in_array_2D([0.25, 0.25, 0.25], sample)
+    assert point_in_array_2D([0.25, 0.25, 0.25], sample.values)
 
     sample = cloud.get_sample("voxelgrid_centroids", voxelgrid=vg_id)
 
-    assert point_in_array_2D([0.2, 0.2, 0.2], sample)
+    assert point_in_array_2D([0.2, 0.2, 0.2], sample.values)
 
     sample = cloud.get_sample("voxelgrid_nearest", voxelgrid=vg_id)
 
-    assert point_in_array_2D([0.9, 0.9, 0.9], sample)
+    assert point_in_array_2D([0.9, 0.9, 0.9], sample.values)
 
 
 def test_mesh_sampling():
