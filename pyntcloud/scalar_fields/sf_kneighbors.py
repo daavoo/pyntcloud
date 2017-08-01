@@ -1,5 +1,6 @@
+import numpy as np
 from .base import ScalarField
-from ..utils.array import eigen_3D
+from ..utils.array import cov3D
 
 
 class ScalarField_KNeighbors(ScalarField):
@@ -22,7 +23,8 @@ class EigenValues(ScalarField_KNeighbors):
     """ Compute the eigen values of each point's neighbourhood
     """
     def compute(self):
-        eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
+        cov = cov3D(self.k_neighbors)
+        eigenvalues = np.linalg.eigvals(cov)
         sort = eigenvalues.argsort()
 
         # range from 0-shape[0] to allow indexing along axis 1 and 2
@@ -42,7 +44,8 @@ class EigenDecomposition(ScalarField_KNeighbors):
     """ Compute the eigen decomposition of each point's neighbourhood
     """
     def compute(self):
-        eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
+        cov = cov3D(self.k_neighbors)
+        eigenvalues, eigenvectors = np.linalg.eig(cov)
         sort = eigenvalues.argsort()
 
         # range from 0-shape[0] to allow indexing along axis 1 and 2
@@ -70,16 +73,15 @@ class Normals(ScalarField_KNeighbors):
     """ Compute normals using k neighbors.
     """
     def compute(self):
-        eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
-        sort = eigenvalues.argsort()
+        cov = cov3D(self.k_neighbors)
+        u, s, v = np.linalg.svd(cov)
 
-        # range from 0-shape[0] to allow indexing along axis 1 and 2
-        idx_trick = range(eigenvalues.shape[0])
-        unoriented_normals = eigenvectors[idx_trick, :, sort[:, 0]]
+        unoriented_normals = u[:, :, -1]
+
         nx = unoriented_normals[:, 0]
         ny = unoriented_normals[:, 1]
         nz = unoriented_normals[:, 2]
-        k = k_neighbors.shape[1]
+        k = self.k_neighbors.shape[1]
         self.to_be_added["nx({})".format(k)] = nx
         self.to_be_added["ny({})".format(k)] = ny
         self.to_be_added["nz({})".format(k)] = nz
