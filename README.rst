@@ -84,8 +84,9 @@ Check the documentation of each module to learn what can be done and the "- Dev"
 
 .. _Documentation:
 
-📖 Documentation
-================
+Documentation 
+=============
+📖 📖
 
 +---------------------------------------+--------------------------------------------------+
 | `Home`_                               | Start Here.                                      |
