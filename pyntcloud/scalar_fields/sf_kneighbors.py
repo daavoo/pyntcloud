@@ -1,5 +1,5 @@
 from .base import ScalarField
-from ..utils.array import eigen_3D
+from ..utils.array import eigen_3D, eigvals_3D
 
 
 class ScalarField_KNeighbors(ScalarField):
@@ -22,7 +22,7 @@ class EigenValues(ScalarField_KNeighbors):
     """ Compute the eigen values of each point's neighbourhood
     """
     def compute(self):
-        eigenvalues, eigenvectors = eigen_3D(self.k_neighbors)
+        eigenvalues = eigvals_3D(self.k_neighbors)
         sort = eigenvalues.argsort()
 
         # range from 0-shape[0] to allow indexing along axis 1 and 2
@@ -79,7 +79,7 @@ class Normals(ScalarField_KNeighbors):
         nx = unoriented_normals[:, 0]
         ny = unoriented_normals[:, 1]
         nz = unoriented_normals[:, 2]
-        k = k_neighbors.shape[1]
+        k = self.k_neighbors.shape[1]
         self.to_be_added["nx({})".format(k)] = nx
         self.to_be_added["ny({})".format(k)] = ny
         self.to_be_added["nz({})".format(k)] = nz

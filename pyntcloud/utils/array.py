@@ -125,3 +125,12 @@ def eigen_3D(k_neighbors):
     cov_3D = np.einsum('ijk,ijl->ikl', diffs, diffs) / k_neighbors.shape[1]
 
     return np.linalg.eig(cov_3D)
+
+
+def eigvals_3D(k_neighbors):
+    """ (N,K,3)
+    """
+    diffs = k_neighbors - k_neighbors.mean(1, keepdims=True)
+    cov_3D = np.einsum('ijk,ijl->ikl', diffs, diffs) / k_neighbors.shape[1]
+
+    return np.linalg.eigvals(cov_3D)
