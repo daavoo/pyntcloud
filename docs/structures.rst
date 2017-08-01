@@ -1,8 +1,8 @@
 .. _structures:
 
-================
-About Structures
-================
+==========
+Structures
+==========
 
 .. currentmodule:: pyntcloud
 
