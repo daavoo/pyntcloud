@@ -118,10 +118,8 @@ def point_in_array_2D(point, array_2D):
             return True
 
 
-def eigen_3D(k_neighbors):
+def cov3D(k_neighbors):
     """ (N,K,3)
     """
     diffs = k_neighbors - k_neighbors.mean(1, keepdims=True)
-    cov_3D = np.einsum('ijk,ijl->ikl', diffs, diffs) / k_neighbors.shape[1]
-
-    return np.linalg.eig(cov_3D)
+    return np.einsum('ijk,ijl->ikl', diffs, diffs) / k_neighbors.shape[1]

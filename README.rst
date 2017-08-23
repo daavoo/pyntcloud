@@ -2,6 +2,7 @@
 Making point clouds fun again
 =============================
 
+
 .. image:: https://travis-ci.org/daavoo/pyntcloud.svg?branch=master
     :target: https://travis-ci.org/daavoo/pyntcloud
     :alt: Travis Build Status
@@ -18,6 +19,7 @@ Making point clouds fun again
 Documentation 
 =============
 📖 📖
+
 
 +---------------------------------------+
 | `Home`_                               |
@@ -38,6 +40,7 @@ Documentation
 +---------------------------------------+
 | `Samplers`_ // `Samplers - Dev`_      |
 +---------------------------------------+
+
 
 .. _Home: http://pyntcloud.readthedocs.io/en/latest/
 .. _Introduction: http://pyntcloud.readthedocs.io/en/latest/introduction.html
