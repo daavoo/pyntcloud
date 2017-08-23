@@ -20,7 +20,7 @@ from .sf_normals import (
     OrientationRadians
 )
 from .sf_rgb import (
-    HSV,
+    HueSaturationValue,
     RelativeLuminance,
     RGBIntensity
 )
@@ -57,7 +57,7 @@ ALL_SF = {
     'orientation_deg': OrientationDegrees,
     'orientation_rad': OrientationRadians,
     # RGB
-    'hsv': HSV,
+    'hsv': HueSaturationValue,
     'relative_luminance': RelativeLuminance,
     'rgb_intensity': RGBIntensity,
     # Voxelgrid

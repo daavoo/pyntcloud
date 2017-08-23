@@ -20,11 +20,9 @@ class RandomPoints(Sampler_Points):
     ----------
     n: int
         Number of unique points that will be chosen.
-
     """
 
     def __init__(self, pyntcloud, n):
-
         super().__init__(pyntcloud)
         self.n = n
 

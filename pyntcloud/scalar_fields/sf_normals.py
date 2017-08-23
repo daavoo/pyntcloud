@@ -34,7 +34,7 @@ class OrientationDegrees(ScalarField_Normals):
 
 
 class OrientationRadians(ScalarField_Normals):
-    """ Horizontal orientation with respect to the XY plane in degrees.
+    """ Horizontal orientation with respect to the XY plane in radians.
     """
     def compute(self):
         angle = np.arctan2(self.normals[:, 0], self.normals[:, 1])

@@ -29,7 +29,7 @@ class RelativeLuminance(ScalarField_RGB):
             'ij, j', self.rgb, coefficients)
 
 
-class HSV(ScalarField_RGB):
+class HueSaturationValue(ScalarField_RGB):
     """Hue, Saturation, Value colorspace.
     """
     def compute(self):

@@ -26,24 +26,37 @@ We group the avaliable samplers based on what information is used for it's compu
 
 .. currentmodule:: pyntcloud.samplers
 
-Use points
-==========
+
+Require points
+==============
+
 
 "points_random_sampling"
 ------------------------
 
 .. autoclass:: RandomPoints
 
-Use mesh
-========
+Require mesh
+============
+
+`pointcloud.mesh` must exists.
 
 "mesh_random_sampling"
 ----------------------
 
 .. autoclass:: RandomMesh
 
-Use VoxelGrid
-=============
+Require VoxelGrid
+=================
+
+Required args:
+
+    voxelgrid: VoxelGrid.id
+
+.. code-block:: python
+
+
+    voxelgrid = pointcloud.add_structure("voxelgrid", ...)
 
 "voxelgrid_centers"
 -------------------

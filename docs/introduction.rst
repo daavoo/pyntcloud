@@ -33,16 +33,26 @@ Althoug it was built for being used on `Jupyter Notebooks <http://jupyter.org/>`
 pyntcloud is composed by several modules (as indepentent as possible) that englobe
 commom point cloud processing operations:
 
--   :ref:`filters` - :ref:`filters_dev`
+-   :ref:`filters` / :ref:`filters_dev`
+
 -   geometry
--   :ref:`io` - :ref:`filters_dev`
+
+-   :ref:`io` / :ref:`io_dev`
+
 -   learn
+
 -   neighbors
+
 -   plot
+
 -   ransac
+
 -   sampling
--   scalar_fields
--   structures
+
+-   :ref:`scalar_fields` / :ref:`scalar_fields_dev` 
+
+-   :ref:`structures` / :ref:`structures_dev`
+
 -   utils
 
 Most of the functionallity of this modules can be accesed by the core class of
