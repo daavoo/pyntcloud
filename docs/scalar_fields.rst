@@ -130,3 +130,84 @@ Required args:
 ---------------------
 
 .. autoclass:: EigenDecomposition
+
+Require Normals
+===============
+
+`pointcloud.points` must have [nx, ny, nz] columns.
+
+"inclination_deg"
+-----------------
+
+.. autoclass:: InclinationDegrees
+
+"inclination_rad"
+-----------------
+
+.. autoclass:: InclinationRadians
+
+"orientation_deg"
+-----------------
+
+.. autoclass:: OrientationDegrees
+
+"orientation_rad"
+-----------------
+
+.. autoclass:: OrientationRadians
+
+Require RGB
+===========
+
+`pointcloud.points` must have [red, green, blue] columns.
+
+"hsv"
+-----
+
+.. autoclass:: HueSaturationValue
+
+"relative_luminance"
+--------------------
+
+.. autoclass:: RelativeLuminance
+
+"rgb_intensity"
+---------------
+
+.. autoclass:: RGBIntensity
+
+Require VoxelGrid
+=================
+
+Required args:
+
+    voxelgrid: VoxelGrid.id
+
+.. code-block:: python
+
+    voxelgrid = self.add_structure("voxelgrid", ...)
+
+"euclidean_clusters"
+--------------------
+
+.. autoclass:: EuclideanClusters
+
+"voxel_n"
+---------
+
+.. autoclass:: VoxelN
+
+"voxel_x"
+---------
+
+.. autoclass:: VoxelX
+
+"voxel_y"
+---------
+
+.. autoclass:: VoxelY
+
+"voxel_z"
+---------
+
+.. autoclass:: VoxelZ

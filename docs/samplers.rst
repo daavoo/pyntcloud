@@ -39,6 +39,8 @@ Require points
 Require mesh
 ============
 
+`pointcloud.mesh` must exists.
+
 "mesh_random_sampling"
 ----------------------
 
