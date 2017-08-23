@@ -109,7 +109,7 @@ Methods starting with the word **get** return some information extracted from th
     :noindex:
 
 *OTHER* METHODS
--------------
+---------------
 
 .. function:: PyntCloud.apply_filter
     :noindex:

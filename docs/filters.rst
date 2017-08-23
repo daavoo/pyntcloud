@@ -8,7 +8,7 @@ Filters
 
 As the name suggest, filters are used to discard points from the point cloud based on a condition that is evaluated against all the points in the point cloud.
 
-All filters take a point cloud as input and produce a boolean array as output.
+All filters take a PyntCloud (and extra information in some cases) as input and produce a boolean array as output.
 
 This boolean array separates the points that passed the filter and thus will be retained (True) from those wich did not and thus will be removed (False).
 
@@ -24,20 +24,28 @@ We group the avaliable filters based on what are the requirements for computing 
 Only require XYZ
 =================
 
-"BBOX" (Bounding Box)
----------------------
+"BBOX"
+------
 
 .. autoclass:: BoundingBox
 
 Require KDTree
-=================
+==============
 
-"ROR" (Radius Outlier Removal)
-------------------------------
+Required args:
+
+    kdtree: KDTree.id
+
+.. code-block:: python
+
+    kdtree = pointcloud.add_structure("kdtree", ...)
+
+"ROR"
+-----
 
 .. autoclass:: RadiousOutlierRemoval
 
-"SOR" (Statistical Outlier Removal)
------------------------------------
+"SOR"
+-----
 
 .. autoclass:: StatisticalOutlierRemoval
