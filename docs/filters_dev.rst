@@ -81,21 +81,13 @@ For example, the RadiousOutlierRemoval filter requires the user to specify a rad
 
 .. autoclass:: RadiousOutlierRemoval
 
-Take a look at how this specific filter class is implemented (and documented) and use it as reference for your filters.
-
 Let PyntCloud know about your filter
 ====================================
 
-Ok, so you have come this far after all the subclassing nightmare (I can make jokes about it because I actually like it) and you have your brand new 
-filter inside you brand new submodule.
-
-Now you have to let PyntCloud know about it.
-
 In order to do so, you have to do some things:
 
-- Import your new filter(s) and/or submodule(s) at `pyntcloud/filters/__init__.py`.
-- Include them in the ALL_FILTERS dictionary, giving them a string alias at `pyntcloud/filters/__init__.py`.
 - Add tests at `test/test_filters.py`.
-- (Probably) Re-write your `compute` method because tests bring bugs to light.
+- Import your new filter(s) and/or submodule(s) at `pyntcloud/filters/__init__.py`.
+- Include them in the ALL_FILTERS dictionary, giving them a **string alias** at `pyntcloud/filters/__init__.py`.
 - Document them in the `PyntCloud.get_filter` docstring at `pyntcloud/core_class.py`.
 - Document them at `docs/filters.rst`.

@@ -82,21 +82,13 @@ For example, the `RandomMesh` sampler requires the user to specify if the sample
 
 .. autoclass:: RandomMesh
 
-Take a look at how this specific sampler class is implemented (and documented) and use it as reference for your samplers.
-
 Let PyntCloud know about your sampler
 =====================================
 
-Ok, so you have come this far after all the subclassing nightmare (I can make jokes about it because I actually like it) and you have your brand new 
-sampler inside you brand new submodule.
-
-Now you have to let PyntCloud know about it.
-
 In order to do so, you have to do some things:
 
-- Import your new sampler(s) and/or submodule(s) at `pyntcloud/samplers/__init__.py`.
-- Include them in the ALL_SAMPLERS dictionary, giving them a string alias, at `pyntcloud/samplers/__init__.py`.
 - Add tests at `test/test_samplers.py`.
-- (Probably) Re-write your `compute` method because tests bring bugs to light.
+- Import your new sampler(s) and/or submodule(s) at `pyntcloud/samplers/__init__.py`.
+- Include them in the ALL_SAMPLERS dictionary, giving them a **string alias**, at `pyntcloud/samplers/__init__.py`.
 - Document them in the `PyntCloud.get_sample` docstring at `pyntcloud/core_class.py`.
 - Document them at `docs/samplers.rst`.

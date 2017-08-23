@@ -65,31 +65,37 @@ Methods starting with the word **get** return some information extracted from th
 -------------
 
 .. function:: PyntCloud.add_scalar_field
+    :noindex:
 
 :ref:`scalar_fields`
 
 :ref:`scalar_fields_dev`
 
 .. function:: PyntCloud.add_structure
+    :noindex:
 
 *GET* METHODS
 -------------
 
 .. function:: PyntCloud.get_filter
+    :noindex:
 
 :ref:`filters`
 
 :ref:`filters_dev`
 
 .. function:: PyntCloud.get_sample
+    :noindex:
 
 :ref:`samplers`
 
 :ref:`samplers_dev`
 
 .. function:: PyntCloud.get_neighbors
+    :noindex:
 
 .. function:: PyntCloud.get_mesh_vertices
+    :noindex:
 
 *I/O* METHODS
 -------------
@@ -97,14 +103,19 @@ Methods starting with the word **get** return some information extracted from th
 :ref:`io`
 
 .. function:: PyntCloud.from_file
+    :noindex:
 
 .. function:: PyntCloud.to_file
+    :noindex:
 
 *OTHER* METHODS
 -------------
 
 .. function:: PyntCloud.apply_filter
+    :noindex:
 
 .. function:: PyntCloud.split_on
+    :noindex:
 
 .. function:: PyntCloud.plot
+    :noindex:

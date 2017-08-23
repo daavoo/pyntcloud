@@ -47,15 +47,11 @@ of dependencies) in the **base** conda enviroment (make sure to use "source deac
 
     conda install jupyter -y
 
-Try that everything is working by running.
+Try that everything is working by running:
 
 .. code-block:: bash
 
     jupyter notebook
-
-This should open on your default browser something like:
-
-.. image:: images/vanillajupyter.png
 
 Shut it down with `Ctrl+C`.
 
@@ -74,9 +70,7 @@ Now if you run:
 
     jupyter notebook
 
-You should see a new Conda tab on the top
-
-.. image:: images/condajupyter.png
+You should see a new Conda tab on the top.
 
 This might look like a small modification, but it is game-changing. When you click
 the New button, you can now select wich enviroment should
@@ -95,37 +89,10 @@ To make use of it, run this from the **base** conda enviroment (make sure to use
 
     jupyter notebook
 
-And create a new Notebook selecting env:pyntcloud as kernel:
-
-.. image:: images/pyntcloudnotebook.png
+And create a new Notebook selecting env:pyntcloud as kernel.
 
 4. Run the QuickStart
 ---------------------
 
 Now that we have all setted up, let's run the QuickStart notebook, wich will give
 us a quick overview of pyntcloud.
-
-First, clone the pyntcloud-notebooks repo:
-
-.. code-block:: bash
-
-    git clone https://github.com/daavoo/pyntcloud-notebooks.git
-
-Move to the root directory of the repo and launch jupyter notebook (remember, **without**
-activating the pyntcloud enviroment, because we are using `nb_conda`):
-
-.. code-block:: bash
-
-    cd pyntcloud-notebooks/
-
-    jupyter notebook
-
-Now we can open the QuickStart.ipynb file and go through the tutorial.
-
-If you get a prompt asking which kernel should be used, make sure that you select
-env:pyntcloud.
-
-You can verify that the notebook is running the correct kernel by looking at the
-top right of the window:
-
-.. image:: images/quickstartnotebook.png

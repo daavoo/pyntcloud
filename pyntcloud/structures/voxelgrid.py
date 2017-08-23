@@ -107,8 +107,7 @@ class VoxelGrid(Structure):
                                             self.x_y_z)
 
         # compute center of each voxel
-        midsegments = [(self.segments[i][1:] + self.segments[i]
-                        [:-1]) / 2 for i in range(3)]
+        midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
         self.voxel_centers = cartesian(midsegments).astype(np.float32)
         self.set_voxel_n = set(self.voxel_n)
 
