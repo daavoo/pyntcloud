@@ -89,7 +89,7 @@ With the following concise code:
     
     new_cloud.to_file("out_file.ply")
 
-Lightweigth visulizer
+Lightweigth visualizer
 ---------------------
 
 Every PyntCloud can be visualized using the `plot` method.
