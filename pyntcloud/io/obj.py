@@ -50,6 +50,8 @@ def read_obj(filename):
     f = [re.split(r'\D+', x) for x in f]
 
     mesh = pd.DataFrame(f, dtype='i4', columns=mesh_columns)
+    # start index at 0
+    mesh -= 1
 
     data = {'points': points, 'mesh': mesh}
 
