@@ -4,9 +4,10 @@ import pytest
 from pyntcloud import PyntCloud
 from pyntcloud.utils.array import point_in_array_2D
 
+path = os.path.abspath(os.path.dirname(__file__))
 
 def test_voxelgrid_sampling():
-    path = os.path.abspath(os.path.dirname(__file__))
+
     cloud = PyntCloud.from_file(path + "/data/voxelgrid.ply")
 
     with pytest.raises(TypeError):
@@ -31,16 +32,17 @@ def test_voxelgrid_sampling():
 
 
 def test_mesh_sampling():
-    path = os.path.abspath(os.path.dirname(__file__))
-    cloud = PyntCloud.from_file(path + "/data/diamond.ply")
-    with pytest.raises(TypeError):
-        sample = cloud.get_sample("mesh_random_sampling")
 
-    sample = cloud.get_sample("mesh_random_sampling", n=100)
+    for ext in {"ply", "obj"}:
+        cloud = PyntCloud.from_file(path + "/data/diamond.{}".format(ext))
+        with pytest.raises(TypeError):
+            sample = cloud.get_sample("mesh_random_sampling")
 
-    assert len(sample) == 100
-    assert all(sample.max(0) <= cloud.xyz.max(0))
-    assert all(sample.min(0) >= cloud.xyz.min(0))
+        sample = cloud.get_sample("mesh_random_sampling", n=100)
+
+        assert len(sample) == 100
+        assert all(sample.max(0) <= cloud.xyz.max(0))
+        assert all(sample.min(0) >= cloud.xyz.min(0))
 
 
 def test_points_sampling():

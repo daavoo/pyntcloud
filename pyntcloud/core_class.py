@@ -696,6 +696,6 @@ class PyntCloud(object):
         new_PyntCloud = PyntCloud(points)
 
         if mesh and self.mesh is not None:
-            new_PyntCloud.mesh = self.mesh
+            new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
 
         return plot_PyntCloud(new_PyntCloud, point_size, output_name=output_name)

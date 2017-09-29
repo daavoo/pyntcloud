@@ -1,4 +1,3 @@
-import lzf
 import re
 import struct
 import warnings
@@ -111,6 +110,7 @@ def read_pcd(filename):
             pc_data = np.fromstring(buf, dtype=dtype)
 
         elif metadata['data'] == 'binary_compressed':
+            raise NotImplementedError("Go ask PCD why they use lzf compression.")
             # compressed size of data (uint32)
             # uncompressed size of data (uint32)
             # compressed data
@@ -122,7 +122,7 @@ def read_pcd(filename):
             # TODO what to use as second argument? if buf is None
             # (compressed > uncompressed)
             # should we read buf as raw binary?
-            buf = lzf.decompress(compressed_data, uncompressed_size)
+            #buf = lzf.decompress(compressed_data, uncompressed_size)
             if len(buf) != uncompressed_size:
                 raise Exception('Error decompressing data')
             # the data is stored field-by-field
