@@ -13,7 +13,6 @@ install:
   - conda info -a
 
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION scipy numpy pandas pytest matplotlib ipython numba
-  - conda install -c auto python-lzf 
   - source activate test-environment
   - pip install laspy
   - python setup.py develop

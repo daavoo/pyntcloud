@@ -19,7 +19,6 @@ setup(
         "pandas",
         "ipython",
         "matplotlib",
-        "python-lzf",
         "numba",
         "laspy"
     ],
