@@ -134,12 +134,12 @@ def read_ply(filename):
         with open(filename, 'rb') as ply:
             ply.seek(end_header)
             points_np = np.fromfile(ply, dtype=dtypes["vertex"], count=points_size)
-            if points_np.dtype.byteorder not in ('=', sys_byteorder):
+            if points_np.dtype.byteorder not in ('=', '|', sys_byteorder):
                 points_np = points_np.byteswap().newbyteorder()
             data["points"] = pd.DataFrame(points_np)
             if mesh_size is not None:
                 mesh_np = np.fromfile(ply, dtype=dtypes["face"], count=mesh_size)
-                if mesh_np.dtype.byteorder not in ('=', sys_byteorder):
+                if mesh_np.dtype.byteorder not in ('=', '|', sys_byteorder):
                     mesh_np = mesh_np.byteswap().newbyteorder()
                 data["mesh"] = pd.DataFrame(mesh_np)
                 data["mesh"].drop('n_points', axis=1, inplace=True)
