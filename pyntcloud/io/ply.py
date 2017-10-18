@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from collections import defaultdict
 
+sys_byteorder = ('>', '<')[sys.byteorder == 'little']
+
 ply_dtypes = dict([
     (b'int8', 'i1'),
     (b'char', 'i1'),
@@ -131,11 +133,15 @@ def read_ply(filename):
     else:
         with open(filename, 'rb') as ply:
             ply.seek(end_header)
-            data["points"] = pd.DataFrame(np.fromfile(
-                ply, dtype=dtypes["vertex"], count=points_size))
+            points_np = np.fromfile(ply, dtype=dtypes["vertex"], count=points_size)
+            if points_np.dtype.byteorder not in ('=', sys_byteorder):
+                points_np.byteswap(inplace=True).newbyteorder()
+            data["points"] = pd.DataFrame(points_np)
             if mesh_size is not None:
-                data["mesh"] = pd.DataFrame(np.fromfile(
-                    ply, dtype=dtypes["face"], count=mesh_size))
+                mesh_np = np.fromfile(ply, dtype=dtypes["face"], count=mesh_size)
+                if mesh_np.dtype.byteorder not in ('=', sys_byteorder):
+                    mesh_np.byteswap(inplace=True).newbyteorder()
+                data["mesh"] = pd.DataFrame(mesh_np)
                 data["mesh"].drop('n_points', axis=1, inplace=True)
 
     return data
