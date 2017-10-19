@@ -24,17 +24,31 @@
         #PyntCloudLogo {
             height: 100px;
         }
+        #screenshot {
+            position: absolute;            
+            background-color: rgb(245, 139, 69);
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            top: 0px;            
+            left: 0px;            
+        }        
     </style>
 </head>
 
 <body>
+    <button id="screenshot"> SCREENSHOT </button>      
     <div>
-        <img id="PyntCloudLogo" src="pyntcloud_plot_assets/pyntcloud_logo.png">
+        <img id="PyntCloudLogo" src="pyntcloud_plot_assets/pyntcloud_logo.png">      
     </div>
 
     <div id="container">
     </div>
-
+    
     <script src="pyntcloud_plot_assets/three.min.js"></script>
     <script src="pyntcloud_plot_assets/Detector.js"></script>
     <script src="pyntcloud_plot_assets/OrbitControls.js"></script>
@@ -112,7 +126,7 @@
                         opacity: 1,
                     });
                     figure = new THREE.Points(geometry, material);
-                    var figureSize = gui.add(parameters, 'size').min(0.1).max(1).step(0.01).name("Point Size").listen();
+                    var figureSize = gui.add(parameters, 'size').min(0.001).max(1).step(0.001).name("Point Size").listen();
                     figureSize.onChange((value) => {
                         figure.material.size = value;
                     });                    
@@ -129,10 +143,18 @@
             // RENDERER
             //
             renderer = new THREE.WebGLRenderer({
-                antialias: false
+                antialias: false,
+				preserveDrawingBuffer: true                
             });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
+			//
+			// SCREENSHOT
+			//
+			$("#screenshot").click(function() {
+			    window.open( renderer.domElement.toDataURL("image/png"), "Final");
+			    return false;
+			});            
             //
             // ORBIT CONTROLS
             //
