@@ -2,13 +2,10 @@ import os
 import numpy as np
 import pandas as pd
 
-import matplotlib.pyplot as plt
-
 from .structures.base import StructuresDict
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
-from .plot import DESCRIPTION, plot_PyntCloud
 from .samplers import ALL_SAMPLERS
 from .scalar_fields import ALL_SF
 from .structures import ALL_STRUCTURES
@@ -673,13 +670,15 @@ class PyntCloud(object):
         html. You might need to run a local server or adjust the browser privacy
         policies in order to allow javascript to load local files.
         """
+        from .plot import DESCRIPTION, plot_PyntCloud
         try:
             colors = self.points[use_as_color].values
         except:
             colors = None
 
         if use_as_color != ["red", "green", "blue"] and colors is not None:
-            s_m = plt.cm.ScalarMappable(cmap=cmap)
+            from matplotlib.pyplot.cm import ScalarMappable
+            s_m = ScalarMappable(cmap=cmap)
             colors = s_m.to_rgba(colors)[:, :-1] * 255
 
         elif colors is None:
