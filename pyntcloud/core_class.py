@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 from .structures.base import StructuresDict
+from .plot import DESCRIPTION
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
@@ -670,7 +671,7 @@ class PyntCloud(object):
         html. You might need to run a local server or adjust the browser privacy
         policies in order to allow javascript to load local files.
         """
-        from .plot import DESCRIPTION, plot_PyntCloud
+        from .plot import plot_PyntCloud
         try:
             colors = self.points[use_as_color].values
         except:
