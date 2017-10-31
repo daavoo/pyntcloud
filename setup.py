@@ -1,7 +1,11 @@
-import pyntcloud
 from setuptools import setup, find_packages
 
-version = pyntcloud.__version__
+# Version
+MAJOR = 0
+MINOR = 1
+MICRO = 0
+
+version = "{}.{}.{}".format(MAJOR, MINOR, MICRO)
 
 setup(
     name='pyntcloud',

@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import pyplot as plt
 from scipy.spatial import cKDTree
 
 from .base import Structure
@@ -247,8 +246,8 @@ class VoxelGrid(Structure):
              output_name=None,
              width=800,
              height=500):
+        from matplotlib import pyplot as plt
         feature_vector = self.get_feature_vector(mode)
-
         if d == 2:
             fig, axes = plt.subplots(
                 int(np.ceil(self.x_y_z[2] / 4)), 4, figsize=(8, 8))
