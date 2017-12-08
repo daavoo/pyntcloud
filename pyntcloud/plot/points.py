@@ -1,6 +1,9 @@
 import os
 import shutil
-from IPython.display import IFrame
+try:
+    from IPython.display import IFrame
+except ImportError:
+    IFrame = None
 
 
 def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=800, height=500):
@@ -15,6 +18,9 @@ def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=80
         Size of the plotted points.
 
     """
+    if IFrame is None:
+        raise ImportError("IFrame is needed for plotting.")
+
     BASE_PATH = os.path.dirname(os.path.abspath(__file__))
     src = "{}/{}".format(BASE_PATH, "points.html")
     dst = "{}/{}".format(os.getcwd(), "{}.html".format(output_name))

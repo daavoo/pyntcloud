@@ -1,4 +1,7 @@
-import laspy
+try:
+    import laspy
+except:
+    laspy = None
 import pandas as pd
 
 
@@ -14,6 +17,8 @@ def read_las(filename):
     data: dict
         Elements as pandas DataFrames.
     """
+    if laspy is None:
+        raise ImportError("laspy is needed for reading .las files.")
     data = {}
 
     with laspy.file.File(filename) as las:
