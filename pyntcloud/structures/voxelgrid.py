@@ -1,5 +1,10 @@
 import numpy as np
-from matplotlib import pyplot as plt
+
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
+
 from scipy.spatial import cKDTree
 
 from .base import Structure
@@ -250,6 +255,9 @@ class VoxelGrid(Structure):
         feature_vector = self.get_feature_vector(mode)
 
         if d == 2:
+            if plt is None:
+                raise ImportError("Matplotlib is needed for plotting.")
+
             fig, axes = plt.subplots(
                 int(np.ceil(self.x_y_z[2] / 4)), 4, figsize=(8, 8))
             plt.tight_layout()

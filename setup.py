@@ -17,9 +17,10 @@ setup(
         "numpy",
         "scipy",
         "pandas",
-        "ipython",
-        "matplotlib",
         "numba",
-        "laspy"
     ],
+     extras_require={
+        'LAS':  ["laspy"],
+        'PLOT': ["ipython", "matplotlib"]
+    }
 )

@@ -3,8 +3,16 @@ import shutil
 
 import numpy as np
 
-from IPython.display import IFrame
-from matplotlib import pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
+
+try:
+    from IPython.display import IFrame
+except ImportError:
+    IFrame = None
+
 
 
 def plot_voxelgrid(voxelgrid,
@@ -14,7 +22,12 @@ def plot_voxelgrid(voxelgrid,
                    output_name=None,
                    width=800,
                    height=500):
+    if plt is None:
+        raise ImportError("Matplotlib is needed for plotting.")
 
+    if IFrame is None:
+        raise ImportError("IFrame is needed for plotting.")  
+      
     scaled_shape = voxelgrid.shape / min(voxelgrid.shape)
 
     vector = voxelgrid.get_feature_vector(mode=mode)

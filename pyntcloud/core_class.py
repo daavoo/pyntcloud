@@ -1,8 +1,12 @@
 import os
+
 import numpy as np
 import pandas as pd
 
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 
 from .structures.base import StructuresDict
 from .filters import ALL_FILTERS
@@ -673,6 +677,9 @@ class PyntCloud(object):
         html. You might need to run a local server or adjust the browser privacy
         policies in order to allow javascript to load local files.
         """
+        if plt is None:
+            raise ImportError("Matplotlib is needed for plotting.")
+
         try:
             colors = self.points[use_as_color].values
         except:
