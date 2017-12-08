@@ -13,7 +13,7 @@ This documentation is under cosntruction.
 
    introduction
    installation
-   jupyter
+   contributing
    PyntCloud
    points
    filters

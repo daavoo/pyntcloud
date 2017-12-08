@@ -28,7 +28,6 @@ Documentation
 +---------------------------------------+
 | `Basic Installation`_                 |
 +---------------------------------------+
-| `Setting up a Jupyter Enviroment`_    |
 +---------------------------------------+
 | `PyntCloud`_                          |
 +---------------------------------------+
@@ -40,12 +39,13 @@ Documentation
 +---------------------------------------+
 | `Samplers`_ // `Samplers - Dev`_      |
 +---------------------------------------+
+| `Structures`_ // `Structures - Dev`_      |
++---------------------------------------+
 
 
 .. _Home: http://pyntcloud.readthedocs.io/en/latest/
 .. _Introduction: http://pyntcloud.readthedocs.io/en/latest/introduction.html
 .. _Basic Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
-.. _Setting up a Jupyter Enviroment: http://pyntcloud.readthedocs.io/en/latest/jupyter.html
 .. _PyntCloud: http://pyntcloud.readthedocs.io/en/latest/PyntCloud.html
 .. _Points: http://pyntcloud.readthedocs.io/en/latest/points.html
 .. _Filters: http://pyntcloud.readthedocs.io/en/latest/filters.html
@@ -54,6 +54,8 @@ Documentation
 .. _I/O - Dev: http://pyntcloud.readthedocs.io/en/latest/io_dev.html
 .. _Samplers: http://pyntcloud.readthedocs.io/en/latest/samplers.html
 .. _Samplers - Dev: http://pyntcloud.readthedocs.io/en/latest/samplers_dev.html
+.. _Structures: http://pyntcloud.readthedocs.io/en/latest/structures.html
+.. _Structures - Dev: http://pyntcloud.readthedocs.io/en/latest/structures_dev.html
 
 .. _Overview:
 
