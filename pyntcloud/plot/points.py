@@ -1,5 +1,7 @@
 import os
 import shutil
+from pathlib import Path
+import json
 try:
     from IPython.display import IFrame
 except ImportError:
@@ -28,24 +30,25 @@ def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=80
     camera_position = (cloud.xyz.max(0) + abs(cloud.xyz.max(0))).tolist()
     look_at = cloud.xyz.mean(0).tolist()
 
+    dest_directory = Path(os.getcwd())
+    config_file_path = dest_directory / (output_name + '.config.json')
+
+    config_obj = {
+        "filename": output_name,
+        "camera_position": camera_position,
+        "look_at": look_at,
+        "point_size": point_size,
+    }
+
+    with config_file_path.open('w') as config_file:
+        json.dump(config_obj, config_file)
+
     # write new html file replacing placeholder
     with open(src, "r") as inp, open(dst, "w") as out:
         for line in inp:
             if "FILENAME_PLACEHOLDER" in line:
                 line = line.replace("FILENAME_PLACEHOLDER",
                                     "'{}'".format(output_name))
-
-            elif "CAMERA_POSITION_PLACEHOLDER" in line:
-                line = line.replace(
-                    "CAMERA_POSITION_PLACEHOLDER", "{}".format(camera_position))
-
-            elif "LOOK_AT_PLACEHOLDER" in line:
-                line = line.replace("LOOK_AT_PLACEHOLDER",
-                                    "{}".format(look_at))
-
-            elif "SIZE_PLACEHOLDER" in line:
-                line = line.replace("SIZE_PLACEHOLDER",
-                                    "{}".format(point_size))
             out.write(line)
 
     cloud.to_file("{}.ply".format(output_name), also_save=["mesh"])

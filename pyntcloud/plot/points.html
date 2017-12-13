@@ -65,16 +65,24 @@
         var points;
         var loader;
 
-        init();
-        animate();
+        //
+        // Config File Loader
+        //
+        let fileLoader = new THREE.FileLoader();
+        let filename = FILENAME_PLACEHOLDER;
+        fileLoader.load(filename + ".config.json", result => {
+          let config = JSON.parse(result);
+          console.log("Loaded " + filename + ".config.json", config);
+          init(config);
+          animate(config);
+        })
+
 
         //========================= INIT ==============================================//
 
-        function init() {
-            // DIRTY PLACEHOLDERS
-            var filename = FILENAME_PLACEHOLDER;
-            var camera_position = CAMERA_POSITION_PLACEHOLDER;
-            var look_at = LOOK_AT_PLACEHOLDER;
+        function init(config) {
+            let camera_position = config.camera_position;
+            let look_at = config.look_at;
             //
             // SCENE
             //
@@ -97,13 +105,14 @@
                 wireframe: true,
             };
             const gui = new dat.GUI();            
+
             //
             // LOADER
             //
             var material;
             var figure;
             loader = new THREE.PLYLoader();
-            loader.load(filename + '.ply', (geometry) => {
+            loader.load(config.filename + '.ply', (geometry) => {
                 if (geometry.index){
                     material = new THREE.MeshBasicMaterial({
                         side: THREE.DoubleSide,
@@ -120,7 +129,7 @@
                 }
                 else {
                     material = new THREE.PointsMaterial({
-                        size: SIZE_PLACEHOLDER,
+                        size: config.point_size,
                         vertexColors: THREE.VertexColors,
                         transparent: true,
                         opacity: 1,
@@ -182,7 +191,7 @@
         
         //========================= ANIMATE ==============================================//
 
-        function animate() {
+        function animate(config) {
             requestAnimationFrame(animate);
             render();
         }
