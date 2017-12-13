@@ -8,7 +8,10 @@ except ImportError:
     IFrame = None
 
 
-def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=800, height=500):
+def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot",
+                   width=800, height=500,
+                   point_opacity=0.9,
+                   ):
     """ Generate 3 output files (html, json and ply) to be plotted in Jupyter
 
     Parameters
@@ -38,6 +41,7 @@ def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot", width=80
         "camera_position": camera_position,
         "look_at": look_at,
         "point_size": point_size,
+        "point_opacity": point_opacity,
     }
 
     with config_file_path.open('w') as config_file:

@@ -628,6 +628,7 @@ class PyntCloud(object):
     def plot(self,
              mesh=False,
              point_size=0.3,
+             opacity=0.9,
              use_as_color=["red", "green", "blue"],
              cmap="hsv",
              output_name="pyntcloud_plot",
@@ -640,6 +641,10 @@ class PyntCloud(object):
         point_size: float, optional
             Default: 0.3
             Size of the plotted points.
+
+        opacity: float, optional
+            Default: 0.9
+            Opacity of the plotted points.
 
         use_as_color: str or ["red", "green", "blue"], optional
             Default: ["red", "green", "blue"]
@@ -705,4 +710,5 @@ class PyntCloud(object):
         if mesh and self.mesh is not None:
             new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
 
-        return plot_PyntCloud(new_PyntCloud, point_size, output_name=output_name)
+        return plot_PyntCloud(new_PyntCloud, point_size, output_name=output_name,
+                              point_opacity=opacity)
