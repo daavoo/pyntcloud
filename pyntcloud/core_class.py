@@ -633,7 +633,10 @@ class PyntCloud(object):
              cmap="hsv",
              output_name="pyntcloud_plot",
              width=800,
-             height=500):
+             height=500,
+             lines=[],
+             line_color="0xFF0000",
+             ):
         """Visualize PyntCloud in a Jupyter notebook using three.js.
 
         Parameters
@@ -670,6 +673,23 @@ class PyntCloud(object):
         height: int, optional
             Default: 500
             Adjusts the size of the IFrame plotted in Jupyter notebook.
+
+        lines: ndarray | list, optional
+            Expects either a numpy array or a list of lists.
+            It is indexed: line, point on line, xyz,
+            and may be ragged in the second dimension.
+            Thus [[[0, 0, 0], [1, 0, 1], [1, 1, 1]]] is a valid argument containing
+            one line composed  of three points.
+
+        line_color int | string | Iterable<int|string>, optional
+            The hex color of all lines to be drawn, or the hex color of
+            each line to be drawn.
+            Valid values include:
+                "0xFF00FF"
+                0xFF00FF
+                7
+                "0"
+                [0xFF00FF, 0x777777] # Provided len(lines) == 2
 
         Returns
         -------
@@ -711,4 +731,7 @@ class PyntCloud(object):
             new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
 
         return plot_PyntCloud(new_PyntCloud, point_size, output_name=output_name,
-                              point_opacity=opacity)
+                              point_opacity=opacity,
+                              lines=lines,
+                              line_color=line_color,
+                              )

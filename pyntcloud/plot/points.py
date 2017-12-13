@@ -2,6 +2,9 @@ import os
 import shutil
 from pathlib import Path
 import json
+
+import numpy as np
+
 try:
     from IPython.display import IFrame
 except ImportError:
@@ -11,6 +14,8 @@ except ImportError:
 def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot",
                    width=800, height=500,
                    point_opacity=0.9,
+                   line_color="0xFF0000",
+                   lines=[],
                    ):
     """ Generate 3 output files (html, json and ply) to be plotted in Jupyter
 
@@ -36,12 +41,33 @@ def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot",
     dest_directory = Path(os.getcwd())
     config_file_path = dest_directory / (output_name + '.config.json')
 
+    if isinstance(lines, np.ndarray):
+        lines = lines.tolist()
+
+    # Make line_color canonical.
+    # It always passed to the js as an array of strings
+    # of the same length as lines.
+    if not hasattr(line_color, "__len__"):
+        line_color = [line_color]
+    line_color_list = []
+    for c in line_color:
+        if isinstance(c, int):
+            c = hex(c)
+        line_color_list.append(c)
+    if len(line_color_list) == 1:
+        line_color_list = line_color_list * len(lines)
+
+    if len(line_color_list) != len(lines):
+        raise ValueError('lines and line_colors must be the same length')
+
     config_obj = {
         "filename": output_name,
         "camera_position": camera_position,
         "look_at": look_at,
         "point_size": point_size,
         "point_opacity": point_opacity,
+        "line_color_list": line_color_list,
+        "lines": lines,
     }
 
     with config_file_path.open('w') as config_file:

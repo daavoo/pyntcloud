@@ -88,6 +88,10 @@
             //
             scene = new THREE.Scene();
             //
+            // Lines
+            //
+            drawLines(scene, config.lines, config.line_color_list)
+            //
             // CAMERA
             //
             camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -201,6 +205,37 @@
         function render() {
             renderer.render(scene, camera);
         }
+
+        //======================== Line Drawing Utils ===================================//
+
+        function zip() {
+          var args = [].slice.call(arguments);
+          var shortest = args.length==0 ? [] : args.reduce(function(a,b){
+              return a.length<b.length ? a : b
+          });
+
+          return shortest.map(function(_,i){
+              return args.map(function(array){return array[i]})
+          });
+        }
+
+        function makeThreeLine(linePoints, lineColor) {
+          let material = new THREE.LineBasicMaterial({ color: parseInt(lineColor, 16) });
+          let geometry = new THREE.Geometry();
+          linePoints.forEach(x => {
+            // ... is "spread syntax", same as a "splat" in Python.
+            geometry.vertices.push(new THREE.Vector3(...x));
+          })
+          return new THREE.Line(geometry, material);
+        } 
+
+        function drawLines(scene, lines, colors) {
+          if (lines.length !== colors.length) {
+            throw Error("lines and colors must be the same length");
+          }
+          zip(lines, colors).forEach(lc => scene.add(makeThreeLine(lc[0], lc[1])))
+        }
+
     </script>
 </body>
 
