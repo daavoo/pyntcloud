@@ -5,7 +5,7 @@ from .obj import read_obj, write_obj
 from .ply import read_ply, write_ply
 from .off import read_off
 from .pcd import read_pcd
-
+from .stl import read_stl
 FROM = {
     "ASC": read_ascii,
     "CSV": read_ascii,
@@ -16,6 +16,7 @@ FROM = {
     "PCD": read_pcd,
     "PLY": read_ply,
     "PTS": read_ascii,
+    "STL": read_stl,
     "TXT": read_ascii,
     "XYZ": read_ascii,
 }
