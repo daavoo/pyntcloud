@@ -626,17 +626,15 @@ class PyntCloud(object):
         self.centroid = self.xyz.mean(0)
 
     def plot(self,
-             mesh=False,
-             point_size=0.3,
-             opacity=0.9,
-             use_as_color=["red", "green", "blue"],
-             cmap="hsv",
-             output_name="pyntcloud_plot",
-             width=800,
-             height=500,
-             lines=[],
-             line_color="0xFF0000",
-             ):
+        mesh=False,
+        point_size=0.3,
+        opacity=0.9,
+        use_as_color=["red", "green", "blue"],
+        cmap="hsv",
+        output_name="pyntcloud_plot",
+        IFrame_shape=(800, 500),
+        polylines={}
+        ):
         """Visualize PyntCloud in a Jupyter notebook using three.js.
 
         Parameters
@@ -666,30 +664,18 @@ class PyntCloud(object):
                 output_name.ply
                 output_name.json
 
-        width: int, optional
-            Default: 800
-            Adjusts the size of the IFrame plotted in Jupyter notebook.
+        IFrame_shape: tuple of ints, optional
+            Default (800, 500)
+            (Width, Height) of the IFrame rendered in the notebook.
 
-        height: int, optional
-            Default: 500
-            Adjusts the size of the IFrame plotted in Jupyter notebook.
-
-        lines: ndarray | list, optional
-            Expects either a numpy array or a list of lists.
-            It is indexed: line, point on line, xyz,
-            and may be ragged in the second dimension.
-            Thus [[[0, 0, 0], [1, 0, 1], [1, 1, 1]]] is a valid argument containing
-            one line composed  of three points.
-
-        line_color int | string | Iterable<int|string>, optional
-            The hex color of all lines to be drawn, or the hex color of
-            each line to be drawn.
-            Valid values include:
-                "0xFF00FF"
-                0xFF00FF
-                7
-                "0"
-                [0xFF00FF, 0x777777] # Provided len(lines) == 2
+        polylines: dict, optional
+            Default {}.
+            Mapping hexadecimal colors to a list of list(len(3)) representing the points of the polyline.
+            Example:
+            polylines={
+                "0xFFFFFF": [[0, 0, 0], [0, 0, 1]],
+                "0xFF00FF": [[1, 0, 0], [1, 0, 1], [1, 1, 1]]
+            }
 
         Returns
         -------
@@ -730,8 +716,11 @@ class PyntCloud(object):
         if mesh and self.mesh is not None:
             new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
 
-        return plot_PyntCloud(new_PyntCloud, point_size, output_name=output_name,
-                              point_opacity=opacity,
-                              lines=lines,
-                              line_color=line_color,
-                              )
+        return plot_PyntCloud(
+            new_PyntCloud, 
+            IFrame_shape=(800, 500),
+            point_size=point_size, 
+            point_opacity=opacity,
+            output_name=output_name,
+            polylines=polylines
+            )
