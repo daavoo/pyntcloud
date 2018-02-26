@@ -11,22 +11,32 @@ except ImportError:
     IFrame = None
 
 
-def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot",
-                   width=800, height=500,
-                   point_opacity=0.9,
-                   line_color="0xFF0000",
-                   lines=[],
-                   ):
+def plot_PyntCloud(cloud,
+    point_size=0.3, 
+    output_name="pyntcloud_plot",
+    IFrame_shape=(800, 500), 
+    point_opacity=0.9,
+    line_color="0xFF0000",
+    lines=[],
+    ):
     """ Generate 3 output files (html, json and ply) to be plotted in Jupyter
 
     Parameters
     ----------
     cloud: PyntCloud instance
-
     point_size: float, optional
-        Default: 0.3
-        Size of the plotted points.
-
+        Default 0.3.
+        Size of the points. I don't know what the number means. Check three.js docs.
+    point_opacity: float, optional
+        Default 0.9.
+        0 transparent.
+        1 opaque.        
+    output_name: str, optional
+        Default 'pyntcloud_plot'.
+        A standalone output_name.html will be generated.
+    IFrame_shape: tuple of ints, optional
+        Default (800, 500)
+        (Width, Height) of the IFrame rendered in the notebook.
     """
     if IFrame is None:
         raise ImportError("IFrame is needed for plotting.")
@@ -89,4 +99,4 @@ def plot_PyntCloud(cloud, point_size=0.3, output_name="pyntcloud_plot",
     except FileExistsError:
         pass
 
-    return IFrame("{}.html".format(output_name), width=width, height=height)
+    return IFrame("{}.html".format(output_name), width=IFrame_shape[0], height=IFrame_shape[1])
