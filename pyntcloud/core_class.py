@@ -633,8 +633,7 @@ class PyntCloud(object):
         cmap="hsv",
         output_name="pyntcloud_plot",
         IFrame_shape=(800, 500),
-        lines=[],
-        line_color="0xFF0000",
+        polylines={}
         ):
         """Visualize PyntCloud in a Jupyter notebook using three.js.
 
@@ -669,22 +668,14 @@ class PyntCloud(object):
             Default (800, 500)
             (Width, Height) of the IFrame rendered in the notebook.
 
-        lines: ndarray | list, optional
-            Expects either a numpy array or a list of lists.
-            It is indexed: line, point on line, xyz,
-            and may be ragged in the second dimension.
-            Thus [[[0, 0, 0], [1, 0, 1], [1, 1, 1]]] is a valid argument containing
-            one line composed  of three points.
-
-        line_color int | string | Iterable<int|string>, optional
-            The hex color of all lines to be drawn, or the hex color of
-            each line to be drawn.
-            Valid values include:
-                "0xFF00FF"
-                0xFF00FF
-                7
-                "0"
-                [0xFF00FF, 0x777777] # Provided len(lines) == 2
+        polylines: dict, optional
+            Default {}.
+            Mapping hexadecimal colors to a list of list(len(3)) representing the points of the polyline.
+            Example:
+            polylines={
+                "0xFFFFFF": [[0, 0, 0], [0, 0, 1]],
+                "0xFF00FF": [[1, 0, 0], [1, 0, 1], [1, 1, 1]]
+            }
 
         Returns
         -------
@@ -731,6 +722,5 @@ class PyntCloud(object):
             point_size=point_size, 
             point_opacity=opacity,
             output_name=output_name,
-            lines=lines,
-            line_color=line_color
+            polylines=polylines
             )
