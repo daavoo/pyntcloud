@@ -43,14 +43,13 @@
 <body>
     <button id="screenshot"> SCREENSHOT </button>      
     <div>
-        <img id="PyntCloudLogo" src="pyntcloud_plot_assets/pyntcloud_logo.png">      
+        <img id="PyntCloudLogo" src="https://github.com/daavoo/pyntcloud/blob/master/pyntcloud/plot/assets/pyntcloud_logo.png?raw=true">      
     </div>
 
     <div id="container">
     </div>
     
-    <script src="pyntcloud_plot_assets/three.min.js"></script>
-    <script src="pyntcloud_plot_assets/Detector.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/90/three.min.js"></script>
     <script src="pyntcloud_plot_assets/OrbitControls.js"></script>
     <script src="pyntcloud_plot_assets/stats.min.js"></script>
     <script src="pyntcloud_plot_assets/jquery.min.js"></script>
@@ -58,8 +57,6 @@
     <script src="pyntcloud_plot_assets/dat.gui.min.js"></script>    
 
     <script>
-        if (!Detector.webgl) Detector.addGetWebGLMessage();
-
         var container;
         var camera, scene, renderer, controls;
         var points;
@@ -90,7 +87,7 @@
             //
             // Lines
             //
-            drawLines(scene, config.lines, config.line_color_list)
+            drawLines(scene, config.polylines_points, config.polylines_colors)
             //
             // CAMERA
             //
