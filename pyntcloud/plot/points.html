@@ -65,20 +65,32 @@
         var points;
         var loader;
 
-        init();
-        animate();
+        //
+        // Config File Loader
+        //
+        let fileLoader = new THREE.FileLoader();
+        let filename = FILENAME_PLACEHOLDER;
+        fileLoader.load(filename + ".config.json", result => {
+          let config = JSON.parse(result);
+          console.log("Loaded " + filename + ".config.json", config);
+          init(config);
+          animate(config);
+        })
+
 
         //========================= INIT ==============================================//
 
-        function init() {
-            // DIRTY PLACEHOLDERS
-            var filename = FILENAME_PLACEHOLDER;
-            var camera_position = CAMERA_POSITION_PLACEHOLDER;
-            var look_at = LOOK_AT_PLACEHOLDER;
+        function init(config) {
+            let camera_position = config.camera_position;
+            let look_at = config.look_at;
             //
             // SCENE
             //
             scene = new THREE.Scene();
+            //
+            // Lines
+            //
+            drawLines(scene, config.lines, config.line_color_list)
             //
             // CAMERA
             //
@@ -92,24 +104,25 @@
             //
             var parameters = 
             {
-                size: 0.5,
-                opacity: 1,
+                size: config.point_size,
+                opacity: config.point_opacity,
                 wireframe: true,
             };
             const gui = new dat.GUI();            
+
             //
             // LOADER
             //
             var material;
             var figure;
             loader = new THREE.PLYLoader();
-            loader.load(filename + '.ply', (geometry) => {
+            loader.load(config.filename + '.ply', (geometry) => {
                 if (geometry.index){
                     material = new THREE.MeshBasicMaterial({
                         side: THREE.DoubleSide,
                         vertexColors: THREE.VertexColors,
                         transparent: true,
-                        opacity: 1,
+                        opacity: config.point_opacity,
                         wireframe: true,
                     });
                     figure = new THREE.Mesh(geometry, material);
@@ -120,10 +133,10 @@
                 }
                 else {
                     material = new THREE.PointsMaterial({
-                        size: SIZE_PLACEHOLDER,
+                        size: config.point_size,
                         vertexColors: THREE.VertexColors,
                         transparent: true,
-                        opacity: 1,
+                        opacity: config.point_opacity,
                     });
                     figure = new THREE.Points(geometry, material);
                     var figureSize = gui.add(parameters, 'size').min(0.001).max(1).step(0.001).name("Point Size").listen();
@@ -182,7 +195,7 @@
         
         //========================= ANIMATE ==============================================//
 
-        function animate() {
+        function animate(config) {
             requestAnimationFrame(animate);
             render();
         }
@@ -192,6 +205,37 @@
         function render() {
             renderer.render(scene, camera);
         }
+
+        //======================== Line Drawing Utils ===================================//
+
+        function zip() {
+          var args = [].slice.call(arguments);
+          var shortest = args.length==0 ? [] : args.reduce(function(a,b){
+              return a.length<b.length ? a : b
+          });
+
+          return shortest.map(function(_,i){
+              return args.map(function(array){return array[i]})
+          });
+        }
+
+        function makeThreeLine(linePoints, lineColor) {
+          let material = new THREE.LineBasicMaterial({ color: parseInt(lineColor, 16) });
+          let geometry = new THREE.Geometry();
+          linePoints.forEach(x => {
+            // ... is "spread syntax", same as a "splat" in Python.
+            geometry.vertices.push(new THREE.Vector3(...x));
+          })
+          return new THREE.Line(geometry, material);
+        } 
+
+        function drawLines(scene, lines, colors) {
+          if (lines.length !== colors.length) {
+            throw Error("lines and colors must be the same length");
+          }
+          zip(lines, colors).forEach(lc => scene.add(makeThreeLine(lc[0], lc[1])))
+        }
+
     </script>
 </body>
 

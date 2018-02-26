@@ -26,8 +26,7 @@ Documentation
 +---------------------------------------+
 | `Introduction`_                       |
 +---------------------------------------+
-| `Basic Installation`_                 |
-+---------------------------------------+
+| `Installation`_                       |
 +---------------------------------------+
 | `PyntCloud`_                          |
 +---------------------------------------+
@@ -39,13 +38,13 @@ Documentation
 +---------------------------------------+
 | `Samplers`_ // `Samplers - Dev`_      |
 +---------------------------------------+
-| `Structures`_ // `Structures - Dev`_      |
+| `Structures`_ // `Structures - Dev`_  |
 +---------------------------------------+
 
 
 .. _Home: http://pyntcloud.readthedocs.io/en/latest/
 .. _Introduction: http://pyntcloud.readthedocs.io/en/latest/introduction.html
-.. _Basic Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
+.. _Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
 .. _PyntCloud: http://pyntcloud.readthedocs.io/en/latest/PyntCloud.html
 .. _Points: http://pyntcloud.readthedocs.io/en/latest/points.html
 .. _Filters: http://pyntcloud.readthedocs.io/en/latest/filters.html
