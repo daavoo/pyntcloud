@@ -626,13 +626,15 @@ class PyntCloud(object):
         self.centroid = self.xyz.mean(0)
 
     def plot(self,
-             mesh=False,
-             point_size=0.3,
-             use_as_color=["red", "green", "blue"],
-             cmap="hsv",
-             output_name="pyntcloud_plot",
-             width=800,
-             height=500):
+        mesh=False,
+        point_size=0.3,
+        opacity=0.9,
+        use_as_color=["red", "green", "blue"],
+        cmap="hsv",
+        output_name="pyntcloud_plot",
+        IFrame_shape=(800, 500),
+        polylines={}
+        ):
         """Visualize PyntCloud in a Jupyter notebook using three.js.
 
         Parameters
@@ -640,6 +642,10 @@ class PyntCloud(object):
         point_size: float, optional
             Default: 0.3
             Size of the plotted points.
+
+        opacity: float, optional
+            Default: 0.9
+            Opacity of the plotted points.
 
         use_as_color: str or ["red", "green", "blue"], optional
             Default: ["red", "green", "blue"]
@@ -658,13 +664,18 @@ class PyntCloud(object):
                 output_name.ply
                 output_name.json
 
-        width: int, optional
-            Default: 800
-            Adjusts the size of the IFrame plotted in Jupyter notebook.
+        IFrame_shape: tuple of ints, optional
+            Default (800, 500)
+            (Width, Height) of the IFrame rendered in the notebook.
 
-        height: int, optional
-            Default: 500
-            Adjusts the size of the IFrame plotted in Jupyter notebook.
+        polylines: dict, optional
+            Default {}.
+            Mapping hexadecimal colors to a list of list(len(3)) representing the points of the polyline.
+            Example:
+            polylines={
+                "0xFFFFFF": [[0, 0, 0], [0, 0, 1]],
+                "0xFF00FF": [[1, 0, 0], [1, 0, 1], [1, 1, 1]]
+            }
 
         Returns
         -------
@@ -705,4 +716,11 @@ class PyntCloud(object):
         if mesh and self.mesh is not None:
             new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
 
-        return plot_PyntCloud(new_PyntCloud, point_size, output_name=output_name)
+        return plot_PyntCloud(
+            new_PyntCloud, 
+            IFrame_shape=(800, 500),
+            point_size=point_size, 
+            point_opacity=opacity,
+            output_name=output_name,
+            polylines=polylines
+            )
