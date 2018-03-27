@@ -3,18 +3,26 @@ from scipy.stats import zscore
 from .base import Filter
 
 
-class Filter_KDTree(Filter):
+class KDTreeFilter(Filter):
 
-    def __init__(self, pyntcloud, kdtree):
+    def __init__(self, pyntcloud, kdtree_id):
+        """
+        Parameters
+        ----------
+        pyntcloud: pyntcloud.PyntCloud
+        kdtree_id: string
+            Usually returned from PyntCloud.add_structure("kdtree"):
+            kdtree_id = my_cloud.add_structure("kdtree")
+        """
         super().__init__(pyntcloud)
-        self.kdtree = kdtree
+        self.kdtree_id = kdtree_id
 
     def extract_info(self):
         self.points = self.pyntcloud.xyz
         self.kdtree = self.pyntcloud.structures[self.kdtree]
 
 
-class RadiousOutlierRemoval(Filter_KDTree):
+class RadiousOutlierRemoval(KDTreeFilter):
     """Compute a Radious Outlier Removal filter using the given KDTree.
 
     Parameters
@@ -51,7 +59,7 @@ class RadiousOutlierRemoval(Filter_KDTree):
         return ror_filter
 
 
-class StatisticalOutlierRemoval(Filter_KDTree):
+class StatisticalOutlierRemoval(KDTreeFilter):
     """Compute a Statistical Outlier Removal filter using the given KDTree.
 
     Parameters
