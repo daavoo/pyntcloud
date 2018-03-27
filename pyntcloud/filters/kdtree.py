@@ -7,7 +7,7 @@ from .base import Filter
 
 
 class KDTreeFilter(Filter):
-    def __init__(self, pyntcloud, kdtree_id):
+    def __init__(self, *, pyntcloud, kdtree_id):
         """
         Parameters
         ----------
@@ -16,7 +16,7 @@ class KDTreeFilter(Filter):
             Usually returned from PyntCloud.add_structure("kdtree"):
             kdtree_id = my_cloud.add_structure("kdtree")
         """
-        super().__init__(pyntcloud)
+        super().__init__(pyntcloud=pyntcloud)
         self.kdtree_id = kdtree_id
 
     def extract_info(self):
@@ -53,8 +53,8 @@ class RadiusOutlierRemovalFilter(KDTreeFilter):
     A LOWER 'r' value will result in a HIGHER number of points trimmed.
     """
 
-    def __init__(self, pyntcloud, kdtree, k, r):
-        super().__init__(pyntcloud, kdtree)
+    def __init__(self, *, pyntcloud, kdtree, k, r):
+        super().__init__(pyntcloud=pyntcloud, kdtree=kdtree)
         self.k = k
         self.r = r
 
@@ -92,8 +92,8 @@ class StatisticalOutlierRemovalFilter(KDTreeFilter):
     A LOWER 'z_max' value will result in a HIGHER number of points trimmed.
     """
 
-    def __init__(self, pyntcloud, kdtree, k, z_max):
-        super().__init__(pyntcloud, kdtree)
+    def __init__(self, *, pyntcloud, kdtree, k, z_max):
+        super().__init__(pyntcloud=pyntcloud, kdtree=kdtree)
         self.k = k
         self.z_max = z_max
 
