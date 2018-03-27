@@ -1,10 +1,12 @@
+from abc import abstractmethod
+
 import numpy as np
+
 from scipy.stats import zscore
 from .base import Filter
 
 
 class KDTreeFilter(Filter):
-
     def __init__(self, pyntcloud, kdtree_id):
         """
         Parameters
@@ -19,11 +21,15 @@ class KDTreeFilter(Filter):
 
     def extract_info(self):
         self.points = self.pyntcloud.xyz
-        self.kdtree = self.pyntcloud.structures[self.kdtree]
+        self.kdtree = self.pyntcloud.structures[self.kdtree_id]
+
+    @abstractmethod
+    def compute(self):
+        pass
 
 
-class RadiousOutlierRemoval(KDTreeFilter):
-    """Compute a Radious Outlier Removal filter using the given KDTree.
+class RadiusOutlierRemovalFilter(KDTreeFilter):
+    """Compute a Radius Outlier Removal filter using the given KDTree.
 
     Parameters
     ----------
@@ -59,7 +65,7 @@ class RadiousOutlierRemoval(KDTreeFilter):
         return ror_filter
 
 
-class StatisticalOutlierRemoval(KDTreeFilter):
+class StatisticalOutlierRemovalFilter(KDTreeFilter):
     """Compute a Statistical Outlier Removal filter using the given KDTree.
 
     Parameters
