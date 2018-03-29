@@ -23,7 +23,6 @@ class KDTreeFilter(Filter):
         self.points = self.pyntcloud.xyz
         self.kdtree = self.pyntcloud.structures[self.kdtree_id]
 
-    @abstractmethod
     def compute(self):
         pass
 
@@ -33,7 +32,7 @@ class RadiusOutlierRemovalFilter(KDTreeFilter):
 
     Parameters
     ----------
-    kdtree: pyntcloud.structures.KDTree.id
+    kdtree_id: pyntcloud.structures.KDTree.id
     k : int
         Number of neighbors that will be used to compute the filter.
     r : float
@@ -60,6 +59,7 @@ class RadiusOutlierRemovalFilter(KDTreeFilter):
 
     def compute(self):
         distances = self.kdtree.query(self.points, k=self.k, n_jobs=-1)[0]
+        print(distances)
         ror_filter = np.all(distances < self.r, axis=1)
 
         return ror_filter
@@ -83,7 +83,7 @@ class StatisticalOutlierRemovalFilter(KDTreeFilter):
 
     > The Z score of those means is computed.
 
-    >  Points where the Z score is less than or more than 'z_max' are marked
+    > Points with a Z score outside the range [-z_max, z_max] are marked
         as False, in order to be trimmed.
 
     The optional parameter z_max should be used in order to adjust
@@ -100,6 +100,7 @@ class StatisticalOutlierRemovalFilter(KDTreeFilter):
     def compute(self):
         distances = self.kdtree.query(self.points, k=self.k, n_jobs=-1)[0]
         z_distances = zscore(np.mean(distances, axis=1), ddof=1)
+        print(z_distances)
         sor_filter = abs(z_distances) < self.z_max
 
         return sor_filter
