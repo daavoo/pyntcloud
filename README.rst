@@ -26,8 +26,7 @@ Documentation
 +---------------------------------------+
 | `Introduction`_                       |
 +---------------------------------------+
-| `Basic Installation`_                 |
-+---------------------------------------+
+| `Installation`_                       |
 +---------------------------------------+
 | `PyntCloud`_                          |
 +---------------------------------------+
@@ -39,13 +38,13 @@ Documentation
 +---------------------------------------+
 | `Samplers`_ // `Samplers - Dev`_      |
 +---------------------------------------+
-| `Structures`_ // `Structures - Dev`_      |
+| `Structures`_ // `Structures - Dev`_  |
 +---------------------------------------+
 
 
 .. _Home: http://pyntcloud.readthedocs.io/en/latest/
 .. _Introduction: http://pyntcloud.readthedocs.io/en/latest/introduction.html
-.. _Basic Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
+.. _Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
 .. _PyntCloud: http://pyntcloud.readthedocs.io/en/latest/PyntCloud.html
 .. _Points: http://pyntcloud.readthedocs.io/en/latest/points.html
 .. _Filters: http://pyntcloud.readthedocs.io/en/latest/filters.html
@@ -65,13 +64,13 @@ Overview
 Concise API
 -----------
 
-You can access most of pyntcloud's functionallity from it's core class: PyntCloud.
+You can access most of pyntcloud's functionality from it's core class: PyntCloud.
 
-With PyntCloud you can penform complex 3D processing operations with minimum lines of 
+With PyntCloud you can perform complex 3D processing operations with minimum lines of 
 code. For example you can:
 
 - Load a point cloud from disk.
-- Add 3 new sacalar fields by converting RGB to HSV.
+- Add 3 new scalar fields by converting RGB to HSV.
 - Build a grid of voxels from the point cloud.
 - Build a new point cloud keeping only the nearest point to each occupied voxel center.
 - Save the new point cloud.

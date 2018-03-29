@@ -3,17 +3,17 @@
 HAKUNA MATATA
 """
 
-from .f_kdtree import (
-    RadiousOutlierRemoval,
-    StatisticalOutlierRemoval,
+from .kdtree import (
+    RadiusOutlierRemovalFilter,
+    StatisticalOutlierRemovalFilter,
 
 )
-from .f_xyz import BoundingBox
+from .xyz import BoundingBoxFilter
 
 ALL_FILTERS = {
     # XYZ
-    "BBOX": BoundingBox,
+    "BBOX": BoundingBoxFilter,
     # KDTree
-    "ROR": RadiousOutlierRemoval,
-    "SOR": StatisticalOutlierRemoval
+    "ROR": RadiusOutlierRemovalFilter,
+    "SOR": StatisticalOutlierRemovalFilter
 }

@@ -2,12 +2,12 @@ import numpy as np
 from .base import Filter
 
 
-class Filter_XYZ(Filter):
+class XYZFilter(Filter):
     def extract_info(self):
         self.points = self.pyntcloud.xyz
 
 
-class BoundingBox(Filter_XYZ):
+class BoundingBoxFilter(XYZFilter):
     """
     Compute a bounding box filter for the given points.
 
@@ -21,9 +21,9 @@ class BoundingBox(Filter_XYZ):
 
     """
 
-    def __init__(self, pyntcloud, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
+    def __init__(self, *, pyntcloud, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
                  max_y=np.inf, min_z=-np.inf, max_z=np.inf):
-        super().__init__(pyntcloud)
+        super().__init__(pyntcloud=pyntcloud)
         self.min_x, self.max_x = min_x, max_x
         self.min_y, self.max_y = min_y, max_y
         self.min_z, self.max_z = min_z, max_z
