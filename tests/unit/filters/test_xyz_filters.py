@@ -2,74 +2,52 @@ import pytest
 
 from numpy.testing import assert_array_equal
 
-from pyntcloud.filters.kdtree import (
-    KDTreeFilter,
-    RadiusOutlierRemovalFilter,
-    StatisticalOutlierRemovalFilter
-)
-
-@pytest.mark.parametrize("kdtree_id", [
-    "FOO",
-    "K",
-    "K(10)",
-    "K(16",
-    "K16)",
-    "K16"
-])
-@pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_KDTreeFilter_raises_KeyError_if_id_is_not_valid(pyntcloud_with_kdtree, kdtree_id):
-    filter = KDTreeFilter(pyntcloud=pyntcloud_with_kdtree, kdtree_id=kdtree_id)
-    with pytest.raises(KeyError):
-        filter.extract_info()
+from pyntcloud.filters.xyz import BoundingBoxFilter
 
 
-@pytest.mark.parametrize("k,r,expected_result", [
+@pytest.mark.usefixtures("simple_pyntcloud")
+def test_BoundingBoxFilter_default_values(simple_pyntcloud):
+    """
+    Default bounding box values are infinite so all points
+    should pass the filter.
+    """
+    bbox_filter = BoundingBoxFilter(pyntcloud=simple_pyntcloud)
+    bbox_filter.extract_info()
+    result = bbox_filter.compute()
+    assert all(result)
+
+
+@pytest.mark.parametrize("bounding_box,expected_result", [
     (
-        2,
-        0.2,
-        [True, True, True, False, True, True]
+        {
+            "min_x": 0.4,
+            "max_x": 0.6,
+            "min_y": 0.4,
+            "max_y": 0.6
+        },
+        [False, False, False, True, False, False]
     ),
     (
-        3,
-        0.2,
-        [False, True, False, False, False, False]
+        {
+            "min_x": 0.4,
+        },
+        [False, False, False, True, True, True]
     ),
     (
-        3,
-        0.35,
-        [True, True, True, False, False, False]
+        {
+            "max_x": 1.,
+        },
+        [True, True, True, True, True, False]
     )
 ])
-@pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_RORFilter_expected_results(pyntcloud_with_kdtree, k, r, expected_result):
-    filter = RadiusOutlierRemovalFilter(
-        pyntcloud=pyntcloud_with_kdtree,
-        kdtree_id="K(16)",
-        k=k,
-        r=r
+@pytest.mark.usefixtures("simple_pyntcloud")
+def test_BoundingBoxFilter_expected_results(simple_pyntcloud, bounding_box, expected_result):
+    bbox_filter = BoundingBoxFilter(
+        pyntcloud=simple_pyntcloud,
+        **bounding_box
     )
-    filter.extract_info()
-    result = filter.compute()
+    bbox_filter.extract_info()
+    result = bbox_filter.compute()
 
     assert_array_equal(result, expected_result)
 
-
-@pytest.mark.parametrize("k,z_max,expected_result", [
-    (
-        2,
-        0.5,
-        [True, True, True, False, True, True]
-    )
-])
-@pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_SORFilter_expected_results(pyntcloud_with_kdtree, k, z_max, expected_result):
-    filter = StatisticalOutlierRemovalFilter(
-        pyntcloud=pyntcloud_with_kdtree,
-        kdtree_id="K(16)",
-        k=k,
-        z_max=z_max
-    )
-    filter.extract_info()
-    result = filter.compute()
-
-    assert_array_equal(result, expected_result)
