@@ -8,11 +8,11 @@ from .kdtree import (
     StatisticalOutlierRemovalFilter,
 
 )
-from .f_xyz import BoundingBox
+from .xyz import BoundingBoxFilter
 
 ALL_FILTERS = {
     # XYZ
-    "BBOX": BoundingBox,
+    "BBOX": BoundingBoxFilter,
     # KDTree
     "ROR": RadiusOutlierRemovalFilter,
     "SOR": StatisticalOutlierRemovalFilter
