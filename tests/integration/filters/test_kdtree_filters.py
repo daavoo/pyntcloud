@@ -16,7 +16,21 @@ def test_ROR_raises_KeyError_if_id_is_not_valid(pyntcloud_with_kdtree, kdtree_id
     with pytest.raises(KeyError):
         pyntcloud_with_kdtree.get_filter("ROR", kdtree_id=kdtree_id, k=2, r=0.2)
 
-"""
+
+@pytest.mark.parametrize("kdtree_id", [
+    "FOO",
+    "K",
+    "K(10)",
+    "K(16",
+    "K16)",
+    "K16"
+])
+@pytest.mark.usefixtures("pyntcloud_with_kdtree")
+def test_SOR_raises_KeyError_if_id_is_not_valid(pyntcloud_with_kdtree, kdtree_id):
+    with pytest.raises(KeyError):
+        pyntcloud_with_kdtree.get_filter("SOR", kdtree_id=kdtree_id, k=2, z_max=0.5)
+
+
 @pytest.mark.parametrize("k,r,expected_result", [
     (
         2,
@@ -35,16 +49,13 @@ def test_ROR_raises_KeyError_if_id_is_not_valid(pyntcloud_with_kdtree, kdtree_id
     )
 ])
 @pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_RORFilter_expected_results(pyntcloud_with_kdtree, k, r, expected_result):
-    filter = RadiusOutlierRemovalFilter(
-        pyntcloud=pyntcloud_with_kdtree,
+def test_ROR_expected_results(pyntcloud_with_kdtree, k, r, expected_result):
+    result = pyntcloud_with_kdtree.get_filter(
+        "ROR",
         kdtree_id="K(16)",
         k=k,
         r=r
     )
-    filter.extract_info()
-    result = filter.compute()
-
     assert_array_equal(result, expected_result)
 
 
@@ -56,15 +67,12 @@ def test_RORFilter_expected_results(pyntcloud_with_kdtree, k, r, expected_result
     )
 ])
 @pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_SORFilter_expected_results(pyntcloud_with_kdtree, k, z_max, expected_result):
-    filter = StatisticalOutlierRemovalFilter(
-        pyntcloud=pyntcloud_with_kdtree,
+def test_SOR_expected_results(pyntcloud_with_kdtree, k, z_max, expected_result):
+    result = pyntcloud_with_kdtree.get_filter(
+        "SOR",
         kdtree_id="K(16)",
         k=k,
         z_max=z_max
     )
-    filter.extract_info()
-    result = filter.compute()
-
     assert_array_equal(result, expected_result)
-"""
+
