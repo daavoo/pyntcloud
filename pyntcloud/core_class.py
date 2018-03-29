@@ -413,7 +413,7 @@ class PyntCloud(object):
 
         """
         if name in ALL_FILTERS:
-            F = ALL_FILTERS[name](self, **kwargs)
+            F = ALL_FILTERS[name](pyntcloud=self, **kwargs)
             F.extract_info()
             boolean_array = F.compute()
 
