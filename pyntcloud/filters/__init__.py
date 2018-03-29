@@ -5,7 +5,7 @@ HAKUNA MATATA
 
 from .kdtree import (
     RadiusOutlierRemovalFilter,
-    StatisticalOutlierRemoval,
+    StatisticalOutlierRemovalFilter,
 
 )
 from .f_xyz import BoundingBox
@@ -15,5 +15,5 @@ ALL_FILTERS = {
     "BBOX": BoundingBox,
     # KDTree
     "ROR": RadiusOutlierRemovalFilter,
-    "SOR": StatisticalOutlierRemoval
+    "SOR": StatisticalOutlierRemovalFilter
 }
