@@ -17,5 +17,6 @@ install:
   - pip install laspy
   - python setup.py develop
 
-script: pytest -v tests/unit
-script: pytest -v tests/integration
+script:
+  - pytest -v tests/unit
+  - pytest -v tests/integration
