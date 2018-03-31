@@ -4,7 +4,7 @@ HAKUNA MATATA
 """
 
 from .s_points import RandomPoints
-from .s_mesh import RandomMesh
+from .mesh import RandomMeshSampler
 from .s_voxelgrid import (
     VoxelgridCenters,
     VoxelgridCentroids,
@@ -13,7 +13,7 @@ from .s_voxelgrid import (
 
 ALL_SAMPLERS = {
     # Mesh
-    'mesh_random_sampling': RandomMesh,
+    'mesh_random_sampling': RandomMeshSampler,
     # Points
     'points_random_sampling': RandomPoints,
     # Voxelgrid

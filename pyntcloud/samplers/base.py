@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class Sampler(ABC):
     """Base class for sampling methods."""
 
-    def __init__(self, pyntcloud):
+    def __init__(self, *, pyntcloud):
         self.pyntcloud = pyntcloud
 
     @abstractmethod
