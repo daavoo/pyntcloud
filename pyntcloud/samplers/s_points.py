@@ -1,4 +1,3 @@
-from random import sample
 from .base import Sampler
 
 
@@ -27,6 +26,4 @@ class RandomPoints(Sampler_Points):
         self.n = n
 
     def compute(self):
-
-        indices = sample(range(0, self.points.shape[0]), self.n)
-        return self.points.ix[indices].reset_index(drop=True)
+        return self.points.sample(self.n).reset_index(drop=True)
