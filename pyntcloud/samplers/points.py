@@ -21,4 +21,6 @@ class RandomPointsSampler(PointsSampler):
         self.n = n
 
     def compute(self):
+        if self.n > len(self.points):
+            raise ValueError("n can't be higher than the number of points in the PyntCloud.")
         return self.points.sample(self.n).reset_index(drop=True)
