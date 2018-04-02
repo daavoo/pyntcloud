@@ -1,28 +1,23 @@
 from .base import Sampler
 
 
-class Sampler_Points(Sampler):
+class PointsSampler(Sampler):
     """
     """
-
-    def __init__(self, pyntcloud):
-        super().__init__(pyntcloud)
-
     def extract_info(self):
         self.points = self.pyntcloud.points
 
 
-class RandomPoints(Sampler_Points):
-    """ 'n' unique points randomly chosen
-
+class RandomPointsSampler(PointsSampler):
+    """
     Parameters
     ----------
     n: int
         Number of unique points that will be chosen.
     """
 
-    def __init__(self, pyntcloud, n):
-        super().__init__(pyntcloud)
+    def __init__(self, *, pyntcloud, n):
+        super().__init__(pyntcloud=pyntcloud)
         self.n = n
 
     def compute(self):
