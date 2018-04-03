@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from scipy.spatial import cKDTree
+from scipy.spatial.distance import cdist
 
 from .base import Sampler
 
@@ -18,8 +18,9 @@ class VoxelgridSampler(Sampler):
 class VoxelgridCentersSampler(VoxelgridSampler):
     """Returns the points that represent each occupied voxel's center."""
     def compute(self):
-        s = self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)]
-        return pd.DataFrame(s, columns=["x", "y", "z"])
+        return pd.DataFrame(
+            self.voxelgrid.voxel_centers[np.unique(self.voxelgrid.voxel_n)],
+            columns=["x", "y", "z"])
 
 
 class VoxelgridCentroidsSampler(VoxelgridSampler):
@@ -31,10 +32,19 @@ class VoxelgridCentroidsSampler(VoxelgridSampler):
 
 
 class VoxelgridNearestSampler(VoxelgridSampler):
-    """Returns the point closest to each occupied voxel's center."""
+    """Returns the N closests points to each occupied voxel's center."""
+
+    def __init__(self, *, pyntcloud, voxelgrid_id, n=1):
+        super().__init__(pyntcloud=pyntcloud, voxelgrid_id=voxelgrid_id)
+        self.n = n
+
     def compute(self):
-        nonzero_centers = self.voxelgrid.voxel_centers[np.unique(
-            self.voxelgrid.voxel_n)]
-        kdt = cKDTree(self.pyntcloud.xyz)
-        distances, nearest_indices = kdt.query(nonzero_centers, n_jobs=-1)
-        return self.pyntcloud.points.ix[nearest_indices].reset_index(drop=True)
+        df = pd.DataFrame(self.pyntcloud.xyz, columns=["x", "y", "z"])
+        df["voxel_n"] = self.voxelgrid.voxel_n
+        nearests = []
+        for voxel_n, x in df.groupby("voxel_n", sort=False):
+            xyz = x.loc[:, ["x", "y", "z"]].values
+            center = self.voxelgrid.voxel_centers[voxel_n]
+            voxel_nearest = cdist([center], xyz)[0].argsort()[:self.n]
+            nearests.extend(x.index.values[voxel_nearest])
+        return self.pyntcloud.points.iloc[nearests].reset_index(drop=True)
