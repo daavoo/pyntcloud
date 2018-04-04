@@ -5,12 +5,12 @@ from .base import Sampler
 from ..geometry.areas import triangle_area_multi
 
 
-class Sampler_Mesh(Sampler):
+class MeshSampler(Sampler):
     """
     """
 
-    def __init__(self, pyntcloud, rgb=False, normals=False):
-        super().__init__(pyntcloud)
+    def __init__(self, *, pyntcloud, rgb=False, normals=False):
+        super().__init__(pyntcloud=pyntcloud)
         self.rgb = rgb
         self.normals = normals
 
@@ -38,7 +38,7 @@ class Sampler_Mesh(Sampler):
             self.v3_normals = v3[:, 3:6]
 
 
-class RandomMesh(Sampler_Mesh):
+class RandomMeshSampler(MeshSampler):
     """ Sample points adjusting probabilities according to triangle area.
 
     Parameters
@@ -56,8 +56,8 @@ class RandomMesh(Sampler_Mesh):
 
     """
 
-    def __init__(self, pyntcloud, n, rgb=False, normals=False):
-        super().__init__(pyntcloud, rgb, normals)
+    def __init__(self, *, pyntcloud, n, rgb=False, normals=False):
+        super().__init__(pyntcloud=pyntcloud, rgb=rgb, normals=normals)
         self.n = n
 
     def compute(self):
@@ -106,8 +106,7 @@ class RandomMesh(Sampler_Mesh):
 
             sum_normals = v1_normals + v2_normals + v3_normals
 
-            result_normals = sum_normals / \
-                np.linalg.norm(sum_normals, axis=1)[..., None]
+            result_normals = sum_normals / np.linalg.norm(sum_normals, axis=1)[..., None]
             result_normals = result_normals.astype(np.float32)
 
             result["nx"] = result_normals[:, 0]

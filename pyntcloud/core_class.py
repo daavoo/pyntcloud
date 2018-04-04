@@ -454,7 +454,7 @@ class PyntCloud(object):
 
         **REQUIRE MESH**
 
-            mesh_random_sampling
+            mesh_random
                 n: int
                     Number of points to be sampled.
                 rgb: bool, optional
@@ -479,12 +479,12 @@ class PyntCloud(object):
 
         **USE POINTS**
 
-            points_random_sampling
+            points_random
                 n: int
                     Number of points to be sampled.
         """
         if name in ALL_SAMPLERS:
-            S = ALL_SAMPLERS[name](self, **kwargs)
+            S = ALL_SAMPLERS[name](pyntcloud=self, **kwargs)
             S.extract_info()
             sampled_points = S.compute()
 
