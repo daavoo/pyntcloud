@@ -33,6 +33,20 @@ def pyntcloud_with_kdtree(simple_pyntcloud):
 
 
 @pytest.fixture()
+def pyntcloud_with_rgb_and_normals():
+    return PyntCloud(points=pd.DataFrame(
+        data={
+            "x": np.random.rand(1000).astype(np.float32),
+            "y": np.random.rand(1000).astype(np.float32),
+            "z": np.random.rand(1000).astype(np.float32),
+            "red": np.random.randint(0, 255, size=1000, dtype=np.uint8),
+            "green": np.random.randint(0, 255, size=1000, dtype=np.uint8),
+            "blue": np.random.randint(0, 255, size=1000, dtype=np.uint8),
+            "nx": np.random.rand(1000).astype(np.float32),
+            "ny": np.random.rand(1000).astype(np.float32),
+            "nz": np.random.rand(1000).astype(np.float32)}))
+
+@pytest.fixture()
 def diamond():
     points = pd.DataFrame(
         data={
