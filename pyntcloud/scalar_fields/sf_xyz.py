@@ -1,5 +1,8 @@
 import numpy as np
-from ..geometry.coord_systems import cartesian_to_spherical
+from ..geometry.coord_systems import (
+    cartesian_to_spherical,
+    cartesian_to_cylindrical
+)
 from ..ransac import single_fit, RANSAC_MODELS, RANSAC_SAMPLERS
 from .base import ScalarField
 
@@ -94,3 +97,21 @@ class SphericalCoordinates(ScalarField_XYZ):
         self.to_be_added["radial"] = radial
         self.to_be_added["polar"] = theta
         self.to_be_added["azimuthal"] = phi
+
+
+class CylindricalCoordinates(ScalarField_XYZ):
+    """
+    Get ro and phi values from x, y, z coordinates.
+    The z value in cylindrical coordinates remain unchanged.
+    """
+
+    def __init__(self, pyntcloud, degrees=True):
+        self.degrees = degrees
+        super().__init__(pyntcloud)
+
+    def compute(self):
+        ro, phi, z = cartesian_to_cylindrical(
+            self.points, degrees=self.degrees)
+
+        self.to_be_added["ro"] = ro
+        self.to_be_added["phi"] = phi

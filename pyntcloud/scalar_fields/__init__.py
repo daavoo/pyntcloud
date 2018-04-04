@@ -35,7 +35,8 @@ from .sf_xyz import (
     PlaneFit,
     SphereFit,
     CustomFit,
-    SphericalCoordinates
+    SphericalCoordinates,
+    CylindricalCoordinates
 )
 ALL_SF = {
     # Eigenvalues
@@ -71,4 +72,5 @@ ALL_SF = {
     'plane_fit': PlaneFit,
     'sphere_fit': SphereFit,
     'spherical_coords': SphericalCoordinates,
+    'cylindrical_coords': CylindricalCoordinates
 }
