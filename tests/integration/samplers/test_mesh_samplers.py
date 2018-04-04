@@ -8,14 +8,14 @@ from pyntcloud import PyntCloud
 @pytest.mark.usefixtures("diamond")
 def test_mesh_random_sampling_return_type(diamond):
     sample = diamond.get_sample(
-        "mesh_random_sampling",
+        "mesh_random",
         n=10,
         rgb=True,
         normals=True)
     assert type(sample) == DataFrame
 
     sample = diamond.get_sample(
-        "mesh_random_sampling",
+        "mesh_random",
         n=10,
         rgb=True,
         normals=True,
@@ -33,7 +33,7 @@ def test_mesh_random_sampling_return_type(diamond):
 @pytest.mark.usefixtures("diamond")
 def test_mesh_random_sampling_n_argument(diamond, n):
     sample = diamond.get_sample(
-        "mesh_random_sampling",
+        "mesh_random",
         n=n,
         rgb=True,
         normals=True)
@@ -49,7 +49,7 @@ def test_mesh_random_sampling_n_argument(diamond, n):
 @pytest.mark.usefixtures("diamond")
 def test_mesh_random_sampling_rgb_normals_optional_arguments(diamond, rgb, normals):
     sample = diamond.get_sample(
-        "mesh_random_sampling",
+        "mesh_random",
         n=10,
         rgb=rgb,
         normals=normals)
@@ -71,7 +71,7 @@ def test_mesh_random_sampling_rgb_normals_optional_arguments(diamond, rgb, norma
 @pytest.mark.usefixtures("diamond")
 def test_mesh_random_sampling_sampled_points_bounds(diamond, n):
     sample = diamond.get_sample(
-        "mesh_random_sampling",
+        "mesh_random",
         n=n,
         rgb=True,
         normals=True)
