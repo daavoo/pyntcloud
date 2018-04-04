@@ -2,13 +2,13 @@ import numpy as np
 from .base import ScalarField
 
 
-class ScalarField_RGB(ScalarField):
+class RGBScalarField(ScalarField):
     def extract_info(self):
         self.rgb = self.pyntcloud.points[[
             "red", "green", "blue"]].values.astype("f")
 
 
-class RGBIntensity(ScalarField_RGB):
+class RGBIntensity(RGBScalarField):
     """ Red, green and blue intensity.
     """
     def compute(self):
@@ -19,7 +19,7 @@ class RGBIntensity(ScalarField_RGB):
         self.to_be_added["Bi"] = rgb_i[:, 2]
 
 
-class RelativeLuminance(ScalarField_RGB):
+class RelativeLuminance(RGBScalarField):
     """ Similar to grayscale. Computed following Wikipedia.
     """
     def compute(self):
@@ -29,8 +29,8 @@ class RelativeLuminance(ScalarField_RGB):
             'ij, j', self.rgb, coefficients)
 
 
-class HueSaturationValue(ScalarField_RGB):
-    """Hue, Saturation, Value colorspace.
+class HueSaturationValue(RGBScalarField):
+    """ Hue, Saturation, Value colorspace.
     """
     def compute(self):
         rgb = self.rgb
