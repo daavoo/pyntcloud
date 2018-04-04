@@ -5,7 +5,7 @@ from collections import OrderedDict
 class ScalarField(ABC):
     """Base class for scalar fields."""
 
-    def __init__(self, pyntcloud):
+    def __init__(self, *, pyntcloud):
         self.pyntcloud = pyntcloud
         self.to_be_added = OrderedDict()
 

@@ -1,4 +1,4 @@
-from .sf_eigenvalues import (
+from .eigenvalues import (
     Anisotropy,
     Curvature,
     Eigenentropy,
@@ -8,30 +8,30 @@ from .sf_eigenvalues import (
     Planarity,
     Sphericity
 )
-from .sf_kneighbors import (
+from .k_neighbors import (
     EigenDecomposition,
     EigenValues,
     Normals,
 )
-from .sf_normals import (
+from .normals import (
     InclinationDegrees,
     InclinationRadians,
     OrientationDegrees,
     OrientationRadians
 )
-from .sf_rgb import (
+from .rgb import (
     HueSaturationValue,
     RelativeLuminance,
     RGBIntensity
 )
-from .sf_voxelgrid import (
+from .voxelgrid import (
     VoxelN,
     VoxelX,
     VoxelY,
     VoxelZ,
     EuclideanClusters
 )
-from .sf_xyz import (
+from .xyz import (
     PlaneFit,
     SphereFit,
     CustomFit,
