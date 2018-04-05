@@ -30,7 +30,7 @@ def test_RelativeLuminance_bounds(pyntcloud_with_rgb_and_normals):
 
 
 @pytest.mark.usefixtures("pyntcloud_with_rgb_and_normals")
-def test_RGBIntensitye_bounds(pyntcloud_with_rgb_and_normals):
+def test_RGBIntensity_bounds(pyntcloud_with_rgb_and_normals):
     scalar_field = RGBIntensity(pyntcloud=pyntcloud_with_rgb_and_normals)
     scalar_field.extract_info()
     scalar_field.compute()
