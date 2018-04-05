@@ -82,10 +82,21 @@ def diamond():
 def plane_pyntcloud():
     return PyntCloud(pd.DataFrame(
         data=np.array([
-            [0. , 0. , 0. ],
-            [1. , 1. , 0. ],
-            [2. , 2. , 0. ],
-            [1. , 2. , 0. ],
-            [0.1, 0.2, 0.3]], dtype=np.float32)),
-        columns=["x", "y", "z"])
+            [0., 0., 0.],
+            [1., 1., 0.],
+            [2., 2., 0.],
+            [1., 2., 0.],
+            [0.1, 0.2, 0.3]], dtype=np.float32),
+        columns=["x", "y", "z"]))
 
+
+@pytest.fixture()
+def sphere_pyntcloud():
+    return PyntCloud(pd.DataFrame(
+        data=np.array([
+            [-1., 0., 0.],
+            [0., 0., 1.],
+            [1., 0., 0.],
+            [0., 1., 0.],
+            [0., 0., 1.2]], dtype=np.float32),
+        columns=["x", "y", "z"]))
