@@ -16,14 +16,12 @@ A Scalar Field must have the same type and meaning for every point, the value is
 
 In the point cloud literature, Scalar Fields are restricted to be numeric (that’s where the Scalar comes from), but here we extend the Scalar Field term to defined any column of the Points DataFrame.
 
-Scalar Fields are accesible trough:
+Scalar Fields are accessible trough:
 
-Scalar Fields are accesible trough:
-
-.. function:: PyntCloud.get_filter
+.. function:: PyntCloud.add_scalar_field
     :noindex:
 
-We group the avaliable scalar fields based on what are the requirements for computing them.
+We group the available scalar fields based on what the requirements for computing them are.
 
 .. currentmodule:: pyntcloud.scalar_fields
 
@@ -79,7 +77,7 @@ Required args:
 
 .. autoclass:: Eigenentropy
 
-"eigensum"
+"eigen_sum"
 ------------
 
 .. autoclass:: EigenSum

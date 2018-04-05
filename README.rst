@@ -64,9 +64,9 @@ Overview
 Concise API
 -----------
 
-You can access most of pyntcloud's functionality from it's core class: PyntCloud.
+You can access most of pyntcloud's functionality from its core class: PyntCloud.
 
-With PyntCloud you can perform complex 3D processing operations with minimum lines of 
+With PyntCloud you can perform complex 3D processing operations with minimum lines of
 code. For example you can:
 
 - Load a point cloud from disk.
@@ -90,11 +90,11 @@ With the following concise code:
     points = cloud.get_sample("voxelgrid_nearest", voxelgrid=voxelgrid_id)
 
     new_cloud = PyntCloud(points)
-    
+
     new_cloud.to_file("out_file.ply")
 
 Lightweigth visualizer
----------------------
+----------------------
 
 Every PyntCloud can be visualized using the `plot` method.
 
@@ -115,10 +115,10 @@ Or, if it exists, visualize the mesh associated with the point cloud:
 .. image:: /docs/images/plot3.gif
 
 
-General pourpuse
+General purpose
 ----------------
 
-Even though point clouds obtained from different sources present some variance in terms of the kind of information it contains,
+Even though point clouds obtained from different sources present some variance in terms of the kind of information they contain,
 we encourage a source-agnostic vision of point clouds.
 
 pyntcloud provides tools for source-agnostic 3D processing operations but it also provides building blocks for easily implementing something
@@ -127,4 +127,4 @@ that covers your specific needs.
 Easy to use and extend
 ----------------------
 
-Because Python. 
+Because Python.

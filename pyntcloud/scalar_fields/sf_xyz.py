@@ -14,7 +14,7 @@ class ScalarField_XYZ(ScalarField):
 
 class PlaneFit(ScalarField_XYZ):
     """
-    Get wich points belong to the best RansacSphere found.
+    Get which points belong to the best RansacPlane found.
     """
 
     def __init__(self, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
@@ -37,7 +37,7 @@ class PlaneFit(ScalarField_XYZ):
 
 class SphereFit(ScalarField_XYZ):
     """
-    Get wich points belong to the best RansacSphere found.
+    Get which points belong to the best RansacSphere found.
     """
 
     def __init__(self, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):

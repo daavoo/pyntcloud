@@ -6,7 +6,7 @@ pyntcloud is a Python library for working with 3D point clouds.
 
 .. image:: /images/pyntcloud_logo.png
 
-This documentation is under cosntruction.
+This documentation is under construction.
 
 .. toctree::
    :maxdepth: 1

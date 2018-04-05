@@ -3,20 +3,20 @@ Introduction
 ============
 
 This page will introduce the general concept of *point clouds* and illustrate
-what are the capabilities of pyntcloud as a point cloud processing tool.
+the capabilities of pyntcloud as a point cloud processing tool.
 
 
 Point clouds
 ============
 Point clouds are one of the most relevant entities for representing three dimensional
-data these days, along with polygonal meshes (wich are just a special case of point clouds with
+data these days, along with polygonal meshes (which are just a special case of point clouds with
 connectivity graph attached).
 
-In it's simplest form, a point cloud is a set of points in a cartesian coordinate
+In its simplest form, a point cloud is a set of points in a cartesian coordinate
 system.
 
-Accurate `3D point clouds <https://en.wikipedia.org/wiki/Point_cloud>`__ can (easily and cheaply)
-be adquired nowdays from different sources. For example:
+Accurate `3D point clouds <https://en.wikipedia.org/wiki/Point_cloud>`__ can nowadays be (easily and cheaply)
+acquired from different sources. For example:
 
 - RGB-D devices: `Google Tango <http://get.google.com/tango/>`__, `Microsoft Kinect <https://developer.microsoft.com/en-us/windows/kinect>`__, etc.
 
@@ -26,12 +26,12 @@ be adquired nowdays from different sources. For example:
 
 pyntcloud
 =========
-pyntcloud enables simple and interactive exploration of point cloud data, regardless of which sensor was used to generate it or what is the use case.
+pyntcloud enables simple and interactive exploration of point cloud data, regardless of which sensor was used to generate it or what the use case is.
 
-Althoug it was built for being used on `Jupyter Notebooks <http://jupyter.org/>`__ the library is suitable for other kind of uses.
+Although it was built for being used on `Jupyter Notebooks <http://jupyter.org/>`__, the library is suitable for other kinds of uses.
 
-pyntcloud is composed by several modules (as indepentent as possible) that englobe
-commom point cloud processing operations:
+pyntcloud is composed of several modules (as independent as possible) that englobe
+common point cloud processing operations:
 
 -   :ref:`filters` / :ref:`filters_dev`
 
@@ -55,8 +55,8 @@ commom point cloud processing operations:
 
 -   utils
 
-Most of the functionallity of this modules can be accesed by the core class of
-the library, **PyntCloud**, and it's corresponding methods:
+Most of the functionality of this modules can be accessed by the core class of
+the library, **PyntCloud**, and its corresponding methods:
 
 .. code-block:: python
 
@@ -73,5 +73,5 @@ the library, **PyntCloud**, and it's corresponding methods:
     f = cloud.get_filter("BBOX", min_x=0.1, max_x=0.8)
     # ...
 
-Although most of the functionallity in the modules can be used without constructing
+Although most of the functionality in the modules can be used without constructing
 a PyntCloud instance, the recommended workflow for the average user is the one showcased above.

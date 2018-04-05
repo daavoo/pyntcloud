@@ -21,13 +21,13 @@ class VoxelGrid(Structure):
         Parameters
         ----------
         points: (N,3) ndarray
-            The point cloud from wich we want to construct the VoxelGrid.
+            The point cloud from which we want to construct the VoxelGrid.
             Where N is the number of points in the point cloud and the second
             dimension represents the x, y and z coordinates of each point.
 
         x_y_z :  list of int, optional
             Default: [2, 2, 2]
-            The number of segments in wich each axis will be divided.
+            The number of segments in which each axis will be divided.
             x_y_z[0]: x axis
             x_y_z[1]: y axis
             x_y_z[2]: z axis
@@ -40,12 +40,12 @@ class VoxelGrid(Structure):
             sizes[1]: voxel size along y axis.
             sizes[2]: voxel size along z axis.
             Note
-            sizes[n] might be None. This axis will not be splitted.
+            sizes[n] might be None. This axis will not be split.
 
         bb_cuboid : bool, optional
             Default: True
             If True, the bounding box of the point cloud will be adjusted
-            in order to have all the dimensions of equal lenght.
+            in order to have all the dimensions of equal length.
 
         """
         super().__init__(PyntCloud)
@@ -62,13 +62,13 @@ class VoxelGrid(Structure):
         xyzmax = points.max(0)
 
         if self.bb_cuboid:
-            #: adjust to obtain a  minimum bounding box with all sides of equal lenght
+            #: adjust to obtain a minimum bounding box with all sides of equal length
             margin = max(xyzmax - xyzmin) - (xyzmax - xyzmin)
             xyzmin = xyzmin - margin / 2
             xyzmax = xyzmax + margin / 2
 
         if self.sizes is not None:
-            #: adjust to obtain side dividible by size
+            #: adjust to obtain side divisible by size
             self.x_y_z = [1, 1, 1]
             for n, size in enumerate(self.sizes):
                 if size is None:
@@ -133,11 +133,11 @@ class VoxelGrid(Structure):
         return voxel_n
 
     def get_feature_vector(self, mode="binary"):
-        """Return a vector of size = self.n_voxels. See mode options bellow.
+        """Return a vector of size = self.n_voxels. See mode options below.
 
         Parameters
         ----------
-        mode: str in avaliable modes. See Notes
+        mode: str in available modes. See Notes
             Default "binary"
 
         Returns
@@ -146,7 +146,7 @@ class VoxelGrid(Structure):
 
         Notes
         -----
-        Avaliable modes are:
+        Available modes are:
 
         binary
             0 for empty voxels, 1 for occupied.

@@ -31,12 +31,12 @@ def single_fit(points, model, sampler=RandomSampler,
 
     model_kwargs: dict, optional
         Default: {}
-        Arguments that will be used on model's instansiation.
+        Arguments that will be used on model's instantiation.
         Variable according to passed model.
 
     sampler_kwargs: dict, optional
         Default: {}
-        Arguments that will be used on sampler's instansiation.
+        Arguments that will be used on sampler's instantiation.
         Variable according to passed sampler.
 
     max_iterations: int, optional
@@ -44,7 +44,7 @@ def single_fit(points, model, sampler=RandomSampler,
         Maximum number of iterations.
 
     return_model: bool, optional (default False)
-        Wheter the best fitted model will be returned or not.
+        Whether the best fitted model will be returned or not.
 
     n_inliers_to_stop: int, optional
         Default None
