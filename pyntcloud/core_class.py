@@ -285,7 +285,7 @@ class PyntCloud(object):
                     Return polar and azimuthal angles in degrees.
         """
         if name in ALL_SF:
-            SF = ALL_SF[name](self, **kwargs)
+            SF = ALL_SF[name](pyntcloud=self, **kwargs)
             SF.extract_info()
             SF.compute()
             sf_added = SF.get_and_set()
