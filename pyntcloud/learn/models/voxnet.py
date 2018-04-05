@@ -28,7 +28,7 @@ class VoxNet(torch.nn.Module):
 
         Notes
         -----
-        Weights avaliable at: url to be added
+        Weights available at: url to be added
 
         If you want to finetune with custom classes, set load_head_weights to False.
         Default head weights are pretrained with ModelNet10.

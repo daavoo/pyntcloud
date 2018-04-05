@@ -9,7 +9,7 @@ def read_npz(filename, points_name="points", mesh_name="mesh"):
     Parameters
     ----------
     filename: str
-        Path tho the filename
+        Path to the filename
     Returns
     -------
     data: dict

@@ -12,7 +12,7 @@ class ScalarField_KNeighbors(ScalarField):
     Parameters
     ----------
     k_neighbors: ndarray
-        (N, k, 3) The k neighbours associated to each of the N points.
+        (N, k, 3) The k neighbors associated to each of the N points.
     """
 
     def __init__(self, pyntcloud, k_neighbors):
@@ -24,7 +24,7 @@ class ScalarField_KNeighbors(ScalarField):
 
 
 class EigenValues(ScalarField_KNeighbors):
-    """Compute the eigen values of each point's neighbourhood.
+    """Compute the eigen values of each point's neighborhood.
     """
     def compute(self):
         cov = cov3D(self.k_neighbors)
@@ -45,7 +45,7 @@ class EigenValues(ScalarField_KNeighbors):
 
 
 class EigenDecomposition(ScalarField_KNeighbors):
-    """Compute the eigen decomposition of each point's neighbourhood.
+    """Compute the eigen decomposition of each point's neighborhood.
     """
     def compute(self):
         cov = cov3D(self.k_neighbors)
@@ -87,8 +87,8 @@ class Normals(ScalarField_KNeighbors):
         max_z = self.pyntcloud.xyz.argmax(0)[-1]
         if normals[max_z, 2] < 0:
             normals[max_z] = -normals[max_z]
-        
-        # Dot product between each point's normal and the normals of it's neighbours
+
+        # Dot product between each point's normal and the normals of its neighbors
         dot3D = 1 - abs(np.einsum("ij, ikj -> ik",
                                   normals,
                                   normals[self.k_neighbors_idx]))

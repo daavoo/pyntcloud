@@ -41,7 +41,7 @@ class RadiusOutlierRemovalFilter(KDTreeFilter):
 
     Notes
     -----
-    > The distances between each point and his 'k' nearest neighbors that
+    > The distances between each point and its 'k' nearest neighbors that
         exceed the given 'r' are marked as False.
 
     > The points having any distance marked as False will be trimmed.
@@ -74,11 +74,11 @@ class StatisticalOutlierRemovalFilter(KDTreeFilter):
     k : int
         Number of neighbors that will be used to compute the filter.
     z_max: float
-        The maximum Z score wich determines if the point is an outlier.
+        The maximum Z score which determines if the point is an outlier.
 
     Notes
     -----
-    > For each point, the mean of the distances between him and his 'k' nearest
+    > For each point, the mean of the distances between it and its 'k' nearest
         neighbors is computed.
 
     > The Z score of those means is computed.

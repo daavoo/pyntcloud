@@ -7,7 +7,7 @@ def read_ascii(filename, **kwargs):
     Parameters
     ----------
     filename: str
-        Path tho the filename
+        Path to the filename
     kwargs: pandas.read_csv supported kwargs
         Check pandas documentation for all possibilities.
     Returns

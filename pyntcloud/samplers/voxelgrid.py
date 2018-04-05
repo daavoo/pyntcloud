@@ -32,7 +32,7 @@ class VoxelgridCentroidsSampler(VoxelgridSampler):
 
 
 class VoxelgridNearestSampler(VoxelgridSampler):
-    """Returns the N closests points to each occupied voxel's center."""
+    """Returns the N closest points to each occupied voxel's center."""
 
     def __init__(self, *, pyntcloud, voxelgrid_id, n=1):
         super().__init__(pyntcloud=pyntcloud, voxelgrid_id=voxelgrid_id)

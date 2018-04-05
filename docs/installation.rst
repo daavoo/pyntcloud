@@ -7,7 +7,7 @@ Installation
 Minimum Requirements
 ====================
 
-At the very least, you need a Python(3) installation (an isolated enviroment, i.e conda, is recommended) and the following requirements:
+At the very least, you need a Python(3) installation (an isolated environment, i.e conda, is recommended) and the following requirements:
 
 - numpy
 - numba

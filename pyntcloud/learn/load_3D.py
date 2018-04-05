@@ -14,10 +14,10 @@ def load_3D(path,
         Path to 3D file.
 
     n_sampling : int
-        Number of points to be sampled in case the readed 3D data contains a mesh.
+        Number of points to be sampled in case the read 3D data contains a mesh.
 
     voxelize : bool, optional (Default True)
-        Indicates wheter the 3D data will be converted into voxelgrid or not.
+        Indicates whether the 3D data will be converted into voxelgrid or not.
 
     voxel_mode : {"binary", "density", "TDF"}, optional (Default "binary")
         The type of feature vector that will be generated from the voxelgrid.
@@ -60,7 +60,7 @@ def load_3D(path,
         elif voxel_mode == "TDF":
             feature_vector = voxelgrid.get_feature_vector(mode="TDF")
         else:
-            raise ValueError("Unvalid mode; avaliable modes are: {}".format(
+            raise ValueError("Invalid mode; available modes are: {}".format(
                 {"binary", "density", "TDF"}))
 
         # add fake channel

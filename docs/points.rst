@@ -6,14 +6,14 @@ Points
 
 A classic point cloud is just a set of points.
 
-In pyntcloud *points* is one of many attributes of the core class PyntCloud, althougt it's probably the most important.
+In pyntcloud *points* is one of many attributes of the core class PyntCloud, although it's probably the most important.
 
 This attribute is internally represented as a
 `pandas DataFrame <http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html>`__.
 
 It is highly recommended to read the pandas DataFrame documentation in order to
-understand what are the posibilitites for manipulating the point
-cloud information that this entitie brings.
+understand the possibilities for manipulating the point
+cloud information that this entity offers.
 
 .. code-block:: python
 
@@ -129,7 +129,7 @@ You can use different plots to visualize the information in points:
 
 .. image:: /images/scatter_matrix.png
 
-You can perform operations over points like getting wich points are above some
+You can perform operations over points like getting which points are above some
 "z" coordinate:
 
 .. code-block:: python
@@ -148,9 +148,9 @@ You can perform operations over points like getting wich points are above some
     Name: x, dtype: bool
 
 
-You can find more information about this kind of operations in Working with scalar
+You can find more information about this kind of operation in Working with scalar
 fields.
 
-As mentioned above, to fully understad the manipulation possibilities that the
+As mentioned above, to fully understand the manipulation possibilities that the
 pandas DataFrame brings, is better to take a look at
-`it's documentation <http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html>`__.
+`its documentation <http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html>`__.

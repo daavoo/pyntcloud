@@ -4,9 +4,9 @@
 Filters - Dev
 =============
 
-This page contains usefull information for developers that want to modify / add content to the filters module.
+This page contains useful information for developers who want to modify / add content to the filters module.
 
-Before anithing, two big advices:
+First of all, two points of advice:
 
 - Use the existing filters as guideline.
 
@@ -25,7 +25,7 @@ Filters are used by the method:
 Take a look at the source code in order to get a general overview of how filters are being used. All filters are classes and all have the same
 methods.
 
-The sections bellow will guide you trough the filters module explaining how you can create your own filters or where you need
+The sections below will guide you trough the filters module explaining how you can create your own filters or where you need
 to look in order to modify existing ones.
 
 Base Class
@@ -33,7 +33,7 @@ Base Class
 
 .. currentmodule:: pyntcloud.filters.base
 
-All filters must inherit from the base class `Filter` and implement it's abstract methods.
+All filters must inherit from the base class `Filter` and implement its abstract methods.
 
 The base class is located at pyntcloud/filters/base.py
 
@@ -41,28 +41,28 @@ The base class is located at pyntcloud/filters/base.py
 
 At the very least, all filters receive a PyntCloud when they are instantiated.
 
-The `Filter.exctract_info` method must be overrided in order to extract and save in a attribute the information required to compute the filter.
+The `Filter.exctract_info` method must be overridden in order to extract and save the information required to compute the filter in a attribute.
 
-See SUBMODULE BASE CLASS bellow for more information.
+See SUBMODULE BASE CLASS below for more information.
 
-`Filter.compute` is where the boolean array is generated and returned. It should use the informaction extracted by the above method in order to decide wich
+`Filter.compute` is where the boolean array is generated and returned. It should use the information extracted by the above method in order to decide which
 points should be filtered.
 
-See SPECIFIC FILTER CLASS bellow.
+See SPECIFIC FILTER CLASS below.
 
 Submodule Base Class
 ====================
 
 .. currentmodule:: pyntcloud.filters.f_kdtree
 
-Filters are grouped in submodules according to wich kind of information they require to be computed.
+Filters are grouped into submodules according to which kind of information they require to be computed.
 
 For example, filters that require a KDTree to be computed are in pyntcloud/filters/f_kdtree.py
 
-As the information required by all the filters in each submodule is the same, we create a submodule base class overriding the __init__ and exctract_info
+As the information required by all the filters in each submodule is the same, we create a submodule base class overriding the __init__ and extract_info
 methods of the Filter base class.
 
-For example, in the f_kdtree submodule there is a Filter_KDTree class from wich all the filters that require a KDTree inherit.
+For example, in the f_kdtree submodule there is a Filter_KDTree class from which all the filters that require a KDTree inherit.
 
 .. autoclass:: Filter_KDTree     
 
@@ -77,9 +77,9 @@ for your filter, inheriting from the submodule base class and overriding the `Fi
 If the computation of your filter requires some parameters from the user, you should override the `__init__` method in order to accept those
 parameters.
 
-For example, the RadiousOutlierRemoval filter requires the user to specify a radius "r" and a number of neighbors "k":
+For example, the RadiusOutlierRemoval filter requires the user to specify a radius "r" and a number of neighbors "k":
 
-.. autoclass:: RadiousOutlierRemoval
+.. autoclass:: RadiusOutlierRemoval
 
 Let PyntCloud know about your filter
 ====================================
