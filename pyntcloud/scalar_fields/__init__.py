@@ -11,7 +11,7 @@ from .eigenvalues import (
 from .k_neighbors import (
     EigenDecomposition,
     EigenValues,
-    Normals,
+    UnorientedNormals,
 )
 from .normals import (
     InclinationDegrees,
@@ -51,7 +51,7 @@ ALL_SF = {
     # Kneighbors
     'eigen_decomposition': EigenDecomposition,
     'eigen_values': EigenValues,
-    'normals': Normals,
+    'normals': UnorientedNormals,
     # Normals
     'inclination_deg': InclinationDegrees,
     'inclination_rad': InclinationRadians,
