@@ -19,6 +19,7 @@ class PlaneFit(XYZScalarField):
     """
     Get inliers of the best RansacPlane found.
     """
+
     def __init__(self, *, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
         self.model = RANSAC_MODELS["plane"]
         self.sampler = RANSAC_SAMPLERS["random"]
@@ -41,6 +42,7 @@ class SphereFit(XYZScalarField):
     """
     Get inliers of the best RansacSphere found.
     """
+
     def __init__(self, *, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
         super().__init__(pyntcloud=pyntcloud)
         self.model = RANSAC_MODELS["sphere"]
@@ -62,6 +64,7 @@ class CustomFit(XYZScalarField):
     """
     Get inliers of the best custom model found.
     """
+
     def __init__(self, pyntcloud, model, sampler, name, model_kwargs={},
                  sampler_kwargs={}, max_iterations=100, n_inliers_to_stop=None):
         super().__init__(pyntcloud=pyntcloud)
@@ -85,17 +88,18 @@ class SphericalCoordinates(XYZScalarField):
     """
     Get radial, azimuthal and polar values.
     """
+
     def __init__(self, *, pyntcloud, degrees=True):
         super().__init__(pyntcloud=pyntcloud)
         self.degrees = degrees
 
     def compute(self):
-        radial, theta, phi = cartesian_to_spherical(
+        radial, polar, azimuthal = cartesian_to_spherical(
             self.points, degrees=self.degrees)
 
         self.to_be_added["radial"] = radial
-        self.to_be_added["polar"] = theta
-        self.to_be_added["azimuthal"] = phi
+        self.to_be_added["polar"] = polar
+        self.to_be_added["azimuthal"] = azimuthal
 
 
 class CylindricalCoordinates(XYZScalarField):
@@ -103,13 +107,14 @@ class CylindricalCoordinates(XYZScalarField):
     Get ro and phi values.
     The z value in cylindrical coordinates remain unchanged.
     """
-    def __init__(self, pyntcloud, degrees=True):
+
+    def __init__(self, *, pyntcloud, degrees=True):
         self.degrees = degrees
-        super().__init__(pyntcloud)
+        super().__init__(pyntcloud=pyntcloud)
 
     def compute(self):
-        ro, phi, z = cartesian_to_cylindrical(
+        radial_cylindrical, angular_cylindrical, z = cartesian_to_cylindrical(
             self.points, degrees=self.degrees)
 
-        self.to_be_added["ro"] = ro
-        self.to_be_added["phi"] = phi
+        self.to_be_added["radial_cylindrical"] = radial_cylindrical
+        self.to_be_added["angular_cylindrical"] = angular_cylindrical
