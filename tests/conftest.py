@@ -48,6 +48,12 @@ def pyntcloud_with_rgb_and_normals():
 
 
 @pytest.fixture()
+@pytest.mark.usefixtures("pyntcloud_with_rgb_and_normals")
+def pyntcloud_with_rgb_and_normals_k_neighbors(pyntcloud_with_rgb_and_normals):
+    return pyntcloud_with_rgb_and_normals.get_neighbors(k=3)
+
+
+@pytest.fixture()
 def diamond():
     points = pd.DataFrame(
         data={
