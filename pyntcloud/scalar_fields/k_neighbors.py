@@ -14,7 +14,8 @@ class KNeighborsScalarField(ScalarField):
 
     def __init__(self, *, pyntcloud, k_neighbors):
         super().__init__(pyntcloud=pyntcloud)
-        self.k_neighbors_idx = k_neighbors
+        # add each point to its neighborhood
+        self.k_neighbors_idx = np.c_[range(len(k_neighbors)), k_neighbors]
 
     def extract_info(self):
         self.k_neighbors = self.pyntcloud.xyz[self.k_neighbors_idx]
@@ -65,9 +66,17 @@ class EigenDecomposition(KNeighborsScalarField):
         ev2 = eigenvectors[idx_trick, :, sort[:, 1]]
         ev3 = eigenvectors[idx_trick, :, sort[:, 0]]
 
-        self.to_be_added["ev1({})".format(k)] = ev1.tolist()
-        self.to_be_added["ev2({})".format(k)] = ev2.tolist()
-        self.to_be_added["ev3({})".format(k)] = ev3.tolist()
+        self.to_be_added["ev1_x({})".format(k)] = ev1[:, 0]
+        self.to_be_added["ev1_y({})".format(k)] = ev1[:, 1]
+        self.to_be_added["ev1_z({})".format(k)] = ev1[:, 2]
+
+        self.to_be_added["ev2_x({})".format(k)] = ev2[:, 0]
+        self.to_be_added["ev2_y({})".format(k)] = ev2[:, 1]
+        self.to_be_added["ev2_z({})".format(k)] = ev2[:, 2]
+
+        self.to_be_added["ev3_x({})".format(k)] = ev3[:, 0]
+        self.to_be_added["ev3_y({})".format(k)] = ev3[:, 1]
+        self.to_be_added["ev3_z({})".format(k)] = ev3[:, 2]
 
 
 class UnorientedNormals(KNeighborsScalarField):
