@@ -46,6 +46,7 @@ def pyntcloud_with_rgb_and_normals():
             "ny": np.random.rand(1000).astype(np.float32),
             "nz": np.random.rand(1000).astype(np.float32)}))
 
+
 @pytest.fixture()
 def diamond():
     points = pd.DataFrame(
@@ -100,3 +101,13 @@ def sphere_pyntcloud():
             [0., 1., 0.],
             [0., 0., 1.2]], dtype=np.float32),
         columns=["x", "y", "z"]))
+
+
+@pytest.fixture()
+def plane_k_neighbors():
+    return np.array([
+        [4, 1],
+        [3, 4],
+        [3, 1],
+        [1, 2],
+        [0, 1]])
