@@ -117,3 +117,19 @@ def plane_k_neighbors():
         [3, 1],
         [1, 2],
         [0, 1]])
+
+
+@pytest.fixture()
+def pyntcloud_and_eigenvalues():
+    cloud = PyntCloud(pd.DataFrame(
+        data={
+            "x": np.array([0, 0, 1, -1, 0, 0], dtype=np.float32),
+            "y": np.array([0, 1, 0, 0, -1, 0], dtype=np.float32),
+            "z": np.array([0, 0, 0, 0, 0, 2], dtype=np.float32)
+        }))
+
+    k_neighbors = cloud.get_neighbors(k=4)
+
+    ev = cloud.add_scalar_field("eigen_values", k_neighbors=k_neighbors)
+
+    return cloud, ev
