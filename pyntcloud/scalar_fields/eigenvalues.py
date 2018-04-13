@@ -15,7 +15,6 @@ class EigenValuesScalarField(ScalarField):
     def __init__(self, *, pyntcloud, ev):
         super().__init__(pyntcloud=pyntcloud)
         self.k = ev[0].split("e1")[1]
-        print(self.k)
         self.ev = ev
 
     def extract_info(self):
