@@ -2,12 +2,12 @@ import numpy as np
 from .base import ScalarField
 
 
-class ScalarField_Normals(ScalarField):
+class NormalsScalarField(ScalarField):
     def extract_info(self):
         self.normals = self.pyntcloud.points[["nx", "ny", "nz"]].values
 
 
-class InclinationDegrees(ScalarField_Normals):
+class InclinationDegrees(NormalsScalarField):
     """ Vertical inclination with respect to Z axis in degrees.
     """
     def compute(self):
@@ -15,7 +15,7 @@ class InclinationDegrees(ScalarField_Normals):
         self.to_be_added["inclination_deg"] = np.rad2deg(inclination)
 
 
-class InclinationRadians(ScalarField_Normals):
+class InclinationRadians(NormalsScalarField):
     """ Vertical inclination with respect to Z axis in radians.
     """
     def compute(self):
@@ -23,7 +23,7 @@ class InclinationRadians(ScalarField_Normals):
         self.to_be_added["inclination_rad"] = inclination
 
 
-class OrientationDegrees(ScalarField_Normals):
+class OrientationDegrees(NormalsScalarField):
     """ Horizontal orientation with respect to the XY plane in degrees.
     """
     def compute(self):
@@ -33,7 +33,7 @@ class OrientationDegrees(ScalarField_Normals):
         self.to_be_added["orientation_deg"] = np.rad2deg(angle)
 
 
-class OrientationRadians(ScalarField_Normals):
+class OrientationRadians(NormalsScalarField):
     """ Horizontal orientation with respect to the XY plane in radians.
     """
     def compute(self):

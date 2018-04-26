@@ -56,32 +56,28 @@ def cartesian_to_spherical(xyz, degrees=True):
 
     Returns
     -------
-    r: (N,) ndarray
+    radius: (N,) ndarray
         Radial distance.
-    theta: (N,) ndarray
-        Azimuthal angle.
-    phi: (N,) ndarray
+    inclination: (N,) ndarray
         Polar angle.
-
-    Notes
-    -----
-    Use notation of mathematical systems, NOT physics.
+    azimuth: (N,) ndarray
+        Azimuthal angle.
     """
     x = xyz[:, 0]
     y = xyz[:, 1]
     z = xyz[:, 2]
 
-    r = np.sqrt((x * x) + (y * y) + (z * z))
+    radius = np.nan_to_num(np.sqrt((x * x) + (y * y) + (z * z)))
 
-    theta = np.arctan2(y, x)
+    inclination = np.nan_to_num(np.arccos(z / radius))
 
-    phi = np.arccos(z / r)
+    azimuth = np.nan_to_num(np.arctan2(y, x))
 
     if degrees:
-        theta = np.rad2deg(theta)
-        phi = np.rad2deg(phi)
+        inclination = np.rad2deg(inclination)
+        azimuth = np.rad2deg(azimuth)
 
-    return r, theta, phi
+    return radius, inclination, azimuth
 
 
 def cylindrical_to_cartesian(ro, phi, z, degrees=True):
@@ -139,9 +135,9 @@ def cartesian_to_cylindrical(xyz, degrees=True):
 
     Returns
     -------
-    ro: (N,) ndarray
+    radial_cylindrical: (N,) ndarray
         Radial distance.
-    phi: (N,) ndarray
+    angular_cylindrical: (N,) ndarray
         Angular position.
     z: (N,) ndarray
         Altitude.
@@ -157,14 +153,14 @@ def cartesian_to_cylindrical(xyz, degrees=True):
     y = xyz[:, 1]
     z = xyz[:, 2]
 
-    ro = np.sqrt((x * x) + (y * y))
+    radial_cylindrical = np.nan_to_num(np.sqrt((x * x) + (y * y)))
 
-    phi = np.arctan2(y, x)
+    angular_cylindrical = np.nan_to_num(np.arctan2(y, x))
 
     if degrees:
-        phi = np.rad2deg(phi)
+        angular_cylindrical = np.rad2deg(angular_cylindrical)
 
-    return ro, phi, z
+    return radial_cylindrical, angular_cylindrical, z
 
 
 def cylindrical_to_spherical(ro, phi, zeta, degrees=True, phi_is_inclination=True):

@@ -214,13 +214,13 @@ class PyntCloud(object):
 
         **REQUIRE NORMALS**
 
-            orientation_deg
+            orientation_degrees
 
-            orientation_rad
+            orientation_radians
 
-            inclination_rad
+            inclination_radians
 
-            inclination_deg
+            inclination_degrees
 
         **REQUIRE RGB**
 
@@ -234,8 +234,8 @@ class PyntCloud(object):
         **REQUIRE VOXELGRID**
 
             ARGS
-                voxelgrid: VoxelGrid.id
-                    voxelgrid = self.add_structure("voxelgrid", ...)
+                voxelgrid_id: VoxelGrid.id
+                    voxelgrid_id = self.add_structure("voxelgrid", ...)
 
             voxel_x
 
@@ -285,7 +285,7 @@ class PyntCloud(object):
                     Return polar and azimuthal angles in degrees.
         """
         if name in ALL_SF:
-            SF = ALL_SF[name](self, **kwargs)
+            SF = ALL_SF[name](pyntcloud=self, **kwargs)
             SF.extract_info()
             SF.compute()
             sf_added = SF.get_and_set()

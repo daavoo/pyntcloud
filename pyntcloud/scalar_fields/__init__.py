@@ -1,4 +1,4 @@
-from .sf_eigenvalues import (
+from .eigenvalues import (
     Anisotropy,
     Curvature,
     Eigenentropy,
@@ -8,30 +8,30 @@ from .sf_eigenvalues import (
     Planarity,
     Sphericity
 )
-from .sf_kneighbors import (
+from .k_neighbors import (
     EigenDecomposition,
     EigenValues,
-    Normals,
+    UnorientedNormals,
 )
-from .sf_normals import (
+from .normals import (
     InclinationDegrees,
     InclinationRadians,
     OrientationDegrees,
     OrientationRadians
 )
-from .sf_rgb import (
+from .rgb import (
     HueSaturationValue,
     RelativeLuminance,
     RGBIntensity
 )
-from .sf_voxelgrid import (
+from .voxelgrid import (
     VoxelN,
     VoxelX,
     VoxelY,
     VoxelZ,
     EuclideanClusters
 )
-from .sf_xyz import (
+from .xyz import (
     PlaneFit,
     SphereFit,
     CustomFit,
@@ -51,12 +51,12 @@ ALL_SF = {
     # Kneighbors
     'eigen_decomposition': EigenDecomposition,
     'eigen_values': EigenValues,
-    'normals': Normals,
+    'normals': UnorientedNormals,
     # Normals
-    'inclination_deg': InclinationDegrees,
-    'inclination_rad': InclinationRadians,
-    'orientation_deg': OrientationDegrees,
-    'orientation_rad': OrientationRadians,
+    'inclination_degrees': InclinationDegrees,
+    'inclination_radians': InclinationRadians,
+    'orientation_degrees': OrientationDegrees,
+    'orientation_radians': OrientationRadians,
     # RGB
     'hsv': HueSaturationValue,
     'relative_luminance': RelativeLuminance,

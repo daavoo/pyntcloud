@@ -1,23 +1,26 @@
 import numpy as np
+
+from .base import ScalarField
 from ..geometry.coord_systems import (
     cartesian_to_spherical,
-    cartesian_to_cylindrical
-)
-from ..ransac import single_fit, RANSAC_MODELS, RANSAC_SAMPLERS
-from .base import ScalarField
+    cartesian_to_cylindrical)
+from ..ransac import (
+    single_fit,
+    RANSAC_MODELS,
+    RANSAC_SAMPLERS)
 
 
-class ScalarField_XYZ(ScalarField):
+class XYZScalarField(ScalarField):
     def extract_info(self):
         self.points = self.pyntcloud.xyz
 
 
-class PlaneFit(ScalarField_XYZ):
+class PlaneFit(XYZScalarField):
     """
-    Get which points belong to the best RansacPlane found.
+    Get inliers of the best RansacPlane found.
     """
 
-    def __init__(self, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
+    def __init__(self, *, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
         self.model = RANSAC_MODELS["plane"]
         self.sampler = RANSAC_SAMPLERS["random"]
         self.name = "is_plane"
@@ -25,7 +28,7 @@ class PlaneFit(ScalarField_XYZ):
         self.max_iterations = max_iterations
         self.n_inliers_to_stop = n_inliers_to_stop
 
-        super().__init__(pyntcloud)
+        super().__init__(pyntcloud=pyntcloud)
 
     def compute(self):
         inliers = single_fit(self.points, self.model, self.sampler,
@@ -35,12 +38,13 @@ class PlaneFit(ScalarField_XYZ):
         self.to_be_added[self.name] = inliers.astype(np.uint8)
 
 
-class SphereFit(ScalarField_XYZ):
+class SphereFit(XYZScalarField):
     """
-    Get which points belong to the best RansacSphere found.
+    Get inliers of the best RansacSphere found.
     """
 
-    def __init__(self, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
+    def __init__(self, *, pyntcloud, max_dist=1e-4, max_iterations=100, n_inliers_to_stop=None):
+        super().__init__(pyntcloud=pyntcloud)
         self.model = RANSAC_MODELS["sphere"]
         self.sampler = RANSAC_SAMPLERS["random"]
         self.name = "is_sphere"
@@ -48,8 +52,6 @@ class SphereFit(ScalarField_XYZ):
         self.max_iterations = max_iterations
         self.n_inliers_to_stop = n_inliers_to_stop
 
-        super().__init__(pyntcloud)
-
     def compute(self):
         inliers = single_fit(self.points, self.model, self.sampler,
                              model_kwargs=self.model_kwargs,
@@ -58,20 +60,21 @@ class SphereFit(ScalarField_XYZ):
         self.to_be_added[self.name] = inliers.astype(np.uint8)
 
 
-class CustomFit(ScalarField_XYZ):
+class CustomFit(XYZScalarField):
     """
-    Fit using custom model and sampler.
+    Get inliers of the best custom model found.
     """
 
     def __init__(self, pyntcloud, model, sampler, name, model_kwargs={},
                  sampler_kwargs={}, max_iterations=100, n_inliers_to_stop=None):
+        super().__init__(pyntcloud=pyntcloud)
         self.model = model
         self.sampler = sampler
         self.name = name
         self.model_kwargs = model_kwargs
         self.sampler_kwargs = sampler_kwargs
         self.max_iterations = max_iterations
-        super().__init__(pyntcloud)
+        self.n_inliers_to_stop = n_inliers_to_stop
 
     def compute(self):
         inliers = single_fit(self.points, self.model, self.sampler,
@@ -81,37 +84,37 @@ class CustomFit(ScalarField_XYZ):
         self.to_be_added[self.name] = inliers.astype(np.uint8)
 
 
-class SphericalCoordinates(ScalarField_XYZ):
+class SphericalCoordinates(XYZScalarField):
     """
-    Get radial, azimuthal and polar values from x, y, z coordinates.
+    Get radial, azimuthal and polar values.
     """
 
-    def __init__(self, pyntcloud, degrees=True):
+    def __init__(self, *, pyntcloud, degrees=True):
+        super().__init__(pyntcloud=pyntcloud)
         self.degrees = degrees
-        super().__init__(pyntcloud)
 
     def compute(self):
-        radial, theta, phi = cartesian_to_spherical(
+        radial, polar, azimuthal = cartesian_to_spherical(
             self.points, degrees=self.degrees)
 
         self.to_be_added["radial"] = radial
-        self.to_be_added["polar"] = theta
-        self.to_be_added["azimuthal"] = phi
+        self.to_be_added["polar"] = polar
+        self.to_be_added["azimuthal"] = azimuthal
 
 
-class CylindricalCoordinates(ScalarField_XYZ):
+class CylindricalCoordinates(XYZScalarField):
     """
-    Get ro and phi values from x, y, z coordinates.
+    Get ro and phi values.
     The z value in cylindrical coordinates remain unchanged.
     """
 
-    def __init__(self, pyntcloud, degrees=True):
+    def __init__(self, *, pyntcloud, degrees=True):
         self.degrees = degrees
-        super().__init__(pyntcloud)
+        super().__init__(pyntcloud=pyntcloud)
 
     def compute(self):
-        ro, phi, z = cartesian_to_cylindrical(
+        radial_cylindrical, angular_cylindrical, z = cartesian_to_cylindrical(
             self.points, degrees=self.degrees)
 
-        self.to_be_added["ro"] = ro
-        self.to_be_added["phi"] = phi
+        self.to_be_added["radial_cylindrical"] = radial_cylindrical
+        self.to_be_added["angular_cylindrical"] = angular_cylindrical

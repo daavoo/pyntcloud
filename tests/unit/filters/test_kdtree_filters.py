@@ -16,9 +16,10 @@ from pyntcloud.filters.kdtree import (
     "K16)",
     "K16"
 ])
-@pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_KDTreeFilter_raises_KeyError_if_id_is_not_valid(pyntcloud_with_kdtree, kdtree_id):
-    filter = KDTreeFilter(pyntcloud=pyntcloud_with_kdtree, kdtree_id=kdtree_id)
+@pytest.mark.usefixtures("pyntcloud_with_kdtree_and_kdtree_id")
+def test_KDTreeFilter_raises_KeyError_if_id_is_not_valid(pyntcloud_with_kdtree_and_kdtree_id, kdtree_id):
+    cloud, true_id = pyntcloud_with_kdtree_and_kdtree_id
+    filter = KDTreeFilter(pyntcloud=cloud, kdtree_id=kdtree_id)
     with pytest.raises(KeyError):
         filter.extract_info()
 
@@ -40,11 +41,12 @@ def test_KDTreeFilter_raises_KeyError_if_id_is_not_valid(pyntcloud_with_kdtree, 
         [True, True, True, False, False, False]
     )
 ])
-@pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_RORFilter_expected_results(pyntcloud_with_kdtree, k, r, expected_result):
+@pytest.mark.usefixtures("pyntcloud_with_kdtree_and_kdtree_id")
+def test_RORFilter_expected_results(pyntcloud_with_kdtree_and_kdtree_id, k, r, expected_result):
+    cloud, kdtree_id = pyntcloud_with_kdtree_and_kdtree_id
     filter = RadiusOutlierRemovalFilter(
-        pyntcloud=pyntcloud_with_kdtree,
-        kdtree_id="K(16)",
+        pyntcloud=cloud,
+        kdtree_id=kdtree_id,
         k=k,
         r=r
     )
@@ -61,11 +63,12 @@ def test_RORFilter_expected_results(pyntcloud_with_kdtree, k, r, expected_result
         [True, True, True, False, True, True]
     )
 ])
-@pytest.mark.usefixtures("pyntcloud_with_kdtree")
-def test_SORFilter_expected_results(pyntcloud_with_kdtree, k, z_max, expected_result):
+@pytest.mark.usefixtures("pyntcloud_with_kdtree_and_kdtree_id")
+def test_SORFilter_expected_results(pyntcloud_with_kdtree_and_kdtree_id, k, z_max, expected_result):
+    cloud, kdtree_id = pyntcloud_with_kdtree_and_kdtree_id
     filter = StatisticalOutlierRemovalFilter(
-        pyntcloud=pyntcloud_with_kdtree,
-        kdtree_id="K(16)",
+        pyntcloud=cloud,
+        kdtree_id=kdtree_id,
         k=k,
         z_max=z_max
     )
