@@ -49,6 +49,27 @@ def pyntcloud_with_rgb_and_normals():
 
 @pytest.fixture()
 @pytest.mark.usefixtures("pyntcloud_with_rgb_and_normals")
+def pyntcloud_with_voxelgrid_and_voxelgrid_id(pyntcloud_with_rgb_and_normals):
+    voxelgrid_id = pyntcloud_with_rgb_and_normals.add_structure("voxelgrid", x_y_z=[4, 4, 4])
+    return pyntcloud_with_rgb_and_normals, voxelgrid_id
+
+
+@pytest.fixture()
+def pyntcloud_with_clusters_and_voxelgrid_id():
+    xyz = np.random.rand(10, 3)
+    xyz[:5, :] += 10
+
+    cloud = PyntCloud(pd.DataFrame(
+        data=xyz,
+        columns=["x", "y", "z"]))
+
+    voxelgrid_id = cloud.add_structure("voxelgrid", sizes=[0.5, 0.5, 0.5])
+
+    return cloud, voxelgrid_id
+
+
+@pytest.fixture()
+@pytest.mark.usefixtures("pyntcloud_with_rgb_and_normals")
 def pyntcloud_with_rgb_and_normals_k_neighbors(pyntcloud_with_rgb_and_normals):
     return pyntcloud_with_rgb_and_normals.get_neighbors(k=3)
 
