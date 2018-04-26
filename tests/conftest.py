@@ -27,9 +27,9 @@ def simple_pyntcloud(xyz):
 
 @pytest.fixture()
 @pytest.mark.usefixtures("simple_pyntcloud")
-def pyntcloud_with_kdtree(simple_pyntcloud):
-    simple_pyntcloud.add_structure("kdtree")
-    return simple_pyntcloud
+def pyntcloud_with_kdtree_and_kdtree_id(simple_pyntcloud):
+    kdtree_id = simple_pyntcloud.add_structure("kdtree")
+    return simple_pyntcloud, kdtree_id
 
 
 @pytest.fixture()
