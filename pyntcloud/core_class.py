@@ -214,13 +214,13 @@ class PyntCloud(object):
 
         **REQUIRE NORMALS**
 
-            orientation_deg
+            orientation_degrees
 
-            orientation_rad
+            orientation_radians
 
-            inclination_rad
+            inclination_radians
 
-            inclination_deg
+            inclination_degrees
 
         **REQUIRE RGB**
 
@@ -234,8 +234,8 @@ class PyntCloud(object):
         **REQUIRE VOXELGRID**
 
             ARGS
-                voxelgrid: VoxelGrid.id
-                    voxelgrid = self.add_structure("voxelgrid", ...)
+                voxelgrid_id: VoxelGrid.id
+                    voxelgrid_id = self.add_structure("voxelgrid", ...)
 
             voxel_x
 
