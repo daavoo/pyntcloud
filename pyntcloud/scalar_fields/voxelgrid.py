@@ -11,6 +11,9 @@ class VoxelgridScalarField(ScalarField):
     def extract_info(self):
         self.voxelgrid = self.pyntcloud.structures[self.voxelgrid_id]
 
+    def compute(self):
+        pass
+
 
 class VoxelX(VoxelgridScalarField):
     """Voxel index along x axis."""
