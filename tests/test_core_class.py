@@ -48,7 +48,7 @@ def test_points():
 def test_repr():
     """PyntCloud.__repr__.
 
-    - When custom attributes are added, __repr__ must show it's name and type
+    - When custom attributes are added, __repr__ must show its name and type
 
     """
     points = np.random.rand(10, 3)

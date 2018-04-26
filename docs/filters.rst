@@ -10,14 +10,14 @@ As the name suggest, filters are used to discard points from the point cloud bas
 
 All filters take a PyntCloud (and extra information in some cases) as input and produce a boolean array as output.
 
-This boolean array separates the points that passed the filter and thus will be retained (True) from those wich did not and thus will be removed (False).
+This boolean array separates the points that passed the filter and will thus be retained (True) from those which did not and will thus be removed (False).
 
-Filters are accesible trough:
+Filters are accessible through:
 
 .. function:: PyntCloud.get_filter
     :noindex:
 
-We group the avaliable filters based on what are the requirements for computing them.
+We group the available filters based on what the requirements for computing them are.
 
 .. currentmodule:: pyntcloud.filters
 
@@ -43,7 +43,7 @@ Required args:
 "ROR"
 -----
 
-.. autoclass:: RadiousOutlierRemoval
+.. autoclass:: RadiusOutlierRemoval
 
 "SOR"
 -----

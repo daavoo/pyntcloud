@@ -19,7 +19,7 @@ def spherical_to_cartesian(r, theta, phi, degrees=True):
     Returns
     -------
     xyz: (N, 3) ndarray
-        Corresponding cartesian coordiantes.
+        Corresponding cartesian coordinates.
 
     Notes
     -----
@@ -50,7 +50,7 @@ def cartesian_to_spherical(xyz, degrees=True):
     Parameters
     ----------
     xyz: (N, 3) ndarray
-        Corresponding cartesian coordiantes.
+        Corresponding cartesian coordinates.
     degrees: bool, optional
         If True, azimuthal and polar will be returned in degrees.
 
@@ -98,7 +98,7 @@ def cylindrical_to_cartesian(ro, phi, z, degrees=True):
     Returns
     -------
     xyz: (N, 3) ndarray
-        Corresponding cartesian coordiantes.
+        Corresponding cartesian coordinates.
 
     Notes
     -----
@@ -129,7 +129,7 @@ def cartesian_to_cylindrical(xyz, degrees=True):
     Parameters
     ----------
     xyz: (N, 3) ndarray
-        Corresponding cartesian coordiantes.
+        Corresponding cartesian coordinates.
     degrees: bool, optional
         If True, azimuthal and polar will be returned in degrees.
 

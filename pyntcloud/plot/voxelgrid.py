@@ -26,8 +26,8 @@ def plot_voxelgrid(voxelgrid,
         raise ImportError("Matplotlib is needed for plotting.")
 
     if IFrame is None:
-        raise ImportError("IFrame is needed for plotting.")  
-      
+        raise ImportError("IFrame is needed for plotting.")
+
     scaled_shape = voxelgrid.shape / min(voxelgrid.shape)
 
     vector = voxelgrid.get_feature_vector(mode=mode)

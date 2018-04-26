@@ -17,7 +17,7 @@ class Octree(object):
             np.zeros((self.points.shape[0], self.max_level), dtype=np.uint8))
         xyzmin = points.min(0)
         xyzmax = points.max(0)
-        #: adjust to obtain a  minimum bounding box with all sides of equal lenght
+        #: adjust to obtain a  minimum bounding box with all sides of equal length
         diff = max(xyzmax - xyzmin) - (xyzmax - xyzmin)
         xyzmin = xyzmin - diff / 2
         xyzmax = xyzmax + diff / 2

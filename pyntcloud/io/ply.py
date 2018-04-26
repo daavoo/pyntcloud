@@ -36,7 +36,7 @@ def read_ply(filename):
     Parameters
     ----------
     filename: str
-        Path tho the filename
+        Path to the filename
     Returns
     -------
     data: dict

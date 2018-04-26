@@ -9,7 +9,7 @@ def triangle_area(triangle):
 
 
 def triangle_area_multi(v1, v2, v3):
-    """ v1, v2, v3 are (N,3) arrays. each one represent the vertices
+    """ v1, v2, v3 are (N,3) arrays. Each one represents the vertices
     such as v1[i], v2[i], v3[i] represent the ith triangle
     """
     return 0.5 * np.linalg.norm(np.cross(v2 - v1,

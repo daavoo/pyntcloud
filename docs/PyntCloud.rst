@@ -3,12 +3,12 @@ PyntCloud
 =========
 .. currentmodule:: pyntcloud
 
-**PyntCloud** is the core class that englobes almost all the functionallity avaliable
+**PyntCloud** is the core class that englobes almost all the functionality available
 in **pyntcloud**.
 
-Whereas, in it's classical form, the point clouds are understood as simple sets of points, a
+Whereas, in its classical form, the point clouds are understood as simple sets of points, a
 PyntCloud is a Python class with several **attributes** and **methods** that enable a more
-fluent way of manipulating this entities.
+fluent way of manipulating this entity.
 
 Attributes
 ==========
@@ -16,7 +16,7 @@ Attributes
 PyntCloud's attributes serve to store information about the point cloud and the
 structures associated with it.
 
-Each PyntCloud's instance some predifined attributes:
+Each PyntCloud's instance some predefined attributes:
 
 -   centroid
 -   mesh
@@ -24,7 +24,7 @@ Each PyntCloud's instance some predifined attributes:
 -   structures
 -   xyz
 
-You may also add other attributes to your own PyntCloud's instance.
+You may also add other attributes to your own PyntCloud instance.
 
 The information about this attributes is reported by the __repr__ method:
 
@@ -51,15 +51,15 @@ The information about this attributes is reported by the __repr__ method:
 Methods
 =======
 
-Avaliable methods are very intuitive.
+Available methods are very intuitive.
 
 Methods starting with the word **add** incorporate new information to some existing PyntCloud attribute.
 
 Methods starting with the word **get** return some information extracted from the PyntCloud.
 
-**I/O** methods read/write information from/to diferent 3D formats.
+**I/O** methods read/write information from/to different 3D formats.
 
-**Other** methods are usefull things that don't fit in any of the above categories.
+**Other** methods are useful things that don't fit in any of the above categories.
 
 *ADD* METHODS
 -------------

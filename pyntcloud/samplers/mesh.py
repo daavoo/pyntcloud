@@ -48,11 +48,11 @@ class RandomMeshSampler(MeshSampler):
 
     rgb: bool, optional
         Default: False
-        Indicates if rgb values will be also sampled.
+        Indicates if RGB values will also be sampled.
 
     normals: bool, optional
         Default: False
-        Indicates if normals will be also sampled.
+        Indicates if normals will also be sampled.
 
     """
 

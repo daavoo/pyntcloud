@@ -10,7 +10,7 @@ Structures are used for adding superpowers to PyntCloud intances.
 
 For example, a `VoxelGrid` can be used for:
 
-- Converting a pont cloud into a valid input for a convolutional neural networks.
+- Converting a point cloud into a valid input for a convolutional neural network.
 
 - Finding nearest neighbors.
 
@@ -31,7 +31,7 @@ Convex Hull
 
 .. autoclass:: ConvexHull
 
-Delanuay3D
+Delaunay3D
 ==========
 
 .. autoclass:: Delaunay3D

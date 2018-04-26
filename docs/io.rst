@@ -6,15 +6,15 @@ I/O
 .. currentmodule:: pyntcloud
 
 As mentioned in the introduction, 3D point clouds could be obtained from many
-different sources, each one with it's own file format.
+different sources, each one with its own file format.
 
-In addition to file formats used by each manufacturer, point cloud may also be
+In addition to file formats used by each manufacturer, point clouds may also be
 stored in generic binary and ascii formats using different programming languages.
 
-pyntcloud provides reading and writing routines from many common 3D file and
+PyntCloud provides reading and writing routines for many common 3D file and
 generic array formats (more formats will be added in the near future):
 
--   .asc / .pts / .txt / .csv / .xyz (see 'Note about ASCII files' bellow)
+-   .asc / .pts / .txt / .csv / .xyz (see 'Note about ASCII files' below)
 -   `.las <https://www.asprs.org/committee-general/laser-las-file-format-exchange-activities.html>`__
 -   `.npy / .npz <https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html>`__
 -   `.obj <https://en.wikipedia.org/wiki/Wavefront_.obj_file>`__
@@ -46,34 +46,33 @@ Writing
 Alternative ways for creating PyntClouds
 ========================================
 
-Even though pyntcloud includes readers for some of the most common 3D file formats,
-there are many other formats and sources where you can store point cloud data.
+Even though PyntCloud includes readers for some of the most common 3D file formats,
+there are many other formats and sources that you can use to store point cloud data.
 
-That's why although pyntcloud will include support for other file formats, it will
+That's why although PyntCloud will include support for other file formats, it will
 never cover all.
 
-The good news are that as long as you can **load the data into Python**, you can create
+The good news is that as long as you can **load the data into Python**, you can create
 a PyntCloud instance manually.
 
-The key thing is to understand that you can't just plug in the raw data into the
-PyntClud's constructor; there are some restrictions.
+The key thing to understand is that you can't just plug in the raw data into the
+PyntCloud constructor; there are some restrictions.
 
-This restrictions are covered in :ref:`points`.
+These restrictions are covered in :ref:`points`.
 
-As long as you can adapt your data to this restrictions, you will be able
+As long as you can adapt your data to these restrictions, you will be able
 to construct a PyntCloud from formats that are not covered in *from_file*.
-
 
 Note about ASCII files
 ======================
 
-There are many formats englobed in this kind of files: .asc, .txt, .pts, ...
+There are many formats englobed in these kinds of files: .asc, .txt, .pts, ...
 
 Normally, the first 3 columns represent the X,Y,Z coordinates of the point and
 the rest of the columns represent some scalar field associated to that point
 (Maybe R,G,B values, or Nx,Ny,Nz, etc). But there is no official format specification.
 
-Given all the posibilities that this brings, `PyntCloud.from_file` accepts keyword
+Given all the possibilities that this brings, `PyntCloud.from_file` accepts keyword
 arguments in order to let the user adjust the loading for every possibility.
 
 Internally, PyntCloud.from_file is just calling the pandas function

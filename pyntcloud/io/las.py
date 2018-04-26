@@ -11,7 +11,7 @@ def read_las(filename):
     Parameters
     ----------
     filename: str
-        Path tho the filename
+        Path to the filename
     Returns
     -------
     data: dict
