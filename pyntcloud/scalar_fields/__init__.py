@@ -53,10 +53,10 @@ ALL_SF = {
     'eigen_values': EigenValues,
     'normals': UnorientedNormals,
     # Normals
-    'inclination_deg': InclinationDegrees,
-    'inclination_rad': InclinationRadians,
-    'orientation_deg': OrientationDegrees,
-    'orientation_rad': OrientationRadians,
+    'inclination_degrees': InclinationDegrees,
+    'inclination_radians': InclinationRadians,
+    'orientation_degrees': OrientationDegrees,
+    'orientation_radians': OrientationRadians,
     # RGB
     'hsv': HueSaturationValue,
     'relative_luminance': RelativeLuminance,
