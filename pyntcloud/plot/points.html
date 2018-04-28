@@ -36,25 +36,25 @@
             font-size: 12px;
             top: 0px;            
             left: 0px;            
-        }        
+        }
     </style>
 </head>
 
 <body>
-    <button id="screenshot"> SCREENSHOT </button>      
+    <button id="screenshot">SCREENSHOT </button>
     <div>
-        <img id="PyntCloudLogo" src="https://github.com/daavoo/pyntcloud/blob/master/pyntcloud/plot/assets/pyntcloud_logo.png?raw=true">      
+        <img id="PyntCloudLogo" src="pyntcloud_plot_assets/pyntcloud_logo.png">
     </div>
 
     <div id="container">
     </div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/90/three.min.js"></script>
+
+    <script src="pyntcloud_plot_assets/three.min.js"></script>
     <script src="pyntcloud_plot_assets/OrbitControls.js"></script>
     <script src="pyntcloud_plot_assets/stats.min.js"></script>
     <script src="pyntcloud_plot_assets/jquery.min.js"></script>
     <script src="pyntcloud_plot_assets/PLYLoader.js"></script>
-    <script src="pyntcloud_plot_assets/dat.gui.min.js"></script>    
+    <script src="pyntcloud_plot_assets/dat.gui.min.js"></script>
 
     <script>
         var container;
@@ -99,13 +99,13 @@
             //
             // GUI
             //
-            var parameters = 
+            var parameters =
             {
                 size: config.point_size,
                 opacity: config.point_opacity,
                 wireframe: true,
             };
-            const gui = new dat.GUI();            
+            const gui = new dat.GUI();
 
             //
             // LOADER
@@ -126,7 +126,7 @@
                     var figureMaterial = gui.add( parameters, 'wireframe' ).name('Wireframe').listen();
                     figureMaterial.onChange((value) => {
                         figure.material.wireframe = value;
-                    });                    
+                    });
                 }
                 else {
                     material = new THREE.PointsMaterial({
@@ -139,22 +139,24 @@
                     var figureSize = gui.add(parameters, 'size').min(0.001).max(1).step(0.001).name("Point Size").listen();
                     figureSize.onChange((value) => {
                         figure.material.size = value;
-                    });                    
+                    });
                 }
                 var figureOpacity = gui.add(parameters, 'opacity').min(0.1).max(1).step(0.1).name('Opacity').listen();
                 figureOpacity.onChange((value) => {
-                    figure.material.opacity = value;   
-                });                
+                    figure.material.opacity = value;
+                });
                 scene.add(figure);
+                //var helper = new THREE.VertexNormalsHelper( figure, 0.5, 0x00ff00, 1 );
+                //scene.add(helper);
             });
             var light = new THREE.AmbientLight( 0xFFFFFF, 1 ); // soft white light
             scene.add( light );
-            //            
+            //
             // RENDERER
             //
             renderer = new THREE.WebGLRenderer({
                 antialias: false,
-				preserveDrawingBuffer: true                
+				preserveDrawingBuffer: true
             });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -162,9 +164,9 @@
 			// SCREENSHOT
 			//
 			$("#screenshot").click(function() {
-			    window.open( renderer.domElement.toDataURL("image/png"), "Final");
+			    window.open(renderer.domElement.toDataURL("image/png"), "Final");
 			    return false;
-			});            
+			});
             //
             // ORBIT CONTROLS
             //
@@ -189,7 +191,7 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
-        
+
         //========================= ANIMATE ==============================================//
 
         function animate(config) {
@@ -224,7 +226,7 @@
             geometry.vertices.push(new THREE.Vector3(...x));
           })
           return new THREE.Line(geometry, material);
-        } 
+        }
 
         function drawLines(scene, lines, colors) {
           if (lines.length !== colors.length) {
@@ -232,8 +234,6 @@
           }
           zip(lines, colors).forEach(lc => scene.add(makeThreeLine(lc[0], lc[1])))
         }
-
     </script>
 </body>
-
 </html>

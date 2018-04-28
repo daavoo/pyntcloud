@@ -79,7 +79,7 @@ def plot_PyntCloud(cloud,
                                     "'{}'".format(output_name))
             out.write(line)
 
-    cloud.to_file("{}.ply".format(output_name), also_save=["mesh"])
+    cloud.to_file("{}.ply".format(output_name), also_save=["mesh"], as_text=True)
 
     try:
         shutil.copytree("{}/assets".format(BASE_PATH),
