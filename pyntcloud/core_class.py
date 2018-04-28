@@ -293,7 +293,6 @@ class PyntCloud(object):
         else:
             raise ValueError("Unsupported scalar field. Check docstring")
 
-        convert_columns_dtype(self.points, np.float64, np.float32)
         return sf_added
 
     def add_structure(self, name, **kwargs):
@@ -620,7 +619,6 @@ class PyntCloud(object):
         """Utility function. Implicitly called when self.points is assigned."""
         self.mesh = None
         self.structures = StructuresDict()
-        convert_columns_dtype(df, np.float64, np.float32)
         self.__points = df
         self.xyz = self.__points[["x", "y", "z"]].values
         self.centroid = self.xyz.mean(0)
