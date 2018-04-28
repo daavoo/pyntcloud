@@ -285,15 +285,15 @@ class PyntCloud(object):
                     Return polar and azimuthal angles in degrees.
         """
         if name in ALL_SF:
-            SF = ALL_SF[name](pyntcloud=self, **kwargs)
-            SF.extract_info()
-            SF.compute()
-            sf_added = SF.get_and_set()
+            scalar_field = ALL_SF[name](pyntcloud=self, **kwargs)
+            scalar_field.extract_info()
+            scalar_field.compute()
+            scalar_fields_added = scalar_field.get_and_set()
 
         else:
             raise ValueError("Unsupported scalar field. Check docstring")
 
-        return sf_added
+        return scalar_fields_added
 
     def add_structure(self, name, **kwargs):
         """Build a structure and add it to the corresponding PyntCloud's attribute.
@@ -347,15 +347,15 @@ class PyntCloud(object):
 
         """
         if name in ALL_STRUCTURES:
-            STRUCTURE = ALL_STRUCTURES[name](self, **kwargs)
-            STRUCTURE.extract_info()
-            STRUCTURE.compute()
-            added = STRUCTURE.get_and_set()
+            structure = ALL_STRUCTURES[name](self, **kwargs)
+            structure.extract_info()
+            structure.compute()
+            structure_added = structure.get_and_set()
 
         else:
             raise ValueError("Unsupported structure. Check docstring")
 
-        return added
+        return structure_added
 
     def get_filter(self, name, and_apply=False, **kwargs):
         """Compute filter over PyntCloud's points and return it.
@@ -412,9 +412,9 @@ class PyntCloud(object):
 
         """
         if name in ALL_FILTERS:
-            F = ALL_FILTERS[name](pyntcloud=self, **kwargs)
-            F.extract_info()
-            boolean_array = F.compute()
+            pointcloud_filter = ALL_FILTERS[name](pyntcloud=self, **kwargs)
+            pointcloud_filter.extract_info()
+            boolean_array = pointcloud_filter.compute()
 
             if and_apply:
                 self.apply_filter(boolean_array)
@@ -483,14 +483,14 @@ class PyntCloud(object):
                     Number of points to be sampled.
         """
         if name in ALL_SAMPLERS:
-            S = ALL_SAMPLERS[name](pyntcloud=self, **kwargs)
-            S.extract_info()
-            sampled_points = S.compute()
+            sampler = ALL_SAMPLERS[name](pyntcloud=self, **kwargs)
+            sampler.extract_info()
+            sample = sampler.compute()
 
             if as_PyntCloud:
-                return PyntCloud(sampled_points)
+                return PyntCloud(sample)
 
-            return sampled_points
+            return sample
 
         else:
             raise ValueError("Unsupported sampling method. Check docstring")
@@ -568,17 +568,17 @@ class PyntCloud(object):
 
         return v1, v2, v3
 
-    def apply_filter(self, filter):
+    def apply_filter(self, boolean_array):
         """Update self.points removing points where filter is False.
 
         Parameters
         ----------
-        filter: boolean array
-            Must be equal lenght than self.points
+        boolean_array: ndarray, dtype bool
+            len(boolean array) must be equal to len(self.points)
         """
-        self.points = self.points.loc[filter].reset_index(drop=True)
+        self.points = self.points.loc[boolean_array].reset_index(drop=True)
 
-    def split_on(self, sf, and_return=False, save_format="ply", save_path=os.getcwd()):
+    def split_on(self, scalar_field, and_return=False, save_format="ply", save_path=os.getcwd()):
         """Divide the PyntCloud using unique values in given sf.
 
         This function will generate PyntClouds by grouping points using the unique
@@ -586,7 +586,7 @@ class PyntCloud(object):
 
         Parameters
         ----------
-        sf: str
+        scalar_field: str
             Name of the scalar field to be used for splitting.
 
         and_return: boolean, optional
@@ -602,9 +602,9 @@ class PyntCloud(object):
             Default: "."
             Path where the PyntClouds will be saved.
         """
-        sf = self.points[sf]
+        scalar_field = self.points[scalar_field]
 
-        splits = {x: PyntCloud(self.points.loc[sf == x]) for x in sf.unique()}
+        splits = {x: PyntCloud(self.points.loc[scalar_field == x]) for x in scalar_field.unique()}
 
         if not os.path.exists(save_path):
             os.makedirs(save_path)
@@ -716,7 +716,7 @@ class PyntCloud(object):
 
         return plot_PyntCloud(
             new_PyntCloud, 
-            IFrame_shape=(800, 500),
+            IFrame_shape=IFrame_shape,
             point_size=point_size, 
             point_opacity=opacity,
             output_name=output_name,
