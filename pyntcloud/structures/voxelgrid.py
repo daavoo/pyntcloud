@@ -2,15 +2,20 @@ import numpy as np
 
 try:
     import matplotlib.pyplot as plt
+    is_matplotlib_avaliable = True
 except ImportError:
-    plt = None
+    is_matplotlib_avaliable = False
 
 from scipy.spatial import cKDTree
 
 from .base import Structure
 from ..plot import plot_voxelgrid
 from ..utils.array import cartesian
-from ..utils.numba import groupby_max, groupby_count, groupby_sum
+try:
+    from ..utils.numba import groupby_max, groupby_count, groupby_sum
+    is_numba_avaliable = True
+except:
+    is_numba_avaliable = False
 
 
 class VoxelGrid(Structure):
@@ -190,14 +195,18 @@ class VoxelGrid(Structure):
             return d.reshape(self.x_y_z)
 
         elif mode.endswith("_max"):
-            N = {"x_max": 0, "y_max": 1, "z_max": 2}
-            return groupby_max(self.points, self.voxel_n, N[mode], vector)
+            if not is_numba_avaliable:
+                raise ImportError("numba is required to compute {}".format(mode))
+            axis = {"x_max": 0, "y_max": 1, "z_max": 2}
+            return groupby_max(self.points, self.voxel_n, axis[mode], vector)
 
         elif mode.endswith("_mean"):
-            N = {"x_mean": 0, "y_mean": 1, "z_mean": 2}
+            if not is_numba_avaliable:
+                raise ImportError("numba is required to compute {}".format(mode))
+            axis = {"x_mean": 0, "y_mean": 1, "z_mean": 2}
             s = np.zeros(self.n_voxels)
             c = np.zeros(self.n_voxels)
-            return (np.nan_to_num(groupby_sum(self.points, self.voxel_n, N[mode], s) /
+            return (np.nan_to_num(groupby_sum(self.points, self.voxel_n, axis[mode], s) /
                                   groupby_count(self.points, self.voxel_n, c)))
 
     def get_voxel_neighbors(self, voxel):
@@ -255,8 +264,8 @@ class VoxelGrid(Structure):
         feature_vector = self.get_feature_vector(mode)
 
         if d == 2:
-            if plt is None:
-                raise ImportError("Matplotlib is needed for plotting.")
+            if not is_matplotlib_avaliable:
+                raise ImportError("matplotlib is required for 2d plotting")
 
             fig, axes = plt.subplots(
                 int(np.ceil(self.x_y_z[2] / 4)), 4, figsize=(8, 8))
