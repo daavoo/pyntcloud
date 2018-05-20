@@ -40,3 +40,11 @@ def test_expected_voxel_n_for_different_number_of_voxels_per_axis(simple_pyntclo
     voxelgrid.compute()
     assert np.all(voxelgrid.voxel_n == expected_voxel_n)
 
+
+def test_sizes_override_number_of_voxels_per_axis(simple_pyntcloud):
+    voxelgrid = VoxelGrid(cloud=simple_pyntcloud, size_x=0.2, size_y=0.2, size_z=0.2)
+    voxelgrid.extract_info()
+    assert np.all(voxelgrid.x_y_z == [5, 5, 5])
+    assert voxelgrid.n_voxels == 125
+    voxelgrid.compute()
+    assert np.all(voxelgrid.voxel_n == [0, 0, 31, 62, 124, 124])
