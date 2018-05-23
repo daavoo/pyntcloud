@@ -20,48 +20,35 @@ except:
 
 class VoxelGrid(Structure):
 
-    def __init__(self, PyntCloud, x_y_z=[2, 2, 2], sizes=None, bb_cuboid=True):
+    def __init__(self, *, cloud, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, bb_cuboid=True):
         """Grid of voxels with support for different build methods.
 
         Parameters
         ----------
-        points: (N,3) ndarray
-            The point cloud from which we want to construct the VoxelGrid.
-            Where N is the number of points in the point cloud and the second
-            dimension represents the x, y and z coordinates of each point.
-
-        x_y_z :  list of int, optional
-            Default: [2, 2, 2]
+        cloud: PyntCloud
+        n_x, n_y, n_z :  int, optional
+            Default: 1
             The number of segments in which each axis will be divided.
-            x_y_z[0]: x axis
-            x_y_z[1]: y axis
-            x_y_z[2]: z axis
-            If sizes is not None it will be ignored.
-
-        sizes : list of float, optional
+            Ignored if corresponding size_x, size_y or size_z is not None.
+        size_x, size_y, size_z : float, optional
             Default: None
             The desired voxel size along each axis.
-            sizes[0]: voxel size along x axis.
-            sizes[1]: voxel size along y axis.
-            sizes[2]: voxel size along z axis.
-            Note
-            sizes[n] might be None. This axis will not be split.
-
+            If not None, the corresponding n_x, n_y or n_z will be ignored.
         bb_cuboid : bool, optional
             Default: True
             If True, the bounding box of the point cloud will be adjusted
             in order to have all the dimensions of equal length.
 
         """
-        super().__init__(PyntCloud)
+        super().__init__(cloud=cloud)
 
-        self.x_y_z = x_y_z
-        self.sizes = sizes
+        self.x_y_z = [n_x, n_y, n_z]
+        self.sizes = [size_x, size_y, size_z]
         self.bb_cuboid = bb_cuboid
 
     def extract_info(self):
         """ABC API."""
-        points = self.points = self.PyntCloud.xyz
+        points = self.points = self.cloud.xyz
 
         xyzmin = points.min(0)
         xyzmax = points.max(0)
@@ -72,23 +59,19 @@ class VoxelGrid(Structure):
             xyzmin = xyzmin - margin / 2
             xyzmax = xyzmax + margin / 2
 
-        if self.sizes is not None:
-            #: adjust to obtain side divisible by size
-            self.x_y_z = [1, 1, 1]
-            for n, size in enumerate(self.sizes):
-                if size is None:
-                    continue
-                margin = (((points.ptp(0)[n] // size) + 1) * size) - points.ptp(0)[n]
-                xyzmin[n] -= margin / 2
-                xyzmax[n] += margin / 2
-                self.x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int)
+        for n, size in enumerate(self.sizes):
+            if size is None:
+                continue
+            margin = (((points.ptp(0)[n] // size) + 1) * size) - points.ptp(0)[n]
+            xyzmin[n] -= margin / 2
+            xyzmax[n] += margin / 2
+            self.x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int)
 
         self.xyzmin = xyzmin
         self.xyzmax = xyzmax
 
         segments = []
         shape = []
-
         for i in range(3):
             # note the +1 in num
             s, step = np.linspace(xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1),
@@ -119,7 +102,6 @@ class VoxelGrid(Structure):
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
         self.voxel_centers = cartesian(midsegments).astype(np.float32)
-        self.set_voxel_n = set(self.voxel_n)
 
     def query(self, points):
         """ABC API. Query structure.
@@ -138,7 +120,7 @@ class VoxelGrid(Structure):
         return voxel_n
 
     def get_feature_vector(self, mode="binary"):
-        """Return a vector of size = self.n_voxels. See mode options below.
+        """Return a vector of size self.n_voxels. See mode options below.
 
         Parameters
         ----------
@@ -147,7 +129,8 @@ class VoxelGrid(Structure):
 
         Returns
         -------
-        vector: array of variable shape. See Notes
+        feature_vector: [n_x, n_y, n_z] ndarray
+            See Notes.
 
         Notes
         -----
@@ -220,8 +203,8 @@ class VoxelGrid(Structure):
         -------
         neighbors: list of int
             Indices of the valid, non-empty 26 neighborhood around voxel.
-
         """
+
         x, y, z = np.unravel_index(voxel, self.x_y_z)
 
         valid_x = []
@@ -251,7 +234,7 @@ class VoxelGrid(Structure):
                                               valid_neighbor_indices[:, 1],
                                               valid_neighbor_indices[:, 2]), self.x_y_z)
 
-        return [x for x in ravel_indices if x in self.set_voxel_n]
+        return [x for x in ravel_indices if x in np.unique(self.voxel_n)]
 
     def plot(self,
              d=2,
