@@ -1,7 +1,9 @@
 import pytest
 
 import numpy as np
+import pandas as pd
 
+from pyntcloud import PyntCloud
 from pyntcloud.structures import VoxelGrid
 
 
@@ -48,3 +50,32 @@ def test_sizes_override_number_of_voxels_per_axis(simple_pyntcloud):
     assert voxelgrid.n_voxels == 125
     voxelgrid.compute()
     assert np.all(voxelgrid.voxel_n == [0, 0, 31, 62, 124, 124])
+
+
+@pytest.mark.parametrize("x,y,z", [
+    ([0, 1.], [0, 0.5], [0, 0.5]),
+    ([0, 0.5], [0, 1.], [0, 0.5]),
+    ([0, 0.5], [0, 0.5], [0, 1.]),
+])
+def test_regular_bounding_box_changes_the_shape_of_the_bounding_box(x, y, z):
+
+    cloud = PyntCloud(pd.DataFrame(
+        data={
+            "x": np.array(x, dtype=np.float32),
+            "y": np.array(y, dtype=np.float32),
+            "z": np.array(z, dtype=np.float32)
+    }))
+
+    voxelgrid = VoxelGrid(cloud=cloud, n_x=2, n_y=2, n_z=2, regular_bounding_box=False)
+    voxelgrid.extract_info()
+    voxelgrid.compute()
+
+    irregular_last_centroid = voxelgrid.voxel_centers[-1]
+
+    voxelgrid = VoxelGrid(cloud=cloud, n_x=2, n_y=2, n_z=2)
+    voxelgrid.extract_info()
+    voxelgrid.compute()
+
+    regular_last_centroid = voxelgrid.voxel_centers[-1]
+
+    assert np.all(irregular_last_centroid <= regular_last_centroid)
