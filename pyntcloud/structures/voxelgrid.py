@@ -20,7 +20,7 @@ except:
 
 class VoxelGrid(Structure):
 
-    def __init__(self, *, cloud, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, bb_cuboid=True):
+    def __init__(self, *, cloud, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, regular_bounding_box=True):
         """Grid of voxels with support for different build methods.
 
         Parameters
@@ -34,7 +34,7 @@ class VoxelGrid(Structure):
             Default: None
             The desired voxel size along each axis.
             If not None, the corresponding n_x, n_y or n_z will be ignored.
-        bb_cuboid : bool, optional
+        regular_bounding_box : bool, optional
             Default: True
             If True, the bounding box of the point cloud will be adjusted
             in order to have all the dimensions of equal length.
@@ -44,7 +44,7 @@ class VoxelGrid(Structure):
 
         self.x_y_z = [n_x, n_y, n_z]
         self.sizes = [size_x, size_y, size_z]
-        self.bb_cuboid = bb_cuboid
+        self.regular_bounding_box = regular_bounding_box
 
     def extract_info(self):
         """ABC API."""
@@ -53,7 +53,7 @@ class VoxelGrid(Structure):
         xyzmin = points.min(0)
         xyzmax = points.max(0)
 
-        if self.bb_cuboid:
+        if self.regular_bounding_box:
             #: adjust to obtain a minimum bounding box with all sides of equal length
             margin = max(xyzmax - xyzmin) - (xyzmax - xyzmin)
             xyzmin = xyzmin - margin / 2
@@ -84,7 +84,7 @@ class VoxelGrid(Structure):
 
         self.n_voxels = self.x_y_z[0] * self.x_y_z[1] * self.x_y_z[2]
 
-        self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.bb_cuboid)
+        self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.regular_bounding_box)
 
     def compute(self):
         """ABC API."""
