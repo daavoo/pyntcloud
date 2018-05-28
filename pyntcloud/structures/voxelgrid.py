@@ -11,10 +11,11 @@ from scipy.spatial import cKDTree
 from .base import Structure
 from ..plot import plot_voxelgrid
 from ..utils.array import cartesian
+
 try:
     from ..utils.numba import groupby_max, groupby_count, groupby_sum
     is_numba_avaliable = True
-except:
+except ImportError:
     is_numba_avaliable = False
 
 
@@ -251,13 +252,13 @@ class VoxelGrid(Structure):
                 raise ImportError("matplotlib is required for 2d plotting")
 
             fig, axes = plt.subplots(
-                int(np.ceil(self.x_y_z[2] / 4)), 4, figsize=(8, 8))
+                int(np.ceil(self.x_y_z[2] / 4)), 4, figsize=(20, 20))
             plt.tight_layout()
             for i, ax in enumerate(axes.flat):
                 if i >= len(feature_vector):
                     break
                 ax.imshow(feature_vector[:, :, i],
-                          cmap=cmap, interpolation="none")
+                          cmap=cmap, interpolation="nearest")
                 ax.set_title("Level " + str(i))
 
         elif d == 3:
