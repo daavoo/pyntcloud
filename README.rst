@@ -11,15 +11,18 @@ Making point clouds fun again
 
 **pyntcloud** is a Python (3, because we are not in 2008) library for working with 3D point clouds.
 
+- Examples_
 - Documentation_
 - Overview_
+
+.. _Examples: https://github.com/daavoo/pyntcloud/tree/master/examples
 
 .. _Documentation:
 
 Documentation 
 =============
-📖 📖
 
+📖 📖
 
 +---------------------------------------+
 | `Home`_                               |
@@ -32,13 +35,13 @@ Documentation
 +---------------------------------------+
 | `Points`_                             |
 +---------------------------------------+
-| `Filters`_ // `Filters - Dev`_        |
+| `Filters`_                            |
 +---------------------------------------+
-| `I/O`_ // `I/O - Dev`_                |
+| `I/O`_                                |
 +---------------------------------------+
-| `Samplers`_ // `Samplers - Dev`_      |
+| `Samplers`_                           |
 +---------------------------------------+
-| `Structures`_ // `Structures - Dev`_  |
+| `Structures`_                         |
 +---------------------------------------+
 
 
@@ -48,13 +51,9 @@ Documentation
 .. _PyntCloud: http://pyntcloud.readthedocs.io/en/latest/PyntCloud.html
 .. _Points: http://pyntcloud.readthedocs.io/en/latest/points.html
 .. _Filters: http://pyntcloud.readthedocs.io/en/latest/filters.html
-.. _Filters - Dev: http://pyntcloud.readthedocs.io/en/latest/filters_dev.html
 .. _I/O: http://pyntcloud.readthedocs.io/en/latest/io.html
-.. _I/O - Dev: http://pyntcloud.readthedocs.io/en/latest/io_dev.html
 .. _Samplers: http://pyntcloud.readthedocs.io/en/latest/samplers.html
-.. _Samplers - Dev: http://pyntcloud.readthedocs.io/en/latest/samplers_dev.html
 .. _Structures: http://pyntcloud.readthedocs.io/en/latest/structures.html
-.. _Structures - Dev: http://pyntcloud.readthedocs.io/en/latest/structures_dev.html
 
 .. _Overview:
 
