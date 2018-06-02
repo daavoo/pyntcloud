@@ -4,11 +4,11 @@ from abc import ABC, abstractmethod
 class Structure(ABC):
     """Base class for structures."""
 
-    def __init__(self, PyntCloud):
-        self.PyntCloud = PyntCloud
+    def __init__(self, *, cloud):
+        self.cloud = cloud
 
     def get_and_set(self):
-        self.PyntCloud.structures[self.id] = self
+        self.cloud.structures[self.id] = self
         return self.id
 
     @abstractmethod

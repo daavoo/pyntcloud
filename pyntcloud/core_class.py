@@ -347,7 +347,7 @@ class PyntCloud(object):
 
         """
         if name in ALL_STRUCTURES:
-            structure = ALL_STRUCTURES[name](self, **kwargs)
+            structure = ALL_STRUCTURES[name](cloud=self, **kwargs)
             structure.extract_info()
             structure.compute()
             structure_added = structure.get_and_set()
