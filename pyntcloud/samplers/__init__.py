@@ -8,7 +8,8 @@ from .mesh import RandomMeshSampler
 from .voxelgrid import (
     VoxelgridCentersSampler,
     VoxelgridCentroidsSampler,
-    VoxelgridNearestSampler
+    VoxelgridNearestSampler,
+    VoxelgridHighestSampler
 )
 
 ALL_SAMPLERS = {
@@ -19,5 +20,6 @@ ALL_SAMPLERS = {
     # Voxelgrid
     'voxelgrid_centers': VoxelgridCentersSampler,
     'voxelgrid_centroids': VoxelgridCentroidsSampler,
-    'voxelgrid_nearest': VoxelgridNearestSampler
+    'voxelgrid_nearest': VoxelgridNearestSampler,
+    'voxelgrid_highest': VoxelgridHighestSampler
 }
