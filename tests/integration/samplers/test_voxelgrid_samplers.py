@@ -111,5 +111,32 @@ def test_voxelgrid_nearest_expected_values(simple_pyntcloud, n_x, n_y, n_z, n_po
         voxelgrid_id=voxelgrid_id,
         n=n_points)
     assert len(sample) == expected_n
-    assert point_in_array_2D(expected_point, sample.values)
+    assert point_in_array_2D(expected_point, sample.loc[:, ["x", "y", "z"]].values)
 
+
+@pytest.mark.parametrize("size_x,expected_n,expected_in,expected_not_in", [
+    (
+        0.1,
+        6,
+        [0., 0., 0.],
+        [1.2, 1.2, 1.2]
+    ),
+    (
+        0.2,
+        4,
+        [0.1, 0.1, 0.1],
+        [0.9, 0.9, 0.9]
+    )
+])
+@pytest.mark.usefixtures("simple_pyntcloud")
+def test_voxelgrid_highest_expected_values(simple_pyntcloud, size_x, expected_n, expected_in, expected_not_in):
+    voxelgrid_id = simple_pyntcloud.add_structure(
+        "voxelgrid",
+        size_x=size_x)
+    sample =  simple_pyntcloud.get_sample(
+        "voxelgrid_highest",
+        voxelgrid_id=voxelgrid_id)
+
+    assert len(sample) == expected_n
+    assert point_in_array_2D(expected_in, sample.loc[:, ["x", "y", "z"]].values)
+    assert not point_in_array_2D(expected_not_in, sample.loc[:, ["x", "y", "z"]].values)
