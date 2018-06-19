@@ -12,6 +12,6 @@ dependencies:
   - ipython>=6.2.1
   - h5py
   - numba
-  - laspy
   - pip:
+    - laspy
     - appmode
