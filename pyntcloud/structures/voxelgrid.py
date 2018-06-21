@@ -191,7 +191,7 @@ class VoxelGrid(Structure):
             s = np.zeros(self.n_voxels)
             c = np.zeros(self.n_voxels)
             return (np.nan_to_num(groupby_sum(self.points, self.voxel_n, axis[mode], s) /
-                                  groupby_count(self.points, self.voxel_n, c)))
+                                  groupby_count(self.points, self.voxel_n, c))).reshape(self.x_y_z)
 
     def get_voxel_neighbors(self, voxel):
         """Get valid, non-empty 26 neighbors of voxel.
