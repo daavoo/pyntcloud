@@ -3,11 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    plt = None
-
 from .structures.base import StructuresDict
 from .filters import ALL_FILTERS
 from .io import FROM, TO
@@ -686,18 +681,15 @@ class PyntCloud(object):
         html. You might need to run a local server or adjust the browser privacy
         policies in order to allow javascript to load local files.
         """
-        if plt is None:
-            raise ImportError("Matplotlib is needed for plotting.")
-
         try:
             colors = self.points[use_as_color].values
-        except:
+        except KeyError:
             colors = None
 
         if use_as_color != ["red", "green", "blue"] and colors is not None:
+            import matplotlib.pyplot as plt
             s_m = plt.cm.ScalarMappable(cmap=cmap)
             colors = s_m.to_rgba(colors)[:, :-1] * 255
-
         elif colors is None:
             # default color orange
             colors = np.repeat([[255, 125, 0]], self.xyz.shape[0], axis=0)
