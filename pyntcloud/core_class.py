@@ -469,6 +469,10 @@ class PyntCloud(object):
             voxelgrid_centroids
 
             voxelgrid_nearest
+                n: int
+                    Number of nearest point per voxel to sample
+
+            voxelgrid_highest
 
 
         **USE POINTS**
@@ -619,26 +623,35 @@ class PyntCloud(object):
         self.centroid = self.xyz.mean(0)
 
     def plot(self,
-        mesh=False,
-        point_size=0.3,
-        opacity=0.9,
-        use_as_color=["red", "green", "blue"],
-        cmap="hsv",
-        output_name="pyntcloud_plot",
-        IFrame_shape=(800, 500),
-        polylines={}
-        ):
-        """Visualize PyntCloud in a Jupyter notebook using three.js.
+             backend="pythreejs",
+             width=800,
+             height=500,
+             background="black",
+             mesh=False,
+             use_as_color=["red", "green", "blue"],
+             cmap="hsv",
+             return_scene=False,
+             output_name="pyntcloud_plot",
+             polylines={}
+             ):
+        """Visualize a PyntCloud  using different backends.
 
         Parameters
         ----------
-        point_size: float, optional
-            Default: 0.3
-            Size of the plotted points.
+        backend: {"pythreejs", "threejs"}, optional
+            Default: "pythreejs"
+            Used to select one of the available libraries for plotting.
 
-        opacity: float, optional
-            Default: 0.9
-            Opacity of the plotted points.
+        width: int, optional
+            Default: 800
+
+        height: int, optional
+            Default: 500
+
+        background: str, optional
+            Default: "black"
+            Used to select the default color of the background.
+            In some backends, i.e "pythreejs" the background can be dynamically changed.
 
         use_as_color: str or ["red", "green", "blue"], optional
             Default: ["red", "green", "blue"]
@@ -650,16 +663,9 @@ class PyntCloud(object):
             Color map that will be used to convert a single scalar field into rgb.
             Check matplotlib cmaps.
 
-        output_name: str, optional
-            Default: "pyntcloud_plot"
-            Base filename that will be used to create:
-                output_name.html
-                output_name.ply
-                output_name.json
-
-        IFrame_shape: tuple of ints, optional
-            Default (800, 500)
-            (Width, Height) of the IFrame rendered in the notebook.
+        return_scene: bool, optional
+            Default: False.
+            Used with "pythreejs" backend in order to return the pythreejs.Scene object
 
         polylines: dict, optional
             Default {}.
@@ -672,14 +678,7 @@ class PyntCloud(object):
 
         Returns
         -------
-        Ipython.display.IFrame
-            output_name.html inside an IFrame
-
-        Notes
-        -----
-        You can visualize the output_name.html outside the notebook as a regular
-        html. You might need to run a local server or adjust the browser privacy
-        policies in order to allow javascript to load local files.
+        pythreejs.Scene if return_scene else None
         """
         try:
             colors = self.points[use_as_color].values
@@ -696,21 +695,82 @@ class PyntCloud(object):
 
         colors = colors.astype(np.uint8)
 
-        points = pd.DataFrame(self.xyz, columns=["x", "y", "z"])
+        ptp = self.xyz.ptp()
 
-        for n, i in enumerate(["red", "green", "blue"]):
-            points[i] = colors[:, n]
+        if backend == "pythreejs":
+            import ipywidgets
+            import pythreejs
+            from IPython.display import display
 
-        new_PyntCloud = PyntCloud(points)
+            if mesh:
+                raise NotImplementedError("Plotting mesh geometry with pythreejs backend is not supported yet.")
 
-        if mesh and self.mesh is not None:
-            new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
+            if polylines:
+                raise NotImplementedError("Plotting polylines with pythreejs backend is not supported yet.")
 
-        return plot_PyntCloud(
-            new_PyntCloud, 
-            IFrame_shape=IFrame_shape,
-            point_size=point_size, 
-            point_opacity=opacity,
-            output_name=output_name,
-            polylines=polylines
+            points_geometry = pythreejs.BufferGeometry(
+                attributes=dict(
+                    position=pythreejs.BufferAttribute(self.xyz, normalized=False),
+                    color=pythreejs.BufferAttribute(list(map(tuple, colors)))))
+
+            points_material = pythreejs.PointsMaterial(
+                vertexColors='VertexColors')
+
+            points = pythreejs.Points(
+                geometry=points_geometry,
+                material=points_material,
+                position=tuple(self.centroid))
+
+            camera = pythreejs.PerspectiveCamera(
+                fov=90,
+                aspect=width / height,
+                position=tuple(self.centroid + [0, abs(self.xyz.max(0)[1]), abs(self.xyz.max(0)[2]) * 2]),
+                up=[0, 0, 1])
+
+            orbit_control = pythreejs.OrbitControls(controlling=camera)
+            orbit_control.target = tuple(self.centroid)
+
+            camera.lookAt(tuple(self.centroid))
+
+            scene = pythreejs.Scene(children=[points, camera], background=background)
+
+            renderer = pythreejs.Renderer(
+                scene=scene,
+                camera=camera,
+                controls=[orbit_control],
+                width=width,
+                height=height)
+
+            display(renderer)
+
+            size = ipywidgets.FloatSlider(min=0., max=(ptp / 100), step=(ptp / 1000))
+            ipywidgets.jslink((size, 'value'), (points_material, 'size'))
+
+            color = ipywidgets.ColorPicker()
+            ipywidgets.jslink((color, 'value'), (scene, 'background'))
+
+            display(ipywidgets.HBox(children=[
+                ipywidgets.Label('Background color:'), color, ipywidgets.Label('Point size:'), size]))
+            return scene if return_scene else None
+
+        elif backend == "threejs":
+            points = pd.DataFrame(self.xyz, columns=["x", "y", "z"])
+
+            for n, i in enumerate(["red", "green", "blue"]):
+                points[i] = colors[:, n]
+
+            new_PyntCloud = PyntCloud(points)
+
+            if mesh and self.mesh is not None:
+                new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
+
+            return plot_PyntCloud(
+                new_PyntCloud,
+                IFrame_shape=(width, height),
+                point_size=ptp / 100,
+                point_opacity=0.9,
+                output_name=output_name,
+                polylines=polylines
             )
+        else:
+            raise NotImplementedError("{} backend is not supported".format(backend))
