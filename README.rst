@@ -6,6 +6,10 @@ Making point clouds fun again
 .. image:: https://travis-ci.org/daavoo/pyntcloud.svg?branch=master
     :target: https://travis-ci.org/daavoo/pyntcloud
     :alt: Travis Build Status
+    
+.. image:: https://mybinder.org/badge.svg
+    :target: https://mybinder.org/v2/gh/daavoo/pyntcloud/master
+    :alt: Start in Binder
 
 .. image:: /docs/images/pyntcloud_logo.png
 
