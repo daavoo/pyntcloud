@@ -139,59 +139,54 @@ class VoxelGrid(Structure):
 
         binary
             0 for empty voxels, 1 for occupied.
-            return shape: (self.x_y_z)
 
         density
             number of points inside voxel / total number of points.
-            return shape: (self.x_y_z)
 
         TDF
             Truncated Distance Function. Value between 0 and 1 indicating the distance
             between the voxel's center and the closest point. 1 on the surface,
             0 on voxels further than 2 * voxel side.
-            return shape: (self.x_y_z)
 
         x_max, y_max, z_max
             Maximum coordinate value of points inside each voxel.
-            return shape: (self.n_voxels)
 
         x_mean, y_mean, z_mean
             Mean coordinate value of points inside each voxel.
-            return shape: (self.n_voxels)
-
         """
         vector = np.zeros(self.n_voxels)
 
         if mode == "binary":
             vector[np.unique(self.voxel_n)] = 1
-            return vector.reshape(self.x_y_z)
 
         elif mode == "density":
             count = np.bincount(self.voxel_n)
             vector[:len(count)] = count
             vector /= len(self.voxel_n)
-            return vector.reshape(self.x_y_z)
 
         elif mode == "TDF":
             # truncation = np.linalg.norm(self.shape)
             kdt = cKDTree(self.points)
-            d, i = kdt.query(self.voxel_centers, n_jobs=-1)
-            return d.reshape(self.x_y_z)
+            vector, i = kdt.query(self.voxel_centers, n_jobs=-1)
 
         elif mode.endswith("_max"):
             if not is_numba_avaliable:
                 raise ImportError("numba is required to compute {}".format(mode))
             axis = {"x_max": 0, "y_max": 1, "z_max": 2}
-            return groupby_max(self.points, self.voxel_n, axis[mode], vector)
+            vector = groupby_max(self.points, self.voxel_n, axis[mode], vector)
 
         elif mode.endswith("_mean"):
             if not is_numba_avaliable:
                 raise ImportError("numba is required to compute {}".format(mode))
             axis = {"x_mean": 0, "y_mean": 1, "z_mean": 2}
-            s = np.zeros(self.n_voxels)
-            c = np.zeros(self.n_voxels)
-            return (np.nan_to_num(groupby_sum(self.points, self.voxel_n, axis[mode], s) /
-                                  groupby_count(self.points, self.voxel_n, c))).reshape(self.x_y_z)
+            voxel_sum = groupby_sum(self.points, self.voxel_n, axis[mode], np.zeros(self.n_voxels))
+            voxel_count = groupby_count(self.points, self.voxel_n, np.zeros(self.n_voxels))
+            vector = np.nan_to_num(voxel_sum / voxel_count)
+
+        else:
+            raise NotImplementedError("{} is not a supported feature vector mode".format(mode))
+
+        return vector.reshape(self.x_y_z)
 
     def get_voxel_neighbors(self, voxel):
         """Get valid, non-empty 26 neighbors of voxel.
