@@ -28,7 +28,7 @@ class RansacSampler(ABC):
         pass
 
 
-class RandomSampler(RansacSampler):
+class RandomRansacSampler(RansacSampler):
     """ Sample random points.
 
     Inherits from RansacSampler.
@@ -45,7 +45,7 @@ class RandomSampler(RansacSampler):
         return self.points[sample]
 
 
-class VoxelgridSampler(RansacSampler):
+class VoxelgridRansacSampler(RansacSampler):
     """ Sample random points inside the same random voxel.
 
     Inherits from RansacSampler.

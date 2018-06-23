@@ -5,10 +5,10 @@ Ransac Implementation
 """
 
 import numpy as np
-from .samplers import RandomSampler
+from .samplers import RandomRansacSampler
 
 
-def single_fit(points, model, sampler=RandomSampler,
+def single_fit(points, model, sampler=RandomRansacSampler,
                model_kwargs={},
                sampler_kwargs={},
                max_iterations=100,
@@ -64,6 +64,7 @@ def single_fit(points, model, sampler=RandomSampler,
         k_points = sampler.get_sample()
 
         if not model.are_valid(k_points):
+            print(k_points)
             continue
 
         model.fit(k_points)
