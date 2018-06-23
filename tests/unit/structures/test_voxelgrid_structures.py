@@ -79,3 +79,24 @@ def test_regular_bounding_box_changes_the_shape_of_the_bounding_box(x, y, z):
     regular_last_centroid = voxelgrid.voxel_centers[-1]
 
     assert np.all(irregular_last_centroid <= regular_last_centroid)
+
+
+@pytest.mark.parametrize("mode", [
+    "binary",
+    "density",
+    "TDF",
+    "x_mean",
+    "y_mean",
+    "z_mean",
+    "x_max",
+    "y_max",
+    "z_max"
+])
+def test_output_shape_of_all_feature_vector_modes(mode, simple_pyntcloud):
+    voxelgrid = VoxelGrid(cloud=simple_pyntcloud, n_x=2, n_y=2, n_z=2, regular_bounding_box=False)
+    voxelgrid.extract_info()
+    voxelgrid.compute()
+
+    feature_vector = voxelgrid.get_feature_vector(mode=mode)
+
+    assert feature_vector.shape == (2, 2, 2)
