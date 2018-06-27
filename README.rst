@@ -15,51 +15,11 @@ Making point clouds fun again
 
 **pyntcloud** is a Python (3, because we are not in 2008) library for working with 3D point clouds.
 
-- Examples_
+- Examples_ (You can try the examples without installation launching `Binder <https://mybinder.org/v2/gh/daavoo/pyntcloud/master>`_.)
 - Documentation_
-- Overview_
 
 .. _Examples: https://github.com/daavoo/pyntcloud/tree/master/examples
-
-.. _Documentation:
-
-Documentation 
-=============
-
-📖 📖
-
-+---------------------------------------+
-| `Home`_                               |
-+---------------------------------------+
-| `Introduction`_                       |
-+---------------------------------------+
-| `Installation`_                       |
-+---------------------------------------+
-| `PyntCloud`_                          |
-+---------------------------------------+
-| `Points`_                             |
-+---------------------------------------+
-| `Filters`_                            |
-+---------------------------------------+
-| `I/O`_                                |
-+---------------------------------------+
-| `Samplers`_                           |
-+---------------------------------------+
-| `Structures`_                         |
-+---------------------------------------+
-
-
-.. _Home: http://pyntcloud.readthedocs.io/en/latest/
-.. _Introduction: http://pyntcloud.readthedocs.io/en/latest/introduction.html
-.. _Installation: http://pyntcloud.readthedocs.io/en/latest/installation.html
-.. _PyntCloud: http://pyntcloud.readthedocs.io/en/latest/PyntCloud.html
-.. _Points: http://pyntcloud.readthedocs.io/en/latest/points.html
-.. _Filters: http://pyntcloud.readthedocs.io/en/latest/filters.html
-.. _I/O: http://pyntcloud.readthedocs.io/en/latest/io.html
-.. _Samplers: http://pyntcloud.readthedocs.io/en/latest/samplers.html
-.. _Structures: http://pyntcloud.readthedocs.io/en/latest/structures.html
-
-.. _Overview:
+.. _Documentation: http://pyntcloud.readthedocs.io/en/latest/
 
 Overview
 ========
@@ -72,11 +32,11 @@ You can access most of pyntcloud's functionality from its core class: PyntCloud.
 With PyntCloud you can perform complex 3D processing operations with minimum lines of
 code. For example you can:
 
-- Load a point cloud from disk.
+- Load a PLY point cloud from disk.
 - Add 3 new scalar fields by converting RGB to HSV.
 - Build a grid of voxels from the point cloud.
 - Build a new point cloud keeping only the nearest point to each occupied voxel center.
-- Save the new point cloud.
+- Save the new point cloud in numpy's NPZ format.
 
 With the following concise code:
 
@@ -88,22 +48,19 @@ With the following concise code:
 
     cloud.add_scalar_field("hsv")
 
-    voxelgrid_id = cloud.add_structure("voxelgrid", x_y_z=[32, 32, 32])
+    voxelgrid_id = cloud.add_structure("voxelgrid", n_x=32, n_y=32, n_z=32)
 
     points = cloud.get_sample("voxelgrid_nearest", voxelgrid=voxelgrid_id)
 
     new_cloud = PyntCloud(points)
 
-    new_cloud.to_file("out_file.ply")
+    new_cloud.to_file("out_file.npz")
 
 Lightweigth visualizer
 ----------------------
-
 Every PyntCloud can be visualized using the `plot` method.
 
-This will create a stand-alone html visualizer. The cool thing about this is that
-you can open it in any browser and if you call it from inside a Jupyter Notebook, the
-visualizer will be embedded as an IFrame:
+The cool thing about this is that you can easily visualize point clouds inside Jupyter Notebooks and Jupyter Lab (see documentation).
 
 .. image:: /docs/images/plot1.gif
 
