@@ -26,7 +26,7 @@ class VoxelGrid(Structure):
 
         Parameters
         ----------
-        cloud: (N, 3) numpy.array
+        points: (N, 3) numpy.array
         n_x, n_y, n_z :  int, optional
             Default: 1
             The number of segments in which each axis will be divided.
@@ -39,7 +39,6 @@ class VoxelGrid(Structure):
             Default: True
             If True, the bounding box of the point cloud will be adjusted
             in order to have all the dimensions of equal length.
-
         """
         super().__init__(points=points)
         self.x_y_z = [n_x, n_y, n_z]
