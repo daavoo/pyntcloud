@@ -7,20 +7,16 @@ from .base import Structure
 
 class ConvexHull(scipy_ConvexHull, Structure):
 
-    def __init__(self, PyntCloud,
+    def __init__(self, points,
                  incremental=False,
                  qhull_options=None):
-        Structure.__init__(self, PyntCloud)
+        Structure.__init__(self, points)
         self._incremental = incremental
         self._qhull_options = qhull_options
 
-    def extract_info(self):
-        """ABC API"""
-        self._points = self.PyntCloud.xyz
-        self.id = "CH({})".format(self._qhull_options)
-
     def compute(self):
         """ABC API"""
+        self.id = "CH({})".format(self._qhull_options)
         scipy_ConvexHull.__init__(self,
                                   self._points,
                                   self._incremental,

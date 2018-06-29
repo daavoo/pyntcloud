@@ -8,10 +8,9 @@ from pyntcloud.structures import VoxelGrid
 
 
 def test_default_number_of_voxels_per_axis(simple_pyntcloud):
-    voxelgrid = VoxelGrid(cloud=simple_pyntcloud)
-    voxelgrid.extract_info()
-    assert voxelgrid.n_voxels == 1
+    voxelgrid = VoxelGrid(points=simple_pyntcloud.xyz)
     voxelgrid.compute()
+    assert voxelgrid.n_voxels == 1
     assert np.all(voxelgrid.voxel_x == 0)
     assert np.all(voxelgrid.voxel_y == 0)
     assert np.all(voxelgrid.voxel_z == 0)
@@ -37,18 +36,16 @@ def test_default_number_of_voxels_per_axis(simple_pyntcloud):
     (5, 5, 2, [0, 0, 12, 24, 49, 49])
 ])
 def test_expected_voxel_n_for_different_number_of_voxels_per_axis(simple_pyntcloud, n_x, n_y, n_z, expected_voxel_n):
-    voxelgrid = VoxelGrid(cloud=simple_pyntcloud, n_x=n_x, n_y=n_y, n_z=n_z)
-    voxelgrid.extract_info()
+    voxelgrid = VoxelGrid(points=simple_pyntcloud.xyz, n_x=n_x, n_y=n_y, n_z=n_z)
     voxelgrid.compute()
     assert np.all(voxelgrid.voxel_n == expected_voxel_n)
 
 
 def test_sizes_override_number_of_voxels_per_axis(simple_pyntcloud):
-    voxelgrid = VoxelGrid(cloud=simple_pyntcloud, size_x=0.2, size_y=0.2, size_z=0.2)
-    voxelgrid.extract_info()
+    voxelgrid = VoxelGrid(points=simple_pyntcloud.xyz, size_x=0.2, size_y=0.2, size_z=0.2)
+    voxelgrid.compute()
     assert np.all(voxelgrid.x_y_z == [5, 5, 5])
     assert voxelgrid.n_voxels == 125
-    voxelgrid.compute()
     assert np.all(voxelgrid.voxel_n == [0, 0, 31, 62, 124, 124])
 
 
@@ -66,14 +63,12 @@ def test_regular_bounding_box_changes_the_shape_of_the_bounding_box(x, y, z):
             "z": np.array(z, dtype=np.float32)
     }))
 
-    voxelgrid = VoxelGrid(cloud=cloud, n_x=2, n_y=2, n_z=2, regular_bounding_box=False)
-    voxelgrid.extract_info()
+    voxelgrid = VoxelGrid(points=cloud.xyz, n_x=2, n_y=2, n_z=2, regular_bounding_box=False)
     voxelgrid.compute()
 
     irregular_last_centroid = voxelgrid.voxel_centers[-1]
 
-    voxelgrid = VoxelGrid(cloud=cloud, n_x=2, n_y=2, n_z=2)
-    voxelgrid.extract_info()
+    voxelgrid = VoxelGrid(points=cloud.xyz, n_x=2, n_y=2, n_z=2)
     voxelgrid.compute()
 
     regular_last_centroid = voxelgrid.voxel_centers[-1]
@@ -93,8 +88,7 @@ def test_regular_bounding_box_changes_the_shape_of_the_bounding_box(x, y, z):
     "z_max"
 ])
 def test_output_shape_of_all_feature_vector_modes(mode, simple_pyntcloud):
-    voxelgrid = VoxelGrid(cloud=simple_pyntcloud, n_x=2, n_y=2, n_z=2, regular_bounding_box=False)
-    voxelgrid.extract_info()
+    voxelgrid = VoxelGrid(points=simple_pyntcloud.xyz, n_x=2, n_y=2, n_z=2, regular_bounding_box=False)
     voxelgrid.compute()
 
     feature_vector = voxelgrid.get_feature_vector(mode=mode)

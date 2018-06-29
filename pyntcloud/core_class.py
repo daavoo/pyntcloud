@@ -342,10 +342,10 @@ class PyntCloud(object):
 
         """
         if name in ALL_STRUCTURES:
-            structure = ALL_STRUCTURES[name](cloud=self, **kwargs)
-            structure.extract_info()
+            info = ALL_STRUCTURES[name].extract_info(pyntcloud=self)
+            structure = ALL_STRUCTURES[name](**info, **kwargs)
             structure.compute()
-            structure_added = structure.get_and_set()
+            structure_added = structure.get_and_set(self)
 
         else:
             raise ValueError("Unsupported structure. Check docstring")

@@ -38,7 +38,6 @@ class RansacPlane(RansacModel, Plane):
         self.k = 3
 
     def are_valid(self, k_points):
-        # any 3 points define a plane
         return True
 
 

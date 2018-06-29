@@ -28,7 +28,7 @@ class RansacSampler(ABC):
         pass
 
 
-class RandomSampler(RansacSampler):
+class RandomRansacSampler(RansacSampler):
     """ Sample random points.
 
     Inherits from RansacSampler.
@@ -45,21 +45,37 @@ class RandomSampler(RansacSampler):
         return self.points[sample]
 
 
-class VoxelgridSampler(RansacSampler):
+class VoxelgridRansacSampler(RansacSampler):
     """ Sample random points inside the same random voxel.
 
     Inherits from RansacSampler.
 
     Parameters
     ----------
-    voxel_size : float, optional (default 0.1)
-
+    points: (N, 3) numpy.array
+    k: int
+        Numbber of points to sample.
+    n_x, n_y, n_z :  int, optional
+        Default: 1
+        The number of segments in which each axis will be divided.
+        Ignored if corresponding size_x, size_y or size_z is not None.
+    size_x, size_y, size_z : float, optional
+        Default: None
+        The desired voxel size along each axis.
+        If not None, the corresponding n_x, n_y or n_z will be ignored.
+    regular_bounding_box : bool, optional
+        Default: True
+        If True, the bounding box of the point cloud will be adjusted
+        in order to have all the dimensions of equal length.
     """
 
-    def __init__(self, points, k, voxel_size=0.1):
+    def __init__(self,
+                 points, k, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, regular_bounding_box=True):
         super().__init__(points, k)
-        sizes = [voxel_size] * 3
-        self.voxelgrid = VoxelGrid(self.points, sizes=sizes, bb_cuboid=False)
+        self.voxelgrid = VoxelGrid(
+            points=self.points, n_x=n_x, n_y=n_y, n_z=n_z, size_x=size_x, size_y=size_y, size_z=size_z,
+            regular_bounding_box=regular_bounding_box)
+        self.voxelgrid.compute()
 
     def get_sample(self):
         """ Get k unique random points from the same voxel of one randomly picked point.
