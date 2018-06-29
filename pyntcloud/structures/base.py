@@ -1,19 +1,23 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 
 
 class Structure(ABC):
     """Base class for structures."""
 
-    def __init__(self, *, cloud):
-        self.cloud = cloud
+    def __init__(self, *, points):
+        self._points = points
 
-    def get_and_set(self):
-        self.cloud.structures[self.id] = self
+    def get_and_set(self, pyntcloud):
+        pyntcloud.structures[self.id] = self
         return self.id
 
-    @abstractmethod
-    def extract_info(self):
-        pass
+    @classmethod
+    def extract_info(cls, pyntcloud):
+        """ABC API"""
+        info = {
+            "points": pyntcloud.xyz
+        }
+        return info
 
     @abstractmethod
     def compute(self):

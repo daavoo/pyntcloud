@@ -21,12 +21,12 @@ except ImportError:
 
 class VoxelGrid(Structure):
 
-    def __init__(self, *, cloud, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, regular_bounding_box=True):
+    def __init__(self, *, points, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, regular_bounding_box=True):
         """Grid of voxels with support for different build methods.
 
         Parameters
         ----------
-        cloud: PyntCloud
+        cloud: (N, 3) numpy.array
         n_x, n_y, n_z :  int, optional
             Default: 1
             The number of segments in which each axis will be divided.
@@ -41,18 +41,15 @@ class VoxelGrid(Structure):
             in order to have all the dimensions of equal length.
 
         """
-        super().__init__(cloud=cloud)
-
+        super().__init__(points=points)
         self.x_y_z = [n_x, n_y, n_z]
         self.sizes = [size_x, size_y, size_z]
         self.regular_bounding_box = regular_bounding_box
 
-    def extract_info(self):
+    def compute(self):
         """ABC API."""
-        points = self.points = self.cloud.xyz
-
-        xyzmin = points.min(0)
-        xyzmax = points.max(0)
+        xyzmin = self._points.min(0)
+        xyzmax = self._points.max(0)
 
         if self.regular_bounding_box:
             #: adjust to obtain a minimum bounding box with all sides of equal length
@@ -63,7 +60,7 @@ class VoxelGrid(Structure):
         for n, size in enumerate(self.sizes):
             if size is None:
                 continue
-            margin = (((points.ptp(0)[n] // size) + 1) * size) - points.ptp(0)[n]
+            margin = (((self._points.ptp(0)[n] // size) + 1) * size) - self._points.ptp(0)[n]
             xyzmin[n] -= margin / 2
             xyzmax[n] += margin / 2
             self.x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int)
@@ -75,8 +72,7 @@ class VoxelGrid(Structure):
         shape = []
         for i in range(3):
             # note the +1 in num
-            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1),
-                                  retstep=True)
+            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1), retstep=True)
             segments.append(s)
             shape.append(step)
 
@@ -87,18 +83,12 @@ class VoxelGrid(Structure):
 
         self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.regular_bounding_box)
 
-    def compute(self):
-        """ABC API."""
         # find where each point lies in corresponding segmented axis
         # -1 so index are 0-based; clip for edge cases
-        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self.points[:, 0]) - 1, 0,
-                               self.x_y_z[0])
-        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self.points[:, 1]) - 1, 0,
-                               self.x_y_z[1])
-        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self.points[:, 2]) - 1, 0,
-                               self.x_y_z[2])
-        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z],
-                                            self.x_y_z)
+        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self._points[:, 0]) - 1, 0, self.x_y_z[0])
+        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self._points[:, 1]) - 1, 0, self.x_y_z[1])
+        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self._points[:, 2]) - 1, 0,  self.x_y_z[2])
+        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z], self.x_y_z)
 
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
@@ -166,21 +156,21 @@ class VoxelGrid(Structure):
 
         elif mode == "TDF":
             # truncation = np.linalg.norm(self.shape)
-            kdt = cKDTree(self.points)
+            kdt = cKDTree(self._points)
             vector, i = kdt.query(self.voxel_centers, n_jobs=-1)
 
         elif mode.endswith("_max"):
             if not is_numba_avaliable:
                 raise ImportError("numba is required to compute {}".format(mode))
             axis = {"x_max": 0, "y_max": 1, "z_max": 2}
-            vector = groupby_max(self.points, self.voxel_n, axis[mode], vector)
+            vector = groupby_max(self._points, self.voxel_n, axis[mode], vector)
 
         elif mode.endswith("_mean"):
             if not is_numba_avaliable:
                 raise ImportError("numba is required to compute {}".format(mode))
             axis = {"x_mean": 0, "y_mean": 1, "z_mean": 2}
-            voxel_sum = groupby_sum(self.points, self.voxel_n, axis[mode], np.zeros(self.n_voxels))
-            voxel_count = groupby_count(self.points, self.voxel_n, np.zeros(self.n_voxels))
+            voxel_sum = groupby_sum(self._points, self.voxel_n, axis[mode], np.zeros(self.n_voxels))
+            voxel_count = groupby_count(self._points, self.voxel_n, np.zeros(self.n_voxels))
             vector = np.nan_to_num(voxel_sum / voxel_count)
 
         else:

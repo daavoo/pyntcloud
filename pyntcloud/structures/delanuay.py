@@ -7,22 +7,18 @@ from .base import Structure
 
 class Delaunay3D(Delaunay, Structure):
 
-    def __init__(self, PyntCloud,
+    def __init__(self, points,
                  furthest_site=False,
                  incremental=False,
                  qhull_options=None):
-        Structure.__init__(self, PyntCloud)
+        Structure.__init__(self, points)
         self._furthest_site = furthest_site
         self._incremental = incremental
         self._qhull_options = qhull_options
 
-    def extract_info(self):
-        """ABC API"""
-        self._points = self.PyntCloud.xyz
-        self.id = "D({},{})".format(self._furthest_site, self._qhull_options)
-
     def compute(self):
         """ABC API"""
+        self.id = "D({},{})".format(self._furthest_site, self._qhull_options)
         Delaunay.__init__(self,
                           self._points,
                           self._furthest_site,
