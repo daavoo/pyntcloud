@@ -83,14 +83,14 @@ def test_read_npz():
 def test_write_npz():
     data = PyntCloud.from_file(data_path + '.ply')
 
-    data.to_file(data_path + 'writed_npz.npz', also_save=["mesh"])
+    data.to_file(data_path + 'written_npz.npz', also_save=["mesh"])
 
-    writed_npz = PyntCloud.from_file(data_path + 'writed_npz.npz')
+    written_npz = PyntCloud.from_file(data_path + 'written_npz.npz')
 
-    assert all(data.points == writed_npz.points)
-    assert all(data.mesh == writed_npz.mesh)
+    assert all(data.points == written_npz.points)
+    assert all(data.mesh == written_npz.mesh)
 
-    os.remove(data_path + 'writed_npz.npz')
+    os.remove(data_path + 'written_npz.npz')
 
 
 def test_read_obj():
@@ -102,13 +102,13 @@ def test_read_obj():
 def test_write_obj():
     data = PyntCloud.from_file(data_path + '.ply')
 
-    data.to_file(data_path + 'writed.obj', also_save=["mesh"])
+    data.to_file(data_path + 'written.obj', also_save=["mesh"])
 
-    writed_obj = PyntCloud.from_file(data_path + 'writed.obj')
+    written_obj = PyntCloud.from_file(data_path + 'written.obj')
 
-    assert all(data.points[["x", "y", "z"]] == writed_obj.points)
+    assert all(data.points[["x", "y", "z"]] == written_obj.points)
 
-    os.remove(data_path + 'writed.obj')
+    os.remove(data_path + 'written.obj')
 
 
 def test_read_ascii():
@@ -121,21 +121,27 @@ def test_read_ascii():
 
 
 def test_write_ascii():
-    data = PyntCloud.from_file(data_path + '.xyz', sep=" ", header=None,
-                               index_col=False,
-                               names=["x", "y", "z", "nx", "ny", "nz"],
-                               dtype="f")
+    data = PyntCloud.from_file(
+        data_path + '.xyz',
+        sep=" ",
+        header=None,
+        index_col=False,
+        names=["x", "y", "z", "nx", "ny", "nz"],
+        dtype="f")
 
-    data.to_file(data_path + 'writed.txt', sep=" ", header=None)
+    data.to_file(data_path + 'written.txt', sep=" ", header=None)
 
-    writed_data = PyntCloud.from_file(data_path + 'writed.txt', sep=" ", header=None,
-                                      index_col=False,
-                                      names=["x", "y", "z", "nx", "ny", "nz"],
-                                      dtype="f")
+    written_data = PyntCloud.from_file(
+        data_path + 'written.txt',
+        sep=" ",
+        header=None,
+        index_col=False,
+        names=["x", "y", "z", "nx", "ny", "nz"],
+        dtype="f")
 
-    assert all(data.points == writed_data.points)
+    assert all(data.points == written_data.points)
 
-    os.remove(data_path + 'writed.txt')
+    os.remove(data_path + 'written.txt')
 
 
 def test_read_off():
@@ -149,3 +155,24 @@ def test_read_color_off():
 
     assert_points_xyz(color_off)
     assert_points_color(color_off)
+
+
+def test_read_bin():
+    arr = PyntCloud.from_file(data_path + '.bin')
+
+    assert_points_xyz(arr)
+
+
+def test_write_bin():
+
+    data = PyntCloud.from_file(data_path, '.bin')
+
+    data.to_file(data_path + 'written.bin')
+
+    written_data = PyntCloud.from_file(data_path + 'written.bin')
+
+    assert_points_xyz(written_data)
+    assert all(data.points == written_data.points)
+    assert all(data.xyz == written_data.xyz)
+
+    os.remove(data_path + 'written.bin')
