@@ -622,18 +622,20 @@ class PyntCloud(object):
         self.xyz = self.__points[["x", "y", "z"]].values
         self.centroid = self.xyz.mean(0)
 
-    def plot(self,
-             backend="pythreejs",
-             width=800,
-             height=500,
-             background="black",
-             mesh=False,
-             use_as_color=["red", "green", "blue"],
-             cmap="hsv",
-             return_scene=False,
-             output_name="pyntcloud_plot",
-             polylines={}
-             ):
+    def plot(
+        self,
+        backend="pythreejs",
+        width=800,
+        height=500,
+        background="black",
+        mesh=False,
+        use_as_color=["red", "green", "blue"],
+        cmap="hsv",
+        polylines=None,
+        linewidth=5,
+        return_scene=False,
+        output_name="pyntcloud_plot"
+        ):
         """Visualize a PyntCloud  using different backends.
 
         Parameters
@@ -667,15 +669,19 @@ class PyntCloud(object):
             Default: False.
             Used with "pythreejs" backend in order to return the pythreejs.Scene object
 
-        polylines: dict, optional
-            Default {}.
-            Mapping hexadecimal colors to a list of list(len(3)) representing the points of the polyline.
-            Example:
-            polylines={
-                "0xFFFFFF": [[0, 0, 0], [0, 0, 1]],
-                "0xFF00FF": [[1, 0, 0], [1, 0, 1], [1, 1, 1]]
-            }
-
+        polylines: list of dict, optional
+            Default None.
+            List of dictionaries defining polylines with the following syntax:
+            polylines=[
+                {
+                    "color": "0xFFFFFF",
+                    "vertices": [[0, 0, 0], [0, 0, 1]]
+                },
+                {           {
+                    "color": "red",
+                    "vertices": [[0, 0, 0], [0, 0, 1], [0, 2, 0]
+                }
+            ]
         Returns
         -------
         pythreejs.Scene if return_scene else None
@@ -702,11 +708,20 @@ class PyntCloud(object):
             import pythreejs
             from IPython.display import display
 
+            children = []
+
             if mesh:
                 raise NotImplementedError("Plotting mesh geometry with pythreejs backend is not supported yet.")
 
             if polylines:
-                raise NotImplementedError("Plotting polylines with pythreejs backend is not supported yet.")
+                for x in polylines:
+                    line_geometry = pythreejs.Geometry(
+                        vertices=x["vertices"])
+                    line = pythreejs.Line(
+                        geometry=line_geometry,
+                        material=pythreejs.LineBasicMaterial(color=x["color"]),
+                        type='LinePieces')
+                    children.append(line)
 
             points_geometry = pythreejs.BufferGeometry(
                 attributes=dict(
@@ -720,19 +735,21 @@ class PyntCloud(object):
                 geometry=points_geometry,
                 material=points_material,
                 position=tuple(self.centroid))
+            children.append(points)
 
             camera = pythreejs.PerspectiveCamera(
                 fov=90,
                 aspect=width / height,
                 position=tuple(self.centroid + [0, abs(self.xyz.max(0)[1]), abs(self.xyz.max(0)[2]) * 2]),
                 up=[0, 0, 1])
+            children.append(camera)
 
             orbit_control = pythreejs.OrbitControls(controlling=camera)
             orbit_control.target = tuple(self.centroid)
 
             camera.lookAt(tuple(self.centroid))
 
-            scene = pythreejs.Scene(children=[points, camera], background=background)
+            scene = pythreejs.Scene(children=children, background=background)
 
             renderer = pythreejs.Renderer(
                 scene=scene,
