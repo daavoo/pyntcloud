@@ -629,7 +629,7 @@ class PyntCloud(object):
              background="black",
              mesh=False,
              use_as_color=["red", "green", "blue"],
-             init_point_size=0.0,
+             initial_point_size=0.0,
              cmap="hsv",
              return_scene=False,
              output_name="pyntcloud_plot",
@@ -659,8 +659,8 @@ class PyntCloud(object):
             Indicates which scalar fields will be used to colorize the rendered
             point cloud.
 
-        init_point_size: the initial size of each point in the rendered point cloud.
-            Can be adjusted with slider.
+        initial_point_size: the initial size of each point in the rendered point cloud.
+            Can be adjusted after rendering using slider.
 
         cmap: str, optional
             Default: "hsv"
@@ -747,7 +747,7 @@ class PyntCloud(object):
 
             display(renderer)
 
-            size = ipywidgets.FloatSlider(value=init_point_size, min=0.0, max=(ptp / 100), step=(ptp / 1000))
+            size = ipywidgets.FloatSlider(value=initial_point_size, min=0.0, max=(ptp / 100), step=(ptp / 1000))
             ipywidgets.jslink((size, 'value'), (points_material, 'size'))
 
             color = ipywidgets.ColorPicker()

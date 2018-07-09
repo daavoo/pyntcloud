@@ -1,4 +1,5 @@
 from .ascii import read_ascii, write_ascii
+from .bin import read_bin, write_bin
 from .las import read_las
 from .npz import read_npz, write_npz
 from .obj import read_obj, write_obj
@@ -8,6 +9,7 @@ from .pcd import read_pcd
 
 FROM = {
     "ASC": read_ascii,
+    "BIN": read_bin,
     "CSV": read_ascii,
     "LAS": read_las,
     "NPZ": read_npz,
@@ -22,6 +24,7 @@ FROM = {
 
 TO = {
     "ASC": write_ascii,
+    "BIN": write_bin,
     "CSV": write_ascii,
     "NPZ": write_npz,
     "OBJ": write_obj,

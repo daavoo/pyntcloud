@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from pyntcloud import PyntCloud
+import pytest
 
 path = os.path.abspath(os.path.dirname(__file__))
 data_path = path + '/data/diamond'
@@ -165,14 +166,22 @@ def test_read_bin():
 
 def test_write_bin():
 
-    data = PyntCloud.from_file(data_path, '.bin')
+    data = PyntCloud.from_file(data_path + '.bin')
 
     data.to_file(data_path + 'written.bin')
 
+    # write_bin only accepts kwargs: "sep" and "format" for numpy.ndarray.tofile()
+    with pytest.raises(ValueError):
+        data.to_file(data_path + '_fail.bin', also_save=['mesh'])
+    with pytest.raises(ValueError):
+        data.to_file(data_path + '_fail.bin', some_other_kwarg='some_value')
+    
     written_data = PyntCloud.from_file(data_path + 'written.bin')
 
     assert_points_xyz(written_data)
-    assert all(data.points == written_data.points)
-    assert all(data.xyz == written_data.xyz)
+    assert np.array_equal(data.points, written_data.points)
+    assert np.array_equal(data.xyz, written_data.xyz)
 
     os.remove(data_path + 'written.bin')
+
+    
