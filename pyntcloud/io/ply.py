@@ -57,6 +57,7 @@ def read_ply(filename):
         count = 2
         points_size = None
         mesh_size = None
+        has_texture = False
         while b'end_header' not in line and line != b'':
             line = ply.readline()
 
@@ -73,7 +74,12 @@ def read_ply(filename):
                 line = line.split()
                 # element mesh
                 if b'list' in line:
-                    mesh_names = ['n_points', 'v1', 'v2', 'v3']
+
+                    if b"vertex_indices" in line[-1]:
+                        mesh_names = ["n_points", "v1", "v2", "v3"]
+                    else:
+                        has_texture = True
+                        mesh_names = ["n_coords"] + ["v1_u", "v1_v", "v2_u", "v2_v", "v3_u", "v3_v"]
 
                     if fmt == "ascii":
                         # the first number has different dtype than the list
@@ -88,7 +94,7 @@ def read_ply(filename):
                         # rest of the numbers have the same dtype
                         dt = ext + ply_dtypes[line[3]]
 
-                    for j in range(1, 4):
+                    for j in range(1, len(mesh_names)):
                         dtypes[name].append((mesh_names[j], dt))
                 else:
                     if fmt == "ascii":
@@ -117,11 +123,12 @@ def read_ply(filename):
             data["points"][col] = data["points"][col].astype(
                 dtypes["vertex"][n][1])
 
-        if mesh_size is not None:
+        if mesh_size :
             top = count + points_size
 
-            names = [x[0] for x in dtypes["face"]][1:]
-            usecols = [1, 2, 3]
+            names = np.array([x[0] for x in dtypes["face"]])
+            usecols = [1, 2, 3, 5, 6, 7, 8, 9, 10] if has_texture else [1, 2, 3]
+            names = names[usecols]
 
             data["mesh"] = pd.read_csv(
                 filename, sep=" ", header=None, engine="python", skiprows=top, usecols=usecols, names=names)
@@ -137,7 +144,7 @@ def read_ply(filename):
             if ext != sys_byteorder:
                 points_np = points_np.byteswap().newbyteorder()
             data["points"] = pd.DataFrame(points_np)
-            if mesh_size is not None:
+            if mesh_size:
                 mesh_np = np.fromfile(ply, dtype=dtypes["face"], count=mesh_size)
                 if ext != sys_byteorder:
                     mesh_np = mesh_np.byteswap().newbyteorder()
