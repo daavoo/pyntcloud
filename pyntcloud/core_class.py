@@ -630,6 +630,7 @@ class PyntCloud(object):
         background="black",
         mesh=False,
         use_as_color=["red", "green", "blue"],
+        initial_point_size=0.0,
         cmap="hsv",
         polylines=None,
         linewidth=5,
