@@ -8,6 +8,9 @@ from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
 from .plot import DESCRIPTION, plot_PyntCloud
+from .plot.pythreejs import (
+    get_pointcloud_pythreejs,
+    get_polylines_pythreejs)
 from .samplers import ALL_SAMPLERS
 from .scalar_fields import ALL_SF
 from .structures import ALL_STRUCTURES
@@ -719,27 +722,11 @@ class PyntCloud(object):
                 raise NotImplementedError("Plotting mesh geometry with pythreejs backend is not supported yet.")
 
             if polylines:
-                for x in polylines:
-                    line_geometry = pythreejs.Geometry(
-                        vertices=x["vertices"])
-                    line = pythreejs.Line(
-                        geometry=line_geometry,
-                        material=pythreejs.LineBasicMaterial(color=x["color"]),
-                        type='LinePieces')
-                    children.append(line)
+                lines = get_polylines_pythreejs(polylines)
+                children.extend(lines)
 
-            points_geometry = pythreejs.BufferGeometry(
-                attributes=dict(
-                    position=pythreejs.BufferAttribute(self.xyz, normalized=False),
-                    color=pythreejs.BufferAttribute(list(map(tuple, colors)))))
+            points = get_pointcloud_pythreejs(self.xyz, colors)
 
-            points_material = pythreejs.PointsMaterial(
-                vertexColors='VertexColors')
-
-            points = pythreejs.Points(
-                geometry=points_geometry,
-                material=points_material,
-                position=tuple(self.centroid))
             children.append(points)
 
             camera = pythreejs.PerspectiveCamera(
@@ -766,7 +753,7 @@ class PyntCloud(object):
             display(renderer)
 
             size = ipywidgets.FloatSlider(value=initial_point_size, min=0.0, max=(ptp / 100), step=(ptp / 1000))
-            ipywidgets.jslink((size, 'value'), (points_material, 'size'))
+            ipywidgets.jslink((size, 'value'), (points.material, 'size'))
 
             color = ipywidgets.ColorPicker()
             ipywidgets.jslink((color, 'value'), (scene, 'background'))
