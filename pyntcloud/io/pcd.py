@@ -135,6 +135,23 @@ def read_pcd(filename):
                 pc_data[dtype.names[dti]] = column
                 ix += bytes
 
-    data["points"] = pd.DataFrame(pc_data)
+    df = pd.DataFrame(pc_data)
 
+    # check if dataframe contains color info
+    col = 'rgb'
+    if col in df.columns:
+        # get the 'rgb' column from dataframe
+        packed_rgb = df.rgb.values
+        # 'rgb' values are stored as float
+        # treat them as int
+        packed_rgb = packed_rgb.astype(np.float32).tostring()
+        packed_rgb = np.frombuffer(packed_rgb, dtype=np.int32)
+        # unpack 'rgb' into 'red', 'green' and 'blue' channel
+        df['red'] = np.asarray((packed_rgb >> 16) & 255, dtype=np.uint8)
+        df['green'] = np.asarray((packed_rgb >> 8) & 255, dtype=np.uint8)
+        df['blue'] = np.asarray(packed_rgb & 255, dtype=np.uint8)
+        # remove packed rgb since we don't need it anymore
+        df.drop(col, axis=1, inplace=True)
+
+    data['points'] = df
     return data
