@@ -636,7 +636,7 @@ class PyntCloud(object):
             background="black",
             mesh=False,
             use_as_color=["red", "green", "blue"],
-            initial_point_size=0.0,
+            initial_point_size=None,
             cmap="hsv",
             polylines=None,
             linewidth=5,
@@ -732,7 +732,12 @@ class PyntCloud(object):
             points = get_pointcloud_pythreejs(self.xyz, colors)
             children.append(points)
 
-            size = ipywidgets.FloatSlider(value=initial_point_size, min=0.0, max=(ptp / 20), step=(ptp / 200))
+            initial_point_size = initial_point_size or ptp / 10
+            size = ipywidgets.FloatSlider(
+                value=initial_point_size,
+                min=0.0,
+                max=initial_point_size * 10,
+                step=initial_point_size / 100)
             ipywidgets.jslink((size, 'value'), (points.material, 'size'))
             widgets.append(ipywidgets.Label('Point size:'))
             widgets.append(size)
