@@ -764,7 +764,7 @@ class PyntCloud(object):
                 widgets.append(ipywidgets.Label('Background color:'))
                 widgets.append(color)
 
-            display(ipywidgets.HBox(children=[widgets]))
+            display(ipywidgets.HBox(children=widgets))
 
             return scene if return_scene else None
 
