@@ -742,12 +742,14 @@ class PyntCloud(object):
             widgets.append(ipywidgets.Label('Point size:'))
             widgets.append(size)
 
-            camera = get_camera_pythreejs(self.centroid, self.xyz, width, height)
-            children.append(camera)
+            if scene:
+                scene.children = [points] + list(scene.children)
+            else:
+                camera = get_camera_pythreejs(self.centroid, self.xyz, width, height)
+                children.append(camera)
 
-            controls = [get_orbit_controls(camera, self.centroid)]
+                controls = [get_orbit_controls(camera, self.centroid)]
 
-            if not scene:
                 scene = pythreejs.Scene(children=children)
 
                 renderer = pythreejs.Renderer(
