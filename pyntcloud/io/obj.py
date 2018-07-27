@@ -83,7 +83,16 @@ def write_obj(filename, points=None, mesh=None):
         points.insert(loc=0, column="obj_v", value="v")
         points.to_csv(filename, sep=" ", index=False, header=False, mode='a',
                       encoding='ascii')
+	
+    #saving mesh faces in obj
+    if mesh is not None:
 
-    # if mesh is not None:
-
+        mesh.insert(loc=0, column="obj_f", value="f")
+        mesh.to_csv(
+            filename,
+            sep=" ",
+            index=False,
+            header=False,
+            mode='a',
+            encoding='ascii')
     return True
