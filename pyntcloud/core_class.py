@@ -10,7 +10,9 @@ from .neighbors import k_neighbors, r_neighbors
 from .plot import DESCRIPTION, plot_PyntCloud
 from .plot.pythreejs import (
     get_pointcloud_pythreejs,
-    get_polylines_pythreejs)
+    get_polylines_pythreejs,
+    get_camera_pythreejs,
+    get_orbit_controls)
 from .samplers import ALL_SAMPLERS
 from .scalar_fields import ALL_SF
 from .structures import ALL_STRUCTURES
@@ -626,20 +628,21 @@ class PyntCloud(object):
         self.centroid = self.xyz.mean(0)
 
     def plot(
-        self,
-        backend="pythreejs",
-        width=800,
-        height=500,
-        background="black",
-        mesh=False,
-        use_as_color=["red", "green", "blue"],
-        initial_point_size=0.0,
-        cmap="hsv",
-        polylines=None,
-        linewidth=5,
-        return_scene=False,
-        output_name="pyntcloud_plot"
-        ):
+            self,
+            backend="pythreejs",
+            scene=None,
+            width=800,
+            height=500,
+            background="black",
+            mesh=False,
+            use_as_color=["red", "green", "blue"],
+            initial_point_size=None,
+            cmap="hsv",
+            polylines=None,
+            linewidth=5,
+            return_scene=False,
+            output_name="pyntcloud_plot"
+    ):
 
         """Visualize a PyntCloud  using different backends.
 
@@ -717,6 +720,7 @@ class PyntCloud(object):
             from IPython.display import display
 
             children = []
+            widgets = []
 
             if mesh:
                 raise NotImplementedError("Plotting mesh geometry with pythreejs backend is not supported yet.")
@@ -726,40 +730,44 @@ class PyntCloud(object):
                 children.extend(lines)
 
             points = get_pointcloud_pythreejs(self.xyz, colors)
-
             children.append(points)
 
-            camera = pythreejs.PerspectiveCamera(
-                fov=90,
-                aspect=width / height,
-                position=tuple(self.centroid + [0, abs(self.xyz.max(0)[1]), abs(self.xyz.max(0)[2]) * 2]),
-                up=[0, 0, 1])
-            children.append(camera)
-
-            orbit_control = pythreejs.OrbitControls(controlling=camera)
-            orbit_control.target = tuple(self.centroid)
-
-            camera.lookAt(tuple(self.centroid))
-
-            scene = pythreejs.Scene(children=children, background=background)
-
-            renderer = pythreejs.Renderer(
-                scene=scene,
-                camera=camera,
-                controls=[orbit_control],
-                width=width,
-                height=height)
-
-            display(renderer)
-
-            size = ipywidgets.FloatSlider(value=initial_point_size, min=0.0, max=(ptp / 100), step=(ptp / 1000))
+            initial_point_size = initial_point_size or ptp / 10
+            size = ipywidgets.FloatSlider(
+                value=initial_point_size,
+                min=0.0,
+                max=initial_point_size * 10,
+                step=initial_point_size / 100)
             ipywidgets.jslink((size, 'value'), (points.material, 'size'))
+            widgets.append(ipywidgets.Label('Point size:'))
+            widgets.append(size)
 
-            color = ipywidgets.ColorPicker()
-            ipywidgets.jslink((color, 'value'), (scene, 'background'))
+            if scene:
+                scene.children = [points] + list(scene.children)
+            else:
+                camera = get_camera_pythreejs(self.centroid, self.xyz, width, height)
+                children.append(camera)
 
-            display(ipywidgets.HBox(children=[
-                ipywidgets.Label('Background color:'), color, ipywidgets.Label('Point size:'), size]))
+                controls = [get_orbit_controls(camera, self.centroid)]
+
+                scene = pythreejs.Scene(children=children)
+
+                renderer = pythreejs.Renderer(
+                    scene=scene,
+                    camera=camera,
+                    controls=controls,
+                    width=width,
+                    height=height)
+
+                display(renderer)
+
+                color = ipywidgets.ColorPicker()
+                ipywidgets.jslink((color, 'value'), (scene, 'background'))
+                widgets.append(ipywidgets.Label('Background color:'))
+                widgets.append(color)
+
+            display(ipywidgets.HBox(children=widgets))
+
             return scene if return_scene else None
 
         elif backend == "threejs":
