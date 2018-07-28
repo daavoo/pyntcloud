@@ -108,6 +108,7 @@ def test_write_obj():
     written_obj = PyntCloud.from_file(data_path + 'written.obj')
 
     assert all(data.points[["x", "y", "z"]] == written_obj.points)
+    assert all(data.mesh[["v1", "v2", "v3"]] == written_obj.mesh)
 
     os.remove(data_path + 'written.obj')
 
