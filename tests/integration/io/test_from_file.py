@@ -39,7 +39,7 @@ def assert_mesh(data):
     (".ply", True, True),
     ("_ascii.ply", True, True),
     (".npz", True, True),
-    (".obj", False, False),
+    (".obj", False, True),
     (".off", False, False),
     ("_color.off", True, False),
     (".bin", False, False)

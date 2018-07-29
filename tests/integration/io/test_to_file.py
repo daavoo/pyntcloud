@@ -9,7 +9,7 @@ from test_from_file import assert_points_xyz, assert_points_color, assert_mesh
     (".ply", True, True),
     ("_ascii.ply", True, True),
     (".npz", True, True),
-    (".obj", False, False),
+    (".obj", False, True),
     (".bin", False, False)
 ])
 def test_to_file(tmpdir, diamond, extension, color, mesh):
