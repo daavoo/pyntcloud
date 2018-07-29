@@ -19,6 +19,7 @@ install:
   - activate test-environment
   - pip install numpy scipy pandas
   - pip install pytest
+  - pip install .
 
 test_script:
   - pytest -v tests/integration && pytest -v tests/unit
