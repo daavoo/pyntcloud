@@ -100,7 +100,7 @@ def diamond():
         [0, 1, 5],
         [0, 3, 5],
         [3, 4, 5],
-        [4, 1, 5]])
+        [4, 1, 5]], dtype=np.int32)
 
     mesh = pd.DataFrame(
         data=vertices,
