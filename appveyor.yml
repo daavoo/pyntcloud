@@ -1,0 +1,24 @@
+build: false
+image: Previous Visual Studio 2015
+
+environment:
+  matrix:
+    - PYTHON_VERSION: 3.5
+      MINICONDA: C:\Miniconda3
+    - PYTHON_VERSION: 3.6
+      MINICONDA: C:\Miniconda3
+
+init:
+  - "ECHO %PYTHON_VERSION% %MINICONDA%"
+
+install:
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;C:\\blender-2.78a-windows64;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda info -a
+  - "conda create -q -n test-environment python=%PYTHON_VERSION%"
+  - activate test-environment
+  - pip install numpy scipy pandas
+  - pip install pytest
+
+test_script:
+  - pytest -v tests/integration && pytest -v tests/unit
