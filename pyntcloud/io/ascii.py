@@ -23,7 +23,7 @@ def read_ascii(filename, **kwargs):
     return data
 
 
-def write_ascii(filename, points, mesh=None, **kwargs):
+def write_ascii(filename, points, **kwargs):
     """Write points (and optionally mesh) content to filename.
 
     Parameters
@@ -42,9 +42,6 @@ def write_ascii(filename, points, mesh=None, **kwargs):
     -------
     bool
     """
+    points[["x", "y", "z"]].to_csv(filename, **kwargs)
 
-    points.to_csv(filename, **kwargs)
-
-    if mesh is not None:
-        mesh.to_csv("mesh_{}".format(filename), **kwargs)
     return True
