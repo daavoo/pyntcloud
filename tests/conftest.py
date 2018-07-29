@@ -1,9 +1,16 @@
+from pathlib import Path
+
 import pytest
 
 import numpy as np
 import pandas as pd
 
 from pyntcloud import PyntCloud
+
+
+@pytest.fixture()
+def data_path():
+    return Path(__file__).parent.absolute() / "data"
 
 
 @pytest.fixture()
@@ -18,7 +25,6 @@ def xyz():
 
 
 @pytest.fixture()
-@pytest.mark.usefixtures("xyz")
 def simple_pyntcloud(xyz):
     return PyntCloud(pd.DataFrame(
         data=xyz,
@@ -26,7 +32,6 @@ def simple_pyntcloud(xyz):
 
 
 @pytest.fixture()
-@pytest.mark.usefixtures("simple_pyntcloud")
 def pyntcloud_with_kdtree_and_kdtree_id(simple_pyntcloud):
     kdtree_id = simple_pyntcloud.add_structure("kdtree")
     return simple_pyntcloud, kdtree_id
@@ -48,7 +53,6 @@ def pyntcloud_with_rgb_and_normals():
 
 
 @pytest.fixture()
-@pytest.mark.usefixtures("pyntcloud_with_rgb_and_normals")
 def pyntcloud_with_voxelgrid_and_voxelgrid_id(pyntcloud_with_rgb_and_normals):
     voxelgrid_id = pyntcloud_with_rgb_and_normals.add_structure("voxelgrid", n_x=4, n_y=4, n_z=4)
     return pyntcloud_with_rgb_and_normals, voxelgrid_id
@@ -69,7 +73,6 @@ def pyntcloud_with_clusters_and_voxelgrid_id():
 
 
 @pytest.fixture()
-@pytest.mark.usefixtures("pyntcloud_with_rgb_and_normals")
 def pyntcloud_with_rgb_and_normals_k_neighbors(pyntcloud_with_rgb_and_normals):
     return pyntcloud_with_rgb_and_normals.get_neighbors(k=3)
 
@@ -97,7 +100,7 @@ def diamond():
         [0, 1, 5],
         [0, 3, 5],
         [3, 4, 5],
-        [4, 1, 5]])
+        [4, 1, 5]], dtype=np.int32)
 
     mesh = pd.DataFrame(
         data=vertices,

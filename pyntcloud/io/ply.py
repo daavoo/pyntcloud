@@ -206,7 +206,6 @@ def write_ply(filename, points=None, mesh=None, as_text=False):
                         encoding='ascii')
 
     else:
-        # open in binary/append to use tofile
         with open(filename, 'ab') as ply:
             if points is not None:
                 points.to_records(index=False).tofile(ply)
