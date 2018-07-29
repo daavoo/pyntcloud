@@ -3,6 +3,7 @@
 import re
 import pandas as pd
 
+
 def read_obj(filename):
     """ Reads and obj file and return the elements as pandas Dataframes.
 
@@ -18,9 +19,9 @@ def read_obj(filename):
     """
     v = []
     vn = []
+    vt = []
     f = []
-    vt =[]
-    
+
     with open(filename) as obj:
         for line in obj:
             if line.startswith('v '):
@@ -28,39 +29,53 @@ def read_obj(filename):
 
             elif line.startswith('vn'):
                 vn.append(line.strip()[2:].split())
-                
+
             elif line.startswith('vt'):
                 vt.append(line.strip()[2:].split())
 
             elif line.startswith('f'):
                 f.append(line.strip()[2:])
-                
-    
+
     points = pd.DataFrame(v, dtype='f4', columns=['x', 'y', 'z'])
 
     if len(vn) > 0:
-        vn = pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz'])
+        points = points.join(pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz']))
 
-        points = points.join(vn)
+    if len(vt) > 0:
+        points = points.join(pd.DataFrame(vt, dtype='f4', columns=['u', 'v']))
 
-    if len(f) > 0 and "//" in f[0]:
-        mesh_columns = ['v1', 'vn1', 'v2', 'vn2', 'v3', 'vn3']
-    elif len(vn) > 0:
-        mesh_columns = [
-            'v1', 'vt1', 'vn1', 'v2', 'vt2', 'vn2', 'v3', 'vt3', 'vn3'
-        ]
-    elif len(vt) > 0:
-        mesh_columns = ['v1', 'vt1', 'v2', 'vt2', 'v3', 'vt3']
+    data = {"points": points}
+
+    if len(f) < 1:
+        return data
+
+    mesh_columns = []
+    if f[0].count("//") > 0:
+        # wikipedia.org/wiki/Wavefront_.obj_file#Vertex_normal_indices_without_texture_coordinate_indices
+        for i in range(f[0].count("//")):
+            mesh_columns.append("v{}".format(i + 1))
+            mesh_columns.append("vn{}".format(i + 1))
+    elif f[0].count("/") > 0:
+        if len(vn) > 0:
+            # wikipedia.org/wiki/Wavefront_.obj_file#Vertex_normal_indices
+            for i in range(f[0].count("/") / 2):
+                mesh_columns.append("v{}".format(i + 1))
+                mesh_columns.append("vt{}".format(i + 1))
+                mesh_columns.append("vn{}".format(i + 1))
+        else:
+            # wikipedia.org/wiki/Wavefront_.obj_file#Vertex_texture_coordinate_indices
+            for i in range(f[0].count("/")):
+                mesh_columns.append("v{}".format(i + 1))
+                mesh_columns.append("vt{}".format(i + 1))
     else:
-        mesh_columns = ['v1', 'v2', 'v3']
-    
-    f = [re.split(r'\D+', x) for x in f]
-    
-    mesh = pd.DataFrame(f, dtype='i4', columns=mesh_columns)
-    # start index at 0
-    mesh -= 1
+        # wikipedia.org/wiki/Wavefront_.obj_file#Vertex_indices
+        for i in range(sum(c.isdigit() for c in f[0])):
+            mesh_columns.append("v{}".format(i + 1))
 
-    data = {'points': points, 'mesh': mesh}
+    mesh = pd.DataFrame([re.split(r'\D+', x) for x in f], dtype='i4', columns=mesh_columns)
+    mesh -= 1  # index starts with 1 in obj file
+
+    data["mesh"] = mesh
 
     return data
 
@@ -84,7 +99,6 @@ def write_obj(filename, points=None, mesh=None):
         filename += '.obj'
 
     if points is not None:
-        # because we don't want the insert on the original data
         points = points.copy()
         points = points[["x", "y", "z"]]
         points.insert(loc=0, column="obj_v", value="v")
@@ -99,7 +113,7 @@ def write_obj(filename, points=None, mesh=None):
     if mesh is not None:
         mesh = mesh.copy()
         mesh = mesh[["v1", "v2", "v3"]]
-        mesh += 1 #index starts with 1 in obj file
+        mesh += 1  # index starts with 1 in obj file
         mesh.insert(loc=0, column="obj_f", value="f")
         mesh.to_csv(
             filename,
