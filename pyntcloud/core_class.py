@@ -787,7 +787,7 @@ class PyntCloud(object):
                 point_size=ptp / 100,
                 point_opacity=0.9,
                 output_name=output_name,
-                polylines=polylines
+                polylines=polylines or {}
             )
         else:
             raise NotImplementedError("{} backend is not supported".format(backend))
