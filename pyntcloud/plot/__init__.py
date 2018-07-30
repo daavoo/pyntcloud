@@ -1,4 +1,3 @@
-from .points import plot_PyntCloud
 from .voxelgrid import plot_voxelgrid
 
 DESCRIPTION = """\
