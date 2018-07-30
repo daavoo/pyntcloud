@@ -8,6 +8,7 @@ from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
 from .plot import DESCRIPTION
+from .plot.matplotlib_backend import plot_with_matplotlib
 from .plot.threejs_backend import plot_with_threejs
 from .plot.pythreejs_backend import plot_with_pythreejs
 from .samplers import ALL_SAMPLERS
@@ -638,7 +639,9 @@ class PyntCloud(object):
             polylines=None,
             linewidth=5,
             return_scene=False,
-            output_name="pyntcloud_plot"
+            output_name="pyntcloud_plot",
+            elev=0.,
+            azim=90.
     ):
 
         """Visualize a PyntCloud  using different backends.
@@ -690,13 +693,16 @@ class PyntCloud(object):
                     "vertices": [[0, 0, 0], [0, 0, 1], [0, 2, 0]
                 }
             ]
-        Returns
-        -------
-        pythreejs.Scene if return_scene else None
+        elev: float
+            Elevation angle in the z plane. Used for matplotlib
+        azim: float
+            Azimuth angle in the x,y plane.
         """
         args = locals()
         backend = args.pop("backend")
 
+        if backend == "matplotlib":
+            return plot_with_matplotlib(self, **args)
         if backend == "pythreejs":
             return plot_with_pythreejs(self, **args)
         elif backend == "threejs":
