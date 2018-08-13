@@ -7,12 +7,10 @@ from .structures.base import StructuresDict
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
-from .plot import DESCRIPTION, plot_PyntCloud
-from .plot.pythreejs import (
-    get_pointcloud_pythreejs,
-    get_polylines_pythreejs,
-    get_camera_pythreejs,
-    get_orbit_controls)
+from .plot import DESCRIPTION
+from .plot.matplotlib_backend import plot_with_matplotlib
+from .plot.threejs_backend import plot_with_threejs
+from .plot.pythreejs_backend import plot_with_pythreejs
 from .samplers import ALL_SAMPLERS
 from .scalar_fields import ALL_SF
 from .structures import ALL_STRUCTURES
@@ -641,7 +639,9 @@ class PyntCloud(object):
             polylines=None,
             linewidth=5,
             return_scene=False,
-            output_name="pyntcloud_plot"
+            output_name="pyntcloud_plot",
+            elev=0.,
+            azim=90.
     ):
 
         """Visualize a PyntCloud  using different backends.
@@ -693,101 +693,19 @@ class PyntCloud(object):
                     "vertices": [[0, 0, 0], [0, 0, 1], [0, 2, 0]
                 }
             ]
-        Returns
-        -------
-        pythreejs.Scene if return_scene else None
+        elev: float
+            Elevation angle in the z plane. Used for matplotlib
+        azim: float
+            Azimuth angle in the x,y plane.
         """
-        try:
-            colors = self.points[use_as_color].values
-        except KeyError:
-            colors = None
+        args = locals()
+        backend = args.pop("backend")
 
-        if use_as_color != ["red", "green", "blue"] and colors is not None:
-            import matplotlib.pyplot as plt
-            s_m = plt.cm.ScalarMappable(cmap=cmap)
-            colors = s_m.to_rgba(colors)[:, :-1] * 255
-        elif colors is None:
-            # default color orange
-            colors = np.repeat([[255, 125, 0]], self.xyz.shape[0], axis=0)
-
-        colors = colors.astype(np.uint8)
-
-        ptp = self.xyz.ptp()
-
+        if backend == "matplotlib":
+            return plot_with_matplotlib(self, **args)
         if backend == "pythreejs":
-            import ipywidgets
-            import pythreejs
-            from IPython.display import display
-
-            children = []
-            widgets = []
-
-            if mesh:
-                raise NotImplementedError("Plotting mesh geometry with pythreejs backend is not supported yet.")
-
-            if polylines:
-                lines = get_polylines_pythreejs(polylines)
-                children.extend(lines)
-
-            points = get_pointcloud_pythreejs(self.xyz, colors)
-            children.append(points)
-
-            initial_point_size = initial_point_size or ptp / 10
-            size = ipywidgets.FloatSlider(
-                value=initial_point_size,
-                min=0.0,
-                max=initial_point_size * 10,
-                step=initial_point_size / 100)
-            ipywidgets.jslink((size, 'value'), (points.material, 'size'))
-            widgets.append(ipywidgets.Label('Point size:'))
-            widgets.append(size)
-
-            if scene:
-                scene.children = [points] + list(scene.children)
-            else:
-                camera = get_camera_pythreejs(self.centroid, self.xyz, width, height)
-                children.append(camera)
-
-                controls = [get_orbit_controls(camera, self.centroid)]
-
-                scene = pythreejs.Scene(children=children)
-
-                renderer = pythreejs.Renderer(
-                    scene=scene,
-                    camera=camera,
-                    controls=controls,
-                    width=width,
-                    height=height)
-
-                display(renderer)
-
-                color = ipywidgets.ColorPicker()
-                ipywidgets.jslink((color, 'value'), (scene, 'background'))
-                widgets.append(ipywidgets.Label('Background color:'))
-                widgets.append(color)
-
-            display(ipywidgets.HBox(children=widgets))
-
-            return scene if return_scene else None
-
+            return plot_with_pythreejs(self, **args)
         elif backend == "threejs":
-            points = pd.DataFrame(self.xyz, columns=["x", "y", "z"])
-
-            for n, i in enumerate(["red", "green", "blue"]):
-                points[i] = colors[:, n]
-
-            new_PyntCloud = PyntCloud(points)
-
-            if mesh and self.mesh is not None:
-                new_PyntCloud.mesh = self.mesh[["v1", "v2", "v3"]]
-
-            return plot_PyntCloud(
-                new_PyntCloud,
-                IFrame_shape=(width, height),
-                point_size=ptp / 100,
-                point_opacity=0.9,
-                output_name=output_name,
-                polylines=polylines or {}
-            )
+            return plot_with_threejs(self, **args)
         else:
             raise NotImplementedError("{} backend is not supported".format(backend))
