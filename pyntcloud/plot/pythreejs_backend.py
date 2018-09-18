@@ -112,7 +112,7 @@ def plot_with_pythreejs(cloud, **kwargs):
 
         display(renderer)
 
-        color = ipywidgets.ColorPicker()
+        color = ipywidgets.ColorPicker(value=kwargs["background"])
         ipywidgets.jslink((color, 'value'), (scene, 'background'))
         widgets.append(ipywidgets.Label('Background color:'))
         widgets.append(color)
