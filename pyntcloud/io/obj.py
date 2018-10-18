@@ -69,7 +69,8 @@ def read_obj(filename):
                 mesh_columns.append("vt{}".format(i + 1))
     else:
         # wikipedia.org/wiki/Wavefront_.obj_file#Vertex_indices
-        for i in range(sum(c.isdigit() for c in f[0])):
+        print(f[0])
+        for i in range(sum(c.isdigit() for c in f[0].split(" "))):
             mesh_columns.append("v{}".format(i + 1))
 
     mesh = pd.DataFrame([re.split(r'\D+', x) for x in f], dtype='i4', columns=mesh_columns)
