@@ -45,9 +45,18 @@ def assert_mesh(data):
     (".bin", False, False)
 ])
 def test_from_file(data_path, extension, color, mesh):
-    file = PyntCloud.from_file(str(data_path / "diamond{}".format(extension)))
-    assert_points_xyz(file)
+    cloud = PyntCloud.from_file(str(data_path / "diamond{}".format(extension)))
+    assert_points_xyz(cloud)
     if color:
-        assert_points_color(file)
+        assert_points_color(cloud)
     if mesh:
-        assert_mesh(file)
+        assert_mesh(cloud)
+
+
+def test_obj_issue_221(data_path):
+    """ Regression test https://github.com/daavoo/pyntcloud/issues/221
+    """
+    cloud = PyntCloud.from_file(str(data_path / "obj_issue_221.obj"))
+
+    assert (len(cloud.xyz)) == 42
+    assert (len(cloud.mesh)) == 88
