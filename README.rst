@@ -47,6 +47,6 @@ With the following concise code:
 
     voxelgrid_id = cloud.add_structure("voxelgrid", n_x=32, n_y=32, n_z=32)
 
-    new_cloud = cloud.get_sample("voxelgrid_nearest", voxelgrid=voxelgrid_id, as_PyntCloud=True)
+    new_cloud = cloud.get_sample("voxelgrid_nearest", voxelgrid_id=voxelgrid_id, as_PyntCloud=True)
 
     new_cloud.to_file("out_file.npz")
