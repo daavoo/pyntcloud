@@ -34,9 +34,9 @@ def read_obj(filename):
                 vt.append(line.strip()[2:].split())
 
             elif line.startswith('f'):
-                f.append(line.strip()[2:])
+                f.append(line.strip()[1:].lstrip())
 
-    points = pd.DataFrame(v, dtype='f4', columns=['x', 'y', 'z'])
+    points = pd.DataFrame(v, dtype='f4', columns=["x", "y", "z", "w"][:len(v[0])])
 
     if len(vn) > 0:
         points = points.join(pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz']))
@@ -69,7 +69,6 @@ def read_obj(filename):
                 mesh_columns.append("vt{}".format(i + 1))
     else:
         # wikipedia.org/wiki/Wavefront_.obj_file#Vertex_indices
-        print(f[0])
         for i in range(sum(c.isdigit() for c in f[0].split(" "))):
             mesh_columns.append("v{}".format(i + 1))
 

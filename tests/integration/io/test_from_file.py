@@ -60,3 +60,11 @@ def test_obj_issue_221(data_path):
 
     assert (len(cloud.xyz)) == 42
     assert (len(cloud.mesh)) == 88
+
+
+def test_obj_issue_226(data_path):
+    """ Regression test https://github.com/daavoo/pyntcloud/issues/226
+    """
+    cloud = PyntCloud.from_file(str(data_path / "obj_issue_226.obj"))
+
+    assert "w" in cloud.points.columns
