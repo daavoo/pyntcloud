@@ -34,7 +34,7 @@ def read_obj(filename):
                 vt.append(line.strip()[2:].split())
 
             elif line.startswith('f'):
-                f.append(line.strip()[2:])
+                f.append(line.strip()[1:].lstrip())
 
     points = pd.DataFrame(v, dtype='f4', columns=["x", "y", "z", "w"][:len(v[0])])
 
