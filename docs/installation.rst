@@ -22,7 +22,7 @@ And running:
 
 .. code-block:: bash
     
-    conda env create -n pyntcloud python=3 numpy numba scipy pandas
+    conda create -n pyntcloud python=3 numpy numba scipy pandas
 
     source activate pyntcloud 
 
