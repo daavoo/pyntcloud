@@ -66,6 +66,7 @@ def get_and_setup_modelnet(N):
     cwd = os.getcwd()
     zip_file = f"{cwd}/modelnet{N}.zip"
     extract_folder = f"{cwd}/modelnet{N}"
+    BASE_folder = f"{cwd}/modelnet{N}/ModelNet{N}"
 
     if not os.path.exists(zip_file):
         print(f"Downloading ModelNet{N}")
@@ -76,6 +77,10 @@ def get_and_setup_modelnet(N):
         print("Unzipping ModelNet")
         with zipfile.ZipFile(zip_file) as zf:
             zf.extractall(extract_folder)
+
+    if not os.path.exists(BASE_folder):
+        os.makedirs(BASE_folder)
+        # recreate BASE if deleted
 
     print("Removing __MACOSX")
     # Thanks, Steve Jobs
