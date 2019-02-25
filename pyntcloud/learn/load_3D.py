@@ -47,7 +47,7 @@ def load_3D(path,
 
     if point_cloud.mesh is not None:
         point_cloud = PyntCloud(point_cloud.get_sample(
-            "mesh_random_sampling", n=n_sampling))
+            "mesh_random", n=n_sampling))
 
     if voxelize:
         vgrid_id = point_cloud.add_structure("voxelgrid", x_y_z=target_size)
