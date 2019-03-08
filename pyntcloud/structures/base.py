@@ -30,7 +30,7 @@ class StructuresDict(dict):
     def __init__(self, *args):
         self.n_voxelgrids = 0
         self.n_kdtrees = 0
-        self.n_delanuays = 0
+        self.n_delaunays = 0
         self.n_convex_hulls = 0
         super().__init__(*args)
 
@@ -44,7 +44,7 @@ class StructuresDict(dict):
         elif key.startswith("K"):
             self.n_kdtrees += 1
         elif key.startswith("D"):
-            self.n_delanuays += 1
+            self.n_delaunays += 1
         elif key.startswith("CH"):
             self.n_convex_hulls += 1
         else:
