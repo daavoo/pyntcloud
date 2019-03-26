@@ -11,7 +11,7 @@ class Delaunay3D(Delaunay, Structure):
                  furthest_site=False,
                  incremental=False,
                  qhull_options=None):
-        Structure.__init__(self, points)
+        Structure.__init__(self, points=points)
         self._furthest_site = furthest_site
         self._incremental = incremental
         self._qhull_options = qhull_options

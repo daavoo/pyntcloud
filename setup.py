@@ -1,7 +1,6 @@
-import pyntcloud
 from setuptools import setup, find_packages
 
-version = pyntcloud.__version__
+version = '0.1.0'
 
 setup(
     name='pyntcloud',
