@@ -1,1 +1,1 @@
-	from .core_class import PyntCloud
+from .core_class import PyntCloud
