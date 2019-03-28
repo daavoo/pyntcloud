@@ -564,9 +564,9 @@ class PyntCloud(object):
 
         points = self.points[use_columns].values
 
-        v1 = points[self.mesh["v1"].values]
-        v2 = points[self.mesh["v2"].values]
-        v3 = points[self.mesh["v3"].values]
+        v1 = points[self.mesh["v1"].astype(int).values]
+        v2 = points[self.mesh["v2"].astype(int).values]
+        v3 = points[self.mesh["v3"].astype(int).values]
 
         return v1, v2, v3
 
