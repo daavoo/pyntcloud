@@ -11,6 +11,7 @@ from .plot import DESCRIPTION, AVAILABLE_BACKENDS
 from .plot.matplotlib_backend import plot_with_matplotlib
 from .plot.threejs_backend import plot_with_threejs
 from .plot.pythreejs_backend import plot_with_pythreejs
+from .plot.pyvista_backend import plot_with_pyvista
 from .samplers import ALL_SAMPLERS
 from .scalar_fields import ALL_SF
 from .structures import ALL_STRUCTURES
@@ -625,6 +626,73 @@ class PyntCloud(object):
         self.xyz = self.__points[["x", "y", "z"]].values
         self.centroid = self.xyz.mean(0)
 
+
+    def to_pyvista(self, mesh=False, use_as_color=("red", "green", "blue")):
+        """Convert this PyntCloud to a PyVista mesh object"""
+        try:
+            import pyvista as pv
+        except ImportError:
+            raise ImportError('PyVista must be installed. Try `pip install pyvista`')
+        if mesh and self.mesh is not None:
+            mesh = self.mesh[["v1", "v2", "v3"]].values
+        else:
+            mesh = None
+        # Either make point cloud or triangulated mesh
+        if mesh is not None:
+            # Update cells of PolyData
+            types = np.full(len(mesh), 3, dtype=int)
+            faces = np.insert(mesh, 0, types, axis=1)
+            poly = pv.PolyData(self.xyz, faces)
+        else:
+            poly = pv.PolyData(self.xyz)
+
+        avoid = ["x", "y", "z"]
+        # add scalar arrays
+        if all(c in self.points.columns for c in use_as_color):
+            colors = self.points[list(use_as_color)].values
+            poly.point_arrays["RGB"] = colors
+            avoid += list(use_as_color)
+        # Add other arrays
+        for name in self.points.columns:
+            if name not in avoid:
+                poly.point_arrays[name] = self.points[name]
+
+        return poly
+
+
+    @classmethod
+    def from_pyvista(cls, poly_data):
+        """Load a PyntCloud mesh from a PyVista mesh"""
+        try:
+            import pyvista as pv
+        except ImportError:
+            raise ImportError('PyVista must be installed. Try `pip install pyvista`')
+        if not isinstance(poly_data, pv.PolyData):
+            raise TypeError('Type {} not yet supported for conversion.'.format(type(poly_data)))
+        # Grab the point coordinates
+        points = pd.DataFrame(data=poly_data.points, columns=["x", "y", "z"])
+        # Get the triangulated mesh if present
+        mesh = None
+        if poly_data.faces.ndim > 1:
+            mesh = poly_data.faces
+            if not np.all(3 == mesh[:,0]):
+                raise AssertionError('This mesh is not triangulated. Try triangulating the mesh before passing to PyntCloud.')
+            mesh = pd.DataFrame(data=mesh[:, 1:], columns=['v1', 'v2', 'v3'])
+        # pass scalar arrays to PyntCloud mesh
+        scalars = poly_data.point_arrays
+        for name, array in scalars.items():
+            if name in "RGB":
+                points["red"] = array[:,0]
+                points["green"] = array[:,1]
+                points["blue"] = array[:,2]
+            elif array.ndim < 2:
+                points[name] = array
+            else:
+                # Multicomponent arrays aren't supported by PyntCloud?
+                pass
+        return cls(points, mesh=mesh)
+
+
     def plot(
             self,
             backend=None,
@@ -641,7 +709,8 @@ class PyntCloud(object):
             return_scene=False,
             output_name="pyntcloud_plot",
             elev=0.,
-            azim=90.
+            azim=90.,
+            **kwargs
     ):
 
         """Visualize a PyntCloud  using different backends.
@@ -699,6 +768,7 @@ class PyntCloud(object):
             Azimuth angle in the x,y plane.
         """
         args = locals()
+        args.update(kwargs)
         backend = args.pop("backend")
 
         # Choose fisrt avaialable backend
@@ -714,5 +784,7 @@ class PyntCloud(object):
             return plot_with_pythreejs(self, **args)
         elif backend == "threejs":
             return plot_with_threejs(self, **args)
+        elif backend == "pyvista":
+            return plot_with_pyvista(self, **args)
         else:
             raise NotImplementedError("{} backend is not supported".format(backend))

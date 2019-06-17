@@ -18,6 +18,12 @@ try:
     AVAILABLE_BACKENDS.append("pythreejs")
 except ImportError:
     pass
+# Add PyVista
+try:
+    import pythreejs
+    AVAILABLE_BACKENDS.append("pyvista")
+except ImportError:
+    pass
 # Add matplotlib
 try:
     import matplotlib

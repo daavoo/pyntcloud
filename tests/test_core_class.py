@@ -5,6 +5,13 @@ import pandas as pd
 from shutil import rmtree
 from pyntcloud import PyntCloud
 
+try:
+    import pyvista as pv
+    SKIP_PYVISTA = False
+except:
+    pv = None
+    SKIP_PYVISTA = True
+
 path = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -94,3 +101,14 @@ def test_split_on():
     assert len(output) == 8
 
     rmtree("tmp_out")
+
+@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
+def test_pyvista_conversion():
+    cloud = PyntCloud.from_file(path + "/data/diamond.ply")
+    poly = cloud.to_pyvista(mesh=True)
+    pc = PyntCloud.from_pyvista(poly)
+    assert np.allclose(cloud.points[['x', 'y', 'z']].values, poly.points)
+    assert np.allclose(cloud.mesh.values, pc.mesh.values)
+    poly = pyvista.read("/data/diamond.ply")
+    pc = PyntCloud.from_pyvista(poly)
+    assert np.allclose(pc.points[['x', 'y', 'z']].values, poly.points)
