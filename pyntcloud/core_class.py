@@ -7,7 +7,7 @@ from .structures.base import StructuresDict
 from .filters import ALL_FILTERS
 from .io import FROM, TO
 from .neighbors import k_neighbors, r_neighbors
-from .plot import DESCRIPTION
+from .plot import DESCRIPTION, AVAILABLE_BACKENDS
 from .plot.matplotlib_backend import plot_with_matplotlib
 from .plot.threejs_backend import plot_with_threejs
 from .plot.pythreejs_backend import plot_with_pythreejs
@@ -627,7 +627,7 @@ class PyntCloud(object):
 
     def plot(
             self,
-            backend="pythreejs",
+            backend=None,
             scene=None,
             width=800,
             height=500,
@@ -701,9 +701,16 @@ class PyntCloud(object):
         args = locals()
         backend = args.pop("backend")
 
+        # Choose fisrt avaialable backend
+        if backend is None and len(AVAILABLE_BACKENDS) > 0:
+            backend = AVAILABLE_BACKENDS[0]
+        elif backend is None:
+            backend = 'pythreejs'
+
+        # Plot with backend of choice
         if backend == "matplotlib":
             return plot_with_matplotlib(self, **args)
-        if backend == "pythreejs":
+        elif backend == "pythreejs":
             return plot_with_pythreejs(self, **args)
         elif backend == "threejs":
             return plot_with_threejs(self, **args)
