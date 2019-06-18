@@ -20,7 +20,7 @@ except ImportError:
     pass
 # Add PyVista
 try:
-    import pythreejs
+    import pyvista
     AVAILABLE_BACKENDS.append("pyvista")
 except ImportError:
     pass
