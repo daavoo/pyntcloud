@@ -33,9 +33,10 @@ def get_polylines_pythreejs(polylines):
     for x in polylines:
         line_geometry = pythreejs.Geometry(
             vertices=x["vertices"])
+        linewidth = x.get("linewidth", 1.0)
         line = pythreejs.Line(
             geometry=line_geometry,
-            material=pythreejs.LineBasicMaterial(color=x["color"]),
+            material=pythreejs.LineBasicMaterial(color=x["color"], linewidth=linewidth),
             type='LinePieces')
         lines.append(line)
 
