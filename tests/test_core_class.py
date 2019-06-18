@@ -102,6 +102,7 @@ def test_split_on():
 
     rmtree("tmp_out")
 
+
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
 def test_pyvista_conversion():
     cloud = PyntCloud.from_file(path + "/data/diamond.ply")
@@ -112,3 +113,29 @@ def test_pyvista_conversion():
     poly = pyvista.read("/data/diamond.ply")
     pc = PyntCloud.from_pyvista(poly)
     assert np.allclose(pc.points[['x', 'y', 'z']].values, poly.points)
+
+
+@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
+def test_pyvista_normals_are_handled():
+    poly = pv.Sphere()
+    pc = PyntCloud.from_pyvista(poly)
+    assert all(x in pc.points.columns for x in ["nx", "ny", "nz"])
+
+
+@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
+def test_pyvista_multicomponent_scalars_are_splitted():
+    poly = pv.Sphere()
+    poly.point_arrays["foo"] = np.zeros_like(poly.points)
+    pc = PyntCloud.from_pyvista(poly)
+    assert all(x in pc.points.columns for x in ["foo_0", "foo_1", "foo_2"])
+
+
+@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
+def test_pyvista_RGB_is_handled():
+    """ Serves as regression test for old `in` behaviour that could cause a subtle bug
+    if poin_arrays contain a field with `name in "RGB"`
+    """
+    poly = pv.Sphere()
+    poly.point_arrays["RG"] = np.zeros_like(poly.points)[:, :2]
+    pc = PyntCloud.from_pyvista(poly)
+    assert all(x in pc.points.columns for x in ["R", "G"])
