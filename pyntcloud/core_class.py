@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -626,7 +627,6 @@ class PyntCloud(object):
         self.xyz = self.__points[["x", "y", "z"]].values
         self.centroid = self.xyz.mean(0)
 
-
     def to_pyvista(self, mesh=False, use_as_color=("red", "green", "blue")):
         """Convert this PyntCloud to a PyVista mesh object"""
         try:
@@ -659,39 +659,46 @@ class PyntCloud(object):
 
         return poly
 
-
     @classmethod
     def from_pyvista(cls, poly_data):
         """Load a PyntCloud mesh from a PyVista mesh"""
         try:
             import pyvista as pv
         except ImportError:
-            raise ImportError('PyVista must be installed. Try `pip install pyvista`')
+            raise ImportError("PyVista must be installed. Try `pip install pyvista`")
         if not isinstance(poly_data, pv.PolyData):
-            raise TypeError('Type {} not yet supported for conversion.'.format(type(poly_data)))
-        # Grab the point coordinates
-        points = pd.DataFrame(data=poly_data.points, columns=["x", "y", "z"])
-        # Get the triangulated mesh if present
+            raise TypeError("Type {} not yet supported for conversion.".format(type(poly_data)))
+
         mesh = None
         if poly_data.faces.ndim > 1:
             mesh = poly_data.faces
-            if not np.all(3 == mesh[:,0]):
-                raise AssertionError('This mesh is not triangulated. Try triangulating the mesh before passing to PyntCloud.')
+            if not np.all(3 == mesh[:, 0]):
+                raise ValueError(
+                    "This mesh is not triangulated. Try triangulating the mesh before passing to PyntCloud.")
             mesh = pd.DataFrame(data=mesh[:, 1:], columns=['v1', 'v2', 'v3'])
-        # pass scalar arrays to PyntCloud mesh
+
+        points = pd.DataFrame(data=poly_data.points, columns=["x", "y", "z"])
+
         scalars = poly_data.point_arrays
         for name, array in scalars.items():
-            if name in "RGB":
-                points["red"] = array[:,0]
-                points["green"] = array[:,1]
-                points["blue"] = array[:,2]
-            elif array.ndim < 2:
+            if array.ndim == 1:
                 points[name] = array
+            elif array.ndim == 2:
+                if name in "RGB":
+                    points["red"] = array[:, 0]
+                    points["green"] = array[:, 1]
+                    points["blue"] = array[:, 2]
+                elif name == "Normals":
+                    points["nx"] = array[:, 0]
+                    points["ny"] = array[:, 1]
+                    points["nz"] = array[:, 2]
+                else:
+                    for n in range(array.shape[1]):
+                        points["{}_{}".format(name, n)] = array[:, n]
             else:
-                # Multicomponent arrays aren't supported by PyntCloud?
-                pass
-        return cls(points, mesh=mesh)
+                warnings.warn("Ignoring scalar field {} with ndim > 2 ({})".format(name, array.ndim))
 
+        return cls(points, mesh=mesh)
 
     def plot(
             self,
@@ -717,7 +724,7 @@ class PyntCloud(object):
 
         Parameters
         ----------
-        backend: {"pythreejs", "threejs"}, optional
+        backend: {"pythreejs", "threejs", "pyvista", "matplotlib"}, optional
             Default: "pythreejs"
             Used to select one of the available libraries for plotting.
 
