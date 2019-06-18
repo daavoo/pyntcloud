@@ -684,7 +684,7 @@ class PyntCloud(object):
             if array.ndim == 1:
                 points[name] = array
             elif array.ndim == 2:
-                if name in "RGB":
+                if name == "RGB":
                     points["red"] = array[:, 0]
                     points["green"] = array[:, 1]
                     points["blue"] = array[:, 2]
