@@ -138,4 +138,4 @@ def test_pyvista_RGB_is_handled():
     poly = pv.Sphere()
     poly.point_arrays["RG"] = np.zeros_like(poly.points)[:, :2]
     pc = PyntCloud.from_pyvista(poly)
-    assert all(x in pc.points.columns for x in ["R", "G"])
+    assert all(x in pc.points.columns for x in ["RG_0", "RG_1"])
