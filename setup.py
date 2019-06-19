@@ -9,7 +9,7 @@ setup(
     url='https://github.com/daavoo/pyntcloud',
     author='David de la Iglesia Castro',
     author_email='daviddelaiglesiacastro@gmail.com',
-    license='HAKUNA MATATA',
+    license='The MIT License',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -19,7 +19,7 @@ setup(
     ],
      extras_require={
         'LAS':  ["laspy"],
-        'PLOT': ["ipython", "matplotlib"],
+        'PLOT': ["ipython", "matplotlib", "pyvista"],
         'NUMBA': ["numba"]
     }
 )

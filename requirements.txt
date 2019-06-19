@@ -1,0 +1,9 @@
+numpy
+scipy
+pandas
+laspy
+ipython
+matplotlib
+numba
+pytest
+pyvista
