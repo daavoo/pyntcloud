@@ -22,6 +22,7 @@ Making point clouds fun again
 .. _Documentation: http://pyntcloud.readthedocs.io/en/latest/
 
 .. code-block:: bash
+
     pip install pyntcloud
 
 Quick Overview
