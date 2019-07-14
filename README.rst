@@ -21,6 +21,9 @@ Making point clouds fun again
 .. _Examples: https://github.com/daavoo/pyntcloud/tree/master/examples
 .. _Documentation: http://pyntcloud.readthedocs.io/en/latest/
 
+.. code-block:: bash
+    pip install pyntcloud
+
 Quick Overview
 ==============
 
