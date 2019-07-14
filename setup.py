@@ -22,11 +22,11 @@ setup(
         "scipy",
         "pandas",
     ],
-     extras_require={
+    extras_require={
         'LAS':  ["laspy"],
         'PLOT': ["ipython", "matplotlib", "pyvista"],
         'NUMBA': ["numba"]
-    }
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
