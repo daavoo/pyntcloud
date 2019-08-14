@@ -71,12 +71,8 @@ class RandomMeshSampler(MeshSampler):
         v3_xyz = self.v3_xyz[random_idx]
 
         # (n, 1) the 1 is for broadcasting
-        u = np.random.rand(self.n, 1)
-        v = np.random.rand(self.n, 1)
-        is_a_problem = u + v > 1
-
-        u[is_a_problem] = 1 - u[is_a_problem]
-        v[is_a_problem] = 1 - v[is_a_problem]
+        u = np.random.uniform(low=0., high=1., size=(self.n, 1))
+        v = np.random.uniform(low=0., high=u, size=(self.n, 1))
 
         result = pd.DataFrame()
 
