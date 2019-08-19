@@ -75,7 +75,7 @@ def read_ply(filename):
                 # element mesh
                 if b'list' in line:
 
-                    if b"vertex_indices" in line[-1]:
+                    if b"vertex_indices" in line[-1] or b"vertex_index" in line[-1]:
                         mesh_names = ["n_points", "v1", "v2", "v3"]
                     else:
                         has_texture = True

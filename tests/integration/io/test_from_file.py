@@ -38,6 +38,7 @@ def assert_mesh(data):
 @pytest.mark.parametrize("extension,color,mesh", [
     (".ply", True, True),
     ("_ascii.ply", True, True),
+    ("_ascii_vertex_index.ply", True, True),
     (".npz", True, True),
     (".obj", False, True),
     (".off", False, False),
