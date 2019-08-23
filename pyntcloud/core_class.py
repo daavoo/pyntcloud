@@ -22,7 +22,7 @@ from .utils.dataframe import convert_columns_dtype
 class PyntCloud(object):
     """A Pythonic Point Cloud."""
 
-    def __init__(self, points, mesh=None, structures={}, **kwargs):
+    def __init__(self, points, mesh=None, structures=None, **kwargs):
         """Create PyntCloud.
 
         Parameters
@@ -44,6 +44,7 @@ class PyntCloud(object):
         self.points = points
         self.mesh = mesh
         self.structures = StructuresDict()
+        structures = structures or {}
         for key, val in structures.items():
             self.structures[key] = val
         for key, val in kwargs.items():
