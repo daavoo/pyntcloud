@@ -50,6 +50,11 @@ def test_RandomPointsSampler_sampled_points_are_from_original(simple_pyntcloud):
         assert point_in_array_2D(sample, simple_pyntcloud.xyz)
 
 
+@pytest.mark.parametrize("n", [
+    1,
+    5,
+    6
+])
 @pytest.mark.usefixtures("simple_pyntcloud")
 def test_FarthestPointsSampler_n_argument(simple_pyntcloud, n):
     sample = simple_pyntcloud.get_sample(
