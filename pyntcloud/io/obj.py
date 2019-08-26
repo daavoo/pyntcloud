@@ -72,7 +72,7 @@ def read_obj(filename):
         for i in range(sum(c.isdigit() for c in f[0].split(" "))):
             mesh_columns.append("v{}".format(i + 1))
 
-    mesh = pd.DataFrame([re.split(r'\D+', x) for x in f], dtype='i4', columns=mesh_columns)
+    mesh = pd.DataFrame([re.split(r'\D+', x) for x in f], dtype='i4', columns=mesh_columns).astype('i4')
     mesh -= 1  # index starts with 1 in obj file
 
     data["mesh"] = mesh

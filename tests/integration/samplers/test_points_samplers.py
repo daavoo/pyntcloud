@@ -19,6 +19,7 @@ def test_mesh_random_sampling_return_type(simple_pyntcloud):
         as_PyntCloud=True)
     assert type(sample) == PyntCloud
 
+
 @pytest.mark.parametrize("n", [
     1,
     5,
@@ -48,3 +49,32 @@ def test_RandomPointsSampler_sampled_points_are_from_original(simple_pyntcloud):
             n=1)
         assert point_in_array_2D(sample, simple_pyntcloud.xyz)
 
+
+@pytest.mark.parametrize("n", [
+    1,
+    5,
+    6
+])
+@pytest.mark.usefixtures("simple_pyntcloud")
+def test_FarthestPointsSampler_n_argument(simple_pyntcloud, n):
+    sample = simple_pyntcloud.get_sample(
+        "points_farthest",
+        n=n)
+    assert len(sample) == n
+
+
+@pytest.mark.usefixtures("simple_pyntcloud")
+def test_FarthestPointsSampler_raises_ValueError_on_invalid_n(simple_pyntcloud):
+    with pytest.raises(ValueError):
+        simple_pyntcloud.get_sample(
+            "points_farthest",
+            n=10)
+
+
+@pytest.mark.usefixtures("simple_pyntcloud")
+def test_FarthestPointsSampler_sampled_points_are_from_original(simple_pyntcloud):
+    for i in range(10):
+        sample = simple_pyntcloud.get_sample(
+            "points_farthest",
+            n=1)
+        assert point_in_array_2D(sample, simple_pyntcloud.xyz)
