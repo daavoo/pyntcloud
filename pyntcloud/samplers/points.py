@@ -73,7 +73,8 @@ class FarthestPointsSampler(PointsSampler):
         solution_set = remaining_points[select_idx: select_idx+1]
         remaining_points = np.delete(remaining_points, select_idx, 0)
 
-        for _ in range(self.n - 1):
+        for idx in range(self.n - 1):
+            print(idx)
             distance_sum = self.cal_distance(remaining_points, solution_set)
             select_idx = np.argmax(distance_sum)
             solution_set = np.concatenate([solution_set, remaining_points[select_idx:select_idx+1]], axis=0)

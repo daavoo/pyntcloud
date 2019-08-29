@@ -41,7 +41,7 @@ class PyntCloud(object):
 
         kwargs: custom attributes
         """
-        self.points = points
+        self.points = points.astype(np.float64)
         self.mesh = mesh
         self.structures = StructuresDict()
         for key, val in structures.items():
@@ -49,7 +49,7 @@ class PyntCloud(object):
         for key, val in kwargs.items():
             setattr(self, key, val)
         # store raw xyz values to share memory along structures
-        self.xyz = self.points[["x", "y", "z"]].values
+        self.xyz = self.points[["x", "y", "z"]].values.astype(np.float64)
         self.centroid = self.xyz.mean(0)
 
     def __repr__(self):
