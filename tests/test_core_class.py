@@ -110,7 +110,7 @@ def test_pyvista_conversion():
     pc = PyntCloud.from_pyvista(poly)
     assert np.allclose(cloud.points[['x', 'y', 'z']].values, poly.points)
     assert np.allclose(cloud.mesh.values, pc.mesh.values)
-    poly = pyvista.read("/data/diamond.ply")
+    poly = pyvista.read("/data/diamond.ply")  # noqa: F821
     pc = PyntCloud.from_pyvista(poly)
     assert np.allclose(pc.points[['x', 'y', 'z']].values, poly.points)
 
