@@ -1,3 +1,4 @@
+from pyntcloud.io.pyvista import from_pyvista, to_pyvista
 from .ascii import read_ascii, write_ascii
 from .bin import read_bin, write_bin
 from .las import read_las
@@ -7,7 +8,7 @@ from .ply import read_ply, write_ply
 from .off import read_off
 from .pcd import read_pcd
 
-FROM = {
+FROM_FILE = {
     "ASC": read_ascii,
     "BIN": read_bin,
     "CSV": read_ascii,
@@ -21,8 +22,11 @@ FROM = {
     "TXT": read_ascii,
     "XYZ": read_ascii,
 }
+FROM_INSTANCE = {
+    "PYVISTA": from_pyvista
+}
 
-TO = {
+TO_FILE = {
     "ASC": write_ascii,
     "BIN": write_bin,
     "CSV": write_ascii,
@@ -32,4 +36,7 @@ TO = {
     "PTS": write_ascii,
     "TXT": write_ascii,
     "XYZ": write_ascii,
+}
+TO_INSTANCE = {
+    "PYVISTA": to_pyvista
 }
