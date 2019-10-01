@@ -12,8 +12,6 @@ except:
     pv = None
     SKIP_PYVISTA = True
 
-path = os.path.abspath(os.path.dirname(__file__))
-
 
 def test_points():
     """PyntCloud.points.
@@ -72,7 +70,7 @@ def test_repr():
     assert reprstring[-2].strip() == "important_information: <class 'dict'>"
 
 
-def test_split_on():
+def test_split_on(data_path):
     """PyntCloud.split_on.
 
     - Raise KeyError on invalid scalar field
@@ -81,10 +79,10 @@ def test_split_on():
     - Implicitily check save_path is working
 
     """
-    cloud = PyntCloud.from_file(path + "/data/mnist.npz")
-    vg_id = cloud.add_structure("voxelgrid", x_y_z=[2, 2, 2])
+    cloud = PyntCloud.from_file(str(data_path / "mnist.npz"))
+    vg_id = cloud.add_structure("voxelgrid", n_x=2, n_y=2, n_z=2)
 
-    voxel_n = cloud.add_scalar_field("voxel_n", voxelgrid=vg_id)
+    voxel_n = cloud.add_scalar_field("voxel_n", voxelgrid_id=vg_id)
 
     with pytest.raises(KeyError):
         cloud.split_on("bad_sf")
@@ -104,21 +102,23 @@ def test_split_on():
 
 
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
-def test_pyvista_conversion():
-    cloud = PyntCloud.from_file(path + "/data/diamond.ply")
-    poly = cloud.to_pyvista(mesh=True)
-    pc = PyntCloud.from_pyvista(poly)
+def test_pyvista_conversion(data_path):
+    print(data_path)
+    print(data_path.joinpath("diamond.ply"))
+    cloud = PyntCloud.from_file(str(data_path.joinpath("diamond.ply")))
+    poly = cloud.to_instance("pyvista", mesh=True)
+    pc = PyntCloud.from_instance("pyvista", poly)
     assert np.allclose(cloud.points[['x', 'y', 'z']].values, poly.points)
     assert np.allclose(cloud.mesh.values, pc.mesh.values)
-    poly = pyvista.read("/data/diamond.ply")  # noqa: F821
-    pc = PyntCloud.from_pyvista(poly)
+    poly = pv.read(str(data_path.joinpath("diamond.ply")))
+    pc = PyntCloud.from_instance("pyvista", poly)
     assert np.allclose(pc.points[['x', 'y', 'z']].values, poly.points)
 
 
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
 def test_pyvista_normals_are_handled():
     poly = pv.Sphere()
-    pc = PyntCloud.from_pyvista(poly)
+    pc = PyntCloud.from_instance("pyvista", poly)
     assert all(x in pc.points.columns for x in ["nx", "ny", "nz"])
 
 
@@ -126,7 +126,7 @@ def test_pyvista_normals_are_handled():
 def test_pyvista_multicomponent_scalars_are_splitted():
     poly = pv.Sphere()
     poly.point_arrays["foo"] = np.zeros_like(poly.points)
-    pc = PyntCloud.from_pyvista(poly)
+    pc = PyntCloud.from_instance("pyvista", poly)
     assert all(x in pc.points.columns for x in ["foo_0", "foo_1", "foo_2"])
 
 
@@ -137,5 +137,5 @@ def test_pyvista_RGB_is_handled():
     """
     poly = pv.Sphere()
     poly.point_arrays["RG"] = np.zeros_like(poly.points)[:, :2]
-    pc = PyntCloud.from_pyvista(poly)
+    pc = PyntCloud.from_instance("pyvista", poly)
     assert all(x in pc.points.columns for x in ["RG_0", "RG_1"])

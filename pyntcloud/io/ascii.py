@@ -16,15 +16,15 @@ def read_ascii(filename, **kwargs):
         Elements as pandas DataFrames.
     """
 
-    data = {}
-
-    data["points"] = pd.read_csv(filename, **kwargs)
+    data = {
+        "points": pd.read_csv(filename, **kwargs)
+    }
 
     return data
 
 
 def write_ascii(filename, points, **kwargs):
-    """Write points (and optionally mesh) content to filename.
+    """Write points content to filename.
 
     Parameters
     ----------
@@ -32,9 +32,6 @@ def write_ascii(filename, points, **kwargs):
         Path to output filename
     points: pd.DataFrame
         Points data
-    mesh: pd.DataFrame or None, optional
-        Default: None
-        If not None, 2 files will be written.
 
     kwargs: see pd.DataFrame.to_csv
 

@@ -26,24 +26,24 @@ def test_spherical_to_cartesian():
 
 
 def test_cartesian_to_spherical():
-    expected = np.array([[1, 45, 45], [1, -45, 135]], dtype=np.float32)
+    expected = np.array([[1, 45, 45], [1, 135, -45]], dtype=np.float32)
 
     data = np.array([[0.5, 0.5, 0.7071], [0.5, -0.5, -0.7071]])
 
     result = np.zeros_like(expected)
-    radial, azimuthal, polar = cartesian_to_spherical(data)
+    radial, polar, azimuthal = cartesian_to_spherical(data)
     result[:, 0] = radial
-    result[:, 1] = azimuthal
-    result[:, 2] = polar
+    result[:, 1] = polar
+    result[:, 2] = azimuthal
 
     assert np.all(np.isclose(result, expected))
 
     expected[:, 1:] = np.deg2rad(expected[:, 1:])
 
-    radial, azimuthal, polar = cartesian_to_spherical(data, degrees=False)
+    radial, polar, azimuthal = cartesian_to_spherical(data, degrees=False)
     result[:, 0] = radial
-    result[:, 1] = azimuthal
-    result[:, 2] = polar
+    result[:, 1] = polar
+    result[:, 2] = azimuthal
 
     assert np.all(np.isclose(result, expected))
 

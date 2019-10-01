@@ -1,12 +1,11 @@
 import os
-import warnings
 
 import numpy as np
 import pandas as pd
 
 from .structures.base import StructuresDict
 from .filters import ALL_FILTERS
-from .io import FROM, TO
+from .io import FROM_FILE, TO_FILE, FROM_INSTANCE, TO_INSTANCE
 from .neighbors import k_neighbors, r_neighbors
 from .plot import DESCRIPTION, AVAILABLE_BACKENDS
 from .plot.matplotlib_backend import plot_with_matplotlib
@@ -124,11 +123,35 @@ class PyntCloud(object):
             PyntCloud instance, containing all valid elements in the file.
         """
         ext = filename.split(".")[-1].upper()
-        if ext not in FROM:
+        if ext not in FROM_FILE:
             raise ValueError(
-                "Unsupported file format; supported formats are: {}".format(list(FROM)))
+                "Unsupported file format; supported formats are: {}".format(list(FROM_FILE)))
         else:
-            return cls(**FROM[ext](filename, **kwargs))
+            return cls(**FROM_FILE[ext](filename, **kwargs))
+
+    @classmethod
+    def from_instance(cls, library, instance, **kwargs):
+        """Extract data from file and construct a PyntCloud with it.
+
+        Parameters
+        ----------
+        library: str
+            Name of the library of the instance to be converted from.
+        instance:
+            `library's` instance
+        kwargs: only usable in some formats
+
+        Returns
+        -------
+        PyntCloud: object
+            PyntCloud instance, containing all valid elements in the file.
+        """
+        library = library.upper()
+        if library not in FROM_INSTANCE:
+            raise ValueError(
+                "Unsupported library; supported libraries are: {}".format(list(FROM_INSTANCE)))
+        else:
+            return cls(**FROM_INSTANCE[library](instance, **kwargs))
 
     def to_file(self, filename, also_save=None, **kwargs):
         """Save PyntCloud data to file.
@@ -147,16 +170,34 @@ class PyntCloud(object):
         """
         convert_columns_dtype(self.points, np.float64, np.float32)
         ext = filename.split(".")[-1].upper()
-        if ext not in TO:
+        if ext not in TO_FILE:
             raise ValueError(
-                "Unsupported file format; supported formats are: {}".format(list(TO)))
+                "Unsupported file format; supported formats are: {}".format(list(TO_FILE)))
         kwargs["filename"] = filename
         kwargs["points"] = self.points
         if also_save is not None:
             for x in also_save:
                 kwargs[x] = getattr(self, x)
 
-        TO[ext](**kwargs)
+        TO_FILE[ext](**kwargs)
+
+    def to_instance(self, library, **kwargs):
+        """Save PyntCloud data to file.
+
+        Parameters
+        ----------
+        library: str
+            Name of the library of the instance to be converted to.
+
+        kwargs: only usable in some formats
+        """
+        convert_columns_dtype(self.points, np.float64, np.float32)
+        library = library.upper()
+        if library not in TO_INSTANCE:
+            raise ValueError(
+                "Unsupported library; supported linraries are: {}".format(list(TO_INSTANCE)))
+
+        return TO_INSTANCE[library](self, **kwargs)
 
     def add_scalar_field(self, name, **kwargs):
         """Add one or multiple columns to PyntCloud.points.
@@ -627,79 +668,6 @@ class PyntCloud(object):
         self.__points = df
         self.xyz = self.__points[["x", "y", "z"]].values
         self.centroid = self.xyz.mean(0)
-
-    def to_pyvista(self, mesh=False, use_as_color=("red", "green", "blue")):
-        """Convert this PyntCloud to a PyVista mesh object"""
-        try:
-            import pyvista as pv
-        except ImportError:
-            raise ImportError('PyVista must be installed. Try `pip install pyvista`')
-        if mesh and self.mesh is not None:
-            mesh = self.mesh[["v1", "v2", "v3"]].values
-        else:
-            mesh = None
-        # Either make point cloud or triangulated mesh
-        if mesh is not None:
-            # Update cells of PolyData
-            types = np.full(len(mesh), 3, dtype=int)
-            faces = np.insert(mesh, 0, types, axis=1)
-            poly = pv.PolyData(self.xyz, faces)
-        else:
-            poly = pv.PolyData(self.xyz)
-
-        avoid = ["x", "y", "z"]
-        # add scalar arrays
-        if all(c in self.points.columns for c in use_as_color):
-            colors = self.points[list(use_as_color)].values
-            poly.point_arrays["RGB"] = colors
-            avoid += list(use_as_color)
-        # Add other arrays
-        for name in self.points.columns:
-            if name not in avoid:
-                poly.point_arrays[name] = self.points[name]
-
-        return poly
-
-    @classmethod
-    def from_pyvista(cls, poly_data):
-        """Load a PyntCloud mesh from a PyVista mesh"""
-        try:
-            import pyvista as pv
-        except ImportError:
-            raise ImportError("PyVista must be installed. Try `pip install pyvista`")
-        if not isinstance(poly_data, pv.PolyData):
-            raise TypeError("Type {} not yet supported for conversion.".format(type(poly_data)))
-
-        mesh = None
-        if poly_data.faces.ndim > 1:
-            mesh = poly_data.faces
-            if not np.all(3 == mesh[:, 0]):
-                raise ValueError(
-                    "This mesh is not triangulated. Try triangulating the mesh before passing to PyntCloud.")
-            mesh = pd.DataFrame(data=mesh[:, 1:], columns=['v1', 'v2', 'v3'])
-
-        points = pd.DataFrame(data=poly_data.points, columns=["x", "y", "z"])
-
-        scalars = poly_data.point_arrays
-        for name, array in scalars.items():
-            if array.ndim == 1:
-                points[name] = array
-            elif array.ndim == 2:
-                if name == "RGB":
-                    points["red"] = array[:, 0]
-                    points["green"] = array[:, 1]
-                    points["blue"] = array[:, 2]
-                elif name == "Normals":
-                    points["nx"] = array[:, 0]
-                    points["ny"] = array[:, 1]
-                    points["nz"] = array[:, 2]
-                else:
-                    for n in range(array.shape[1]):
-                        points["{}_{}".format(name, n)] = array[:, n]
-            else:
-                warnings.warn("Ignoring scalar field {} with ndim > 2 ({})".format(name, array.ndim))
-
-        return cls(points, mesh=mesh)
 
     def plot(
             self,
