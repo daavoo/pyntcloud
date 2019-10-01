@@ -58,10 +58,10 @@ def cartesian_to_spherical(xyz, degrees=True):
     -------
     radius: (N,) ndarray
         Radial distance.
-    inclination: (N,) ndarray
-        Polar angle.
     azimuth: (N,) ndarray
         Azimuthal angle.
+    inclination: (N,) ndarray
+    Polar angle.
     """
     x = xyz[:, 0]
     y = xyz[:, 1]
@@ -77,7 +77,7 @@ def cartesian_to_spherical(xyz, degrees=True):
         inclination = np.rad2deg(inclination)
         azimuth = np.rad2deg(azimuth)
 
-    return radius, inclination, azimuth
+    return radius, azimuth, inclination
 
 
 def cylindrical_to_cartesian(ro, phi, z, degrees=True):
