@@ -197,7 +197,7 @@ class PyntCloud(object):
             raise ValueError(
                 "Unsupported library; supported linraries are: {}".format(list(TO_INSTANCE)))
 
-        TO_INSTANCE[library](**kwargs)
+        return TO_INSTANCE[library](self, **kwargs)
 
     def add_scalar_field(self, name, **kwargs):
         """Add one or multiple columns to PyntCloud.points.
