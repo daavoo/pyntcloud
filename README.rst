@@ -58,7 +58,7 @@ With the following concise code:
 Integration with other libraries
 ================================
 
-pyntcloud offers seamless integrations with other 3D processing libraries.
+pyntcloud offers seamless integration with other 3D processing libraries.
 
 You can create / convert PyntCloud instances from / to many 3D processing libraries using the `from_instance` / `to_instance` methods:
 
