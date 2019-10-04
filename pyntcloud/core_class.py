@@ -131,7 +131,7 @@ class PyntCloud(object):
 
     @classmethod
     def from_instance(cls, library, instance, **kwargs):
-        """Extract data from file and construct a PyntCloud with it.
+        """Convert library's instance to PyntCloud intstance.
 
         Parameters
         ----------
@@ -182,7 +182,7 @@ class PyntCloud(object):
         TO_FILE[ext](**kwargs)
 
     def to_instance(self, library, **kwargs):
-        """Save PyntCloud data to file.
+        """Convert PyntCloud's instance to library's instance.
 
         Parameters
         ----------
