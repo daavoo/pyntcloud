@@ -11,9 +11,8 @@ Making point clouds fun again
     :target: https://mybinder.org/v2/gh/daavoo/pyntcloud/master
     :alt: Start in Binder
 
-.. image:: https://img.shields.io/pypi/v/pyntcloud
-    :target: https://https://pypi.org/project/pyntcloud/
-    :alt: Pypi
+.. image:: https://badge.fury.io/py/pyntcloud.svg
+    :target: https://pypi.org/project/pyntcloud/
 
 .. image:: https://raw.githubusercontent.com/daavoo/pyntcloud/master/docs/images/pyntcloud_logo.png
     :alt: pyntcloud logo
