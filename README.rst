@@ -6,10 +6,14 @@ Making point clouds fun again
 .. image:: https://github.com/daavoo/pyntcloud/workflows/Python%20package/badge.svg
     :target: https://github.com/daavoo/pyntcloud/actions
     :alt: Github Actions Status
-
+    
+.. image:: https://readthedocs.org/projects/pyntcloud/badge/?version=latest
+    :target: https://pyntcloud.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+    
 .. image:: https://mybinder.org/badge.svg
     :target: https://mybinder.org/v2/gh/daavoo/pyntcloud/master
-    :alt: Start in Binder
+    :alt: Launch Binder
 
 .. image:: https://badge.fury.io/py/pyntcloud.svg
     :target: https://pypi.org/project/pyntcloud/
