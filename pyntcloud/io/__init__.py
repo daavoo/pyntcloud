@@ -1,3 +1,4 @@
+from pyntcloud.io.open3d import from_open3d, to_open3d
 from pyntcloud.io.pyvista import from_pyvista, to_pyvista
 from .ascii import read_ascii, write_ascii
 from .bin import read_bin, write_bin
@@ -23,7 +24,8 @@ FROM_FILE = {
     "XYZ": read_ascii,
 }
 FROM_INSTANCE = {
-    "PYVISTA": from_pyvista
+    "PYVISTA": from_pyvista,
+    "OPEN3D": from_open3d
 }
 
 TO_FILE = {
@@ -38,5 +40,6 @@ TO_FILE = {
     "XYZ": write_ascii,
 }
 TO_INSTANCE = {
-    "PYVISTA": to_pyvista
+    "PYVISTA": to_pyvista,
+    "OPEN3D": to_open3d
 }
