@@ -1,16 +1,8 @@
-import os
 import pytest
 import numpy as np
 import pandas as pd
 from shutil import rmtree
 from pyntcloud import PyntCloud
-
-try:
-    import pyvista as pv
-    SKIP_PYVISTA = False
-except:
-    pv = None
-    SKIP_PYVISTA = True
 
 
 def test_points():
@@ -99,43 +91,3 @@ def test_split_on(data_path):
     assert len(output) == 8
 
     rmtree("tmp_out")
-
-
-@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
-def test_pyvista_conversion(data_path):
-    print(data_path)
-    print(data_path.joinpath("diamond.ply"))
-    cloud = PyntCloud.from_file(str(data_path.joinpath("diamond.ply")))
-    poly = cloud.to_instance("pyvista", mesh=True)
-    pc = PyntCloud.from_instance("pyvista", poly)
-    assert np.allclose(cloud.points[['x', 'y', 'z']].values, poly.points)
-    assert np.allclose(cloud.mesh.values, pc.mesh.values)
-    poly = pv.read(str(data_path.joinpath("diamond.ply")))
-    pc = PyntCloud.from_instance("pyvista", poly)
-    assert np.allclose(pc.points[['x', 'y', 'z']].values, poly.points)
-
-
-@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
-def test_pyvista_normals_are_handled():
-    poly = pv.Sphere()
-    pc = PyntCloud.from_instance("pyvista", poly)
-    assert all(x in pc.points.columns for x in ["nx", "ny", "nz"])
-
-
-@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
-def test_pyvista_multicomponent_scalars_are_splitted():
-    poly = pv.Sphere()
-    poly.point_arrays["foo"] = np.zeros_like(poly.points)
-    pc = PyntCloud.from_instance("pyvista", poly)
-    assert all(x in pc.points.columns for x in ["foo_0", "foo_1", "foo_2"])
-
-
-@pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
-def test_pyvista_RGB_is_handled():
-    """ Serves as regression test for old `in` behaviour that could cause a subtle bug
-    if poin_arrays contain a field with `name in "RGB"`
-    """
-    poly = pv.Sphere()
-    poly.point_arrays["RG"] = np.zeros_like(poly.points)[:, :2]
-    pc = PyntCloud.from_instance("pyvista", poly)
-    assert all(x in pc.points.columns for x in ["RG_0", "RG_1"])
