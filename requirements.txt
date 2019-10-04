@@ -7,3 +7,4 @@ matplotlib
 numba
 pytest
 pyvista
+open3d
