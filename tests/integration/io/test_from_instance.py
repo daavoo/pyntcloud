@@ -19,9 +19,13 @@ except:
 
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
 def test_pyvista_conversion(data_path):
-    poly = pv.read(str(data_path.joinpath("diamond.ply")))
-    pc = PyntCloud.from_instance("pyvista", poly)
-    assert np.allclose(pc.points[['x', 'y', 'z']].values, poly.points)
+    original_point_cloud = pv.read(str(data_path / "diamond.ply"))
+    cloud = PyntCloud.from_instance("pyvista", original_point_cloud)
+    assert np.allclose(cloud.xyz, original_point_cloud.points)
+    assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
+    assert np.allclose(cloud.points[['red', 'green', 'blue']].values, original_point_cloud.point_arrays["RGB"])
+    assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
+    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_point_cloud.point_arrays["Normals"])
 
 
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
