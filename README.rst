@@ -10,20 +10,26 @@ Making point clouds fun again
 .. image:: https://readthedocs.org/projects/pyntcloud/badge/?version=latest
     :target: https://pyntcloud.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
-    
+
+.. image:: https://anaconda.org/conda-forge/pyntcloud/badges/version.svg   
+    :target: https://anaconda.org/conda-forge/pyntcloud
+
+.. image:: https://anaconda.org/conda-forge/pyntcloud/badges/platforms.svg
+   :target: https://anaconda.org/conda-forge/pyntcloud
+
+.. image:: https://anaconda.org/conda-forge/pyntcloud/badges/license.svg
+   :target: https://anaconda.org/conda-forge/pyntcloud
+
 .. image:: https://mybinder.org/badge.svg
     :target: https://mybinder.org/v2/gh/daavoo/pyntcloud/master
     :alt: Launch Binder
-
-.. image:: https://badge.fury.io/py/pyntcloud.svg
-    :target: https://pypi.org/project/pyntcloud/
 
 .. image:: https://raw.githubusercontent.com/daavoo/pyntcloud/master/docs/images/pyntcloud_logo.png
     :alt: pyntcloud logo
 
 **pyntcloud** is a Python **3** library for working with 3D point clouds leveraging the power of the Python scientific stack.
 
-- Examples_ (We encourage you to try the examples without installation launching `Binder <https://mybinder.org/v2/gh/daavoo/pyntcloud/master>`_.)
+- Examples_ (We encourage you to try out the examples by launching `Binder <https://mybinder.org/v2/gh/daavoo/pyntcloud/master>`_.)
 - Documentation_
 
 .. _Examples: https://github.com/daavoo/pyntcloud/tree/master/examples
@@ -35,6 +41,8 @@ Installation
 .. code-block:: bash
 
     conda install pyntcloud -c conda-forge
+
+Or:
 
 .. code-block:: bash
 
@@ -87,21 +95,11 @@ You can create / convert PyntCloud instances from / to many 3D processing librar
     # FROM Open3D
     original_triangle_mesh = o3d.io.read_triangle_mesh("diamond.ply")
     cloud = PyntCloud.from_instance("open3d", original_triangle_mesh)
-    assert cloud.mesh is not None
-    assert np.allclose(cloud.mesh.values, original_triangle_mesh.triangles)
-    assert np.allclose(cloud.xyz, original_triangle_mesh.vertices)
-    assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['red', 'green', 'blue']].values / 255., original_triangle_mesh.vertex_colors)
-    assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_triangle_mesh.vertex_normals)
-
+    
     # TO Open3D
     cloud = PyntCloud.from_file("diamond.ply")
     converted_triangle_mesh = cloud.to_instance("open3d", mesh=True)  # mesh=True by default
-    assert isinstance(converted_triangle_mesh, o3d.geometry.TriangleMesh)
-    assert np.allclose(cloud.xyz, converted_triangle_mesh.vertices)
-    assert np.allclose(cloud.mesh.values, converted_triangle_mesh.triangles)
-
+    
 - `PyVista <https://docs.pyvista.org>`_
 
 .. code-block:: python
@@ -112,16 +110,7 @@ You can create / convert PyntCloud instances from / to many 3D processing librar
     # FROM PyVista
     original_point_cloud = pv.read("diamond.ply")
     cloud = PyntCloud.from_instance("pyvista", original_point_cloud)
-    assert np.allclose(cloud.xyz, original_point_cloud.points)
-    assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['red', 'green', 'blue']].values, original_point_cloud.point_arrays["RGB"])
-    assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_point_cloud.point_arrays["Normals"])
-
+    
     # TO PyVista
     cloud = PyntCloud.from_file("diamond.ply")
     converted_triangle_mesh = cloud.to_instance("open3d", mesh=True)
-    assert isinstance(converted_triangle_mesh, pv.PolyData)
-    assert np.allclose(cloud.xyz, converted_triangle_mesh.points)
-    assert np.allclose(cloud.mesh.values, converted_triangle_mesh.faces[:, 1:])
-
