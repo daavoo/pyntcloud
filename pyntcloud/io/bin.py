@@ -46,7 +46,6 @@ def read_bin(filename, shape=None, **kwargs):
                               'divisible by three'.format(shape, arr.size)))
     else:
         arr = arr.reshape((-1, 3))
-        pass
 
     data["points"] = pd.DataFrame(arr[:, 0:3], columns=['x', 'y', 'z'])
 
