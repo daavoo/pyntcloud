@@ -1,6 +1,6 @@
 try:
     import laspy
-except:
+except ImportError:
     laspy = None
 import pandas as pd
 
