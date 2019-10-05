@@ -113,4 +113,4 @@ You can create / convert PyntCloud instances from / to many 3D processing librar
     
     # TO PyVista
     cloud = PyntCloud.from_file("diamond.ply")
-    converted_triangle_mesh = cloud.to_instance("open3d", mesh=True)
+    converted_triangle_mesh = cloud.to_instance("pyvista", mesh=True)
