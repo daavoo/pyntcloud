@@ -8,5 +8,5 @@ class GeometryModel(ABC):
         pass
 
     @abstractmethod
-    def get_projections(self):
+    def get_projections(self, points, only_distances=False):
         pass
