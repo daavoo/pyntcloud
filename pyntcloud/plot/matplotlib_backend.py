@@ -45,4 +45,4 @@ def plot_with_matplotlib(cloud, **kwargs):
 
     set_proper_aspect_ratio(ax)
 
-    plt.show()
+    return plt.show()
