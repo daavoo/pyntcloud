@@ -1,8 +1,7 @@
-from abc import abstractmethod
-
 import numpy as np
 
 from scipy.stats import zscore
+
 from .base import Filter
 
 
