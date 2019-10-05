@@ -1,6 +1,6 @@
 import pandas as pd
 from scipy.spatial import ConvexHull as scipy_ConvexHull
-from itertools import combinations
+
 
 from .base import Structure
 
