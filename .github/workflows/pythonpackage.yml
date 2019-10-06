@@ -1,4 +1,4 @@
-name: Python package
+name: pyncloud C.I.
 
 on: [push]
 
@@ -41,6 +41,7 @@ jobs:
         pytest tests/integration --cov=./ --cov-report=xml --cov-append
 
     - name: Upload coverage to Codecov  
+      if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.7'
       uses: codecov/codecov-action@v1.0.2
       with:
         token: ${{secrets.CODECOV_TOKEN}}
