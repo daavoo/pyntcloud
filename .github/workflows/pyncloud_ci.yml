@@ -37,8 +37,8 @@ jobs:
         pip install pytest
         pip install pytest-cov
   
-        pytest tests/unit --cov=./ --cov-report=xml --cov-append
-        pytest tests/integration --cov=./ --cov-report=xml --cov-append
+        pytest --cov=pyntcloud --cov-report=xml --cov-append tests/unit 
+        pytest --cov=pyntcloud --cov-report=xml --cov-append tests/integration 
 
     - name: Upload coverage to Codecov  
       if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.7'
