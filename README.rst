@@ -3,9 +3,13 @@ Making point clouds fun again
 =============================
 
 
-.. image:: https://github.com/daavoo/pyntcloud/workflows/Python%20package/badge.svg
+.. image:: https://github.com/daavoo/pyntcloud/workflows/pyncloud%20C.I./badge.svg
     :target: https://github.com/daavoo/pyntcloud/actions
-    :alt: Github Actions Status
+    :alt: Github Actions C.I.
+    
+.. image:: https://github.com/daavoo/pyntcloud/workflows/pyncloud%20C.D./badge.svg
+    :target: https://github.com/daavoo/pyntcloud/actions
+    :alt: Github Actions C.D.  
     
 .. image:: https://readthedocs.org/projects/pyntcloud/badge/?version=latest
     :target: https://pyntcloud.readthedocs.io/en/latest/?badge=latest
