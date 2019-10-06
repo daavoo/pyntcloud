@@ -42,7 +42,7 @@ jobs:
 
     - name: Upload coverage to Codecov  
       if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.7'
-      uses: codecov/codecov-action@v1.0.2
-      with:
-        token: ${{secrets.CODECOV_TOKEN}}
-        file: coverage.xml
+      run: bash <(curl -s https://codecov.io/bash) -t $TOKEN -B $REF
+      env:
+        TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+        REF: "${{ github.ref }}"
