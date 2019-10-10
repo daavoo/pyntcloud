@@ -4,10 +4,12 @@
 Contributing
 ============
 
-If you want to hack around with PyntCloud you should install the depencies specified in :ref:`installation`.
+At the very least, you need a Python(>3.5) installation (an isolated environment, i.e conda, is recommended) and the following requirements:
 
-In addition to those, you need to install:
-
+- numpy
+- numba
+- scipy
+- pandas
 - flake8
 - pytest
 

@@ -4,37 +4,26 @@
 Installation
 ============
 
-Minimum Requirements
-====================
+Basic Installation
+==================
 
-At the very least, you need a Python(3) installation (an isolated environment, i.e conda, is recommended) and the following requirements:
+With Python 3.5 or greater you can install pyntcloud using pip:
 
-- numpy
-- numba
-- scipy
-- pandas
+.. code-block:: bash
 
-You can install this requirements however you want to although we recommend to use minconda:
+    pip install pyntcloud
+
+
+You can also install with miniconda:
 
 https://conda.io/miniconda.html
 
 And running:
 
 .. code-block:: bash
-    
-    conda create -n pyntcloud python=3 numpy numba scipy pandas
 
-    source activate pyntcloud 
+    conda install pyntcloud -c conda-forge
 
-
-Basic Installation
-==================
-
-Once you have this requirements installed, you can install pyntcloud using:
-
-.. code-block:: bash
-
-    pip install git+https://github.com/daavoo/pyntcloud
 
 
 Installation for developers
