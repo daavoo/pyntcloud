@@ -53,7 +53,7 @@ def plot_with_pyvista(cloud, **kwargs):
     # Get an RGB array using PyntCloud
     colors = get_colors(cloud, kwargs["use_as_color"], kwargs["cmap"])
 
-    poly_data = cloud.to_pyvista(mesh=kwargs.pop("mesh", False))
+    poly_data = cloud.to_instance('pyvista', mesh=kwargs.pop("mesh", False))
 
     plotter = pv.Plotter(window_size=[kwargs.pop("width"), kwargs.pop("height")],
                          off_screen=kwargs.pop("off_screen", None),
