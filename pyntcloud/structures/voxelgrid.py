@@ -1,15 +1,9 @@
 import numpy as np
 
-try:
-    import matplotlib.pyplot as plt
-    is_matplotlib_avaliable = True
-except ImportError:
-    is_matplotlib_avaliable = False
-
 from scipy.spatial import cKDTree
 
 from .base import Structure
-from ..plot import plot_voxelgrid
+from ..plot.voxelgrid import plot_voxelgrid
 from ..utils.array import cartesian
 
 try:
@@ -21,12 +15,19 @@ except ImportError:
 
 class VoxelGrid(Structure):
 
-    def __init__(self, *, points, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, regular_bounding_box=True):
+    def __init__(self,
+                 *,
+                 points,
+                 colors,
+                 n_x=1, n_y=1, n_z=1,
+                 size_x=None, size_y=None, size_z=None,
+                 regular_bounding_box=True):
         """Grid of voxels with support for different build methods.
 
         Parameters
         ----------
         points: (N, 3) numpy.array
+        colors: (N, 3) numpy.array
         n_x, n_y, n_z :  int, optional
             Default: 1
             The number of segments in which each axis will be divided.
@@ -41,18 +42,30 @@ class VoxelGrid(Structure):
             in order to have all the dimensions of equal length.
         """
         super().__init__(points=points)
-        self.x_y_z = [n_x, n_y, n_z]
-        self.sizes = [size_x, size_y, size_z]
+        self.colors = colors
+        self.x_y_z = np.asarray([n_x, n_y, n_z])
+        self.sizes = np.asarray([size_x, size_y, size_z])
         self.regular_bounding_box = regular_bounding_box
+
+        self.id = None
+        self.xyzmin, self.xyzmax = None, None
+        self.segments = None
+        self.shape = None
+        self.n_voxels = None
+        self.voxel_x, self.voxel_y, self.voxel_z = None, None, None
+        self.voxel_n = None
+        self.voxel_centers = None
+        self.voxel_colors = None
 
     def compute(self):
         """ABC API."""
         xyzmin = self._points.min(0)
         xyzmax = self._points.max(0)
+        xyz_range = self._points.ptp(0)
 
         if self.regular_bounding_box:
             #: adjust to obtain a minimum bounding box with all sides of equal length
-            margin = max(xyzmax - xyzmin) - (xyzmax - xyzmin)
+            margin = max(xyz_range) - xyz_range
             xyzmin = xyzmin - margin / 2
             xyzmax = xyzmax + margin / 2
 
@@ -71,14 +84,17 @@ class VoxelGrid(Structure):
         shape = []
         for i in range(3):
             # note the +1 in num
-            s, step = np.linspace(xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1), retstep=True)
+            s, step = np.linspace(xyzmin[i],
+                                  xyzmax[i],
+                                  num=(self.x_y_z[i] + 1),
+                                  retstep=True)
             segments.append(s)
             shape.append(step)
 
         self.segments = segments
         self.shape = shape
 
-        self.n_voxels = self.x_y_z[0] * self.x_y_z[1] * self.x_y_z[2]
+        self.n_voxels = np.prod(self.x_y_z)
 
         self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.regular_bounding_box)
 
@@ -92,6 +108,21 @@ class VoxelGrid(Structure):
         # compute center of each voxel
         midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
         self.voxel_centers = cartesian(midsegments).astype(np.float32)
+
+        # compute voxel colors
+        if self.colors is not None:
+            order = np.argsort(self.voxel_n)
+            _, breaks, counts = np.unique(self.voxel_n[order],
+                                          return_index=True,
+                                          return_counts=True)
+            repeated_counts = np.repeat(counts[:, None], 3, axis=1)
+            # why square? watch this: https://www.youtube.com/watch?v=LKnqECcg6Gw
+            squared_colors = np.square(self.colors[order].astype(np.int64))
+            summed_colors = np.add.reduceat(squared_colors,
+                                            breaks,
+                                            axis=0)
+            averaged_colors = np.sqrt(summed_colors / repeated_counts)
+            self.voxel_colors = np.rint(averaged_colors).astype(np.uint8)
 
     def query(self, points):
         """ABC API. Query structure.
@@ -222,38 +253,21 @@ class VoxelGrid(Structure):
         return [x for x in ravel_indices if x in np.unique(self.voxel_n)]
 
     def plot(self,
-             d=2,
+             d=3,
              mode="binary",
+             backend='pythreejs',
              cmap="Oranges",
              axis=False,
              output_name=None,
              width=800,
              height=500):
-        feature_vector = self.get_feature_vector(mode)
 
-        if d == 2:
-            if not is_matplotlib_avaliable:
-                raise ImportError("matplotlib is required for 2d plotting")
-
-            z_dim = self.x_y_z[2]
-            fig, axes = plt.subplots(int(np.ceil(z_dim / 4)),
-                                     np.min((z_dim, 4)),
-                                     figsize=(20, 20))
-            plt.tight_layout()
-            for i, ax in enumerate(axes.flat if z_dim > 1 else [plt.gca()]):
-                if i < z_dim:
-                    ax.imshow(feature_vector[:, :, i],
+        return plot_voxelgrid(self,
+                              d=d,
+                              mode=mode,
+                              backend=backend,
                               cmap=cmap,
-                              interpolation="nearest")
-                    ax.set_title("Level " + str(i))
-                else:
-                    ax.axis('off')
-
-        elif d == 3:
-            return plot_voxelgrid(self,
-                                  mode=mode,
-                                  cmap=cmap,
-                                  axis=axis,
-                                  output_name=output_name,
-                                  width=width,
-                                  height=height)
+                              axis=axis,
+                              output_name=output_name,
+                              width=width,
+                              height=height)

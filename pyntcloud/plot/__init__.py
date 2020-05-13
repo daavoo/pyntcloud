@@ -1,4 +1,4 @@
-from .voxelgrid import plot_voxelgrid
+from .voxelgrid import plot_voxelgrid_with_threejs
 
 DESCRIPTION = """\
 PyntCloud
