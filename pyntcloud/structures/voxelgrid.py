@@ -235,15 +235,19 @@ class VoxelGrid(Structure):
             if not is_matplotlib_avaliable:
                 raise ImportError("matplotlib is required for 2d plotting")
 
-            fig, axes = plt.subplots(
-                int(np.ceil(self.x_y_z[2] / 4)), 4, figsize=(20, 20))
+            z_dim = self.x_y_z[2]
+            fig, axes = plt.subplots(int(np.ceil(z_dim / 4)),
+                                     np.min((z_dim, 4)),
+                                     figsize=(20, 20))
             plt.tight_layout()
-            for i, ax in enumerate(axes.flat):
-                if i >= len(feature_vector):
-                    break
-                ax.imshow(feature_vector[:, :, i],
-                          cmap=cmap, interpolation="nearest")
-                ax.set_title("Level " + str(i))
+            for i, ax in enumerate(axes.flat if z_dim > 1 else [plt.gca()]):
+                if i < z_dim:
+                    ax.imshow(feature_vector[:, :, i],
+                              cmap=cmap,
+                              interpolation="nearest")
+                    ax.set_title("Level " + str(i))
+                else:
+                    ax.axis('off')
 
         elif d == 3:
             return plot_voxelgrid(self,
