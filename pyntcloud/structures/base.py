@@ -14,8 +14,14 @@ class Structure(ABC):
     @classmethod
     def extract_info(cls, pyntcloud):
         """ABC API"""
+        try:
+            colors = pyntcloud.points[['red', 'green', 'blue']].to_numpy()
+        except KeyError:
+            colors = None
+
         info = {
-            "points": pyntcloud.xyz
+            "points": pyntcloud.xyz,
+            "colors": colors
         }
         return info
 
