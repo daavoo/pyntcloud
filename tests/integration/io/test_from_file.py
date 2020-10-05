@@ -43,7 +43,9 @@ def assert_mesh(data):
     (".obj", False, True),
     (".off", False, False),
     ("_color.off", True, False),
-    (".bin", False, False)
+    (".bin", False, False),
+    (".las", True, False),
+    (".laz", True, False)
 ])
 def test_from_file(data_path, extension, color, mesh):
     cloud = PyntCloud.from_file(str(data_path / "diamond{}".format(extension)))

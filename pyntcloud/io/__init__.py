@@ -14,6 +14,7 @@ FROM_FILE = {
     "BIN": read_bin,
     "CSV": read_ascii,
     "LAS": read_las,
+    "LAZ": read_las,
     "NPZ": read_npz,
     "OBJ": read_obj,
     "OFF": read_off,
