@@ -14,5 +14,6 @@ dependencies:
   - numba
   - pythreejs
   - pip:
+    - pylas
     - laspy
     - appmode

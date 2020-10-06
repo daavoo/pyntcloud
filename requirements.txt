@@ -1,6 +1,7 @@
 numpy
 scipy
 pandas
+pylas
 laspy
 ipython
 matplotlib
