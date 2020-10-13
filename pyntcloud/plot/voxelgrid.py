@@ -234,13 +234,10 @@ def plot_voxelgrid(voxelgrid,
     voxel_centers = (np.argwhere(feature_vector) * scaled_shape).astype(np.float32)
 
     if backend == 'pythreejs':
-        return plot_voxelgrid_with_pythreejs(voxel_centers,
-                                             voxel_colors,
-                                             **kwargs)
+        plot_voxelgrid_with_pythreejs(
+            voxel_centers, voxel_colors, **kwargs)
     elif backend == 'threejs':
-        return plot_voxelgrid_with_threejs(voxel_centers,
-                                           voxel_colors,
-                                           scaled_shape,
-                                           **kwargs)
+        plot_voxelgrid_with_threejs(
+            voxel_centers, voxel_colors, scaled_shape, **kwargs)
     else:
         raise NotImplementedError("{} backend is not supported".format(backend))
