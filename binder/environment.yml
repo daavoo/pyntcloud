@@ -15,5 +15,5 @@ dependencies:
   - pythreejs
   - pip:
     - pylas
-    - laspy
+    - lazrs
     - appmode

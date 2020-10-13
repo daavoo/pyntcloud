@@ -2,7 +2,7 @@ numpy
 scipy
 pandas
 pylas
-laspy
+lazrs
 ipython
 matplotlib
 numba
