@@ -18,7 +18,7 @@ class VoxelGrid(Structure):
     def __init__(self,
                  *,
                  points,
-                 colors,
+                 colors=None,
                  n_x=1, n_y=1, n_z=1,
                  size_x=None, size_y=None, size_z=None,
                  regular_bounding_box=True):
@@ -27,7 +27,9 @@ class VoxelGrid(Structure):
         Parameters
         ----------
         points: (N, 3) numpy.array
-        colors: (N, 3) numpy.array
+        colors: (N, 3) numpy.array, optional
+            Default None.
+            If not None, color for each voxel will be computed.
         n_x, n_y, n_z :  int, optional
             Default: 1
             The number of segments in which each axis will be divided.
