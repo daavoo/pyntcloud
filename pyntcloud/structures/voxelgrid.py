@@ -57,6 +57,20 @@ class VoxelGrid(Structure):
         self.voxel_centers = None
         self.voxel_colors = None
 
+    @classmethod
+    def extract_info(cls, pyntcloud):
+        """ABC API"""
+        try:
+            colors = pyntcloud.points[['red', 'green', 'blue']].to_numpy()
+        except KeyError:
+            colors = None
+
+        info = {
+            "points": pyntcloud.xyz,
+            "colors": colors
+        }
+        return info
+
     def compute(self):
         """ABC API."""
         xyzmin = self._points.min(0)
