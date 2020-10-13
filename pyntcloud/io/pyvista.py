@@ -15,7 +15,7 @@ def from_pyvista(poly_data, **kwargs):
         raise TypeError("Type {} not yet supported for conversion.".format(type(poly_data)))
 
     mesh = None
-    if poly_data.faces.ndim > 1:
+    if poly_data.faces is not None:
         mesh = poly_data.faces.reshape(-1, 4)
         if not np.all(3 == mesh[:, 0]):
             raise ValueError(
