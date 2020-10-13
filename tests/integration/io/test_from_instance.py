@@ -26,6 +26,7 @@ def test_pyvista_conversion(data_path):
     assert np.allclose(cloud.points[['red', 'green', 'blue']].values, original_point_cloud.point_arrays["RGB"])
     assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
     assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_point_cloud.point_arrays["Normals"])
+    assert cloud.mesh is not None
 
 
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")

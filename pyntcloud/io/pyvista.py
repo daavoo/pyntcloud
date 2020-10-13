@@ -16,7 +16,7 @@ def from_pyvista(poly_data, **kwargs):
 
     mesh = None
     if poly_data.faces.ndim > 1:
-        mesh = poly_data.faces
+        mesh = poly_data.faces.reshape(-1, 4)
         if not np.all(3 == mesh[:, 0]):
             raise ValueError(
                 "This mesh is not triangulated. Try triangulating the mesh before passing to PyntCloud.")

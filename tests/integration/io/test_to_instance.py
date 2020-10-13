@@ -22,7 +22,8 @@ def test_pyvista_conversion(data_path):
     cloud = PyntCloud.from_file(str(data_path.joinpath("diamond.ply")))
     poly = cloud.to_instance("pyvista", mesh=True)
     assert np.allclose(cloud.xyz, poly.points)
-    assert np.allclose(cloud.mesh.values, poly.faces[:, 1:])
+    faces = poly.faces.reshape((-1, 4))[:, 1:]
+    assert np.allclose(cloud.mesh.values, faces)
 
 
 @pytest.mark.skipif(SKIP_OPEN3D, reason="Requires Open3D")
