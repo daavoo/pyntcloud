@@ -5,11 +5,6 @@ try:
 except ImportError:
     plt = None
 
-try:
-    from mpl_toolkits.mplot3d import Axes3D
-except ImportError:
-    Axes3D = None
-
 from .common import get_colors
 
 
