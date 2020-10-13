@@ -17,12 +17,6 @@ Making point clouds fun again
 .. image:: https://anaconda.org/conda-forge/pyntcloud/badges/version.svg   
     :target: https://anaconda.org/conda-forge/pyntcloud
 
-.. image:: https://anaconda.org/conda-forge/pyntcloud/badges/platforms.svg
-   :target: https://anaconda.org/conda-forge/pyntcloud
-
-.. image:: https://anaconda.org/conda-forge/pyntcloud/badges/license.svg
-   :target: https://anaconda.org/conda-forge/pyntcloud
-
 .. image:: https://mybinder.org/badge.svg
     :target: https://mybinder.org/v2/gh/daavoo/pyntcloud/master
     :alt: Launch Binder
