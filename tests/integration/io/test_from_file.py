@@ -35,25 +35,27 @@ def assert_mesh(data):
     assert str(data.mesh['v3'].dtype) == 'int32'
 
 
-@pytest.mark.parametrize("extension,color,mesh", [
-    (".ply", True, True),
-    ("_ascii.ply", True, True),
-    ("_ascii_vertex_index.ply", True, True),
-    (".npz", True, True),
-    (".obj", False, True),
-    (".off", False, False),
-    ("_color.off", True, False),
-    (".bin", False, False),
-    (".las", True, False),
-    (".laz", True, False)
+@pytest.mark.parametrize("extension,color,mesh,comments", [
+    (".ply", True, True, False),
+    ("_ascii.ply", True, True, True),
+    ("_ascii_vertex_index.ply", True, True, True),
+    (".npz", True, True, False),
+    (".obj", False, True, False),
+    (".off", False, False, False),
+    ("_color.off", True, False, False),
+    (".bin", False, False, False),
+    (".las", True, False, False),
+    (".laz", True, False, False)
 ])
-def test_from_file(data_path, extension, color, mesh):
+def test_from_file(data_path, extension, color, mesh, comments):
     cloud = PyntCloud.from_file(str(data_path / "diamond{}".format(extension)))
     assert_points_xyz(cloud)
     if color:
         assert_points_color(cloud)
     if mesh:
         assert_mesh(cloud)
+    if comments:
+        assert cloud.comments == ["PyntCloud is cool"]
 
 
 def test_obj_issue_221(data_path):
