@@ -58,6 +58,7 @@ def read_ply(filename):
         points_size = None
         mesh_size = None
         has_texture = False
+        comments = []
         while b'end_header' not in line and line != b'':
             line = ply.readline()
 
@@ -103,12 +104,21 @@ def read_ply(filename):
                     else:
                         dtypes[name].append(
                             (line[2].decode(), ext + ply_dtypes[line[1]]))
+
+            elif b'comment' in line:
+                line = line.split(b" ", 1)
+                comment = line[1].decode().rstrip()
+                comments.append(comment)
+
             count += 1
 
         # for bin
         end_header = ply.tell()
 
     data = {}
+
+    if comments:
+        data["comments"] = comments
 
     if fmt == 'ascii':
         top = count
@@ -154,7 +164,7 @@ def read_ply(filename):
     return data
 
 
-def write_ply(filename, points=None, mesh=None, as_text=False):
+def write_ply(filename, points=None, mesh=None, as_text=False, comments=None):
     """
 
     Parameters
@@ -165,6 +175,7 @@ def write_ply(filename, points=None, mesh=None, as_text=False):
     mesh: ndarray
     as_text: boolean
         Set the write mode of the file. Default: binary
+    comments: list of string
 
     Returns
     -------
@@ -183,6 +194,10 @@ def write_ply(filename, points=None, mesh=None, as_text=False):
             header.append('format ascii 1.0')
         else:
             header.append('format binary_' + sys.byteorder + '_endian 1.0')
+
+        if comments:
+            for comment in comments:
+                header.append('comment ' + comment)
 
         if points is not None:
             header.extend(describe_element('vertex', points))
