@@ -1,6 +1,6 @@
 ply
 format ascii 1.0
-comment VCGLIB generated
+comment PyntCloud is cool
 element vertex 6
 property float x
 property float y
