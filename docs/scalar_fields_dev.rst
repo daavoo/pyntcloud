@@ -42,7 +42,7 @@ The base class is located at pyntcloud/scalar_fields/base.py
 
 At the very least, all scalar fields receive a PyntCloud when they are instantiated.
 
-The `ScalarField.exctract_info` method must be overridden in order to extract and save in a attribute the information required to compute the scalar field.
+The `ScalarField.extract_info` method must be overridden in order to extract and save in a attribute the information required to compute the scalar field.
 
 See SUBMODULE BASE CLASS below for more information.
 
@@ -59,7 +59,7 @@ Scalar fields are grouped in submodules according to which kind of information t
 
 For example, scalar fields that require a VoxelGrid to be computed are in pyntcloud/scalar_fields/sf_voxelgrid.py
 
-As the information required by all the scalar fields in each submodule is the same, we create a submodule base class overriding the __init__ and exctract_info
+As the information required by all the scalar fields in each submodule is the same, we create a submodule base class overriding the __init__ and extract_info
 methods of the ScalarField base class.
 
 For example, in the sf_voxelgrid submodule there is a ScalarField_Voxelgrid class from which all the scalar fields that require a VoxelGrid inherit.
