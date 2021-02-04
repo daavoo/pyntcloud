@@ -41,7 +41,7 @@ The base class is located at pyntcloud/filters/base.py
 
 At the very least, all filters receive a PyntCloud when they are instantiated.
 
-The `Filter.exctract_info` method must be overridden in order to extract and save the information required to compute the filter in a attribute.
+The `Filter.extract_info` method must be overridden in order to extract and save the information required to compute the filter in a attribute.
 
 See SUBMODULE BASE CLASS below for more information.
 

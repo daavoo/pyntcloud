@@ -41,7 +41,7 @@ The base class is located at pyntcloud/filters/base.py
 
 At the very least, all samplers receive a PyntCloud when they are instantiated.
 
-The `Sampler.exctract_info` method must be overridden in order to extract and save the information required to generate the sample in a attribute.
+The `Sampler.extract_info` method must be overridden in order to extract and save the information required to generate the sample in a attribute.
 
 See SUBMODULE BASE CLASS below for more information.
 
@@ -58,7 +58,7 @@ Samplers are grouped into submodules according to which kind of information they
 
 For example, samplers that require a VoxelGrid to be computed are in pyntcloud/samplers/s_voxelgrid.py
 
-As the information required by all the filters in each submodule is the same, we create a submodule base class overriding the __init__ and exctract_info
+As the information required by all the filters in each submodule is the same, we create a submodule base class overriding the __init__ and extract_info
 methods of the Sampler base class.
 
 For example, in the s_voxelgrid submodule there is a Sampler_Voxelgrid class from which all the samplers that require a Voxelgrid inherit.

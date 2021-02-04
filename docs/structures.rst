@@ -6,7 +6,7 @@ Structures
 
 .. currentmodule:: pyntcloud
 
-Structures are used for adding superpowers to PyntCloud intances.
+Structures are used for adding superpowers to PyntCloud instances.
 
 For example, a `VoxelGrid` can be used for:
 
