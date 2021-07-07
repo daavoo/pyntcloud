@@ -58,7 +58,7 @@ def read_obj(filename):
     elif f[0].count("/") > 0:
         if len(vn) > 0:
             # wikipedia.org/wiki/Wavefront_.obj_file#Vertex_normal_indices
-            for i in range(f[0].count("/") / 2):
+            for i in range(f[0].count("/") // 2):
                 mesh_columns.append("v{}".format(i + 1))
                 mesh_columns.append("vt{}".format(i + 1))
                 mesh_columns.append("vn{}".format(i + 1))

@@ -73,3 +73,15 @@ def test_obj_issue_226(data_path):
     cloud = PyntCloud.from_file(str(data_path / "obj_issue_226.obj"))
 
     assert "w" in cloud.points.columns
+
+def test_obj_issue_vn(data_path):
+    """
+    Fix type issue in pyntcloud/io/obj.py.
+    A float is passed to range() instead of an integer.
+    for i in range(f[0].count("/") / 2):
+    TypeError: 'float' object cannot be interpreted as an integer
+    """
+    cloud = PyntCloud.from_file(str(data_path / "obj_issue_vn.obj"))
+
+    assert len(cloud.xyz) == 3
+    assert len(cloud.mesh) == 1
