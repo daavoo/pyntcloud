@@ -38,3 +38,27 @@ def test_to_file(tmpdir, diamond, extension, color, mesh, comments):
 def test_to_bin_raises_ValueError_if_invalid_kwargs(tmpdir, diamond):
     with pytest.raises(ValueError):
         diamond.to_file(str(tmpdir.join("written.bin")), also_save=["mesh"])
+
+
+def test_write_ply_with_bool(plane_pyntcloud, tmp_path):
+    """Expectation: a PyntCloud class holding Boolean column within `points` can be written and re-read as a PLY file.
+
+    After adding the new column, we have the following DataFrame under plane_pyntcloud.points:
+
+        x    y    z  bool_col
+    0  0.0  0.0  0.0      True
+    1  1.0  1.0  0.0      True
+    2  2.0  2.0  0.0     False
+    3  1.0  2.0  0.0      True
+    4  0.1  0.2  0.3      True
+    """
+    # Insert the additional column of dtype: bool.
+    plane_pyntcloud.points["bool_col"] = plane_pyntcloud.points.x < 2
+
+    # Write the DataFrame containing Boolean data.
+    ply_out = (tmp_path / "test_file.ply").as_posix()
+    plane_pyntcloud.to_file(ply_out)
+
+    # Reload the test file and compare it is exactly as it was before writing.
+    new_pyntcloud = PyntCloud.from_file(ply_out, allow_bool=True)
+    assert new_pyntcloud.points.equals(plane_pyntcloud.points), "Re-read pyntcloud is not identical to before writing"

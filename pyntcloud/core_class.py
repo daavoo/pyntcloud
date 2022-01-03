@@ -195,7 +195,7 @@ class PyntCloud(object):
         library = library.upper()
         if library not in TO_INSTANCE:
             raise ValueError(
-                "Unsupported library; supported linraries are: {}".format(list(TO_INSTANCE)))
+                "Unsupported library; supported libraries are: {}".format(list(TO_INSTANCE)))
 
         return TO_INSTANCE[library](self, **kwargs)
 
