@@ -31,22 +31,28 @@ valid_formats = {'ascii': '', 'binary_big_endian': '>',
                  'binary_little_endian': '<'}
 
 
-def read_ply(filename):
-    """ Read a .ply (binary or ascii) file and store the elements in pandas DataFrame
+def read_ply(filename, allow_bool=False):
+    """ Read a .ply (binary or ascii) file and store the elements in pandas DataFrame.
+
     Parameters
     ----------
     filename: str
         Path to the filename
+    allow_bool: bool
+        flag to allow bool as a valid PLY dtype. False by default to mirror original PLY specification.
+
     Returns
     -------
     data: dict
         Elements as pandas DataFrames; comments and ob_info as list of string
     """
+    if allow_bool:
+        ply_dtypes[b'bool'] = '?'
 
     with open(filename, 'rb') as ply:
 
         if b'ply' not in ply.readline():
-            raise ValueError('The file does not start whith the word ply')
+            raise ValueError('The file does not start with the word ply')
         # get binary_little/big or ascii
         fmt = ply.readline().split()[1].decode()
         # get extension for building the numpy dtypes
@@ -165,7 +171,7 @@ def read_ply(filename):
 
 
 def write_ply(filename, points=None, mesh=None, as_text=False, comments=None):
-    """
+    """Write a PLY file populated with the given fields.
 
     Parameters
     ----------
@@ -242,7 +248,7 @@ def describe_element(name, df):
     -------
     element: list[str]
     """
-    property_formats = {'f': 'float', 'u': 'uchar', 'i': 'int'}
+    property_formats = {'f': 'float', 'u': 'uchar', 'i': 'int', 'b': 'bool'}
     element = ['element ' + name + ' ' + str(len(df))]
 
     if name == 'face':

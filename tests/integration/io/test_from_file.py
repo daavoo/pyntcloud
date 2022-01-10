@@ -85,3 +85,15 @@ def test_obj_issue_vn(data_path):
 
     assert len(cloud.xyz) == 3
     assert len(cloud.mesh) == 1
+
+
+def test_ply_with_bool(data_path):
+    """Expectation: a PLY file that contains bool types can be read into a PyntCloud object."""
+    TEST_PLY = str(data_path / "diamond_with_bool.ply")
+
+    with pytest.raises(KeyError, match="bool"):
+        cloud = PyntCloud.from_file(TEST_PLY)
+
+    cloud = PyntCloud.from_file(filename=TEST_PLY, allow_bool=True)
+    assert "is_green" in cloud.points.columns, "Failed to find expected Boolean column: 'is_green'"
+    assert cloud.points.is_green.dtype == bool, "Boolean column no loaded as bool dtype"
