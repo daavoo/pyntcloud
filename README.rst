@@ -20,9 +20,15 @@ Making point clouds fun again
 .. image:: https://mybinder.org/badge.svg
     :target: https://mybinder.org/v2/gh/daavoo/pyntcloud/master
     :alt: Launch Binder
-
+ 
+.. image:: https://zenodo.org/badge/69888255.svg
+   :target: https://zenodo.org/badge/latestdoi/69888255
+ 
 .. image:: https://raw.githubusercontent.com/daavoo/pyntcloud/master/docs/images/pyntcloud_logo.png
     :alt: pyntcloud logo
+
+
+
 
 **pyntcloud** is a Python **3** library for working with 3D point clouds leveraging the power of the Python scientific stack.
 
