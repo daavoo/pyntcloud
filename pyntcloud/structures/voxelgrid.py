@@ -118,7 +118,7 @@ class VoxelGrid(Structure):
         # -1 so index are 0-based; clip for edge cases
         self.voxel_x = np.clip(np.searchsorted(self.segments[0], self._points[:, 0]) - 1, 0, self.x_y_z[0])
         self.voxel_y = np.clip(np.searchsorted(self.segments[1], self._points[:, 1]) - 1, 0, self.x_y_z[1])
-        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self._points[:, 2]) - 1, 0,  self.x_y_z[2])
+        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self._points[:, 2]) - 1, 0, self.x_y_z[2])
         self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z], self.x_y_z)
 
         # compute center of each voxel

@@ -43,4 +43,3 @@ def test_BBOX_expected_results(simple_pyntcloud, bounding_box, expected_result):
         **bounding_box
     )
     assert_array_equal(result, expected_result)
-

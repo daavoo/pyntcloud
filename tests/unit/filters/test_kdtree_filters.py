@@ -8,6 +8,7 @@ from pyntcloud.filters.kdtree import (
     StatisticalOutlierRemovalFilter
 )
 
+
 @pytest.mark.parametrize("kdtree_id", [
     "FOO",
     "K",

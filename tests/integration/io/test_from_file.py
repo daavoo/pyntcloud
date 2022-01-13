@@ -74,6 +74,7 @@ def test_obj_issue_226(data_path):
 
     assert "w" in cloud.points.columns
 
+
 def test_obj_issue_vn(data_path):
     """
     Fix type issue in pyntcloud/io/obj.py.

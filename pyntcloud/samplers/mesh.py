@@ -72,7 +72,7 @@ class RandomMeshSampler(MeshSampler):
 
         # (n, 1) the 1 is for broadcasting
         u = np.random.uniform(low=0., high=1., size=(self.n, 1))
-        v = np.random.uniform(low=0., high=1-u, size=(self.n, 1))
+        v = np.random.uniform(low=0., high=1 - u, size=(self.n, 1))
 
         result = pd.DataFrame()
 

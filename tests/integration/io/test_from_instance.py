@@ -5,14 +5,14 @@ from pyntcloud import PyntCloud
 try:
     import pyvista as pv
     SKIP_PYVISTA = False
-except:
+except:  # noqa: E722
     pv = None
     SKIP_PYVISTA = True
 
 try:
     import open3d as o3d
     SKIP_OPEN3D = False
-except:
+except:  # noqa: E722
     o3d = None
     SKIP_OPEN3D = True
 
@@ -25,7 +25,7 @@ def test_pyvista_conversion(data_path):
     assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
     assert np.allclose(cloud.points[['red', 'green', 'blue']].values, original_point_cloud.point_arrays["RGB"])
     assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_point_cloud.point_arrays["Normals"])
+    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values, original_point_cloud.point_arrays["Normals"])
     assert cloud.mesh is not None
 
 
@@ -64,7 +64,7 @@ def test_open3d_point_cloud(data_path):
     assert np.allclose(cloud.points[['red', 'green', 'blue']].values / 255., np.asarray(point_cloud.colors))
 
     assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  np.asarray(point_cloud.normals))
+    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values, np.asarray(point_cloud.normals))
 
 
 @pytest.mark.skipif(SKIP_OPEN3D, reason="Requires Open3D")
@@ -80,4 +80,4 @@ def test_open3d_triangle_mesh(data_path):
     assert np.allclose(cloud.points[['red', 'green', 'blue']].values / 255., triangle_mesh.vertex_colors)
 
     assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  triangle_mesh.vertex_normals)
+    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values, triangle_mesh.vertex_normals)

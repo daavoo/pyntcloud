@@ -61,7 +61,8 @@ def test_regular_bounding_box_changes_the_shape_of_the_bounding_box(x, y, z):
             "x": np.array(x, dtype=np.float32),
             "y": np.array(y, dtype=np.float32),
             "z": np.array(z, dtype=np.float32)
-    }))
+        }
+    ))
 
     voxelgrid = VoxelGrid(points=cloud.xyz, n_x=2, n_y=2, n_z=2, regular_bounding_box=False)
     voxelgrid.compute()

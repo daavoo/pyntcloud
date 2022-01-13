@@ -122,7 +122,7 @@ def read_pcd(filename):
             # TODO what to use as second argument? if buf is None
             # (compressed > uncompressed)
             # should we read buf as raw binary?
-            #buf = lzf.decompress(compressed_data, uncompressed_size)
+            # buf = lzf.decompress(compressed_data, uncompressed_size)
             if len(buf) != uncompressed_size:
                 raise Exception('Error decompressing data')
             # the data is stored field-by-field

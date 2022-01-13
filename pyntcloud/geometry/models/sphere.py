@@ -125,8 +125,11 @@ def create_sphere(center=[0, 0, 0], radius=1, n_points=100):
     np_axis = round(np.sqrt(n_points - 2), 0) + 1
 
     index = np.arange(0, np.square(np_axis) + 2, 1)
-    sphere = pd.DataFrame(np.zeros([np.size(index, 0), 3]),
-                       index=index, columns=['x', 'y', 'z'])
+    sphere = pd.DataFrame(
+        np.zeros([np.size(index, 0), 3]),
+        index=index,
+        columns=['x', 'y', 'z']
+    )
 
     zmin = center[2] - radius
     zmax = center[2] + radius

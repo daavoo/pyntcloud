@@ -139,7 +139,7 @@ def read_ply(filename, allow_bool=False):
             data["points"][col] = data["points"][col].astype(
                 dtypes["vertex"][n][1])
 
-        if mesh_size :
+        if mesh_size:
             top = count + points_size
 
             names = np.array([x[0] for x in dtypes["face"]])

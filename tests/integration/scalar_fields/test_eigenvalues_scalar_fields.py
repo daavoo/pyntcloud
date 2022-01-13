@@ -2,6 +2,7 @@ import pytest
 
 import numpy as np
 
+
 @pytest.mark.parametrize("scalar_field_name", [
     "anisotropy",
     "planarity"
@@ -46,6 +47,3 @@ def test_eigen_sum_values(pyntcloud_and_eigenvalues):
             ev=ev)
     scalar_field_values = cloud.points[scalar_field].values
     assert all(scalar_field_values > 0)
-
-
-

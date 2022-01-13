@@ -96,4 +96,3 @@ def test_CylindricalCoordinates_bounds(pyntcloud_with_rgb_and_normals):
 
     assert all(scalar_field.to_be_added["angular_cylindrical"] >= - (np.pi / 2))
     assert all(scalar_field.to_be_added["angular_cylindrical"] <= (np.pi * 1.5))
-
