@@ -295,9 +295,35 @@ def describe_element(name, df):
 
             f = property_formats[column_dtype.char]
             if f == _NotPlyCompatible:
-                raise TypeError(
+                potential_error = TypeError(
                     f"Property '{column_name}' (dtype: {column_dtype.name}) is {_NotPlyCompatible}"
                 )
+
+                # try downcasting column
+                column = df[column_name]
+
+                downcasted_column = None
+                if pd.api.types.is_float_dtype(column):
+                    downcasted_column = pd.to_numeric(column, downcast="float")
+                elif pd.api.types.is_signed_integer_dtype(column):
+                    downcasted_column = pd.to_numeric(column, downcast="signed")
+                elif pd.api.types.is_unsigned_integer_dtype(column):
+                    downcasted_column = pd.to_numeric(column, downcast="unsigned")
+
+                if downcasted_column is None:
+                    # column cannot be downcasted
+                    raise potential_error
+
+                downcasted_f = property_formats[downcasted_column.dtype.char]
+                if downcasted_f == _NotPlyCompatible:
+                    # even downcasted, column is still not ply compatible
+                    raise potential_error
+
+                # propagate downcasted column dtype into original dataframe column
+                # used to keep coherency between .ply headers and binary content
+                df[column_name] = column.astype(downcasted_column.dtype)
+
+                f = downcasted_f
 
             element.append('property ' + f + ' ' + column_name)
 
