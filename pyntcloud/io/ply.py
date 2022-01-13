@@ -248,7 +248,41 @@ def describe_element(name, df):
     -------
     element: list[str]
     """
-    property_formats = {'f': 'float', 'u': 'uchar', 'i': 'int', 'b': 'bool'}
+    # map between numpy built-in types and supported ply File Structure types
+    # see numpy built-in types: https://numpy.org/devdocs/reference/arrays.scalars.html#built-in-scalar-types
+    # see ply File Structure: http://paulbourke.net/dataformats/ply/
+    _NotPlyCompatible = "not implemented in ply file structure"
+    property_formats = {
+        "b": "char",
+        "h": "short",
+        "i": "int",
+        "l": "double",
+        "q": _NotPlyCompatible,
+        "B": "uchar",
+        "H": "ushort",
+        "I": "uint",
+        "L": _NotPlyCompatible,
+        "Q": _NotPlyCompatible,
+        "e": _NotPlyCompatible,
+        "f": "float",
+        "d": "double",
+        "g": _NotPlyCompatible,
+        "F": _NotPlyCompatible,
+        "D": _NotPlyCompatible,
+        "G": _NotPlyCompatible,
+        "?": _NotPlyCompatible,
+        "M": _NotPlyCompatible,
+        "m": _NotPlyCompatible,
+        "O": _NotPlyCompatible,
+        "S": _NotPlyCompatible,
+        "U": _NotPlyCompatible,
+        "V": _NotPlyCompatible,
+        "p": _NotPlyCompatible,
+        "P": _NotPlyCompatible,
+    }
+    # backward compatibility with https://github.com/daavoo/pyntcloud/pull/321
+    property_formats["?"] = "bool"
+
     element = ['element ' + name + ' ' + str(len(df))]
 
     if name == 'face':
@@ -256,8 +290,15 @@ def describe_element(name, df):
 
     else:
         for i in range(len(df.columns)):
-            # get first letter of dtype to infer format
-            f = property_formats[str(df.dtypes[i])[0]]
-            element.append('property ' + f + ' ' + df.columns.values[i])
+            column_name = df.columns.values[i]
+            column_dtype = df.dtypes[i]
+
+            f = property_formats[column_dtype.char]
+            if f == _NotPlyCompatible:
+                raise TypeError(
+                    f"Property '{column_name}' (dtype: {column_dtype.name}) is {_NotPlyCompatible}"
+                )
+
+            element.append('property ' + f + ' ' + column_name)
 
     return element
