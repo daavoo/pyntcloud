@@ -16,12 +16,12 @@ def data_path():
 @pytest.fixture()
 def xyz():
     return np.array([
-        [0. , 0. , 0. ],
-        [0.1, 0.1, 0.1],
+        [0. , 0. , 0. ],  # noqa: E202,E203
+        [0.1, 0.1, 0.1],  # noqa: E202,E203
         [0.2, 0.2, 0.2],
         [0.5, 0.5, 0.5],
         [0.9, 0.9, 0.9],
-        [1. , 1. , 1. ]], dtype=np.float32)
+        [1. , 1. , 1. ]], dtype=np.float32)  # noqa: E202,E203
 
 
 @pytest.fixture()

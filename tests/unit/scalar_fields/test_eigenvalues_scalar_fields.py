@@ -64,6 +64,3 @@ def test_EigenSum_values(pyntcloud_and_eigenvalues):
         scalar_field.compute()
     scalar_field_values = next(iter(scalar_field.to_be_added.values()))
     assert all(scalar_field_values > 0)
-
-
-

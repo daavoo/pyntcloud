@@ -13,7 +13,7 @@ class Structure(ABC):
 
     @classmethod
     def extract_info(cls, pyntcloud):
-        """ABC API"""   
+        """ABC API"""
         info = {
             "points": pyntcloud.xyz,
         }

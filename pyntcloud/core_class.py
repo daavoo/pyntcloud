@@ -153,7 +153,7 @@ class PyntCloud(object):
         else:
             return cls(**FROM_INSTANCE[library](instance, **kwargs))
 
-    def to_file(self, filename, also_save=None, **kwargs):
+    def to_file(self, filename, also_save=None, force_float32: bool = True, **kwargs):
         """Save PyntCloud data to file.
 
         Parameters
@@ -166,9 +166,18 @@ class PyntCloud(object):
             Names of the attributes that will be extracted from the PyntCloud
             to be saved in addition to points. Usually also_save=["mesh"]
 
+        force_float32: bool, optional
+            Default: True
+            Float64 coordinates were painful to export and re-import in others softwares.
+            The author decided to force converting the coordinates columns into float32 by default.
+            See https://github.com/daavoo/pyntcloud/issues/146#issuecomment-369179245
+            You can now disable this behaviour by setting force_float32=False.
+
         kwargs: only usable in some formats
         """
-        convert_columns_dtype(self.points, np.float64, np.float32)
+        if force_float32:
+            convert_columns_dtype(self.points, np.float64, np.float32)
+
         ext = filename.split(".")[-1].upper()
         if ext not in TO_FILE:
             raise ValueError(

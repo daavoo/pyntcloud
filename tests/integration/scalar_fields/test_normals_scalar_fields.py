@@ -34,4 +34,3 @@ def test_normal_scalar_fields_bounds(pyntcloud_with_rgb_and_normals, scalar_fiel
     scalar_field_values = pyntcloud_with_rgb_and_normals.points[scalar_field]
     assert all(scalar_field_values >= min_val)
     assert all(scalar_field_values <= max_val)
-

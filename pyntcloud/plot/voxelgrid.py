@@ -113,7 +113,7 @@ def plot_voxelgrid_with_pythreejs(voxel_centers,
 
     centroid, camera_position = get_centroid_and_camera_position(voxel_centers)
     camera = pythreejs.PerspectiveCamera(fov=90,
-                                         aspect=width/height,
+                                         aspect=width / height,
                                          position=camera_position,
                                          up=[0, 0, 1])
     mesh = get_voxelgrid_pythreejs(voxel_centers, voxel_colors)

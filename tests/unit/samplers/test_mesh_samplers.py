@@ -65,4 +65,3 @@ def test_RandomMeshSampler_sampled_points_bounds(diamond, n):
     sample = sampler.compute()
     assert all(sample[["x", "y", "z"]].values.max(0) <= diamond.xyz.max(0))
     assert all(sample[["x", "y", "z"]].values.min(0) >= diamond.xyz.min(0))
-

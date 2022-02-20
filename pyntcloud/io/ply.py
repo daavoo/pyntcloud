@@ -139,7 +139,7 @@ def read_ply(filename, allow_bool=False):
             data["points"][col] = data["points"][col].astype(
                 dtypes["vertex"][n][1])
 
-        if mesh_size :
+        if mesh_size:
             top = count + points_size
 
             names = np.array([x[0] for x in dtypes["face"]])
@@ -248,7 +248,41 @@ def describe_element(name, df):
     -------
     element: list[str]
     """
-    property_formats = {'f': 'float', 'u': 'uchar', 'i': 'int', 'b': 'bool'}
+    # map between numpy built-in types and supported ply File Structure types
+    # see numpy built-in types: https://numpy.org/devdocs/reference/arrays.scalars.html#built-in-scalar-types
+    # see ply File Structure: http://paulbourke.net/dataformats/ply/
+    _NotPlyCompatible = "not implemented in ply file structure"
+    property_formats = {
+        "b": "char",
+        "h": "short",
+        "i": "int",
+        "l": "double",
+        "q": _NotPlyCompatible,
+        "B": "uchar",
+        "H": "ushort",
+        "I": "uint",
+        "L": _NotPlyCompatible,
+        "Q": _NotPlyCompatible,
+        "e": _NotPlyCompatible,
+        "f": "float",
+        "d": "double",
+        "g": _NotPlyCompatible,
+        "F": _NotPlyCompatible,
+        "D": _NotPlyCompatible,
+        "G": _NotPlyCompatible,
+        "?": _NotPlyCompatible,
+        "M": _NotPlyCompatible,
+        "m": _NotPlyCompatible,
+        "O": _NotPlyCompatible,
+        "S": _NotPlyCompatible,
+        "U": _NotPlyCompatible,
+        "V": _NotPlyCompatible,
+        "p": _NotPlyCompatible,
+        "P": _NotPlyCompatible,
+    }
+    # backward compatibility with https://github.com/daavoo/pyntcloud/pull/321
+    property_formats["?"] = "bool"
+
     element = ['element ' + name + ' ' + str(len(df))]
 
     if name == 'face':
@@ -256,8 +290,41 @@ def describe_element(name, df):
 
     else:
         for i in range(len(df.columns)):
-            # get first letter of dtype to infer format
-            f = property_formats[str(df.dtypes[i])[0]]
-            element.append('property ' + f + ' ' + df.columns.values[i])
+            column_name = df.columns.values[i]
+            column_dtype = df.dtypes[i]
+
+            f = property_formats[column_dtype.char]
+            if f == _NotPlyCompatible:
+                potential_error = TypeError(
+                    f"Property '{column_name}' (dtype: {column_dtype.name}) is {_NotPlyCompatible}"
+                )
+
+                # try downcasting column
+                column = df[column_name]
+
+                downcasted_column = None
+                if pd.api.types.is_float_dtype(column):
+                    downcasted_column = pd.to_numeric(column, downcast="float")
+                elif pd.api.types.is_signed_integer_dtype(column):
+                    downcasted_column = pd.to_numeric(column, downcast="signed")
+                elif pd.api.types.is_unsigned_integer_dtype(column):
+                    downcasted_column = pd.to_numeric(column, downcast="unsigned")
+
+                if downcasted_column is None:
+                    # column cannot be downcasted
+                    raise potential_error
+
+                downcasted_f = property_formats[downcasted_column.dtype.char]
+                if downcasted_f == _NotPlyCompatible:
+                    # even downcasted, column is still not ply compatible
+                    raise potential_error
+
+                # propagate downcasted column dtype into original dataframe column
+                # used to keep coherency between .ply headers and binary content
+                df[column_name] = column.astype(downcasted_column.dtype)
+
+                f = downcasted_f
+
+            element.append('property ' + f + ' ' + column_name)
 
     return element

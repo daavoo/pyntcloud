@@ -68,4 +68,3 @@ def test_cylindrical_coords_bounds(pyntcloud_with_rgb_and_normals):
             degrees=False)
     assert all(pyntcloud_with_rgb_and_normals.points["angular_cylindrical"] >= - (np.pi / 2))
     assert all(pyntcloud_with_rgb_and_normals.points["angular_cylindrical"] <= (np.pi * 1.5))
-

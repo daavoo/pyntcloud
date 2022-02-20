@@ -35,6 +35,7 @@ def test_to_file(tmpdir, diamond, extension, color, mesh, comments):
     if comments:
         assert written_file.comments == ["PyntCloud is cool"]
 
+
 def test_to_bin_raises_ValueError_if_invalid_kwargs(tmpdir, diamond):
     with pytest.raises(ValueError):
         diamond.to_file(str(tmpdir.join("written.bin")), also_save=["mesh"])

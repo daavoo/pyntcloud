@@ -79,4 +79,3 @@ def test_SOR_expected_results(pyntcloud_with_kdtree_and_kdtree_id, k, z_max, exp
         z_max=z_max
     )
     assert_array_equal(result, expected_result)
-

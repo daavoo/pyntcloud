@@ -40,4 +40,3 @@ def test_RandomPointsSampler_sampled_points_are_from_original(simple_pyntcloud):
 
         sample = sampler.compute()
         assert point_in_array_2D(sample, simple_pyntcloud.xyz)
-

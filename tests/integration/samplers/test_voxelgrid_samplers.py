@@ -133,7 +133,7 @@ def test_voxelgrid_highest_expected_values(simple_pyntcloud, size_x, expected_n,
     voxelgrid_id = simple_pyntcloud.add_structure(
         "voxelgrid",
         size_x=size_x)
-    sample =  simple_pyntcloud.get_sample(
+    sample = simple_pyntcloud.get_sample(
         "voxelgrid_highest",
         voxelgrid_id=voxelgrid_id)
 

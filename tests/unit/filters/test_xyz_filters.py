@@ -50,4 +50,3 @@ def test_BoundingBoxFilter_expected_results(simple_pyntcloud, bounding_box, expe
     result = bbox_filter.compute()
 
     assert_array_equal(result, expected_result)
-
