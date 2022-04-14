@@ -7,5 +7,5 @@ ipython
 matplotlib
 numba
 pytest
-pyvista
+pyvista>=0.32.0
 open3d

@@ -23,9 +23,9 @@ def test_pyvista_conversion(data_path):
     cloud = PyntCloud.from_instance("pyvista", original_point_cloud)
     assert np.allclose(cloud.xyz, original_point_cloud.points)
     assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['red', 'green', 'blue']].values, original_point_cloud.point_arrays["RGB"])
+    assert np.allclose(cloud.points[['red', 'green', 'blue']].values, original_point_cloud.point_data["RGB"])
     assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_point_cloud.point_arrays["Normals"])
+    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_point_cloud.point_data["Normals"])
     assert cloud.mesh is not None
 
 
@@ -39,7 +39,7 @@ def test_pyvista_normals_are_handled():
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
 def test_pyvista_multicomponent_scalars_are_splitted():
     poly = pv.Sphere()
-    poly.point_arrays["foo"] = np.zeros_like(poly.points)
+    poly.point_data["foo"] = np.zeros_like(poly.points)
     pc = PyntCloud.from_instance("pyvista", poly)
     assert all(x in pc.points.columns for x in ["foo_0", "foo_1", "foo_2"])
 
@@ -50,7 +50,7 @@ def test_pyvista_rgb_is_handled():
     if poin_arrays contain a field with `name in "RGB"`
     """
     poly = pv.Sphere()
-    poly.point_arrays["RG"] = np.zeros_like(poly.points)[:, :2]
+    poly.point_data["RG"] = np.zeros_like(poly.points)[:, :2]
     pc = PyntCloud.from_instance("pyvista", poly)
     assert all(x in pc.points.columns for x in ["RG_0", "RG_1"])
 
