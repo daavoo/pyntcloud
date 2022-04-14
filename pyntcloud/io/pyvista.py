@@ -24,7 +24,7 @@ def from_pyvista(poly_data, **kwargs):
 
     points = pd.DataFrame(data=poly_data.points, columns=["x", "y", "z"])
 
-    scalars = poly_data.point_arrays
+    scalars = poly_data.point_data
     for name, array in scalars.items():
         if array.ndim == 1:
             points[name] = array
@@ -72,11 +72,11 @@ def to_pyvista(cloud, mesh=False, use_as_color=("red", "green", "blue"), **kwarg
     # add scalar arrays
     if all(c in cloud.points.columns for c in use_as_color):
         colors = cloud.points[list(use_as_color)].values
-        poly.point_arrays["RGB"] = colors
+        poly.point_data["RGB"] = colors
         avoid += list(use_as_color)
     # Add other arrays
     for name in cloud.points.columns:
         if name not in avoid:
-            poly.point_arrays[name] = cloud.points[name]
+            poly.point_data[name] = cloud.points[name]
 
     return poly

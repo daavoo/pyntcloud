@@ -25,7 +25,7 @@ setup(
     ],
     extras_require={
         'LAS':  ["pylas", "lazrs"],
-        'PLOT': ["ipython", "matplotlib", "pyvista"],
+        'PLOT': ["ipython", "matplotlib", "pyvista>=0.32.0"],
         'NUMBA': ["numba"]
     },
     classifiers=[
