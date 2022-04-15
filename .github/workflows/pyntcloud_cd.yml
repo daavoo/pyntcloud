@@ -17,9 +17,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Install pyntcloud
+    - name: Build pyntcloud
       run: |
-        pip install .
+        python setup.py sdist
+        python setup.py bdist_wheel --universal
     - name: Publish packages to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
