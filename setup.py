@@ -24,7 +24,7 @@ setup(
         "pandas",
     ],
     extras_require={
-        'LAS':  ["pylas", "lazrs"],
+        'LAS':  ["laspy", "lazrs"],
         'PLOT': ["ipython", "matplotlib", "pyvista>=0.32.0"],
         'NUMBA': ["numba"]
     },

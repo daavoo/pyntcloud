@@ -45,13 +45,14 @@ def convert_color_to_dtype(data, output_dtype):
 
 def read_las_with_laspy(filename):
     if laspy is None:
-        raise ImportError("laspy is needed for reading .las files.")
+        raise ImportError("laspy (>=2.0) is needed for reading .las files.")
     data = {}
-    with laspy.file.File(filename) as las:
-        data["points"] = pd.DataFrame(las.points["point"])
+    with laspy.open(filename) as las_file:
+        las = las_file.read()
+        data["points"] = pd.DataFrame(las.points.array)
         data["points"].columns = (x.lower() for x in data["points"].columns)
         # because laspy do something strange with scale
-        data["points"].loc[:, ["x", "y", "z"]] *= las.header.scale
+        data["points"].loc[:, ["x", "y", "z"]] *= las.header.scales
         data["las_header"] = las.header
     return data
 
@@ -70,7 +71,7 @@ def read_las_with_pylas(filename):
     return data
 
 
-def read_las(filename, xyz_dtype="float32", rgb_dtype="uint8", backend="pylas"):
+def read_las(filename, xyz_dtype="float32", rgb_dtype="uint8", backend="laspy"):
     """Read a .las/laz file and store elements in pandas DataFrame.
 
     Parameters
