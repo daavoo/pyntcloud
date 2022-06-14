@@ -76,6 +76,7 @@ def test_obj_issue_226(data_path):
 
     assert "w" in cloud.points.columns
 
+
 def test_obj_issue_vn(data_path):
     """
     Fix type issue in pyntcloud/io/obj.py.
@@ -99,3 +100,27 @@ def test_ply_with_bool(data_path):
     cloud = PyntCloud.from_file(filename=TEST_PLY, allow_bool=True)
     assert "is_green" in cloud.points.columns, "Failed to find expected Boolean column: 'is_green'"
     assert cloud.points.is_green.dtype == bool, "Boolean column no loaded as bool dtype"
+
+
+def test_simple_las_issue_333(data_path):
+    """ Regression test https://github.com/daavoo/pyntcloud/issues/333
+    """
+    las_file_name = (str(data_path / "simple.las"))
+    cloud = PyntCloud.from_file(las_file_name)
+    # 637012.25
+    x_point_pyntcloud = cloud.points["x"][0]
+
+    import laspy
+    with laspy.open(las_file_name) as las_file:
+        las = las_file.read()
+        header = las.header
+        # -0.0
+        x_offset = header.x_offset
+        # 0.01
+        x_scale = header.x_scale
+        # 63701224
+        x_first = las.X[0]
+        # 637012.24
+        x_point_laspy = (x_first * x_scale) + x_offset
+
+    assert x_point_pyntcloud == x_point_laspy
