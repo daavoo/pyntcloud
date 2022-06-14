@@ -107,20 +107,20 @@ def test_simple_las_issue_333(data_path):
     """
     las_file_name = (str(data_path / "simple.las"))
     cloud = PyntCloud.from_file(las_file_name)
-    # 637012.25
-    x_point_pyntcloud = cloud.points["x"][0]
+    points = cloud.points
+
+    x_point_pyntcloud = points["x"][0]
+    y_point_pyntcloud = points["y"][0]
+    z_point_pyntcloud = points["z"][0]
 
     import laspy
     with laspy.open(las_file_name) as las_file:
         las = las_file.read()
         header = las.header
-        # -0.0
-        x_offset = header.x_offset
-        # 0.01
-        x_scale = header.x_scale
-        # 63701224
-        x_first = las.X[0]
-        # 637012.24
-        x_point_laspy = (x_first * x_scale) + x_offset
+        x_point_laspy = (las.X[0] * header.x_scale) + header.x_offset
+        y_point_laspy = (las.Y[0] * header.y_scale) + header.y_offset
+        z_point_laspy = (las.Z[0] * header.x_scale) + header.z_offset
 
     assert x_point_pyntcloud == x_point_laspy
+    assert y_point_pyntcloud == y_point_laspy
+    assert z_point_pyntcloud == z_point_laspy
