@@ -53,6 +53,7 @@ def read_las_with_laspy(filename):
         data["points"].columns = (x.lower() for x in data["points"].columns)
         # because laspy do something strange with scale
         data["points"].loc[:, ["x", "y", "z"]] *= las.header.scales
+        data["points"].loc[:, ["x", "y", "z"]] += las.header.offsets
         data["las_header"] = las.header
     return data
 
