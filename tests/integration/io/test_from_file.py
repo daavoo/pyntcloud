@@ -15,6 +15,16 @@ def assert_points_xyz(data):
     assert str(data.points["z"].dtype) == 'float32'
 
 
+def assert_points_xyz_for_las(data):
+    assert np.isclose(data.points['x'][0], 0.5)
+    assert np.isclose(data.points['y'][0], 0)
+    assert np.isclose(data.points['z'][0], 0.5)
+
+    assert str(data.points["x"].dtype) == 'float64'
+    assert str(data.points["y"].dtype) == 'float64'
+    assert str(data.points["z"].dtype) == 'float64'
+
+
 def assert_points_color(data):
     assert data.points['red'][0] == 255
     assert data.points['green'][0] == 0
@@ -51,7 +61,12 @@ def test_from_file(data_path, extension, color, mesh, comments):
     if extension == ".laz":
         pytest.xfail("TODO: Review laz decompression error")
     cloud = PyntCloud.from_file(str(data_path / "diamond{}".format(extension)))
-    assert_points_xyz(cloud)
+
+    if extension == ".las":
+        assert_points_xyz_for_las(cloud)
+    else:
+        assert_points_xyz(cloud)
+
     if color:
         assert_points_color(cloud)
     if mesh:
@@ -150,4 +165,3 @@ def test_has_offsets_las_issue_333(data_path):
     assert x_point_pyntcloud == x_point_laspy
     assert y_point_pyntcloud == y_point_laspy
     assert z_point_pyntcloud == z_point_laspy
-
