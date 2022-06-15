@@ -71,7 +71,7 @@ def read_las_with_pylas(filename):
     return data
 
 
-def read_las(filename, xyz_dtype="float32", rgb_dtype="uint8", backend="laspy"):
+def read_las(filename, xyz_dtype="float64", rgb_dtype="uint8", backend="laspy"):
     """Read a .las/laz file and store elements in pandas DataFrame.
 
     Parameters
