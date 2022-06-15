@@ -117,9 +117,10 @@ def test_simple_las_issue_333(data_path):
     with laspy.open(las_file_name) as las_file:
         las = las_file.read()
         header = las.header
+
         x_point_laspy = (las.X[0] * header.x_scale) + header.x_offset
         y_point_laspy = (las.Y[0] * header.y_scale) + header.y_offset
-        z_point_laspy = (las.Z[0] * header.x_scale) + header.z_offset
+        z_point_laspy = (las.Z[0] * header.z_scale) + header.z_offset
 
     assert x_point_pyntcloud == x_point_laspy
     assert y_point_pyntcloud == y_point_laspy
