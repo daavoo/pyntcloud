@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 
 from pyntcloud import PyntCloud
+import laspy
 
 
 def assert_points_xyz(data):
@@ -128,7 +129,6 @@ def test_simple_las_issue_333(data_path):
     y_point_pyntcloud = points["y"][0]
     z_point_pyntcloud = points["z"][0]
 
-    import laspy
     with laspy.open(las_file_name) as las_file:
         las = las_file.read()
         header = las.header
@@ -153,7 +153,6 @@ def test_has_offsets_las_issue_333(data_path):
     y_point_pyntcloud = points["y"][0]
     z_point_pyntcloud = points["z"][0]
 
-    import laspy
     with laspy.open(las_file_name) as las_file:
         las = las_file.read()
         header = las.header
