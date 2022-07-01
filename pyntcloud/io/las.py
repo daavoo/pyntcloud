@@ -1,3 +1,5 @@
+import numpy as np
+
 try:
     import laspy
 except ImportError:
@@ -50,10 +52,12 @@ def read_las_with_laspy(filename):
     with laspy.open(filename) as las_file:
         las = las_file.read()
         data["points"] = pd.DataFrame(las.points.array)
-        data["points"].columns = (x.lower() for x in data["points"].columns)
-        # because laspy do something strange with scale
-        data["points"].loc[:, ["x", "y", "z"]] *= las.header.scales
-        data["points"].loc[:, ["x", "y", "z"]] += las.header.offsets
+        data["points"].columns = (name.lower() for name in data["points"].columns)
+
+        data["points"]["x"] = pd.Series(np.array(las.x))
+        data["points"]["y"] = pd.Series(np.array(las.y))
+        data["points"]["z"] = pd.Series(np.array(las.z))
+
         data["las_header"] = las.header
     return data
 
@@ -65,15 +69,17 @@ def read_las_with_pylas(filename):
     with pylas.open(filename) as las_file:
         las = las_file.read()
         data["points"] = pd.DataFrame(las.points)
-        data["points"].columns = (x.lower() for x in data["points"].columns)
-        # because pylas do something strange with scale
-        data["points"].loc[:, ["x", "y", "z"]] *= las.header.scales
-        data["points"].loc[:, ["x", "y", "z"]] += las.header.offsets
+        data["points"].columns = (name.lower() for name in data["points"].columns)
+
+        data["points"]["x"] = pd.Series(np.array(las.x))
+        data["points"]["y"] = pd.Series(np.array(las.y))
+        data["points"]["z"] = pd.Series(np.array(las.z))
+
         data["las_header"] = las.header
     return data
 
 
-def read_las(filename, xyz_dtype="float64", rgb_dtype="uint8", backend="laspy"):
+def read_las(filename, xyz_dtype="float32", rgb_dtype="uint8", backend="laspy"):
     """Read a .las/laz file and store elements in pandas DataFrame.
 
     Parameters
