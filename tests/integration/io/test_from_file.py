@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 
 from pyntcloud import PyntCloud
+import laspy
 
 
 def assert_points_xyz(data):
@@ -51,7 +52,9 @@ def test_from_file(data_path, extension, color, mesh, comments):
     if extension == ".laz":
         pytest.xfail("TODO: Review laz decompression error")
     cloud = PyntCloud.from_file(str(data_path / "diamond{}".format(extension)))
+
     assert_points_xyz(cloud)
+
     if color:
         assert_points_color(cloud)
     if mesh:
@@ -76,6 +79,7 @@ def test_obj_issue_226(data_path):
 
     assert "w" in cloud.points.columns
 
+
 def test_obj_issue_vn(data_path):
     """
     Fix type issue in pyntcloud/io/obj.py.
@@ -99,3 +103,51 @@ def test_ply_with_bool(data_path):
     cloud = PyntCloud.from_file(filename=TEST_PLY, allow_bool=True)
     assert "is_green" in cloud.points.columns, "Failed to find expected Boolean column: 'is_green'"
     assert cloud.points.is_green.dtype == bool, "Boolean column no loaded as bool dtype"
+
+
+def test_simple_las_issue_333(data_path):
+    """ Regression test https://github.com/daavoo/pyntcloud/issues/333
+    """
+    las_file_name = (str(data_path / "simple.las"))
+    cloud = PyntCloud.from_file(las_file_name)
+    points = cloud.points
+
+    x_point_pyntcloud = points["x"][0]
+    y_point_pyntcloud = points["y"][0]
+    z_point_pyntcloud = points["z"][0]
+
+    with laspy.open(las_file_name) as las_file:
+        las = las_file.read()
+        header = las.header
+
+        x_point_laspy = (las.X[0] * header.x_scale) + header.x_offset
+        y_point_laspy = (las.Y[0] * header.y_scale) + header.y_offset
+        z_point_laspy = (las.Z[0] * header.z_scale) + header.z_offset
+
+    assert x_point_pyntcloud == x_point_laspy.astype("float32")
+    assert y_point_pyntcloud == y_point_laspy.astype("float32")
+    assert z_point_pyntcloud == z_point_laspy.astype("float32")
+
+
+def test_has_offsets_las_issue_333(data_path):
+    """ Regression test https://github.com/daavoo/pyntcloud/issues/333
+    """
+    las_file_name = (str(data_path / "has_offsets.las"))
+    cloud = PyntCloud.from_file(las_file_name)
+    points = cloud.points
+
+    x_point_pyntcloud = points["x"][0]
+    y_point_pyntcloud = points["y"][0]
+    z_point_pyntcloud = points["z"][0]
+
+    with laspy.open(las_file_name) as las_file:
+        las = las_file.read()
+        header = las.header
+
+        x_point_laspy = (las.X[0] * header.x_scale) + header.x_offset
+        y_point_laspy = (las.Y[0] * header.y_scale) + header.y_offset
+        z_point_laspy = (las.Z[0] * header.z_scale) + header.z_offset
+
+    assert x_point_pyntcloud == x_point_laspy.astype("float32")
+    assert y_point_pyntcloud == y_point_laspy.astype("float32")
+    assert z_point_pyntcloud == z_point_laspy.astype("float32")
