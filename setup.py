@@ -20,11 +20,11 @@ setup(
     python_requires='>3.7',
     install_requires=[
         "numpy",
-        "scipy",
+        "scipy>=1.6.0",
         "pandas",
     ],
     extras_require={
-        'LAS':  ["laspy", "lazrs"],
+        'LAS': ["laspy", "lazrs"],
         'PLOT': ["ipython", "matplotlib", "pyvista>=0.32.0"],
         'NUMBA': ["numba"]
     },

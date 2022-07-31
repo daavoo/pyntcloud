@@ -1,5 +1,5 @@
 numpy
-scipy
+scipy>=1.6.0
 pandas
 laspy
 lazrs
