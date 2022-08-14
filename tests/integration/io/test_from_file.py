@@ -99,3 +99,15 @@ def test_ply_with_bool(data_path):
     cloud = PyntCloud.from_file(filename=TEST_PLY, allow_bool=True)
     assert "is_green" in cloud.points.columns, "Failed to find expected Boolean column: 'is_green'"
     assert cloud.points.is_green.dtype == bool, "Boolean column no loaded as bool dtype"
+
+
+def test_las_issue_332(data_path):
+    """ Regression test https://github.com/daavoo/pyntcloud/issues/332
+    """
+    cloud = PyntCloud.from_file(str(data_path / "simple.las"))
+    red_values = cloud.points.loc[:, "red"].to_numpy()
+    green_values = cloud.points.loc[:, "green"].to_numpy()
+    blue_values = cloud.points.loc[:, "blue"].to_numpy()
+    assert np.any(red_values)
+    assert np.any(green_values)
+    assert np.any(blue_values)
