@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.3.0'
+version = '0.3.1'
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
@@ -20,11 +20,11 @@ setup(
     python_requires='>3.7',
     install_requires=[
         "numpy",
-        "scipy",
+        "scipy>=1.6.0",
         "pandas",
     ],
     extras_require={
-        'LAS':  ["laspy", "lazrs"],
+        'LAS': ["laspy", "lazrs"],
         'PLOT': ["ipython", "matplotlib", "pyvista>=0.32.0"],
         'NUMBA': ["numba"]
     },

@@ -57,7 +57,7 @@ class RadiusOutlierRemovalFilter(KDTreeFilter):
         self.r = r
 
     def compute(self):
-        distances = self.kdtree.query(self.points, k=self.k, n_jobs=-1)[0]
+        distances = self.kdtree.query(self.points, k=self.k, workers=-1)[0]
         ror_filter = np.all(distances < self.r, axis=1)
 
         return ror_filter
@@ -96,7 +96,7 @@ class StatisticalOutlierRemovalFilter(KDTreeFilter):
         self.z_max = z_max
 
     def compute(self):
-        distances = self.kdtree.query(self.points, k=self.k, n_jobs=-1)[0]
+        distances = self.kdtree.query(self.points, k=self.k, workers=-1)[0]
         z_distances = zscore(np.mean(distances, axis=1), ddof=1)
         sor_filter = abs(z_distances) < self.z_max
 
