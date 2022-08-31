@@ -29,6 +29,12 @@ def get_color_dtype(data, column_names):
 
 
 def convert_color_to_dtype(data, output_dtype):
+    # From the LAS specification (https://portal.ogc.org/files/17-030r1):
+    #   NOTE: Red, Green, Blue values should always be normalized to
+    #   16 bit values. For example, when encoding an 8 bit per channel
+    #   pixel, multiply each channel value by 256 prior to storage in these
+    #   fields. This normalization allows color values from different camera
+    #   bit depths to be accurately merged.
     assert output_dtype in ["uint8", "uint16"]
     column_names = ["red", "green", "blue"]
     input_dtype = get_color_dtype(data, column_names)
@@ -39,7 +45,10 @@ def convert_color_to_dtype(data, output_dtype):
         if input_dtype == "uint8" and output_dtype == "uint16":
             data["points"].loc[:, column_names] *= 256
         elif input_dtype == "uint16" and output_dtype == "uint8":
-            data["points"].loc[:, column_names] /= 256
+            column_max_values = data["points"].loc[:, column_names].max()
+            # Do not scale color values restricted to [0, 255]
+            if column_max_values.to_numpy().max() >= 256:
+                data["points"].loc[:, column_names] /= 256
         data["points"] = data["points"].astype(
             {"red": output_dtype, "green": output_dtype, "blue": output_dtype})
     return data
