@@ -2,10 +2,6 @@
 Making point clouds fun again
 =============================
 
-.. image:: https://img.shields.io/lgtm/grade/python/g/daavoo/pyntcloud.svg?logo=lgtm&logoWidth=18)
-    :target: https://lgtm.com/projects/g/daavoo/pyntcloud/context:python
-    :alt: LGTM Code quality
-
 .. image:: https://github.com/daavoo/pyntcloud/workflows/pyncloud%20C.I./badge.svg
     :target: https://github.com/daavoo/pyntcloud/actions
     :alt: Github Actions C.I.
