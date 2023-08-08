@@ -1,43 +1,57 @@
-import pandas as pd
+import re
+
 import numpy as np
+import pandas as pd
 
 
 def read_off(filename):
-
-    with open(filename) as off:
-
-        first_line = off.readline()
+    with open(filename) as f:
+        first_line = f.readline()
         if "OFF" not in first_line:
-            raise ValueError('The file does not start with the word OFF')
-        color = True if "C" in first_line else False
+            raise ValueError("The file does not start with the word OFF")
+        has_color = "C" in first_line
 
-        n_points = 0
-        n_faces = 0
+        num_rows = None
+        n_points = None
+        n_faces = None
+        n_header = 1
 
-        count = 1
-        for line in off:
-            count += 1
+        # Backtrack to account for faulty headers, e.g. "OFF4 4 0".
+        m = re.match(r"^(?P<prefix>\D+)([\d\s]+)$", first_line)
+        if m:
+            f.seek(len(m.group("prefix")))
+            n_header = 0
+
+        # Read header.
+        for line in f:
+            n_header += 1
             if line.startswith("#"):
                 continue
             line = line.strip().split()
-            if len(line) > 1:
-                n_points = int(line[0])
-                n_faces = int(line[1])
-                break
+            if len(line) <= 1:
+                continue
+            n_points = int(line[0])
+            n_faces = int(line[1])
+            num_rows = n_points + n_faces
+            break
 
-        if (n_points == 0):
-            raise ValueError('The file has no points')
+        if num_rows is None:
+            raise ValueError("The file does not contain a valid header")
+
+        if n_points == 0:
+            raise ValueError("The file contains no points")
 
         data = {}
         point_names = ["x", "y", "z"]
-        point_types = {'x': np.float32, 'y': np.float32, 'z': np.float32}
+        point_types = {"x": np.float32, "y": np.float32, "z": np.float32}
 
-        if color:
+        if has_color:
             point_names.extend(["red", "green", "blue"])
-            point_types = dict(point_types, **{'red': np.uint8, 'green': np.uint8, 'blue': np.uint8})
+            color_point_types = {"red": np.uint8, "green": np.uint8, "blue": np.uint8}
+            point_types = {**point_types, **color_point_types}
 
         data["points"] = pd.read_csv(
-            off,
+            f,
             sep=" ",
             header=None,
             engine="c",
@@ -45,18 +59,25 @@ def read_off(filename):
             names=point_names,
             dtype=point_types,
             index_col=False,
-            comment="#"
+            comment="#",
         )
 
+        assert len(data["points"]) == n_points
+
+        f.seek(0)
+
         data["mesh"] = pd.read_csv(
-            filename,
+            f,
             sep=" ",
             header=None,
             engine="c",
-            skiprows=(count + n_points),
+            skiprows=n_header + n_points,
             nrows=n_faces,
             usecols=[1, 2, 3],
             names=["v1", "v2", "v3"],
-            comment="#"
+            comment="#",
         )
-        return data
+
+        assert len(data["mesh"]) == n_faces
+
+    return data
