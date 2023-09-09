@@ -41,13 +41,6 @@ def read_off(filename):
                                 index_col=False,
                                 comment="#"
                             )
-        
-        # for n in ["x", "y", "z"]:
-        #     data["points"][n] = data["points"][n].astype(np.float32)
-
-        # if color:
-        #     for n in ["red", "green", "blue"]:
-        #         data["points"][n] = data["points"][n].astype(np.uint8)
 
         data["mesh"] = pd.read_csv(
                             filename,
