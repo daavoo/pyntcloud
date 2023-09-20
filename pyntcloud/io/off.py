@@ -25,8 +25,8 @@ def read_off(filename):
                 n_faces = int(line[1])
                 break
 
-        # if (n_points == 0):
-            # raise ValueError('The file has no points')
+        if (n_points == 0):
+            raise ValueError('The file has no points')
 
         data = {}
         point_names = ["x", "y", "z"]

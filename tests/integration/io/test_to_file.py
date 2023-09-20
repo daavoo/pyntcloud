@@ -2,7 +2,7 @@ import pytest
 
 from pyntcloud import PyntCloud
 
-from .test_from_file import assert_points_xyz, assert_points_color, assert_mesh
+from test_from_file import assert_points_xyz, assert_points_color, assert_mesh
 
 
 @pytest.mark.parametrize("extension,color,mesh,comments", [
