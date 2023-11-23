@@ -73,7 +73,6 @@ def read_obj(filename):
             mesh_columns.append("v{}".format(i + 1))
 
     # trying to coerce type to integer throws error, casted afetr passes tests
-    # mesh = pd.DataFrame([re.split(r'\D+', x) for x in f], dtype='i4', columns=mesh_columns).astype('i4')
     mesh = pd.DataFrame([re.split(r'\D+', x) for x in f], columns=mesh_columns).astype('i4')
     mesh -= 1  # index starts with 1 in obj file
 
