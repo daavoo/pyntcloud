@@ -255,9 +255,6 @@ def describe_element(name, df):
         element.append("property list uchar int vertex_indices")
 
     else:
-        for i in range(len(df.columns)):
-            # get first letter of dtype to infer format
-            f = property_formats[str(df.dtypes[i])[0]]
-            element.append('property ' + f + ' ' + df.columns.values[i])
+        element += [f'property {property_formats[str(datatype)[0]]} {name}' for name, datatype in df.dtypes.items()]
 
     return element
