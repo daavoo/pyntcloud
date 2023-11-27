@@ -10,8 +10,7 @@ def from_open3d(o3d_data, **kwargs):
         raise ImportError("Open3D must be installed. Try `pip install open3d`")
 
     if not isinstance(o3d_data, (o3d.geometry.PointCloud, o3d.geometry.TriangleMesh)):
-        raise TypeError(f"Type {type(o3d_data)} not supported for conversion."
-                        f"Expected {o3d.geometry.PointCloud} or {o3d.geometry.TriangleMesh}")
+        raise TypeError(f"Type {type(o3d_data)} not supported for conversion. Expected {o3d.geometry.PointCloud} or {o3d.geometry.TriangleMesh}")
 
     mesh = None
     if isinstance(o3d_data, o3d.geometry.TriangleMesh):
