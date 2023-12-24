@@ -4,6 +4,10 @@ import sys
 import numpy as np
 import pandas as pd
 from collections import defaultdict
+from contextlib import contextmanager
+from io import StringIO
+from itertools import islice
+
 
 sys_byteorder = ('>', '<')[sys.byteorder == 'little']
 
@@ -132,8 +136,13 @@ def read_ply(filename, allow_bool=False):
 
         names = [x[0] for x in dtypes["vertex"]]
 
-        data["points"] = pd.read_csv(filename, sep=" ", header=None, engine="python",
-                                     skiprows=top, skipfooter=bottom, usecols=names, names=names)
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+
+        with _file_from_lines(lines, top, len(lines) - bottom) as f:
+            data["points"] = pd.read_csv(
+                f, sep=" ", header=None, usecols=names, names=names
+            )
 
         for n, col in enumerate(data["points"].columns):
             data["points"][col] = data["points"][col].astype(
@@ -146,8 +155,10 @@ def read_ply(filename, allow_bool=False):
             usecols = [1, 2, 3, 5, 6, 7, 8, 9, 10] if has_texture else [1, 2, 3]
             names = names[usecols]
 
-            data["mesh"] = pd.read_csv(
-                filename, sep=" ", header=None, engine="python", skiprows=top, usecols=usecols, names=names)
+            with _file_from_lines(lines, top) as f:
+                data["mesh"] = pd.read_csv(
+                    f, sep=" ", header=None, usecols=usecols, names=names
+                )
 
             for n, col in enumerate(data["mesh"].columns):
                 data["mesh"][col] = data["mesh"][col].astype(
@@ -261,3 +272,11 @@ def describe_element(name, df):
             element.append('property ' + f + ' ' + df.columns.values[i])
 
     return element
+
+
+@contextmanager
+def _file_from_lines(lines, start=None, stop=None):
+    with StringIO() as f:
+        f.writelines("".join(islice(lines, start, stop)))
+        f.seek(0)
+        yield f
