@@ -1,7 +1,7 @@
 
 import numpy as np
 from abc import ABC, abstractmethod
-from ..geometry import Plane, Sphere
+from ..geometry import Plane, Sphere, Ellipsoid
 
 
 class RansacModel(ABC):
@@ -55,3 +55,17 @@ class RansacSphere(RansacModel, Sphere):
             return False
         else:
             return True
+
+
+class RansacEllipsoid(RansacModel, Ellipsoid):
+    
+    def __init__(self, max_dist=1e-4):
+        super().__init__(max_dist=max_dist)
+        self.k = 11
+
+    def are_valid(self, k_points):
+        # check if points are coplanar
+        diff = k_points[1:] -  k_points[0]
+        
+        # if rank is equal or lower than 2, some points are complanar
+        return np.linalg.matrix_rank(diff) > 2 
