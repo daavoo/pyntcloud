@@ -69,7 +69,6 @@ def plot_with_pyvista(cloud, **kwargs):
 
     # TODO: Leverage `kwargs["elev"]` and `kwargs["azim"]`
 
-    return plotter.show(use_panel=kwargs.pop("use_panel", None),
-                        title=kwargs.pop("title", None),
+    return plotter.show(title=kwargs.pop("title", None),
                         screenshot=kwargs.pop("screenshot", False),
                         cpos=kwargs.pop("cpos", None) )

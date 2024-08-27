@@ -69,7 +69,7 @@ def plot_with_pythreejs(cloud, **kwargs):
 
     colors = get_colors(cloud, kwargs["use_as_color"], kwargs["cmap"])
 
-    ptp = cloud.xyz.ptp()
+    ptp = np.ptp(cloud.xyz)
 
     children = []
     widgets = []

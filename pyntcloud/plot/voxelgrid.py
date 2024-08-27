@@ -146,7 +146,7 @@ def plot_voxelgrid_with_threejs(voxel_centers,
     centroid, camera_position = get_centroid_and_camera_position(voxel_centers)
 
     if axis:
-        axis_size = voxel_centers.ptp() * 1.5
+        axis_size = np.ptp(voxel_centers) * 1.5
     else:
         axis_size = 0
 
