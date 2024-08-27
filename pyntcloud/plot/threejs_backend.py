@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 try:
     from IPython.display import IFrame
@@ -31,7 +32,7 @@ def plot_with_threejs(cloud, **kwargs):
     else:
         mesh = None
 
-    ptp = cloud.xyz.ptp()
+    ptp = np.ptp(cloud.xyz)
 
     BASE_PATH = os.path.dirname(os.path.abspath(__file__))
     src = "{}/{}".format(BASE_PATH, "points.html")

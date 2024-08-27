@@ -12,6 +12,7 @@ except ImportError:
     display = None
 
 from .common import get_colors
+import numpy as np
 
 
 def get_pointcloud_pythreejs(xyz, colors):
@@ -69,7 +70,7 @@ def plot_with_pythreejs(cloud, **kwargs):
 
     colors = get_colors(cloud, kwargs["use_as_color"], kwargs["cmap"])
 
-    ptp = cloud.xyz.ptp()
+    ptp = np.ptp(cloud.xyz)
 
     children = []
     widgets = []

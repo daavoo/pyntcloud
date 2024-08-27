@@ -22,7 +22,7 @@ def plot_with_matplotlib(cloud, **kwargs):
 
     colors = get_colors(cloud, kwargs["use_as_color"], kwargs["cmap"])
 
-    ptp = cloud.xyz.ptp()
+    ptp = np.ptp(cloud.xyz)
 
     plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
