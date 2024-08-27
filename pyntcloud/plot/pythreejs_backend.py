@@ -12,6 +12,7 @@ except ImportError:
     display = None
 
 from .common import get_colors
+import numpy as np
 
 
 def get_pointcloud_pythreejs(xyz, colors):
