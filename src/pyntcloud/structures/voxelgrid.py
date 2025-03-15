@@ -8,20 +8,26 @@ from ..utils.array import cartesian
 
 try:
     from ..utils.numba import groupby_max, groupby_count, groupby_sum
+
     is_numba_avaliable = True
 except ImportError:
     is_numba_avaliable = False
 
 
 class VoxelGrid(Structure):
-
-    def __init__(self,
-                 *,
-                 points,
-                 colors=None,
-                 n_x=1, n_y=1, n_z=1,
-                 size_x=None, size_y=None, size_z=None,
-                 regular_bounding_box=True):
+    def __init__(
+        self,
+        *,
+        points,
+        colors=None,
+        n_x=1,
+        n_y=1,
+        n_z=1,
+        size_x=None,
+        size_y=None,
+        size_z=None,
+        regular_bounding_box=True,
+    ):
         """Grid of voxels with support for different build methods.
 
         Parameters
@@ -63,14 +69,11 @@ class VoxelGrid(Structure):
     def extract_info(cls, pyntcloud):
         """ABC API"""
         try:
-            colors = pyntcloud.points[['red', 'green', 'blue']].to_numpy()
+            colors = pyntcloud.points[["red", "green", "blue"]].to_numpy()
         except KeyError:
             colors = None
 
-        info = {
-            "points": pyntcloud.xyz,
-            "colors": colors
-        }
+        info = {"points": pyntcloud.xyz, "colors": colors}
         return info
 
     def compute(self):
@@ -88,7 +91,7 @@ class VoxelGrid(Structure):
         for n, size in enumerate(self.sizes):
             if size is None:
                 continue
-            margin = (((xyz_range[n] // size) + 1) * size) - xyz_range[n]
+            margin = (((np.ptp(self._points, 0)[n] // size) + 1) * size) - np.ptp(self._points, 0)[n]
             xyzmin[n] -= margin / 2
             xyzmax[n] += margin / 2
             self.x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int)
@@ -100,10 +103,9 @@ class VoxelGrid(Structure):
         shape = []
         for i in range(3):
             # note the +1 in num
-            s, step = np.linspace(xyzmin[i],
-                                  xyzmax[i],
-                                  num=(self.x_y_z[i] + 1),
-                                  retstep=True)
+            s, step = np.linspace(
+                xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1), retstep=True
+            )
             segments.append(s)
             shape.append(step)
 
@@ -112,31 +114,41 @@ class VoxelGrid(Structure):
 
         self.n_voxels = np.prod(self.x_y_z)
 
-        self.id = "V({},{},{})".format(self.x_y_z, self.sizes, self.regular_bounding_box)
+        self.id = "V({},{},{})".format(
+            self.x_y_z, self.sizes, self.regular_bounding_box
+        )
 
         # find where each point lies in corresponding segmented axis
         # -1 so index are 0-based; clip for edge cases
-        self.voxel_x = np.clip(np.searchsorted(self.segments[0], self._points[:, 0]) - 1, 0, self.x_y_z[0])
-        self.voxel_y = np.clip(np.searchsorted(self.segments[1], self._points[:, 1]) - 1, 0, self.x_y_z[1])
-        self.voxel_z = np.clip(np.searchsorted(self.segments[2], self._points[:, 2]) - 1, 0,  self.x_y_z[2])
-        self.voxel_n = np.ravel_multi_index([self.voxel_x, self.voxel_y, self.voxel_z], self.x_y_z)
+        self.voxel_x = np.clip(
+            np.searchsorted(self.segments[0], self._points[:, 0]) - 1, 0, self.x_y_z[0]
+        )
+        self.voxel_y = np.clip(
+            np.searchsorted(self.segments[1], self._points[:, 1]) - 1, 0, self.x_y_z[1]
+        )
+        self.voxel_z = np.clip(
+            np.searchsorted(self.segments[2], self._points[:, 2]) - 1, 0, self.x_y_z[2]
+        )
+        self.voxel_n = np.ravel_multi_index(
+            [self.voxel_x, self.voxel_y, self.voxel_z], self.x_y_z
+        )
 
         # compute center of each voxel
-        midsegments = [(self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)]
+        midsegments = [
+            (self.segments[i][1:] + self.segments[i][:-1]) / 2 for i in range(3)
+        ]
         self.voxel_centers = cartesian(midsegments).astype(np.float32)
 
         # compute voxel colors
         if self.colors is not None:
             order = np.argsort(self.voxel_n)
-            _, breaks, counts = np.unique(self.voxel_n[order],
-                                          return_index=True,
-                                          return_counts=True)
+            _, breaks, counts = np.unique(
+                self.voxel_n[order], return_index=True, return_counts=True
+            )
             repeated_counts = np.repeat(counts[:, None], 3, axis=1)
             # why square? watch this: https://www.youtube.com/watch?v=LKnqECcg6Gw
             squared_colors = np.square(self.colors[order].astype(np.int64))
-            summed_colors = np.add.reduceat(squared_colors,
-                                            breaks,
-                                            axis=0)
+            summed_colors = np.add.reduceat(squared_colors, breaks, axis=0)
             averaged_colors = np.sqrt(summed_colors / repeated_counts)
             self.voxel_colors = np.rint(averaged_colors).astype(np.uint8)
 
@@ -146,12 +158,15 @@ class VoxelGrid(Structure):
         TODO Make query_voxelgrid an independent function, and add a light
         save mode where only segments and x_y_z are saved.
         """
-        voxel_x = np.clip(np.searchsorted(
-            self.segments[0], points[:, 0]) - 1, 0, self.x_y_z[0])
-        voxel_y = np.clip(np.searchsorted(
-            self.segments[1], points[:, 1]) - 1, 0, self.x_y_z[1])
-        voxel_z = np.clip(np.searchsorted(
-            self.segments[2], points[:, 2]) - 1, 0, self.x_y_z[2])
+        voxel_x = np.clip(
+            np.searchsorted(self.segments[0], points[:, 0]) - 1, 0, self.x_y_z[0]
+        )
+        voxel_y = np.clip(
+            np.searchsorted(self.segments[1], points[:, 1]) - 1, 0, self.x_y_z[1]
+        )
+        voxel_z = np.clip(
+            np.searchsorted(self.segments[2], points[:, 2]) - 1, 0, self.x_y_z[2]
+        )
         voxel_n = np.ravel_multi_index([voxel_x, voxel_y, voxel_z], self.x_y_z)
 
         return voxel_n
@@ -197,7 +212,7 @@ class VoxelGrid(Structure):
 
         elif mode == "density":
             count = np.bincount(self.voxel_n)
-            vector[:len(count)] = count
+            vector[: len(count)] = count
             vector /= len(self.voxel_n)
 
         elif mode == "TDF":
@@ -215,12 +230,18 @@ class VoxelGrid(Structure):
             if not is_numba_avaliable:
                 raise ImportError("numba is required to compute {}".format(mode))
             axis = {"x_mean": 0, "y_mean": 1, "z_mean": 2}
-            voxel_sum = groupby_sum(self._points, self.voxel_n, axis[mode], np.zeros(self.n_voxels))
-            voxel_count = groupby_count(self._points, self.voxel_n, np.zeros(self.n_voxels))
+            voxel_sum = groupby_sum(
+                self._points, self.voxel_n, axis[mode], np.zeros(self.n_voxels)
+            )
+            voxel_count = groupby_count(
+                self._points, self.voxel_n, np.zeros(self.n_voxels)
+            )
             vector = np.nan_to_num(voxel_sum / voxel_count)
 
         else:
-            raise NotImplementedError("{} is not a supported feature vector mode".format(mode))
+            raise NotImplementedError(
+                "{} is not a supported feature vector mode".format(mode)
+            )
 
         return vector.reshape(self.x_y_z)
 
@@ -262,28 +283,36 @@ class VoxelGrid(Structure):
 
         valid_neighbor_indices = cartesian((valid_x, valid_y, valid_z))
 
-        ravel_indices = np.ravel_multi_index((valid_neighbor_indices[:, 0],
-                                              valid_neighbor_indices[:, 1],
-                                              valid_neighbor_indices[:, 2]), self.x_y_z)
+        ravel_indices = np.ravel_multi_index(
+            (
+                valid_neighbor_indices[:, 0],
+                valid_neighbor_indices[:, 1],
+                valid_neighbor_indices[:, 2],
+            ),
+            self.x_y_z,
+        )
 
         return [x for x in ravel_indices if x in np.unique(self.voxel_n)]
 
-    def plot(self,
-             d=3,
-             mode="binary",
-             backend='pythreejs',
-             cmap="Oranges",
-             axis=False,
-             output_name=None,
-             width=800,
-             height=500):
-
-        return plot_voxelgrid(self,
-                              d=d,
-                              mode=mode,
-                              backend=backend,
-                              cmap=cmap,
-                              axis=axis,
-                              output_name=output_name,
-                              width=width,
-                              height=height)
+    def plot(
+        self,
+        d=3,
+        mode="binary",
+        backend="pythreejs",
+        cmap="Oranges",
+        axis=False,
+        output_name=None,
+        width=800,
+        height=500,
+    ):
+        return plot_voxelgrid(
+            self,
+            d=d,
+            mode=mode,
+            backend=backend,
+            cmap=cmap,
+            axis=axis,
+            output_name=output_name,
+            width=width,
+            height=height,
+        )
