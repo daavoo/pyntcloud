@@ -9,7 +9,6 @@ from .io import FROM_FILE, TO_FILE, FROM_INSTANCE, TO_INSTANCE
 from .neighbors import k_neighbors, r_neighbors
 from .plot import DESCRIPTION, AVAILABLE_BACKENDS
 from .plot.matplotlib_backend import plot_with_matplotlib
-from .plot.threejs_backend import plot_with_threejs
 from .plot.pythreejs_backend import plot_with_pythreejs
 from .plot.pyvista_backend import plot_with_pyvista
 from .samplers import ALL_SAMPLERS
