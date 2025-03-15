@@ -7,23 +7,23 @@ import laspy
 
 
 def assert_points_xyz(data):
-    assert np.isclose(data.points['x'][0], 0.5)
-    assert np.isclose(data.points['y'][0], 0)
-    assert np.isclose(data.points['z'][0], 0.5)
+    assert np.isclose(data.points["x"][0], 0.5)
+    assert np.isclose(data.points["y"][0], 0)
+    assert np.isclose(data.points["z"][0], 0.5)
 
-    assert str(data.points["x"].dtype) == 'float32'
-    assert str(data.points["y"].dtype) == 'float32'
-    assert str(data.points["z"].dtype) == 'float32'
+    assert str(data.points["x"].dtype) == "float32"
+    assert str(data.points["y"].dtype) == "float32"
+    assert str(data.points["z"].dtype) == "float32"
 
 
 def assert_points_color(data):
-    assert data.points['red'][0] == 255
-    assert data.points['green'][0] == 0
-    assert data.points['blue'][0] == 0
+    assert data.points["red"][0] == 255
+    assert data.points["green"][0] == 0
+    assert data.points["blue"][0] == 0
 
-    assert str(data.points['red'].dtype) == 'uint8'
-    assert str(data.points['green'].dtype) == 'uint8'
-    assert str(data.points['blue'].dtype) == 'uint8'
+    assert str(data.points["red"].dtype) == "uint8"
+    assert str(data.points["green"].dtype) == "uint8"
+    assert str(data.points["blue"].dtype) == "uint8"
 
 
 def assert_mesh(data):
@@ -31,23 +31,26 @@ def assert_mesh(data):
     assert data.mesh["v2"][0] == 1
     assert data.mesh["v3"][0] == 2
 
-    assert str(data.mesh['v1'].dtype) == 'int32'
-    assert str(data.mesh['v2'].dtype) == 'int32'
-    assert str(data.mesh['v3'].dtype) == 'int32'
+    assert str(data.mesh["v1"].dtype) == "int32"
+    assert str(data.mesh["v2"].dtype) == "int32"
+    assert str(data.mesh["v3"].dtype) == "int32"
 
 
-@pytest.mark.parametrize("extension,color,mesh,comments", [
-    (".ply", True, True, False),
-    ("_ascii.ply", True, True, True),
-    ("_ascii_vertex_index.ply", True, True, True),
-    (".npz", True, True, False),
-    (".obj", False, True, False),
-    (".off", False, False, False),
-    ("_color.off", True, False, False),
-    (".bin", False, False, False),
-    (".las", True, False, False),
-    (".laz", True, False, False)
-])
+@pytest.mark.parametrize(
+    "extension,color,mesh,comments",
+    [
+        (".ply", True, True, False),
+        ("_ascii.ply", True, True, True),
+        ("_ascii_vertex_index.ply", True, True, True),
+        (".npz", True, True, False),
+        (".obj", False, True, False),
+        (".off", False, False, False),
+        ("_color.off", True, False, False),
+        (".bin", False, False, False),
+        (".las", True, False, False),
+        (".laz", True, False, False),
+    ],
+)
 def test_from_file(data_path, extension, color, mesh, comments):
     if extension == ".laz":
         pytest.xfail("TODO: Review laz decompression error")
@@ -64,8 +67,7 @@ def test_from_file(data_path, extension, color, mesh, comments):
 
 
 def test_obj_issue_221(data_path):
-    """ Regression test https://github.com/daavoo/pyntcloud/issues/221
-    """
+    """Regression test https://github.com/daavoo/pyntcloud/issues/221"""
     cloud = PyntCloud.from_file(str(data_path / "obj_issue_221.obj"))
 
     assert (len(cloud.xyz)) == 42
@@ -73,8 +75,7 @@ def test_obj_issue_221(data_path):
 
 
 def test_obj_issue_226(data_path):
-    """ Regression test https://github.com/daavoo/pyntcloud/issues/226
-    """
+    """Regression test https://github.com/daavoo/pyntcloud/issues/226"""
     cloud = PyntCloud.from_file(str(data_path / "obj_issue_226.obj"))
 
     assert "w" in cloud.points.columns
@@ -101,13 +102,14 @@ def test_ply_with_bool(data_path):
         cloud = PyntCloud.from_file(TEST_PLY)
 
     cloud = PyntCloud.from_file(filename=TEST_PLY, allow_bool=True)
-    assert "is_green" in cloud.points.columns, "Failed to find expected Boolean column: 'is_green'"
+    assert "is_green" in cloud.points.columns, (
+        "Failed to find expected Boolean column: 'is_green'"
+    )
     assert cloud.points.is_green.dtype == bool, "Boolean column no loaded as bool dtype"
 
 
 def test_las_issue_332(data_path):
-    """ Regression test https://github.com/daavoo/pyntcloud/issues/332
-    """
+    """Regression test https://github.com/daavoo/pyntcloud/issues/332"""
     cloud = PyntCloud.from_file(str(data_path / "simple.las"))
     red_values = cloud.points.loc[:, "red"].to_numpy()
     green_values = cloud.points.loc[:, "green"].to_numpy()
@@ -118,9 +120,8 @@ def test_las_issue_332(data_path):
 
 
 def test_simple_las_issue_333(data_path):
-    """ Regression test https://github.com/daavoo/pyntcloud/issues/333
-    """
-    las_file_name = (str(data_path / "simple.las"))
+    """Regression test https://github.com/daavoo/pyntcloud/issues/333"""
+    las_file_name = str(data_path / "simple.las")
     cloud = PyntCloud.from_file(las_file_name)
     points = cloud.points
 
@@ -142,9 +143,8 @@ def test_simple_las_issue_333(data_path):
 
 
 def test_has_offsets_las_issue_333(data_path):
-    """ Regression test https://github.com/daavoo/pyntcloud/issues/333
-    """
-    las_file_name = (str(data_path / "has_offsets.las"))
+    """Regression test https://github.com/daavoo/pyntcloud/issues/333"""
+    las_file_name = str(data_path / "has_offsets.las")
     cloud = PyntCloud.from_file(las_file_name)
     points = cloud.points
 

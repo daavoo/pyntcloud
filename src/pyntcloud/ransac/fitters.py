@@ -8,13 +8,17 @@ import numpy as np
 from .samplers import RandomRansacSampler
 
 
-def single_fit(points, model, sampler=RandomRansacSampler,
-               model_kwargs={},
-               sampler_kwargs={},
-               max_iterations=100,
-               return_model=False,
-               n_inliers_to_stop=None):
-    """ RANdom SAmple Consensus for fitting model a single model to points.
+def single_fit(
+    points,
+    model,
+    sampler=RandomRansacSampler,
+    model_kwargs={},
+    sampler_kwargs={},
+    max_iterations=100,
+    return_model=False,
+    n_inliers_to_stop=None,
+):
+    """RANdom SAmple Consensus for fitting model a single model to points.
 
     points: ndarray
         (N, M) ndarray where N is the number of points and M is the number
@@ -60,7 +64,6 @@ def single_fit(points, model, sampler=RandomRansacSampler,
         n_inliers_to_stop = len(points)
 
     for i in range(max_iterations):
-
         k_points = sampler.get_sample()
 
         if not model.are_valid(k_points):

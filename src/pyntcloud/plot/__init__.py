@@ -12,20 +12,20 @@ AVAILABLE_BACKENDS = []
 # Add each backend in order of preference
 # Add pythreejs
 try:
-    import pythreejs
+    import pythreejs  # noqa: F401
+
     AVAILABLE_BACKENDS.append("pythreejs")
 except ImportError:
     pass
-# Add PyVista
 try:
-    import pyvista
+    import pyvista  # noqa: F401
+
     AVAILABLE_BACKENDS.append("pyvista")
 except ImportError:
     pass
-# Add matplotlib
 try:
-    import matplotlib
+    import matplotlib  # noqa: F401
+
     AVAILABLE_BACKENDS.append("matplotlib")
 except ImportError:
     pass
-

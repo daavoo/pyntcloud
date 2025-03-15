@@ -16,9 +16,7 @@ def read_ascii(filename, **kwargs):
         Elements as pandas DataFrames.
     """
 
-    data = {
-        "points": pd.read_csv(filename, **kwargs)
-    }
+    data = {"points": pd.read_csv(filename, **kwargs)}
 
     return data
 

@@ -6,10 +6,7 @@ from .base import Structure
 
 
 class ConvexHull(scipy_ConvexHull, Structure):
-
-    def __init__(self, points,
-                 incremental=False,
-                 qhull_options=None):
+    def __init__(self, points, incremental=False, qhull_options=None):
         Structure.__init__(self, points=points)
         self._incremental = incremental
         self._qhull_options = qhull_options
@@ -17,10 +14,9 @@ class ConvexHull(scipy_ConvexHull, Structure):
     def compute(self):
         """ABC API"""
         self.id = "CH({})".format(self._qhull_options)
-        scipy_ConvexHull.__init__(self,
-                                  self._points,
-                                  self._incremental,
-                                  self._qhull_options)
+        scipy_ConvexHull.__init__(
+            self, self._points, self._incremental, self._qhull_options
+        )
 
     def get_mesh(self):
         """

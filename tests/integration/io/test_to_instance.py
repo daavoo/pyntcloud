@@ -4,15 +4,17 @@ from pyntcloud import PyntCloud
 
 try:
     import pyvista as pv
+
     SKIP_PYVISTA = False
-except:
+except ImportError:
     pv = None
     SKIP_PYVISTA = True
 
 try:
     import open3d as o3d
+
     SKIP_OPEN3D = False
-except:
+except ImportError:
     o3d = None
     SKIP_OPEN3D = True
 

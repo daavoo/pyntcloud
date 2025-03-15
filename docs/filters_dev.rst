@@ -25,7 +25,7 @@ Filters are used by the method:
 Take a look at the source code in order to get a general overview of how filters are being used. All filters are classes and all have the same
 methods.
 
-The sections below will guide you trough the filters module explaining how you can create your own filters or where you need
+The sections below will guide you through the filters module explaining how you can create your own filters or where you need
 to look in order to modify existing ones.
 
 Base Class
@@ -37,7 +37,7 @@ All filters must inherit from the base class `Filter` and implement its abstract
 
 The base class is located at pyntcloud/filters/base.py
 
-.. autoclass:: Filter     
+.. autoclass:: Filter
 
 At the very least, all filters receive a PyntCloud when they are instantiated.
 
@@ -64,14 +64,14 @@ methods of the Filter base class.
 
 For example, in the f_kdtree submodule there is a Filter_KDTree class from which all the filters that require a KDTree inherit.
 
-.. autoclass:: Filter_KDTree     
+.. autoclass:: Filter_KDTree
 
 If you don't find a submodule that extracts the information that your new filter needs, create a new one using as guideline one of the existing ones.
 
 Specific Filter Class
 =====================
 
-Once you have a submodule base class that extracts the right information, you have to actually create the specific class 
+Once you have a submodule base class that extracts the right information, you have to actually create the specific class
 for your filter, inheriting from the submodule base class and overriding the `Filter.compute` method.
 
 If the computation of your filter requires some parameters from the user, you should override the `__init__` method in order to accept those

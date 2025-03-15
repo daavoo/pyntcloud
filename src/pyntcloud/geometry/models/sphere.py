@@ -4,7 +4,6 @@ from .base import GeometryModel
 
 
 class Sphere(GeometryModel):
-
     def __init__(self, center=None, radius=None):
         self.center = center
         self.radius = radius
@@ -83,8 +82,12 @@ class Sphere(GeometryModel):
         center, residules, rank, singval = np.linalg.lstsq(A, f)
 
         #   solve for the radius
-        t = (center[0] * center[0]) + (center[1] * center[1]) + \
-            (center[2] * center[2]) + center[3]
+        t = (
+            (center[0] * center[0])
+            + (center[1] * center[1])
+            + (center[2] * center[2])
+            + center[3]
+        )
 
         self.center = center[:3].T[0]
         self.radius = np.sqrt(t)[0]
@@ -125,8 +128,9 @@ def create_sphere(center=[0, 0, 0], radius=1, n_points=100):
     np_axis = round(np.sqrt(n_points - 2), 0) + 1
 
     index = np.arange(0, np.square(np_axis) + 2, 1)
-    sphere = pd.DataFrame(np.zeros([np.size(index, 0), 3]),
-                       index=index, columns=['x', 'y', 'z'])
+    sphere = pd.DataFrame(
+        np.zeros([np.size(index, 0), 3]), index=index, columns=["x", "y", "z"]
+    )
 
     zmin = center[2] - radius
     zmax = center[2] + radius

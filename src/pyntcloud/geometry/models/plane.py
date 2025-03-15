@@ -4,7 +4,6 @@ from ...utils.array import PCA
 
 
 class Plane(GeometryModel):
-
     def __init__(self, point=None, normal=None):
         self.point = point
         self.normal = normal
@@ -37,7 +36,7 @@ class Plane(GeometryModel):
 
     def get_equation(self):
         a, b, c = self.normal
-        d = - np.dot(self.normal, self.point)
+        d = -np.dot(self.normal, self.point)
         return a, b, c, d
 
     def get_projections(self, points, only_distances=False):

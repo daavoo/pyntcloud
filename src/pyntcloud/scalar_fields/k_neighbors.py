@@ -22,8 +22,8 @@ class KNeighborsScalarField(ScalarField):
 
 
 class EigenValues(KNeighborsScalarField):
-    """Compute the eigen values of each point's neighbourhood.
-    """
+    """Compute the eigen values of each point's neighbourhood."""
+
     def compute(self):
         cov = cov3D(self.k_neighbors)
         eigenvalues = np.linalg.eigvals(cov)
@@ -43,8 +43,8 @@ class EigenValues(KNeighborsScalarField):
 
 
 class EigenDecomposition(KNeighborsScalarField):
-    """Compute the eigen decomposition of each point's neighbourhood.
-    """
+    """Compute the eigen decomposition of each point's neighbourhood."""
+
     def compute(self):
         cov = cov3D(self.k_neighbors)
         eigenvalues, eigenvectors = np.linalg.eig(cov)
@@ -80,8 +80,8 @@ class EigenDecomposition(KNeighborsScalarField):
 
 
 class UnorientedNormals(KNeighborsScalarField):
-    """Compute normals using SVD.
-    """
+    """Compute normals using SVD."""
+
     def compute(self):
         cov = cov3D(self.k_neighbors)
         u, s, v = np.linalg.svd(cov)

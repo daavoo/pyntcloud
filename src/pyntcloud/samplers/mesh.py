@@ -6,8 +6,7 @@ from ..geometry.areas import triangle_area_multi
 
 
 class MeshSampler(Sampler):
-    """
-    """
+    """ """
 
     def __init__(self, *, pyntcloud, rgb=False, normals=False):
         super().__init__(pyntcloud=pyntcloud)
@@ -16,7 +15,8 @@ class MeshSampler(Sampler):
 
     def extract_info(self):
         v1, v2, v3 = self.pyntcloud.get_mesh_vertices(
-            rgb=self.rgb, normals=self.normals)
+            rgb=self.rgb, normals=self.normals
+        )
 
         self.v1_xyz = v1[:, :3]
         self.v2_xyz = v2[:, :3]
@@ -39,7 +39,7 @@ class MeshSampler(Sampler):
 
 
 class RandomMeshSampler(MeshSampler):
-    """ Sample points adjusting probabilities according to triangle area.
+    """Sample points adjusting probabilities according to triangle area.
 
     Parameters
     ----------
@@ -64,15 +64,16 @@ class RandomMeshSampler(MeshSampler):
         areas = triangle_area_multi(self.v1_xyz, self.v2_xyz, self.v3_xyz)
         probabilities = areas / np.sum(areas)
         random_idx = np.random.choice(
-            np.arange(len(areas)), size=self.n, p=probabilities)
+            np.arange(len(areas)), size=self.n, p=probabilities
+        )
 
         v1_xyz = self.v1_xyz[random_idx]
         v2_xyz = self.v2_xyz[random_idx]
         v3_xyz = self.v3_xyz[random_idx]
 
         # (n, 1) the 1 is for broadcasting
-        u = np.random.uniform(low=0., high=1., size=(self.n, 1))
-        v = np.random.uniform(low=0., high=1-u, size=(self.n, 1))
+        u = np.random.uniform(low=0.0, high=1.0, size=(self.n, 1))
+        v = np.random.uniform(low=0.0, high=1 - u, size=(self.n, 1))
 
         result = pd.DataFrame()
 
@@ -102,7 +103,9 @@ class RandomMeshSampler(MeshSampler):
 
             sum_normals = v1_normals + v2_normals + v3_normals
 
-            result_normals = sum_normals / np.linalg.norm(sum_normals, axis=1)[..., None]
+            result_normals = (
+                sum_normals / np.linalg.norm(sum_normals, axis=1)[..., None]
+            )
             result_normals = result_normals.astype(np.float32)
 
             result["nx"] = result_normals[:, 0]

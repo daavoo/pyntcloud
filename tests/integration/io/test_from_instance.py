@@ -4,15 +4,17 @@ from pyntcloud import PyntCloud
 
 try:
     import pyvista as pv
+
     SKIP_PYVISTA = False
-except:
+except ImportError:
     pv = None
     SKIP_PYVISTA = True
 
 try:
     import open3d as o3d
+
     SKIP_OPEN3D = False
-except:
+except ImportError:
     o3d = None
     SKIP_OPEN3D = True
 
@@ -22,10 +24,16 @@ def test_pyvista_conversion(data_path):
     original_point_cloud = pv.read(str(data_path / "diamond.ply"))
     cloud = PyntCloud.from_instance("pyvista", original_point_cloud)
     assert np.allclose(cloud.xyz, original_point_cloud.points)
-    assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['red', 'green', 'blue']].values, original_point_cloud.point_data["RGB"])
-    assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  original_point_cloud.point_data["Normals"])
+    assert {"red", "green", "blue"}.issubset(cloud.points.columns)
+    assert np.allclose(
+        cloud.points[["red", "green", "blue"]].values,
+        original_point_cloud.point_data["RGB"],
+    )
+    assert {"nx", "ny", "nz"}.issubset(cloud.points.columns)
+    assert np.allclose(
+        cloud.points[["nx", "ny", "nz"]].values,
+        original_point_cloud.point_data["Normals"],
+    )
     assert cloud.mesh is not None
 
 
@@ -46,7 +54,7 @@ def test_pyvista_multicomponent_scalars_are_splitted():
 
 @pytest.mark.skipif(SKIP_PYVISTA, reason="Requires PyVista")
 def test_pyvista_rgb_is_handled():
-    """ Serves as regression test for old `in` behaviour that could cause a subtle bug
+    """Serves as regression test for old `in` behaviour that could cause a subtle bug
     if poin_arrays contain a field with `name in "RGB"`
     """
     poly = pv.Sphere()
@@ -60,11 +68,16 @@ def test_open3d_point_cloud(data_path):
     point_cloud = o3d.io.read_point_cloud(str(data_path.joinpath("diamond.ply")))
     cloud = PyntCloud.from_instance("open3d", point_cloud)
     assert np.allclose(cloud.xyz, np.asarray(point_cloud.points))
-    assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['red', 'green', 'blue']].values / 255., np.asarray(point_cloud.colors))
+    assert {"red", "green", "blue"}.issubset(cloud.points.columns)
+    assert np.allclose(
+        cloud.points[["red", "green", "blue"]].values / 255.0,
+        np.asarray(point_cloud.colors),
+    )
 
-    assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  np.asarray(point_cloud.normals))
+    assert {"nx", "ny", "nz"}.issubset(cloud.points.columns)
+    assert np.allclose(
+        cloud.points[["nx", "ny", "nz"]].values, np.asarray(point_cloud.normals)
+    )
 
 
 @pytest.mark.skipif(SKIP_OPEN3D, reason="Requires Open3D")
@@ -76,8 +89,13 @@ def test_open3d_triangle_mesh(data_path):
 
     assert np.allclose(cloud.xyz, triangle_mesh.vertices)
 
-    assert {'red', 'green', 'blue'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['red', 'green', 'blue']].values / 255., triangle_mesh.vertex_colors)
+    assert {"red", "green", "blue"}.issubset(cloud.points.columns)
+    assert np.allclose(
+        cloud.points[["red", "green", "blue"]].values / 255.0,
+        triangle_mesh.vertex_colors,
+    )
 
-    assert {'nx', 'ny', 'nz'}.issubset(cloud.points.columns)
-    assert np.allclose(cloud.points[['nx', 'ny', 'nz']].values,  triangle_mesh.vertex_normals)
+    assert {"nx", "ny", "nz"}.issubset(cloud.points.columns)
+    assert np.allclose(
+        cloud.points[["nx", "ny", "nz"]].values, triangle_mesh.vertex_normals
+    )

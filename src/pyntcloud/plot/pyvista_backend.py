@@ -44,7 +44,7 @@ def plot_with_pyvista(cloud, **kwargs):
         Alias for ``initial_point_size``
     """
     if pv is None:
-        raise ImportError('PyVista must be installed to use it for plotting.')
+        raise ImportError("PyVista must be installed to use it for plotting.")
     # Get point size
     point_size = kwargs["initial_point_size"]
     if point_size is None:
@@ -53,23 +53,31 @@ def plot_with_pyvista(cloud, **kwargs):
     # Get an RGB array using PyntCloud
     colors = get_colors(cloud, kwargs["use_as_color"], kwargs["cmap"])
 
-    poly_data = cloud.to_instance('pyvista', mesh=kwargs.pop("mesh", False))
+    poly_data = cloud.to_instance("pyvista", mesh=kwargs.pop("mesh", False))
 
-    plotter = pv.Plotter(window_size=[kwargs.pop("width"), kwargs.pop("height")],
-                         off_screen=kwargs.pop("off_screen", None),
-                         notebook=kwargs.pop("notebook", None))
+    plotter = pv.Plotter(
+        window_size=[kwargs.pop("width"), kwargs.pop("height")],
+        off_screen=kwargs.pop("off_screen", None),
+        notebook=kwargs.pop("notebook", None),
+    )
 
     # Add the poly data to the scene
-    plotter.add_mesh(poly_data, point_size=point_size, scalars=colors, rgb=True,
-                     render_points_as_spheres=kwargs.pop("render_points_as_spheres", False),
-                     )
+    plotter.add_mesh(
+        poly_data,
+        point_size=point_size,
+        scalars=colors,
+        rgb=True,
+        render_points_as_spheres=kwargs.pop("render_points_as_spheres", False),
+    )
 
     if kwargs.pop("eye_dome_lighting", None):
         plotter.enable_eye_dome_lighting()
 
     # TODO: Leverage `kwargs["elev"]` and `kwargs["azim"]`
 
-    return plotter.show(use_panel=kwargs.pop("use_panel", None),
-                        title=kwargs.pop("title", None),
-                        screenshot=kwargs.pop("screenshot", False),
-                        cpos=kwargs.pop("cpos", None) )
+    return plotter.show(
+        use_panel=kwargs.pop("use_panel", None),
+        title=kwargs.pop("title", None),
+        screenshot=kwargs.pop("screenshot", False),
+        cpos=kwargs.pop("cpos", None),
+    )

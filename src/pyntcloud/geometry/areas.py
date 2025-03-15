@@ -2,22 +2,21 @@ import numpy as np
 
 
 def triangle_area(triangle):
-    """ triangle is a (3,3) array such as triangle[i] is the ith vertex of the triangle
-    """
-    return 0.5 * np.linalg.norm(np.cross(triangle[1] - triangle[0],
-                                         triangle[2] - triangle[0]))
+    """triangle is a (3,3) array such as triangle[i] is the ith vertex of the triangle"""
+    return 0.5 * np.linalg.norm(
+        np.cross(triangle[1] - triangle[0], triangle[2] - triangle[0])
+    )
 
 
 def triangle_area_multi(v1, v2, v3):
-    """ v1, v2, v3 are (N,3) arrays. Each one represents the vertices
+    """v1, v2, v3 are (N,3) arrays. Each one represents the vertices
     such as v1[i], v2[i], v3[i] represent the ith triangle
     """
-    return 0.5 * np.linalg.norm(np.cross(v2 - v1,
-                                         v3 - v1), axis=1)
+    return 0.5 * np.linalg.norm(np.cross(v2 - v1, v3 - v1), axis=1)
 
 
 def coplanar_area(points, plane_normal=None):
-    """ Area of the coplanar polygon formed by the given points.
+    """Area of the coplanar polygon formed by the given points.
 
     Parameters
     ----------
@@ -37,7 +36,6 @@ def coplanar_area(points, plane_normal=None):
     """
 
     if not plane_normal:
-
         #  p, normal = plane_def_by(points[:3])
         pass
 
@@ -60,7 +58,7 @@ def coplanar_area(points, plane_normal=None):
 
 
 def projected_area(points, plane_point, plane_normal):
-    """ Area of the polygon formed by the points projected on the given plane.
+    """Area of the polygon formed by the points projected on the given plane.
 
     Parameters
     ----------

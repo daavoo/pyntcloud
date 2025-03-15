@@ -1,6 +1,5 @@
-
 def k_neighbors(kdtree, k):
-    """ Get indices of K neartest neighbors for each point
+    """Get indices of K neartest neighbors for each point
 
     Parameters
     ----------

@@ -12,16 +12,22 @@ import pandas as pd
 
 
 def convert_location_to_dtype(data, dtype_str):
-    data["points"] = data["points"].astype({"x": dtype_str, "y": dtype_str, "z": dtype_str})
+    data["points"] = data["points"].astype(
+        {"x": dtype_str, "y": dtype_str, "z": dtype_str}
+    )
     return data
 
 
 def get_color_dtype(data, column_names):
     has_color = all(column in data["points"] for column in column_names)
     if has_color:
-        color_data_types = [data["points"][column_name].dtype for column_name in column_names]
+        color_data_types = [
+            data["points"][column_name].dtype for column_name in column_names
+        ]
         if len(set(color_data_types)) > 1:
-            raise TypeError(f"Data types of color values are inconsistent: got {color_data_types}")
+            raise TypeError(
+                f"Data types of color values are inconsistent: got {color_data_types}"
+            )
         color_data_type = color_data_types[0]
     else:
         color_data_type = None
@@ -41,7 +47,9 @@ def convert_color_to_dtype(data, output_dtype):
     if input_dtype is not None:
         # Color information in las/laz files is stored as uint8 or uint16
         if input_dtype not in ["uint8", "uint16"]:
-            raise ValueError(f"Invalid color dtype. Expected one of ['uint8', 'uint16'], but got {input_dtype}")
+            raise ValueError(
+                f"Invalid color dtype. Expected one of ['uint8', 'uint16'], but got {input_dtype}"
+            )
         if input_dtype == "uint8" and output_dtype == "uint16":
             data["points"].loc[:, column_names] *= 256
         elif input_dtype == "uint16" and output_dtype == "uint8":
@@ -50,7 +58,8 @@ def convert_color_to_dtype(data, output_dtype):
             if column_max_values.to_numpy().max() >= 256:
                 data["points"].loc[:, column_names] /= 256
         data["points"] = data["points"].astype(
-            {"red": output_dtype, "green": output_dtype, "blue": output_dtype})
+            {"red": output_dtype, "green": output_dtype, "blue": output_dtype}
+        )
     return data
 
 
@@ -109,7 +118,9 @@ def read_las(filename, xyz_dtype="float32", rgb_dtype="uint8", backend="laspy"):
     elif backend == "laspy":
         data = read_las_with_laspy(filename)
     else:
-        raise ValueError(f"Unsupported backend. Expected one of ['pylas', 'laspy'] but got {backend}")
+        raise ValueError(
+            f"Unsupported backend. Expected one of ['pylas', 'laspy'] but got {backend}"
+        )
     data = convert_location_to_dtype(data, xyz_dtype)
     data = convert_color_to_dtype(data, rgb_dtype)
     return data

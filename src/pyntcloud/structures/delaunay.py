@@ -6,11 +6,9 @@ from .base import Structure
 
 
 class Delaunay3D(Delaunay, Structure):
-
-    def __init__(self, points,
-                 furthest_site=False,
-                 incremental=False,
-                 qhull_options=None):
+    def __init__(
+        self, points, furthest_site=False, incremental=False, qhull_options=None
+    ):
         Structure.__init__(self, points=points)
         self._furthest_site = furthest_site
         self._incremental = incremental
@@ -19,11 +17,13 @@ class Delaunay3D(Delaunay, Structure):
     def compute(self):
         """ABC API"""
         self.id = "D({},{})".format(self._furthest_site, self._qhull_options)
-        Delaunay.__init__(self,
-                          self._points,
-                          self._furthest_site,
-                          self._incremental,
-                          self._qhull_options)
+        Delaunay.__init__(
+            self,
+            self._points,
+            self._furthest_site,
+            self._incremental,
+            self._qhull_options,
+        )
 
     def get_mesh(self):
         """

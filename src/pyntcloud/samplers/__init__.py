@@ -1,4 +1,3 @@
-
 """
 HAKUNA MATATA
 """
@@ -9,18 +8,18 @@ from .voxelgrid import (
     VoxelgridCentersSampler,
     VoxelgridCentroidsSampler,
     VoxelgridNearestSampler,
-    VoxelgridHighestSampler
+    VoxelgridHighestSampler,
 )
 
 ALL_SAMPLERS = {
     # Mesh
-    'mesh_random': RandomMeshSampler,
+    "mesh_random": RandomMeshSampler,
     # Points
-    'points_random': RandomPointsSampler,
-    'points_farthest': FarthestPointsSampler,
+    "points_random": RandomPointsSampler,
+    "points_farthest": FarthestPointsSampler,
     # Voxelgrid
-    'voxelgrid_centers': VoxelgridCentersSampler,
-    'voxelgrid_centroids': VoxelgridCentroidsSampler,
-    'voxelgrid_nearest': VoxelgridNearestSampler,
-    'voxelgrid_highest': VoxelgridHighestSampler
+    "voxelgrid_centers": VoxelgridCentersSampler,
+    "voxelgrid_centroids": VoxelgridCentroidsSampler,
+    "voxelgrid_nearest": VoxelgridNearestSampler,
+    "voxelgrid_highest": VoxelgridHighestSampler,
 }

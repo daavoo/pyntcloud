@@ -8,24 +8,24 @@ class NormalsScalarField(ScalarField):
 
 
 class InclinationDegrees(NormalsScalarField):
-    """ Vertical inclination with respect to Z axis in degrees.
-    """
+    """Vertical inclination with respect to Z axis in degrees."""
+
     def compute(self):
         inclination = np.arccos(self.normals[:, -1])
         self.to_be_added["inclination_deg"] = np.rad2deg(inclination)
 
 
 class InclinationRadians(NormalsScalarField):
-    """ Vertical inclination with respect to Z axis in radians.
-    """
+    """Vertical inclination with respect to Z axis in radians."""
+
     def compute(self):
         inclination = np.arccos(self.normals[:, -1])
         self.to_be_added["inclination_rad"] = inclination
 
 
 class OrientationDegrees(NormalsScalarField):
-    """ Horizontal orientation with respect to the XY plane in degrees.
-    """
+    """Horizontal orientation with respect to the XY plane in degrees."""
+
     def compute(self):
         angle = np.arctan2(self.normals[:, 0], self.normals[:, 1])
         # convert (-180 , 180) to (0 , 360)
@@ -34,8 +34,8 @@ class OrientationDegrees(NormalsScalarField):
 
 
 class OrientationRadians(NormalsScalarField):
-    """ Horizontal orientation with respect to the XY plane in radians.
-    """
+    """Horizontal orientation with respect to the XY plane in radians."""
+
     def compute(self):
         angle = np.arctan2(self.normals[:, 0], self.normals[:, 1])
         # convert (-180 , 180) to (0 , 360)

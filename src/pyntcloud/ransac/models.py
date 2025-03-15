@@ -1,4 +1,3 @@
-
 import numpy as np
 from abc import ABC, abstractmethod
 from ..geometry import Plane, Sphere
@@ -32,7 +31,6 @@ class RansacModel(ABC):
 
 
 class RansacPlane(RansacModel, Plane):
-
     def __init__(self, max_dist=1e-4):
         super().__init__(max_dist=max_dist)
         self.k = 3
@@ -42,7 +40,6 @@ class RansacPlane(RansacModel, Plane):
 
 
 class RansacSphere(RansacModel, Sphere):
-
     def __init__(self, max_dist=1e-4):
         super().__init__(max_dist=max_dist)
         self.k = 4

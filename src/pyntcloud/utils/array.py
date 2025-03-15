@@ -51,7 +51,7 @@ def cartesian(arrays, out=None):
 
 
 def PCA(data, correlation=False, sort=True):
-    """ Applies Principal Component Analysis to the data
+    """Applies Principal Component Analysis to the data
 
     Parameters
     ----------
@@ -94,7 +94,6 @@ def PCA(data, correlation=False, sort=True):
 
     #: the data is transposed due to np.cov/corrcoef syntax
     if correlation:
-
         matrix = np.corrcoef(data_adjust.T)
 
     else:
@@ -119,7 +118,6 @@ def point_in_array_2D(point, array_2D):
 
 
 def cov3D(k_neighbors):
-    """ (N,K,3)
-    """
+    """(N,K,3)"""
     diffs = k_neighbors - k_neighbors.mean(1, keepdims=True)
-    return np.einsum('ijk,ijl->ikl', diffs, diffs) / k_neighbors.shape[1]
+    return np.einsum("ijk,ijl->ikl", diffs, diffs) / k_neighbors.shape[1]

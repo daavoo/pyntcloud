@@ -5,13 +5,16 @@ from pyntcloud import PyntCloud
 from test_from_file import assert_points_xyz, assert_points_color, assert_mesh
 
 
-@pytest.mark.parametrize("extension,color,mesh,comments", [
-    (".ply", True, True, False),
-    ("_ascii.ply", True, True, True),
-    (".npz", True, True, False),
-    (".obj", False, True, False),
-    (".bin", False, False, False)
-])
+@pytest.mark.parametrize(
+    "extension,color,mesh,comments",
+    [
+        (".ply", True, True, False),
+        ("_ascii.ply", True, True, True),
+        (".npz", True, True, False),
+        (".obj", False, True, False),
+        (".bin", False, False, False),
+    ],
+)
 def test_to_file(tmpdir, diamond, extension, color, mesh, comments):
     extra_write_args = {}
     if mesh:
@@ -34,6 +37,7 @@ def test_to_file(tmpdir, diamond, extension, color, mesh, comments):
         assert_mesh(written_file)
     if comments:
         assert written_file.comments == ["PyntCloud is cool"]
+
 
 def test_to_bin_raises_ValueError_if_invalid_kwargs(tmpdir, diamond):
     with pytest.raises(ValueError):
@@ -61,4 +65,6 @@ def test_write_ply_with_bool(plane_pyntcloud, tmp_path):
 
     # Reload the test file and compare it is exactly as it was before writing.
     new_pyntcloud = PyntCloud.from_file(ply_out, allow_bool=True)
-    assert new_pyntcloud.points.equals(plane_pyntcloud.points), "Re-read pyntcloud is not identical to before writing"
+    assert new_pyntcloud.points.equals(plane_pyntcloud.points), (
+        "Re-read pyntcloud is not identical to before writing"
+    )

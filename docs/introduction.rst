@@ -49,7 +49,7 @@ common point cloud processing operations:
 
 -   sampling
 
--   :ref:`scalar_fields` / :ref:`scalar_fields_dev` 
+-   :ref:`scalar_fields` / :ref:`scalar_fields_dev`
 
 -   :ref:`structures` / :ref:`structures_dev`
 

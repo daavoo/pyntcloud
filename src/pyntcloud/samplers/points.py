@@ -5,8 +5,8 @@ import pandas as pd
 
 
 class PointsSampler(Sampler):
-    """
-    """
+    """ """
+
     def extract_info(self):
         self.points = self.pyntcloud.points
 
@@ -25,12 +25,13 @@ class RandomPointsSampler(PointsSampler):
 
     def compute(self):
         if self.n > len(self.points):
-            raise ValueError("n can't be higher than the number of points in the PyntCloud.")
+            raise ValueError(
+                "n can't be higher than the number of points in the PyntCloud."
+            )
         return self.points.sample(self.n).reset_index(drop=True)
 
 
 class FarthestPointsSampler(PointsSampler):
-
     """
     Parameters
     ----------
@@ -58,7 +59,11 @@ class FarthestPointsSampler(PointsSampler):
         distance_sum = np.zeros(len(point))
 
         for pt in solution_set:
-            distance_sum += np.diag(np.dot((point[:, :3]-pt[:3]), self.d_metric@(point[:, :3]-pt[:3]).T))
+            distance_sum += np.diag(
+                np.dot(
+                    (point[:, :3] - pt[:3]), self.d_metric @ (point[:, :3] - pt[:3]).T
+                )
+            )
         return distance_sum
 
     def compute(self):
@@ -70,13 +75,15 @@ class FarthestPointsSampler(PointsSampler):
         # the sampled points set as the return
         select_idx = np.random.randint(low=0, high=len(self.points))
         # to remain the shape as (1, n) instead of (n, )
-        solution_set = remaining_points[select_idx: select_idx+1]
+        solution_set = remaining_points[select_idx : select_idx + 1]
         remaining_points = np.delete(remaining_points, select_idx, 0)
 
         for _ in range(self.n - 1):
             distance_sum = self.cal_distance(remaining_points, solution_set)
             select_idx = np.argmax(distance_sum)
-            solution_set = np.concatenate([solution_set, remaining_points[select_idx:select_idx+1]], axis=0)
+            solution_set = np.concatenate(
+                [solution_set, remaining_points[select_idx : select_idx + 1]], axis=0
+            )
             remaining_points = np.delete(remaining_points, select_idx, 0)
 
         return pd.DataFrame(solution_set, columns=self.points.columns)

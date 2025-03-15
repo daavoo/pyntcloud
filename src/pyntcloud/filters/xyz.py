@@ -21,21 +21,32 @@ class BoundingBoxFilter(XYZFilter):
 
     """
 
-    def __init__(self, *, pyntcloud, min_x=-np.inf, max_x=np.inf, min_y=-np.inf,
-                 max_y=np.inf, min_z=-np.inf, max_z=np.inf):
+    def __init__(
+        self,
+        *,
+        pyntcloud,
+        min_x=-np.inf,
+        max_x=np.inf,
+        min_y=-np.inf,
+        max_y=np.inf,
+        min_z=-np.inf,
+        max_z=np.inf,
+    ):
         super().__init__(pyntcloud=pyntcloud)
         self.min_x, self.max_x = min_x, max_x
         self.min_y, self.max_y = min_y, max_y
         self.min_z, self.max_z = min_z, max_z
 
     def compute(self):
-
-        bound_x = np.logical_and(self.points[:, 0] > self.min_x,
-                                 self.points[:, 0] < self.max_x)
-        bound_y = np.logical_and(self.points[:, 1] > self.min_y,
-                                 self.points[:, 1] < self.max_y)
-        bound_z = np.logical_and(self.points[:, 2] > self.min_z,
-                                 self.points[:, 2] < self.max_z)
+        bound_x = np.logical_and(
+            self.points[:, 0] > self.min_x, self.points[:, 0] < self.max_x
+        )
+        bound_y = np.logical_and(
+            self.points[:, 1] > self.min_y, self.points[:, 1] < self.max_y
+        )
+        bound_z = np.logical_and(
+            self.points[:, 2] > self.min_z, self.points[:, 2] < self.max_z
+        )
 
         bb_filter = np.logical_and(np.logical_and(bound_x, bound_y), bound_z)
 

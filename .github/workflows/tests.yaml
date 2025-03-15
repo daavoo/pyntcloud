@@ -32,11 +32,11 @@ jobs:
       run: |
         pip install pytest
         pip install pytest-cov
-  
-        pytest --cov=pyntcloud --cov-report=xml --cov-append tests/unit 
-        pytest --cov=pyntcloud --cov-report=xml --cov-append tests/integration 
 
-    - name: Upload coverage to Codecov  
+        pytest --cov=pyntcloud --cov-report=xml --cov-append tests/unit
+        pytest --cov=pyntcloud --cov-report=xml --cov-append tests/integration
+
+    - name: Upload coverage to Codecov
       if: matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.11'
       run: bash <(curl -s https://codecov.io/bash) -t $TOKEN -B $REF
       env:

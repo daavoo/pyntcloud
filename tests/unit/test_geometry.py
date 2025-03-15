@@ -5,7 +5,7 @@ from pyntcloud.geometry.coord_systems import (
     cylindrical_to_cartesian,
     cartesian_to_cylindrical,
     cylindrical_to_spherical,
-    spherical_to_cylindrical
+    spherical_to_cylindrical,
 )
 
 
@@ -19,8 +19,7 @@ def test_spherical_to_cartesian():
 
     data[:, 1:] = np.deg2rad(data[:, 1:])
 
-    result = spherical_to_cartesian(
-        data[:, 0], data[:, 1], data[:, 2], degrees=False)
+    result = spherical_to_cartesian(data[:, 0], data[:, 1], data[:, 2], degrees=False)
 
     assert np.all(np.isclose(result, expected))
 
@@ -51,23 +50,22 @@ def test_cartesian_to_spherical():
 def test_cylindrical_to_cartesian():
     expected = np.array([[0.5, 0.5, 0.7071], [0.5, -0.5, -0.7071]])
 
-    data = np.array(
-        [[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
+    data = np.array([[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
     result = cylindrical_to_cartesian(data[:, 0], data[:, 1], data[:, 2])
 
     assert np.all(np.isclose(result, expected))
 
     data[:, 1] = np.deg2rad(data[:, 1])
 
-    result = cylindrical_to_cartesian(
-        data[:, 0], data[:, 1], data[:, 2], degrees=False)
+    result = cylindrical_to_cartesian(data[:, 0], data[:, 1], data[:, 2], degrees=False)
 
     assert np.all(np.isclose(result, expected))
 
 
 def test_cartesian_to_cylindrical():
     expected = np.array(
-        [[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
+        [[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32
+    )
 
     data = np.array([[0.5, 0.5, 0.7071], [0.5, -0.5, -0.7071]])
 
@@ -92,12 +90,10 @@ def test_cartesian_to_cylindrical():
 def test_cylindrical_to_spherical():
     expected = np.array([[1, 45, 45], [1, -45, 135]], dtype=np.float32)
 
-    data = np.array(
-        [[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
+    data = np.array([[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
 
     result = np.zeros_like(expected)
-    r, theta, phi = cylindrical_to_spherical(
-        data[:, 0], data[:, 1], data[:, 2])
+    r, theta, phi = cylindrical_to_spherical(data[:, 0], data[:, 1], data[:, 2])
     result[:, 0] = r
     result[:, 1] = theta
     result[:, 2] = phi
@@ -109,7 +105,8 @@ def test_cylindrical_to_spherical():
     data[:, 1] = np.deg2rad(data[:, 1])
 
     r, theta, phi = cylindrical_to_spherical(
-        data[:, 0], data[:, 1], data[:, 2], degrees=False)
+        data[:, 0], data[:, 1], data[:, 2], degrees=False
+    )
     result[:, 0] = r
     result[:, 1] = theta
     result[:, 2] = phi
@@ -119,7 +116,8 @@ def test_cylindrical_to_spherical():
 
 def test_spherical_to_cylindrical():
     expected = np.array(
-        [[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32)
+        [[0.7071, 45, 0.7071], [0.7071, -45, -0.7071]], dtype=np.float32
+    )
 
     data = np.array([[1, 45, 45], [1, -45, 135]], dtype=np.float32)
 
@@ -136,7 +134,8 @@ def test_spherical_to_cylindrical():
     data[:, 1:] = np.deg2rad(data[:, 1:])
 
     ro, phi, z = spherical_to_cylindrical(
-        data[:, 0], data[:, 1], data[:, 2], degrees=False)
+        data[:, 0], data[:, 1], data[:, 2], degrees=False
+    )
     result[:, 0] = ro
     result[:, 1] = phi
     result[:, 2] = z

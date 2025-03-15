@@ -1,3 +1,5 @@
+import numpy as np
+
 try:
     import ipywidgets
 except ImportError:
@@ -18,26 +20,25 @@ def get_pointcloud_pythreejs(xyz, colors):
     points_geometry = pythreejs.BufferGeometry(
         attributes=dict(
             position=pythreejs.BufferAttribute(xyz, normalized=False),
-            color=pythreejs.BufferAttribute(list(map(tuple, colors)))))
+            color=pythreejs.BufferAttribute(list(map(tuple, colors))),
+        )
+    )
 
-    points_material = pythreejs.PointsMaterial(
-        vertexColors='VertexColors')
+    points_material = pythreejs.PointsMaterial(vertexColors="VertexColors")
 
-    return pythreejs.Points(
-        geometry=points_geometry,
-        material=points_material)
+    return pythreejs.Points(geometry=points_geometry, material=points_material)
 
 
 def get_polylines_pythreejs(polylines):
     lines = []
     for x in polylines:
-        line_geometry = pythreejs.Geometry(
-            vertices=x["vertices"])
+        line_geometry = pythreejs.Geometry(vertices=x["vertices"])
         linewidth = x.get("linewidth", 1.0)
         line = pythreejs.Line(
             geometry=line_geometry,
             material=pythreejs.LineBasicMaterial(color=x["color"], linewidth=linewidth),
-            type='LinePieces')
+            type="LinePieces",
+        )
         lines.append(line)
 
     return lines
@@ -48,7 +49,8 @@ def get_camera_pythreejs(centroid, xyz, width, height):
         fov=90,
         aspect=width / height,
         position=tuple(centroid + [0, abs(xyz.max(0)[1]), abs(xyz.max(0)[2]) * 1.5]),
-        up=[0, 0, 1])
+        up=[0, 0, 1],
+    )
     camera.lookAt(tuple(centroid))
     return camera
 
@@ -75,7 +77,9 @@ def plot_with_pythreejs(cloud, **kwargs):
     widgets = []
 
     if kwargs["mesh"]:
-        raise NotImplementedError("Plotting mesh geometry with pythreejs backend is not supported yet.")
+        raise NotImplementedError(
+            "Plotting mesh geometry with pythreejs backend is not supported yet."
+        )
 
     if kwargs["polylines"]:
         lines = get_polylines_pythreejs(kwargs["polylines"])
@@ -89,15 +93,18 @@ def plot_with_pythreejs(cloud, **kwargs):
         value=initial_point_size,
         min=0.0,
         max=initial_point_size * 10,
-        step=initial_point_size / 100)
-    ipywidgets.jslink((size, 'value'), (points.material, 'size'))
-    widgets.append(ipywidgets.Label('Point size:'))
+        step=initial_point_size / 100,
+    )
+    ipywidgets.jslink((size, "value"), (points.material, "size"))
+    widgets.append(ipywidgets.Label("Point size:"))
     widgets.append(size)
 
     if kwargs["scene"]:
         kwargs["scene"].children = [points] + list(kwargs["scene"].children)
     else:
-        camera = get_camera_pythreejs(cloud.centroid, cloud.xyz, kwargs["width"], kwargs["height"])
+        camera = get_camera_pythreejs(
+            cloud.centroid, cloud.xyz, kwargs["width"], kwargs["height"]
+        )
         children.append(camera)
 
         controls = [get_orbit_controls(camera, cloud.centroid)]
@@ -109,13 +116,14 @@ def plot_with_pythreejs(cloud, **kwargs):
             camera=camera,
             controls=controls,
             width=kwargs["width"],
-            height=kwargs["height"])
+            height=kwargs["height"],
+        )
 
         display(renderer)
 
         color = ipywidgets.ColorPicker(value=kwargs["background"])
-        ipywidgets.jslink((color, 'value'), (scene, 'background'))
-        widgets.append(ipywidgets.Label('Background color:'))
+        ipywidgets.jslink((color, "value"), (scene, "background"))
+        widgets.append(ipywidgets.Label("Background color:"))
         widgets.append(color)
 
     display(ipywidgets.HBox(children=widgets))

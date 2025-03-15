@@ -36,7 +36,7 @@ class RadiusOutlierRemovalFilter(KDTreeFilter):
         Number of neighbors that will be used to compute the filter.
     r : float
         The radius of the sphere with center on each point. The filter
-        will look for the required number of neighboors inside that sphere.
+        will look for the required number of neighbors inside that sphere.
 
     Notes
     -----

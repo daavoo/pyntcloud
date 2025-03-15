@@ -3,7 +3,6 @@ from .base import ScalarField
 
 
 class VoxelgridScalarField(ScalarField):
-
     def __init__(self, *, pyntcloud, voxelgrid_id):
         super().__init__(pyntcloud=pyntcloud)
         self.voxelgrid_id = voxelgrid_id
@@ -17,6 +16,7 @@ class VoxelgridScalarField(ScalarField):
 
 class VoxelX(VoxelgridScalarField):
     """Voxel index along x axis."""
+
     def compute(self):
         name = "{}({})".format("voxel_x", self.voxelgrid_id)
         self.to_be_added[name] = self.voxelgrid.voxel_x
@@ -24,6 +24,7 @@ class VoxelX(VoxelgridScalarField):
 
 class VoxelY(VoxelgridScalarField):
     """Voxel index along y axis."""
+
     def compute(self):
         name = "{}({})".format("voxel_y", self.voxelgrid_id)
         self.to_be_added[name] = self.voxelgrid.voxel_y
@@ -31,6 +32,7 @@ class VoxelY(VoxelgridScalarField):
 
 class VoxelZ(VoxelgridScalarField):
     """Voxel index along z axis."""
+
     def compute(self):
         name = "{}({})".format("voxel_z", self.voxelgrid_id)
         self.to_be_added[name] = self.voxelgrid.voxel_z
@@ -38,6 +40,7 @@ class VoxelZ(VoxelgridScalarField):
 
 class VoxelN(VoxelgridScalarField):
     """Voxel index in 3D array using 'C' order."""
+
     def compute(self):
         name = "{}({})".format("voxel_n", self.voxelgrid_id)
         self.to_be_added[name] = self.voxelgrid.voxel_n
@@ -45,6 +48,7 @@ class VoxelN(VoxelgridScalarField):
 
 class EuclideanClusters(VoxelgridScalarField):
     """Assing corresponding cluster to each point inside each voxel."""
+
     def compute(self):
         name = "{}({})".format("clusters", self.voxelgrid_id)
 

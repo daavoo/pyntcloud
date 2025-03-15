@@ -1,7 +1,9 @@
 from pyntcloud.ransac.samplers import VoxelgridRansacSampler
 
 
-def test_voxelgrid_sampler_return_points_in_the_same_voxel(pyntcloud_with_rgb_and_normals):
+def test_voxelgrid_sampler_return_points_in_the_same_voxel(
+    pyntcloud_with_rgb_and_normals,
+):
     points = pyntcloud_with_rgb_and_normals.xyz
 
     sampler = VoxelgridRansacSampler(points=points, k=2, size_x=0.5)

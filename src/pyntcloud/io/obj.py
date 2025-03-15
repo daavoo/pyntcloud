@@ -5,7 +5,7 @@ import pandas as pd
 
 
 def read_obj(filename):
-    """ Reads and obj file and return the elements as pandas Dataframes.
+    """Reads and obj file and return the elements as pandas Dataframes.
 
     Parameters
     ----------
@@ -24,25 +24,25 @@ def read_obj(filename):
 
     with open(filename) as obj:
         for line in obj:
-            if line.startswith('v '):
+            if line.startswith("v "):
                 v.append(line.strip()[1:].split())
 
-            elif line.startswith('vn'):
+            elif line.startswith("vn"):
                 vn.append(line.strip()[2:].split())
 
-            elif line.startswith('vt'):
+            elif line.startswith("vt"):
                 vt.append(line.strip()[2:].split())
 
-            elif line.startswith('f'):
+            elif line.startswith("f"):
                 f.append(line.strip()[1:].lstrip())
 
-    points = pd.DataFrame(v, dtype='f4', columns=["x", "y", "z", "w"][:len(v[0])])
+    points = pd.DataFrame(v, dtype="f4", columns=["x", "y", "z", "w"][: len(v[0])])
 
     if len(vn) > 0:
-        points = points.join(pd.DataFrame(vn, dtype='f4', columns=['nx', 'ny', 'nz']))
+        points = points.join(pd.DataFrame(vn, dtype="f4", columns=["nx", "ny", "nz"]))
 
     if len(vt) > 0:
-        points = points.join(pd.DataFrame(vt, dtype='f4', columns=['u', 'v']))
+        points = points.join(pd.DataFrame(vt, dtype="f4", columns=["u", "v"]))
 
     data = {"points": points}
 
@@ -72,8 +72,10 @@ def read_obj(filename):
         for i in range(sum(c.isdigit() for c in f[0].split(" "))):
             mesh_columns.append("v{}".format(i + 1))
 
-    # trying to coerce type to integer throws error, casted afetr passes tests
-    mesh = pd.DataFrame([re.split(r'\D+', x) for x in f], columns=mesh_columns).astype('i4')
+    # trying to coerce type to integer throws error, casted after passes tests
+    mesh = pd.DataFrame([re.split(r"\D+", x) for x in f], columns=mesh_columns).astype(
+        "i4"
+    )
     mesh -= 1  # index starts with 1 in obj file
 
     data["mesh"] = mesh
@@ -96,20 +98,16 @@ def write_obj(filename, points=None, mesh=None):
         True if no problems
 
     """
-    if not filename.endswith('obj'):
-        filename += '.obj'
+    if not filename.endswith("obj"):
+        filename += ".obj"
 
     if points is not None:
         points = points.copy()
         points = points[["x", "y", "z"]]
         points.insert(loc=0, column="obj_v", value="v")
         points.to_csv(
-            filename,
-            sep=" ",
-            index=False,
-            header=False,
-            mode='a',
-            encoding='ascii')
+            filename, sep=" ", index=False, header=False, mode="a", encoding="ascii"
+        )
 
     if mesh is not None:
         mesh = mesh.copy()
@@ -117,11 +115,7 @@ def write_obj(filename, points=None, mesh=None):
         mesh += 1  # index starts with 1 in obj file
         mesh.insert(loc=0, column="obj_f", value="f")
         mesh.to_csv(
-            filename,
-            sep=" ",
-            index=False,
-            header=False,
-            mode='a',
-            encoding='ascii')
+            filename, sep=" ", index=False, header=False, mode="a", encoding="ascii"
+        )
 
     return True

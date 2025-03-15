@@ -6,7 +6,7 @@ from .eigenvalues import (
     Linearity,
     Omnivariance,
     Planarity,
-    Sphericity
+    Sphericity,
 )
 from .k_neighbors import (
     EigenDecomposition,
@@ -17,60 +17,51 @@ from .normals import (
     InclinationDegrees,
     InclinationRadians,
     OrientationDegrees,
-    OrientationRadians
+    OrientationRadians,
 )
-from .rgb import (
-    HueSaturationValue,
-    RelativeLuminance,
-    RGBIntensity
-)
-from .voxelgrid import (
-    VoxelN,
-    VoxelX,
-    VoxelY,
-    VoxelZ,
-    EuclideanClusters
-)
+from .rgb import HueSaturationValue, RelativeLuminance, RGBIntensity
+from .voxelgrid import VoxelN, VoxelX, VoxelY, VoxelZ, EuclideanClusters
 from .xyz import (
     PlaneFit,
     SphereFit,
     CustomFit,
     SphericalCoordinates,
-    CylindricalCoordinates
+    CylindricalCoordinates,
 )
+
 ALL_SF = {
     # Eigenvalues
-    'anisotropy': Anisotropy,
-    'curvature': Curvature,
-    'eigenentropy': Eigenentropy,
-    'eigen_sum': EigenSum,
-    'linearity': Linearity,
-    'omnivariance': Omnivariance,
-    'planarity': Planarity,
-    'sphericity': Sphericity,
+    "anisotropy": Anisotropy,
+    "curvature": Curvature,
+    "eigenentropy": Eigenentropy,
+    "eigen_sum": EigenSum,
+    "linearity": Linearity,
+    "omnivariance": Omnivariance,
+    "planarity": Planarity,
+    "sphericity": Sphericity,
     # Kneighbors
-    'eigen_decomposition': EigenDecomposition,
-    'eigen_values': EigenValues,
-    'normals': UnorientedNormals,
+    "eigen_decomposition": EigenDecomposition,
+    "eigen_values": EigenValues,
+    "normals": UnorientedNormals,
     # Normals
-    'inclination_degrees': InclinationDegrees,
-    'inclination_radians': InclinationRadians,
-    'orientation_degrees': OrientationDegrees,
-    'orientation_radians': OrientationRadians,
+    "inclination_degrees": InclinationDegrees,
+    "inclination_radians": InclinationRadians,
+    "orientation_degrees": OrientationDegrees,
+    "orientation_radians": OrientationRadians,
     # RGB
-    'hsv': HueSaturationValue,
-    'relative_luminance': RelativeLuminance,
-    'rgb_intensity': RGBIntensity,
+    "hsv": HueSaturationValue,
+    "relative_luminance": RelativeLuminance,
+    "rgb_intensity": RGBIntensity,
     # Voxelgrid
-    'voxel_n': VoxelN,
-    'voxel_x': VoxelX,
-    'voxel_y': VoxelY,
-    'voxel_z': VoxelZ,
-    'euclidean_clusters': EuclideanClusters,
+    "voxel_n": VoxelN,
+    "voxel_x": VoxelX,
+    "voxel_y": VoxelY,
+    "voxel_z": VoxelZ,
+    "euclidean_clusters": EuclideanClusters,
     # XYZ
-    'custom_fit': CustomFit,
-    'plane_fit': PlaneFit,
-    'sphere_fit': SphereFit,
-    'spherical_coords': SphericalCoordinates,
-    'cylindrical_coords': CylindricalCoordinates
+    "custom_fit": CustomFit,
+    "plane_fit": PlaneFit,
+    "sphere_fit": SphereFit,
+    "spherical_coords": SphericalCoordinates,
+    "cylindrical_coords": CylindricalCoordinates,
 }

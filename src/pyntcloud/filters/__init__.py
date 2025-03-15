@@ -1,4 +1,3 @@
-
 """
 HAKUNA MATATA
 """
@@ -6,7 +5,6 @@ HAKUNA MATATA
 from .kdtree import (
     RadiusOutlierRemovalFilter,
     StatisticalOutlierRemovalFilter,
-
 )
 from .xyz import BoundingBoxFilter
 
@@ -15,5 +13,5 @@ ALL_FILTERS = {
     "BBOX": BoundingBoxFilter,
     # KDTree
     "ROR": RadiusOutlierRemovalFilter,
-    "SOR": StatisticalOutlierRemovalFilter
+    "SOR": StatisticalOutlierRemovalFilter,
 }

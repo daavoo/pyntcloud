@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def read_bin(filename, shape=None, **kwargs):
-    """ Read a _raw binary_ file and store all possible elements in pandas DataFrame.
+    """Read a _raw binary_ file and store all possible elements in pandas DataFrame.
 
     If the shape of the array is known, it can be specified using `shape`. The
     first three columns are used for x, y and z.  Otherwise the binary file is
@@ -34,20 +34,24 @@ def read_bin(filename, shape=None, **kwargs):
     """
     data = {}
 
-    kwargs['dtype'] = kwargs.get('dtype', np.float32)
+    kwargs["dtype"] = kwargs.get("dtype", np.float32)
     arr = np.fromfile(filename, **kwargs)
 
     if shape is not None:
         try:
             arr = arr.reshape(shape)
         except ValueError:
-            raise ValueError(('The array cannot be reshaped to {0} as '
-                              'it has {1} elements, which is not '
-                              'divisible by three'.format(shape, arr.size)))
+            raise ValueError(
+                (
+                    "The array cannot be reshaped to {0} as "
+                    "it has {1} elements, which is not "
+                    "divisible by three".format(shape, arr.size)
+                )
+            )
     else:
         arr = arr.reshape((-1, 3))
 
-    data["points"] = pd.DataFrame(arr[:, 0:3], columns=['x', 'y', 'z'])
+    data["points"] = pd.DataFrame(arr[:, 0:3], columns=["x", "y", "z"])
 
     return data
 
@@ -68,18 +72,22 @@ def write_bin(filename, **kwargs):
         True if no problems
     """
     # Extract just the x, y, z coordinates from the points dataframe
-    point_array = kwargs['points'][['x', 'y', 'z']].values
+    point_array = kwargs["points"][["x", "y", "z"]].values
 
     # Remove the points from kwargs now.
     # Any remaining kwargs are meant for np.ndarray.tofile()
-    del kwargs['points']
+    del kwargs["points"]
 
     # Test that any remaining kwargs are only those allowed
     # It should be the empty set
-    remaining_kwargs = set(kwargs.keys()) - set(['sep', 'format'])
+    remaining_kwargs = set(kwargs.keys()) - set(["sep", "format"])
     if not len(remaining_kwargs) == 0:
-        raise ValueError(('Only keyword arguments meant for numpy.ndarray.tofile '
-                          'are accepted. Please see the numpy documentation'))
+        raise ValueError(
+            (
+                "Only keyword arguments meant for numpy.ndarray.tofile "
+                "are accepted. Please see the numpy documentation"
+            )
+        )
 
     point_array.tofile(filename, **kwargs)
 

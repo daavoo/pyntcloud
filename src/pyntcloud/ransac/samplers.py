@@ -5,7 +5,7 @@ from ..structures import VoxelGrid
 
 
 class RansacSampler(ABC):
-    """ Base class for ransac samplers.
+    """Base class for ransac samplers.
 
     Parameters
     ----------
@@ -29,7 +29,7 @@ class RansacSampler(ABC):
 
 
 class RandomRansacSampler(RansacSampler):
-    """ Sample random points.
+    """Sample random points.
 
     Inherits from RansacSampler.
 
@@ -39,14 +39,13 @@ class RandomRansacSampler(RansacSampler):
         super().__init__(points, k)
 
     def get_sample(self):
-        """ Get k unique random points.
-        """
+        """Get k unique random points."""
         sample = np.random.choice(len(self.points), self.k, replace=False)
         return self.points[sample]
 
 
 class VoxelgridRansacSampler(RansacSampler):
-    """ Sample random points inside the same random voxel.
+    """Sample random points inside the same random voxel.
 
     Inherits from RansacSampler.
 
@@ -69,17 +68,33 @@ class VoxelgridRansacSampler(RansacSampler):
         in order to have all the dimensions of equal length.
     """
 
-    def __init__(self,
-                 points, k, n_x=1, n_y=1, n_z=1, size_x=None, size_y=None, size_z=None, regular_bounding_box=True):
+    def __init__(
+        self,
+        points,
+        k,
+        n_x=1,
+        n_y=1,
+        n_z=1,
+        size_x=None,
+        size_y=None,
+        size_z=None,
+        regular_bounding_box=True,
+    ):
         super().__init__(points, k)
         self.voxelgrid = VoxelGrid(
-            points=self.points, n_x=n_x, n_y=n_y, n_z=n_z, size_x=size_x, size_y=size_y, size_z=size_z,
-            regular_bounding_box=regular_bounding_box)
+            points=self.points,
+            n_x=n_x,
+            n_y=n_y,
+            n_z=n_z,
+            size_x=size_x,
+            size_y=size_y,
+            size_z=size_z,
+            regular_bounding_box=regular_bounding_box,
+        )
         self.voxelgrid.compute()
 
     def get_sample(self):
-        """ Get k unique random points from the same voxel of one randomly picked point.
-        """
+        """Get k unique random points from the same voxel of one randomly picked point."""
         # pick one point and get its voxel index
         idx = np.random.randint(0, len(self.points))
         voxel = self.voxelgrid.voxel_n[idx]
@@ -89,6 +104,7 @@ class VoxelgridRansacSampler(RansacSampler):
         points_in_voxel = points_in_voxel / points_in_voxel.sum()
 
         sample = np.random.choice(
-            len(self.points), self.k, replace=False, p=points_in_voxel)
+            len(self.points), self.k, replace=False, p=points_in_voxel
+        )
 
         return self.points[sample]

@@ -12,15 +12,18 @@ def from_pyvista(poly_data, **kwargs):
         raise ImportError("PyVista must be installed. Try `pip install pyvista`")
 
     if not isinstance(poly_data, pv.PolyData):
-        raise TypeError("Type {} not yet supported for conversion.".format(type(poly_data)))
+        raise TypeError(
+            "Type {} not yet supported for conversion.".format(type(poly_data))
+        )
 
     mesh = None
     if poly_data.faces is not None:
         mesh = poly_data.faces.reshape(-1, 4)
         if not np.all(3 == mesh[:, 0]):
             raise ValueError(
-                "This mesh is not triangulated. Try triangulating the mesh before passing to PyntCloud.")
-        mesh = pd.DataFrame(data=mesh[:, 1:], columns=['v1', 'v2', 'v3'])
+                "This mesh is not triangulated. Try triangulating the mesh before passing to PyntCloud."
+            )
+        mesh = pd.DataFrame(data=mesh[:, 1:], columns=["v1", "v2", "v3"])
 
     points = pd.DataFrame(data=poly_data.points, columns=["x", "y", "z"])
 
@@ -41,12 +44,11 @@ def from_pyvista(poly_data, **kwargs):
                 for n in range(array.shape[1]):
                     points["{}_{}".format(name, n)] = array[:, n]
         else:
-            warnings.warn("Ignoring scalar field {} with ndim > 2 ({})".format(name, array.ndim))
+            warnings.warn(
+                "Ignoring scalar field {} with ndim > 2 ({})".format(name, array.ndim)
+            )
 
-    return {
-        "points": points,
-        "mesh": mesh
-    }
+    return {"points": points, "mesh": mesh}
 
 
 def to_pyvista(cloud, mesh=False, use_as_color=("red", "green", "blue"), **kwargs):
@@ -54,7 +56,7 @@ def to_pyvista(cloud, mesh=False, use_as_color=("red", "green", "blue"), **kwarg
     try:
         import pyvista as pv
     except ImportError:
-        raise ImportError('PyVista must be installed. Try `pip install pyvista`')
+        raise ImportError("PyVista must be installed. Try `pip install pyvista`")
     if mesh and cloud.mesh is not None:
         mesh = cloud.mesh[["v1", "v2", "v3"]].values
     else:

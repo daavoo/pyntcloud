@@ -22,8 +22,8 @@ class EigenValuesScalarField(ScalarField):
 
 
 class Anisotropy(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "anisotropy{}".format(self.k)
         ev = self.ev
@@ -31,17 +31,19 @@ class Anisotropy(EigenValuesScalarField):
 
 
 class Curvature(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "curvature{}".format(self.k)
         ev = self.ev
-        self.to_be_added[name] = np.nan_to_num(ev[:, 2] / (ev[:, 0] + ev[:, 1] + ev[:, 2]))
+        self.to_be_added[name] = np.nan_to_num(
+            ev[:, 2] / (ev[:, 0] + ev[:, 1] + ev[:, 2])
+        )
 
 
 class Eigenentropy(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "eigenentropy{}".format(self.k)
         ev = self.ev
@@ -52,16 +54,16 @@ class Eigenentropy(EigenValuesScalarField):
 
 
 class EigenSum(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "eigen_sum{}".format(self.k)
         self.to_be_added[name] = self.ev[:, 0] + self.ev[:, 1] + self.ev[:, 2]
 
 
 class Linearity(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "linearity{}".format(self.k)
         ev = self.ev
@@ -69,17 +71,19 @@ class Linearity(EigenValuesScalarField):
 
 
 class Omnivariance(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "omnivariance{}".format(self.k)
         ev = self.ev
-        self.to_be_added[name] = np.nan_to_num((ev[:, 0] * ev[:, 1] * ev[:, 2]) ** (1 / 3))
+        self.to_be_added[name] = np.nan_to_num(
+            (ev[:, 0] * ev[:, 1] * ev[:, 2]) ** (1 / 3)
+        )
 
 
 class Planarity(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "planarity{}".format(self.k)
         ev = self.ev
@@ -87,8 +91,8 @@ class Planarity(EigenValuesScalarField):
 
 
 class Sphericity(EigenValuesScalarField):
-    """
-    """
+    """ """
+
     def compute(self):
         name = "sphericity{}".format(self.k)
         ev = self.ev

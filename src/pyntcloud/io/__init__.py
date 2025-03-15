@@ -24,10 +24,7 @@ FROM_FILE = {
     "TXT": read_ascii,
     "XYZ": read_ascii,
 }
-FROM_INSTANCE = {
-    "PYVISTA": from_pyvista,
-    "OPEN3D": from_open3d
-}
+FROM_INSTANCE = {"PYVISTA": from_pyvista, "OPEN3D": from_open3d}
 
 TO_FILE = {
     "ASC": write_ascii,
@@ -40,7 +37,4 @@ TO_FILE = {
     "TXT": write_ascii,
     "XYZ": write_ascii,
 }
-TO_INSTANCE = {
-    "PYVISTA": to_pyvista,
-    "OPEN3D": to_open3d
-}
+TO_INSTANCE = {"PYVISTA": to_pyvista, "OPEN3D": to_open3d}

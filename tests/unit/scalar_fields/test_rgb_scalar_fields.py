@@ -3,7 +3,7 @@ import pytest
 from pyntcloud.scalar_fields.rgb import (
     HueSaturationValue,
     RelativeLuminance,
-    RGBIntensity
+    RGBIntensity,
 )
 
 

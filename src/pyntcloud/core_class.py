@@ -57,10 +57,13 @@ class PyntCloud(object):
             "_PyntCloud__mesh",
             "structures",
             "xyz",
-            "centroid"
+            "centroid",
         ]
-        others = ["\n\t {}: {}".format(x, str(type(getattr(self, x))))
-                  for x in self.__dict__ if x not in default]
+        others = [
+            "\n\t {}: {}".format(x, str(type(getattr(self, x))))
+            for x in self.__dict__
+            if x not in default
+        ]
 
         if self.mesh is None:
             n_faces = 0
@@ -68,12 +71,16 @@ class PyntCloud(object):
             n_faces = len(self.mesh)
 
         return DESCRIPTION.format(
-            len(self.points), len(self.points.columns) - 3,
+            len(self.points),
+            len(self.points.columns) - 3,
             n_faces,
             self.structures.n_kdtrees,
             self.structures.n_voxelgrids,
-            self.centroid[0], self.centroid[1], self.centroid[2],
-            "".join(others))
+            self.centroid[0],
+            self.centroid[1],
+            self.centroid[2],
+            "".join(others),
+        )
 
     @property
     def points(self):
@@ -83,7 +90,7 @@ class PyntCloud(object):
     def points(self, df):
         if not isinstance(df, pd.DataFrame):
             raise TypeError("Points argument must be a DataFrame")
-        elif not set(['x', 'y', 'z']).issubset(df.columns):
+        elif not set(["x", "y", "z"]).issubset(df.columns):
             raise ValueError("Points must have x, y and z coordinates")
         self._update_points(df)
 
@@ -97,10 +104,9 @@ class PyntCloud(object):
         if df is not None:
             if not isinstance(df, pd.DataFrame):
                 raise TypeError("Mesh argument must be a DataFrame")
-            elif not set(['v1', 'v2', 'v3']).issubset(df.columns):
+            elif not set(["v1", "v2", "v3"]).issubset(df.columns):
                 print(df.columns)
-                raise ValueError(
-                    "Mesh must have v1, v2 and v3 columns, at least")
+                raise ValueError("Mesh must have v1, v2 and v3 columns, at least")
             self.__mesh = df
         else:
             self.__mesh = None
@@ -124,7 +130,10 @@ class PyntCloud(object):
         ext = filename.split(".")[-1].upper()
         if ext not in FROM_FILE:
             raise ValueError(
-                "Unsupported file format; supported formats are: {}".format(list(FROM_FILE)))
+                "Unsupported file format; supported formats are: {}".format(
+                    list(FROM_FILE)
+                )
+            )
         else:
             return cls(**FROM_FILE[ext](filename, **kwargs))
 
@@ -148,7 +157,10 @@ class PyntCloud(object):
         library = library.upper()
         if library not in FROM_INSTANCE:
             raise ValueError(
-                "Unsupported library; supported libraries are: {}".format(list(FROM_INSTANCE)))
+                "Unsupported library; supported libraries are: {}".format(
+                    list(FROM_INSTANCE)
+                )
+            )
         else:
             return cls(**FROM_INSTANCE[library](instance, **kwargs))
 
@@ -171,7 +183,10 @@ class PyntCloud(object):
         ext = filename.split(".")[-1].upper()
         if ext not in TO_FILE:
             raise ValueError(
-                "Unsupported file format; supported formats are: {}".format(list(TO_FILE)))
+                "Unsupported file format; supported formats are: {}".format(
+                    list(TO_FILE)
+                )
+            )
         kwargs["filename"] = filename
         kwargs["points"] = self.points
         if also_save is not None:
@@ -194,7 +209,10 @@ class PyntCloud(object):
         library = library.upper()
         if library not in TO_INSTANCE:
             raise ValueError(
-                "Unsupported library; supported libraries are: {}".format(list(TO_INSTANCE)))
+                "Unsupported library; supported libraries are: {}".format(
+                    list(TO_INSTANCE)
+                )
+            )
 
         return TO_INSTANCE[library](self, **kwargs)
 
@@ -623,7 +641,9 @@ class PyntCloud(object):
         """
         self.points = self.points.loc[boolean_array].reset_index(drop=True)
 
-    def split_on(self, scalar_field, and_return=False, save_format="ply", save_path=os.getcwd()):
+    def split_on(
+        self, scalar_field, and_return=False, save_format="ply", save_path=os.getcwd()
+    ):
         """Divide the PyntCloud using unique values in given sf.
 
         This function will generate PyntClouds by grouping points using the unique
@@ -649,7 +669,10 @@ class PyntCloud(object):
         """
         scalar_field = self.points[scalar_field]
 
-        splits = {x: PyntCloud(self.points.loc[scalar_field == x]) for x in scalar_field.unique()}
+        splits = {
+            x: PyntCloud(self.points.loc[scalar_field == x])
+            for x in scalar_field.unique()
+        }
 
         if not os.path.exists(save_path):
             os.makedirs(save_path)
@@ -669,25 +692,24 @@ class PyntCloud(object):
         self.centroid = self.xyz.mean(0)
 
     def plot(
-            self,
-            backend=None,
-            scene=None,
-            width=800,
-            height=500,
-            background="black",
-            mesh=False,
-            use_as_color=["red", "green", "blue"],
-            initial_point_size=None,
-            cmap="hsv",
-            polylines=None,
-            linewidth=5,
-            return_scene=False,
-            output_name="pyntcloud_plot",
-            elev=0.,
-            azim=90.,
-            **kwargs
+        self,
+        backend=None,
+        scene=None,
+        width=800,
+        height=500,
+        background="black",
+        mesh=False,
+        use_as_color=["red", "green", "blue"],
+        initial_point_size=None,
+        cmap="hsv",
+        polylines=None,
+        linewidth=5,
+        return_scene=False,
+        output_name="pyntcloud_plot",
+        elev=0.0,
+        azim=90.0,
+        **kwargs,
     ):
-
         """Visualize a PyntCloud  using different backends.
 
         Parameters
@@ -750,15 +772,13 @@ class PyntCloud(object):
         if backend is None and len(AVAILABLE_BACKENDS) > 0:
             backend = AVAILABLE_BACKENDS[0]
         elif backend is None:
-            backend = 'pythreejs'
+            backend = "pythreejs"
 
         # Plot with backend of choice
         if backend == "matplotlib":
             return plot_with_matplotlib(self, **args)
         elif backend == "pythreejs":
             return plot_with_pythreejs(self, **args)
-        elif backend == "threejs":
-            return plot_with_threejs(self, **args)
         elif backend == "pyvista":
             return plot_with_pyvista(self, **args)
         else:
