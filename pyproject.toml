@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=48", "setuptools_scm[toml]>=6.3.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyntcloud"
+dynamic = ["version"]
+description = "Python library for working with 3D point clouds."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "The MIT License" }
+authors = [
+    { name = "David de la Iglesia Castro", email = "daviddelaiglesiacastro@gmail.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy",
+    "scipy>=1.6.0",
+    "pandas",
+]
+
+[project.optional-dependencies]
+las = ["laspy", "lazrs"]
+plot = ["ipython", "matplotlib", "pyvista>=0.32.0"]
+numba = ["numba"]
+all = [
+    "laspy",
+    "lazrs",
+    "ipython",
+    "matplotlib",
+    "pyvista>=0.32.0",
+    "numba",
+    "open3d"
+]
+
+[project.urls]
+repository = "https://github.com/daavoo/pyntcloud"
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "tests.*"]
+where = ["src"]
+namespaces = false
+
+[tool.setuptools_scm]

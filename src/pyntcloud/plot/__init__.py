@@ -1,5 +1,3 @@
-from .voxelgrid import plot_voxelgrid_with_threejs
-
 DESCRIPTION = """\
 PyntCloud
 {} points with {} scalar fields
@@ -30,9 +28,4 @@ try:
     AVAILABLE_BACKENDS.append("matplotlib")
 except ImportError:
     pass
-# Add threejs
-try:
-    from IPython.display import IFrame
-    AVAILABLE_BACKENDS.append("threejs")
-except ImportError:
-    pass
+
