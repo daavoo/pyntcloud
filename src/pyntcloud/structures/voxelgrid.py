@@ -77,7 +77,7 @@ class VoxelGrid(Structure):
         """ABC API."""
         xyzmin = self._points.min(0)
         xyzmax = self._points.max(0)
-        xyz_range = self._points.ptp(0)
+        xyz_range = np.ptp(self._points, 0)
 
         if self.regular_bounding_box:
             #: adjust to obtain a minimum bounding box with all sides of equal length
@@ -88,7 +88,7 @@ class VoxelGrid(Structure):
         for n, size in enumerate(self.sizes):
             if size is None:
                 continue
-            margin = (((self._points.ptp(0)[n] // size) + 1) * size) - self._points.ptp(0)[n]
+            margin = (((xyz_range[n] // size) + 1) * size) - xyz_range[n]
             xyzmin[n] -= margin / 2
             xyzmax[n] += margin / 2
             self.x_y_z[n] = ((xyzmax[n] - xyzmin[n]) / size).astype(int)
