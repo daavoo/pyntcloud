@@ -24,7 +24,9 @@ def parse_header(lines):
     for ln in lines:
         if ln.startswith("#") or len(ln) < 2:
             continue
-        match = re.match(r"(\w+)\s+([\w\s\.]+)", ln)
+        # Should accept alphanumeric, decimal point,
+        # or negative sign (Viewpoint contains floats)
+        match = re.match(r"(\w+)\s+([\w\s\.\-]+)", ln)
         if not match:
             warnings.warn("warning: can't understand line: %s" % ln)
             continue
@@ -119,10 +121,8 @@ def read_pcd(filename):
     if col in df.columns:
         # get the 'rgb' column from dataframe
         packed_rgb = df.rgb.values
-        # 'rgb' values are stored as float
-        # treat them as int
-        packed_rgb = packed_rgb.astype(np.float32).tostring()
-        packed_rgb = np.frombuffer(packed_rgb, dtype=np.int32)
+        # 'rgb' values are stored as float, treat them as int
+        packed_rgb = packed_rgb.astype(np.int32)
         # unpack 'rgb' into 'red', 'green' and 'blue' channel
         df["red"] = np.asarray((packed_rgb >> 16) & 255, dtype=np.uint8)
         df["green"] = np.asarray((packed_rgb >> 8) & 255, dtype=np.uint8)
@@ -132,3 +132,80 @@ def read_pcd(filename):
 
     data["points"] = df
     return data
+
+
+def write_pcd(filename, points):
+    """
+    Write to a PCD file (ASCII format) populated with the given fields.
+
+    Parameters
+    ----------
+    filename : str
+        Path to the PCD file.
+    points : pandas.DataFrame
+        DataFrame containing the point cloud. Column names will be used
+         as FIELD names.
+
+    Returns
+    -------
+    boolean
+        True if no problems
+
+    """
+    if not filename.endswith("pcd"):
+        filename += ".pcd"
+
+    # Some operation are needed for rgb
+    df = points.copy()
+
+    # Handle color columns: combine red, green, blue into rgb as in PCL
+    rgb_columns = ["red", "green", "blue"]
+    # Run only if columns exists are unint8
+    if (set(rgb_columns).issubset(df.columns) and
+       (df[rgb_columns].dtypes == np.uint8).all()):
+        # Pack RGB into a single float32
+        df[rgb_columns] = df[rgb_columns].astype(np.int32)
+        rgb_int = (
+            (df["red"].apply(lambda x: x << 16)) |
+            (df["green"].apply(lambda x: x << 8)) |
+            df["blue"]
+        )
+        df["rgb"] = rgb_int.astype(np.float32)
+        df.drop(["red", "green", "blue"], axis=1, inplace=True)
+
+    field_names = df.columns.tolist()
+    n_fields = len(field_names)
+    n_points = len(df)
+
+    # Infer PCD data types and sizes from numpy dtypes
+    pcd_types = []
+    pcd_sizes = []
+    for col in field_names:
+        np_type = df[col].dtype
+        if np_type not in numpy_type_to_pcd_type:
+            raise ValueError(f"Unsupported dtype {np_type} for column '{col}'")
+        t, s = numpy_type_to_pcd_type[np_type]
+        pcd_types.append(t)
+        pcd_sizes.append(str(s))
+
+    # Header
+    header = [
+        "# .PCD v.7 - Point Cloud Data file format",
+        "VERSION .7",
+        "FIELDS " + " ".join(field_names),
+        "SIZE " + " ".join(pcd_sizes),
+        "TYPE " + " ".join(pcd_types),
+        "COUNT " + " ".join(["1"] * n_fields),
+        f"WIDTH {n_points}",
+        "HEIGHT 1",
+        "VIEWPOINT 0 0 0 1 0 0 0",
+        f"POINTS {n_points}",
+        "DATA ascii"
+    ]
+
+    # Write file
+    with open(filename, "w") as f:
+        f.write("\n".join(header) + "\n")
+        df.to_csv(f, sep=" ", header=False, index=False)
+
+    return True

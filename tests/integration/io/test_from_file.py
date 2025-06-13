@@ -42,6 +42,7 @@ def assert_mesh(data):
         (".ply", True, True, False),
         ("_ascii.ply", True, True, True),
         ("_ascii_vertex_index.ply", True, True, True),
+        (".pcd", True, False, False),
         (".npz", True, True, False),
         (".obj", False, True, False),
         (".off", False, False, False),

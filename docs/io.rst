@@ -19,7 +19,7 @@ generic array formats (more formats will be added in the near future):
 -   `.npy / .npz <https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html>`__
 -   `.obj <https://en.wikipedia.org/wiki/Wavefront_.obj_file>`__
 -   `.off <https://en.wikipedia.org/wiki/OFF_(file_format)>`__ (with color support)
--   `.pcd <http://pointclouds.org/documentation/tutorials/pcd_file_format.php#pcd-file-format>`__
+-   `.pcd <https://pointclouds.org/documentation/tutorials/pcd_file_format.html#pcd-file-format>`__
 -   `.ply <https://en.wikipedia.org/wiki/PLY_(file_format)>`__
 
 Reading
