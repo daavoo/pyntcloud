@@ -7,7 +7,7 @@ from .npz import read_npz, write_npz
 from .obj import read_obj, write_obj
 from .ply import read_ply, write_ply
 from .off import read_off
-from .pcd import read_pcd
+from .pcd import read_pcd, write_pcd
 
 FROM_FILE = {
     "ASC": read_ascii,
@@ -32,6 +32,7 @@ TO_FILE = {
     "CSV": write_ascii,
     "NPZ": write_npz,
     "OBJ": write_obj,
+    "PCD": write_pcd,
     "PLY": write_ply,
     "PTS": write_ascii,
     "TXT": write_ascii,

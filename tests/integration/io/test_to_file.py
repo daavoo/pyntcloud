@@ -13,6 +13,7 @@ from test_from_file import assert_points_xyz, assert_points_color, assert_mesh
         (".npz", True, True, False),
         (".obj", False, True, False),
         (".bin", False, False, False),
+        (".pcd", True, False, False),
     ],
 )
 def test_to_file(tmpdir, diamond, extension, color, mesh, comments):
