@@ -34,6 +34,11 @@ def test_open3d_point_cloud_conversion(data_path):
     point_cloud = cloud.to_instance("open3d", mesh=False)
     assert isinstance(point_cloud, o3d.geometry.PointCloud)
     assert np.allclose(cloud.xyz, point_cloud.points)
+    # Non regression for https://github.com/daavoo/pyntcloud/issues/350
+    assert np.allclose(
+        cloud.points[["red", "green", "blue"]].values / 255.0,
+        np.asarray(point_cloud.colors),
+    )
 
 
 @pytest.mark.skipif(SKIP_OPEN3D, reason="Requires Open3D")

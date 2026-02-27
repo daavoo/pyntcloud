@@ -70,7 +70,7 @@ def to_open3d(cloud, mesh=True, colors=True, normals=True, **kwargs):
         triangle_mesh.vertices = o3d.utility.Vector3dVector(cloud.xyz)
         if colors and {"red", "green", "blue"}.issubset(cloud.points.columns):
             triangle_mesh.vertex_colors = o3d.utility.Vector3dVector(
-                cloud.points[["red", "green", "blue"]].values
+                cloud.points[["red", "green", "blue"]].values / 255.0
             )
         if normals and {"nx", "ny", "nz"}.issubset(cloud.points.columns):
             triangle_mesh.vertex_normals = o3d.utility.Vector3dVector(
@@ -82,7 +82,7 @@ def to_open3d(cloud, mesh=True, colors=True, normals=True, **kwargs):
         point_cloud.points = o3d.utility.Vector3dVector(cloud.xyz)
         if colors and {"red", "green", "blue"}.issubset(cloud.points.columns):
             point_cloud.colors = o3d.utility.Vector3dVector(
-                cloud.points[["red", "green", "blue"]].values
+                cloud.points[["red", "green", "blue"]].values / 255.0
             )
         if normals and {"nx", "ny", "nz"}.issubset(cloud.points.columns):
             point_cloud.normals = o3d.utility.Vector3dVector(
