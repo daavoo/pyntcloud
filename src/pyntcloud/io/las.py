@@ -56,7 +56,7 @@ def convert_color_to_dtype(data, output_dtype):
             column_max_values = data["points"].loc[:, column_names].max()
             # Do not scale color values restricted to [0, 255]
             if column_max_values.to_numpy().max() >= 256:
-                data["points"].loc[:, column_names] /= 256
+                data["points"].loc[:, column_names] //= 256
         data["points"] = data["points"].astype(
             {"red": output_dtype, "green": output_dtype, "blue": output_dtype}
         )
