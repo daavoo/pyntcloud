@@ -56,7 +56,7 @@ def test_sizes_override_number_of_voxels_per_axis(simple_pyntcloud):
     assert np.all(voxelgrid.voxel_n == [0, 0, 31, 62, 124, 124])
 
 
-def test_query_assigns_points_on_segment_boundaries_to_expected_voxels(simple_pyntcloud):
+def test_query_boundary_points_voxel_assignment(simple_pyntcloud):
     voxelgrid = VoxelGrid(points=simple_pyntcloud.xyz, n_x=5, n_y=1, n_z=1)
     voxelgrid.compute()
     queried = voxelgrid.query(simple_pyntcloud.xyz[[0, 2, 5]])
