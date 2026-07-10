@@ -106,7 +106,11 @@ class VoxelGrid(Structure):
         for i in range(3):
             # note the +1 in num
             s, step = np.linspace(
-                xyzmin[i], xyzmax[i], num=(self.x_y_z[i] + 1), retstep=True
+                float(xyzmin[i]),
+                float(xyzmax[i]),
+                num=(self.x_y_z[i] + 1),
+                retstep=True,
+                dtype=np.float64,
             )
             segments.append(s)
             shape.append(step)
