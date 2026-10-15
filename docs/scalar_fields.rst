@@ -88,8 +88,8 @@ Required args:
 .. autoclass:: Linearity
 
 
-"ommnivariance"
----------------
+"omnivariance"
+--------------
 
 .. autoclass:: Omnivariance
 
@@ -101,7 +101,7 @@ Required args:
 "sphericity"
 ------------
 
-.. autoclass:: Planarity
+.. autoclass:: Sphericity
 
 Require K Neighbors
 ===================
@@ -112,12 +112,12 @@ Required args:
 
 .. code-block:: python
 
-    k_neighbros = pointcloud.get_k_neighbors(k=10, ...)
+    k_neighbors = pointcloud.get_neighbors(k=10)
 
 "normals"
 ---------
 
-.. autoclass:: Normals
+.. autoclass:: UnorientedNormals
 
 "eigen_values"
 --------------
@@ -134,23 +134,23 @@ Require Normals
 
 `pointcloud.points` must have [nx, ny, nz] columns.
 
-"inclination_deg"
------------------
+"inclination_degrees"
+---------------------
 
 .. autoclass:: InclinationDegrees
 
-"inclination_rad"
------------------
+"inclination_radians"
+---------------------
 
 .. autoclass:: InclinationRadians
 
-"orientation_deg"
------------------
+"orientation_degrees"
+---------------------
 
 .. autoclass:: OrientationDegrees
 
-"orientation_rad"
------------------
+"orientation_radians"
+---------------------
 
 .. autoclass:: OrientationRadians
 
@@ -179,11 +179,11 @@ Require VoxelGrid
 
 Required args:
 
-    voxelgrid: VoxelGrid.id
+    voxelgrid_id: VoxelGrid.id
 
 .. code-block:: python
 
-    voxelgrid = self.add_structure("voxelgrid", ...)
+    voxelgrid_id = pointcloud.add_structure("voxelgrid")
 
 "euclidean_clusters"
 --------------------

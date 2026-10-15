@@ -17,9 +17,11 @@ cloud information that this entity offers.
 
 .. code-block:: python
 
+    import pandas as pd
     from pyntcloud import PyntCloud
 
-    cloud = PyntCloud.from_file("test/data/filters/filters.ply")
+    coordinates = [0.0, 0.1, 0.2, 0.5, 0.9, 1.0]
+    cloud = PyntCloud(pd.DataFrame({axis: coordinates for axis in "xyz"}))
 
     cloud.points
 
@@ -94,10 +96,6 @@ You can quickly get statistical information about points with a single command:
 
 .. code-block:: python
 
-    from pyntcloud import PyntCloud
-
-    cloud = PyntCloud.from_file("test/data/filters/filters.ply")
-
     cloud.points.describe()
 
 .. parsed-literal::
@@ -123,7 +121,7 @@ You can use different plots to visualize the information in points:
 
 .. code-block:: python
 
-    from pandas.tools.plotting import scatter_matrix
+    from pandas.plotting import scatter_matrix
 
     scatter_matrix(cloud.points, diagonal="kde", figsize=(8,8))
 
@@ -145,7 +143,7 @@ You can perform operations over points like getting which points are above some
     3     True
     4     True
     5     True
-    Name: x, dtype: bool
+    Name: z, dtype: bool
 
 
 You can find more information about this kind of operation in Working with scalar
