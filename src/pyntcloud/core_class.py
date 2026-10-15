@@ -263,8 +263,8 @@ class PyntCloud(object):
 
             ARGS
                 k_neighbors: (N, k) ndarray
-                    Returned from: self.get_neighbors(k, ...) /
-                    manually querying some self.kdtrees[x] /
+                    Returned from: self.get_neighbors(k=k, ...) /
+                    manually querying some self.structures[x] /
                     other methods.
 
             eigen_decomposition
@@ -383,26 +383,17 @@ class PyntCloud(object):
                     Has to be positive.
 
             voxelgrid
-                x_y_z: list of int, optional
-                    Default: [2, 2, 2]
+                n_x, n_y, n_z: int, optional
+                    Default: 1 for each axis.
                     The number of segments in which each axis will be divided.
-                    x_y_z[0]: x axis
-                    x_y_z[1]: y axis
-                    x_y_z[2]: z axis
-                    If sizes is not None it will be ignored.
-                sizes: list of float, optional
-                    Default: None
+                    Ignored if the corresponding size_x, size_y or size_z is not None.
+                size_x, size_y, size_z: float, optional
+                    Default: None for each axis.
                     The desired voxel size along each axis.
-                    sizes[0]: voxel size along x axis.
-                    sizes[1]: voxel size along y axis.
-                    sizes[2]: voxel size along z axis.
-                bb_cuboid: bool, optional
+                regular_bounding_box: bool, optional
                     Default: True
                     If True, the bounding box of the point cloud will be adjusted
                     in order to have all the dimensions of equal length.
-
-            octree
-                TODO
 
         """
         if name in ALL_STRUCTURES:
@@ -446,8 +437,8 @@ class PyntCloud(object):
         **REQUIRE KDTREE**
 
             ARGS
-                kdtree : KDTree.id
-                    kdtree = self.add_structure("kdtree", ...)
+                kdtree_id : KDTree.id
+                    kdtree_id = self.add_structure("kdtree", ...)
 
             ROR    (Radius Outlier Removal)
                 k: int
@@ -502,8 +493,8 @@ class PyntCloud(object):
 
         Returns
         -------
-        sampled_points: (n, 3) ndarray or PyntCloud
-            'n' vary for each method. PyntCloud if as_PyntCloud
+        sampled_points: pd.DataFrame or PyntCloud
+            Number of rows varies for each method. PyntCloud if as_PyntCloud
 
         Notes
         -----
@@ -525,8 +516,8 @@ class PyntCloud(object):
         **REQUIRE VOXELGRID**
 
             ARGS
-                voxelgrid: VoxelGrid.id
-                    voxelgrid = self.add_structure("voxelgrid", ...)
+                voxelgrid_id: VoxelGrid.id
+                    voxelgrid_id = self.add_structure("voxelgrid", ...)
 
             voxelgrid_centers
 

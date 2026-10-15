@@ -4,7 +4,7 @@
 Contributing
 ============
 
-At the very least, you need a Python(>3.5) installation (an isolated environment, i.e conda, is recommended) and the following requirements:
+At the very least, you need a Python (>=3.11) installation (an isolated environment, i.e conda, is recommended) and the following requirements:
 
 - numpy
 - numba
@@ -28,4 +28,5 @@ From the root of the repo, you can run:
     flake8
 
     # for running all the tests
-    pytest -v
+    pytest -v tests/unit
+    pytest -v tests/integration

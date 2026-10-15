@@ -27,25 +27,25 @@ Only require XYZ
 "BBOX"
 ------
 
-.. autoclass:: BoundingBox
+.. autoclass:: BoundingBoxFilter
 
 Require KDTree
 ==============
 
 Required args:
 
-    kdtree: KDTree.id
+    kdtree_id: KDTree.id
 
 .. code-block:: python
 
-    kdtree = pointcloud.add_structure("kdtree", ...)
+    kdtree_id = pointcloud.add_structure("kdtree")
 
 "ROR"
 -----
 
-.. autoclass:: RadiusOutlierRemoval
+.. autoclass:: RadiusOutlierRemovalFilter
 
 "SOR"
 -----
 
-.. autoclass:: StatisticalOutlierRemoval
+.. autoclass:: StatisticalOutlierRemovalFilter

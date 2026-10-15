@@ -31,44 +31,44 @@ Require points
 ==============
 
 
-"points_random_sampling"
-------------------------
+"points_random"
+----------------
 
-.. autoclass:: RandomPoints
+.. autoclass:: RandomPointsSampler
 
 Require mesh
 ============
 
 `pointcloud.mesh` must exists.
 
-"mesh_random_sampling"
-----------------------
+"mesh_random"
+--------------
 
-.. autoclass:: RandomMesh
+.. autoclass:: RandomMeshSampler
 
 Require VoxelGrid
 =================
 
 Required args:
 
-    voxelgrid: VoxelGrid.id
+    voxelgrid_id: VoxelGrid.id
 
 .. code-block:: python
 
 
-    voxelgrid = pointcloud.add_structure("voxelgrid", ...)
+    voxelgrid_id = pointcloud.add_structure("voxelgrid")
 
 "voxelgrid_centers"
 -------------------
 
-.. autoclass:: VoxelgridCenters
+.. autoclass:: VoxelgridCentersSampler
 
 "voxelgrid_centroids"
 ---------------------
 
-.. autoclass:: VoxelgridCentroids
+.. autoclass:: VoxelgridCentroidsSampler
 
 "voxelgrid_nearest"
 -------------------
 
-.. autoclass:: VoxelgridNearest
+.. autoclass:: VoxelgridNearestSampler

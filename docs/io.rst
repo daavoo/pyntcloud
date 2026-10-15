@@ -16,7 +16,7 @@ generic array formats (more formats will be added in the near future):
 
 -   .asc / .pts / .txt / .csv / .xyz (see 'Note about ASCII files' below)
 -   `.las <https://www.asprs.org/committee-general/laser-las-file-format-exchange-activities.html>`__
--   `.npy / .npz <https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html>`__
+-   `.npz <https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html>`__
 -   `.obj <https://en.wikipedia.org/wiki/Wavefront_.obj_file>`__
 -   `.off <https://en.wikipedia.org/wiki/OFF_(file_format)>`__ (with color support)
 -   `.pcd <http://pointclouds.org/documentation/tutorials/pcd_file_format.php#pcd-file-format>`__
@@ -41,7 +41,7 @@ Writing
 .. code-block:: python
 
     # my_point_cloud is a PyntCloud instance
-    my_point_cloud.to_file("out_file.obj", internal=["points", "mesh"])
+    my_point_cloud.to_file("out_file.obj", also_save=["mesh"])
 
 Alternative ways for creating PyntClouds
 ========================================
